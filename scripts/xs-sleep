@@ -14,7 +14,7 @@ import logging
 import json
 from gettext import gettext as _
 CONFIG_FILE = "/home/olpc/.sleepcfg"
-
+SCRIPT_DIR = os.path.dirname(__file__)
 WORK_DIR = "/home/olpc"
 
 logger = logging.getLogger('serversleep')
@@ -87,62 +87,63 @@ class SleepTools:
         return since_epoch_delta.total_seconds()
 
 class PowerInterface(SleepTools):
-    def __init__(self):
-        global cfg
-        global builder
-        #get the config file with previous selections
-        try:
-            fd = file(CONFIG_FILE,'r')
-        except IOError:
-            #this is first run of program, set up defaults
-            try:
-                fd = file(CONFIG_FILE,'w')
-                cfg = {
-                    "sleepenable" :False,
-                    "sleepstart"  :'17:00',
-                    "sleepstop"    :'6:00',
-                    "skipmon"     :False,
-                    "skiptue"     :False,
-                    "skipwed"     :False,
-                    "skipthu"     :False,
-                    "skipfri"     :False,
-                    "skipsat"     :True,
-                    "skipsun"     :True,
-                    "override"    :False,
-                    "sleepstoplong":0L,
-                    "sleepstartlong":0L
-                }
-                cfg_str = json.dumps(cfg)
-                print ("json:%s."%(cfg_str,))
-                fd.write(cfg_str)
-                fd.close()
-                fd = file(CONFIG_FILE,'r')
-            except IOError,e:
-                logging.exception("failed to write config str. error:%s"% (e,))
-                fd = file(CONFIG_FILE,'r')
-        cfg_str = fd.read()
-        cfg = json.loads(cfg_str)
+	def __init__(self):
+		global cfg
+		global builder
+		#get the config file with previous selections
+		try:
+			fd = file(CONFIG_FILE,'r')
+		except IOError:
+			#this is first run of program, set up defaults
+			try:
+				fd = file(CONFIG_FILE,'w')
+				cfg = {
+					"sleepenable" :False,
+					"sleepstart"  :'17:00',
+					"sleepstop"    :'6:00',
+					"skipmon"     :False,
+					"skiptue"     :False,
+					"skipwed"     :False,
+					"skipthu"     :False,
+					"skipfri"     :False,
+					"skipsat"     :True,
+					"skipsun"     :True,
+					"override"    :False,
+					"sleepstoplong":0L,
+					"sleepstartlong":0L
+				}
+				cfg_str = json.dumps(cfg)
+				print ("json:%s."%(cfg_str,))
+				fd.write(cfg_str)
+				fd.close()
+				fd = file(CONFIG_FILE,'r')
+			except IOError,e:
+				logging.exception("failed to write config str. error:%s"% (e,))
+				fd = file(CONFIG_FILE,'r')
+		cfg_str = fd.read()
+		cfg = json.loads(cfg_str)
 
-        #use Glade generated XML description of UI GTK widgets to create window
-        builder = Gtk.Builder()
-        builder.add_from_file("sleep.glade")
-        window = builder.get_object("window1")
-        window.show_all()
-        handlers = {
-            "onDeleteWindow": self.done,
-            "override_clicked_cb"   : self.override,
-            "enable_toggled_cb"     : self.enable_toggled,
-            "sleepbegin_changed_cb" : self.sleepstart_changed,
-            "sleepend_changed_cb"  : self.sleepstop_changed,
-            "mon1_toggled_cb"       : self.mon1_toggled,
-            "tue1_toggled_cb"       : self.tue1_toggled,
-            "wed1_toggled_cb"       : self.wed1_toggled,
-            "thu1_toggled_cb"       : self.thu1_toggled,
-            "fri1_toggled_cb"       : self.fri1_toggled,
-            "sat1_toggled_cb"       : self.sat1_toggled,
-            "sun1_toggled_cb"       : self.sun1_toggled,
+		#use Glade generated XML description of UI GTK widgets to create window
+		builder = Gtk.Builder()
+		fname = os.path.join(SCRIPT_DIR,"sleep.glade")
+		builder.add_from_file(fname)
+		window = builder.get_object("window1")
+		window.show_all()
+		handlers = {
+			"onDeleteWindow": self.done,
+			"override_clicked_cb"   : self.override,
+			"enable_toggled_cb"     : self.enable_toggled,
+			"sleepbegin_changed_cb" : self.sleepstart_changed,
+			"sleepend_changed_cb"  : self.sleepstop_changed,
+			"mon1_toggled_cb"       : self.mon1_toggled,
+			"tue1_toggled_cb"       : self.tue1_toggled,
+			"wed1_toggled_cb"       : self.wed1_toggled,
+			"thu1_toggled_cb"       : self.thu1_toggled,
+			"fri1_toggled_cb"       : self.fri1_toggled,
+			"sat1_toggled_cb"       : self.sat1_toggled,
+			"sun1_toggled_cb"       : self.sun1_toggled,
 			"newtime_activate_cb"	: self.time_changed_cb,
-        }
+		}
 
         builder.connect_signals(handlers)
 
@@ -199,7 +200,7 @@ class PowerInterface(SleepTools):
         timezone = os.environ.get('TZ', "UTC")
         os.environ["TZ"] = timezone
         label.set_text("TimeZone: %s  Current Time: %s"%\
-            (timezone, strftime("%H:%M",localtime())))
+			(timezone, strftime("%H:%M",localtime())))
 
     def getindex(self, lst, val):
         #return index of val in list or -1 if not in list

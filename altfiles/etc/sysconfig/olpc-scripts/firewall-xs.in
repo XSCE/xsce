@@ -39,8 +39,8 @@ $IPTABLES -A FORWARD -i $wan -o $lan -j DROP
 if [ -f /etc/sysconfig/olpc-scripts/setup.d/installed/gateway ] ; then
     $IPTABLES -A POSTROUTING -t nat -o $wan -j MASQUERADE
 fi
-if [ -f /etc/sysconfig/xs-httpcache-on ]; then
-    $IPTABLES -A PREROUTING -i $lan -p tp --dport 80 -j REDIRECT --to-ports 3128
+if [ -f /etc/sysconfig/xs_httpcache_on ]; then
+    $IPTABLES -A PREROUTING -i $lan -p tp --dport 80 ! -d 172.18.96.1 -j REDIRECT --to-ports 3128
 fi
 
 # Enable routing.
