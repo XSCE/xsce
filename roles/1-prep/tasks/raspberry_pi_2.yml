@@ -3,6 +3,7 @@
 - name: Set default facts for rpi device detection
   set_fact:
     rtc_id: none
+    wifi_id: none
 
 - name: Load the modules for the RTC
   template: dest=/etc/modules-load.d/rtc.conf

@@ -60,13 +60,10 @@
   ignore_errors: True
   changed_when: False
 
-- debug: var=ifcfg_files
-- pause:
-
 - name: Now get them out of the way
   shell: "rm -f {{ item }} "
   with_items:
-    - ifcfg_files.stdout_lines
+    - "{{ ifcfg_files.stdout_lines }}"
  
 - name: Configure lan interface
   template: backup=yes
@@ -74,18 +71,21 @@
             dest=/etc/sysconfig/network-scripts/ifcfg-LAN
   when: xsce_lan_iface != "none"
 
+- debug: var=xsce_lan_iface
+- debug: var=xsce_wan_iface
+- pause:
 - name: enslaving LAN device to Bridge
   template: src=network/ifcfg-slave.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-{{ item|trim }}
-  when: num_lan_interfaces > "0"  and xsce_lan_iface == "br0"
+  when: num_lan_interfaces > "0" and xsce_lan_iface == "br0"
   with_items:
-        lan_list_result.stdout_lines
+      - "{{ lan_list_result.stdout_lines }}"
 
 # supply an ifcfg if no gateway detected but wan_ip is set
 # set user_wan_iface: <device> and use wan_* for static info
 - name: Supply wan interface file
   template: src=network/ifcfg-WAN.j2
-            dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_wan_iface}}
+            dest=/etc/sysconfig/network-scripts/ifcfg-WAN
   when: 'xsce_wan_iface != "none" and wan_ip != "dhcp"'
 
 - include: NM.yml
