@@ -81,6 +81,18 @@
   with_items:
       - "{{ lan_list_result.stdout_lines }}"
 
+- name: Delete any bridge add interface lines in rc.local
+  lineinfile: regexp="^/usr/sbin/brctr.*"
+              state=absent
+              dest=/etc/rc.d/rc.local
+
+- name: Connect LAN device(s) to Bridge
+  lineinfile: line="/usr/sbin/brctl addif br0 {{ item|trim }}"
+              dest=/etc/rc.d/rc.local
+  when: num_lan_interfaces > "0" and xsce_lan_iface == "br0"
+  with_items:
+      - "{{ lan_list_result.stdout_lines }}"
+
 # supply an ifcfg if no gateway detected but wan_ip is set
 # set user_wan_iface: <device> and use wan_* for static info
 - name: Supply wan interface file

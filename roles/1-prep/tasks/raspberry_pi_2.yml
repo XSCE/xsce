@@ -41,17 +41,6 @@
               state=absent
   when:  rtc_id  != "DS3231" 
 
-- name: in rc.local attach new device to bridge
-  lineinfile: dest=/etc/rc.d/rc.local
-              line='/usr/sbin/brctl addif br0 {{ discovered_lan_iface }}'
-  when: xsce_lan_iface == "br0"
-
-- name: in rc.local remove item related to non existent bridge
-  lineinfile: dest=/etc/rc.d/rc.local
-              regexp='/usr/sbin/brctl addif br0'
-              state=absent
-  when: xsce_lan_iface != "br0"
-
 - name: Install the standard hostapd if possible
   yum:  name={{ item }}
         state=present

@@ -13,7 +13,7 @@ BOOTPROTO=none
 ONBOOT=yes
 IPADDR={{ lan_ip }}
 NETMASK={{ lan_netmask }}
-{% if xsce_wireless_lan_iface != "none" %}
+{% if xsce_wireless_lan_iface != "none" or xsce_lan_iface == "br0"  %}
 NM_CONTROLLED=no
 {% else %}
 NM_CONTROLLED=yes

@@ -45,4 +45,5 @@ if [ $# -ne 1 ]; then
 	echo " If you would like a list of possible values, enter $0 XXX"
 	exit 1
 fi
+export ANSIBLE_LOG_PATH="xsce-debug.log"
 ansible-playbook -i ansible_hosts xsce.yml --connection=local --tags="""$taglist"""
