@@ -163,6 +163,9 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/usr/bin
 	install -D scripts/cat-parts   $(DESTDIR)/usr/bin
 	install -D scripts/xs-swapnics $(DESTDIR)/usr/bin
+	install -D scripts/xs-setup-functions $(DESTDIR)/usr/bin
+	install -D scripts/xs-pickpkgs.py $(DESTDIR)/usr/bin
+	install -D scripts/xs-pickpkgs.glade $(DESTDIR)/usr/bin
 	install -D scripts/xs-setup $(DESTDIR)/usr/bin
 	install -D scripts/xs-setup-network $(DESTDIR)/usr/bin
 	install -D scripts/xs-services-check $(DESTDIR)/usr/bin

@@ -35,14 +35,7 @@ if [ -n "$opt_upgrade_only" -a ! -e "$MARKER" ]; then
 	exit 0
 fi
 
-# Work would be needed to get the XS components playing nice with SELinux, so
-# disable it.
-if selinuxenabled; then
-	setenforce 0
-	sed -i -e 's/^SELINUX=.*/SELINUX=disabled/' /etc/selinux/config
-fi
-
-## Prepare etckeeper database
+/## Prepare etckeeper database
 if [ ! -d /etc/.git ];then
    pushd /etc
    etckeeper init

@@ -5,7 +5,7 @@
 #  a list of packages modified by xs-config
 Requires: python
 Requires: authconfig  
-Requires: bind  
+#Requires: bind  
 Requires: initscripts  
 Requires: iptables  
 Requires: module-init-tools  
@@ -21,16 +21,16 @@ Requires: sudo
 Requires: syslog 
 Requires: logrotate
 Requires: xml-common  
-Requires: etckeeper
+#Requires: etckeeper
 Requires: make
 Requires: usbmount
-Requires: dhcp
-Requires: squid
-Requires: postgresql-server
-Requires: httpd
-Requires: php-common
-Requires: moodle-xs
-Requires: ejabberd
+#Requires: dhcp
+#Requires: squid
+#Requires: postgresql-server
+#Requires: httpd
+#Requires: php-common
+#Requires: moodle-xs
+#Requires: ejabberd
 Requires: xs-release
 
 
