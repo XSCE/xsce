@@ -1,0 +1,26 @@
+#!/bin/bash -x
+# tools to create, manage, simplify services and modules on XS server
+case "$1" in
+"mktree")
+	if [ $# -eq 2 -a $2 = "all" ]; then
+		MODULES=`cat modules_manifest`
+	fi
+	if [ $# -eq 2 -a $2 != "all" ]; then
+		MODULES=$2
+	fi
+	if [ $# -eq 1 ]; then
+		MODULES=`cat modules_manifest`
+	fi
+	for mod in $MODULES; do
+		mkdir -p modules.d/$mod
+		pushd modules.d/$mod
+		mkdir -p yum files
+		touch sequence enabled $mod.sh Makefile manifest \
+			README description
+		popd
+	done
+	;;
+*)
+	ls -da modules.d
+	;;
+esac
