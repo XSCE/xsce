@@ -4,6 +4,9 @@
 PLUGINDIR=/usr/share/xs-config/plugins.d
 export PLUGINDIR
 LOG=/var/log/xs-setup.log
+XOTYPE=`[ -f /proc/device-tree/mfg-data/MN ] && \
+    echo `cat /proc/device-tree/mfg-data/MN` || echo ""`
+export XOTYPE
 MARKER=/.olpcxs-configured
 
 for mod in `ls $PLUGINDIR`; do
