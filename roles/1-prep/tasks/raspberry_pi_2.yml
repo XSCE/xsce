@@ -97,14 +97,13 @@
 
 - name: Enable the Access Point Hostapd program
   service: enabled=yes
-           state=started
            name=hostapd.service
-  when: xsce_network_mode != Appliance
+  when: xsce_network_mode != "Appliance"
 
 - name: Disable the Access Point Hostapd program
   service: enabled=no
            name=hostapd.service
-  when: xsce_network_mode == Appliance
+  when: xsce_network_mode == "Appliance"
 
 - name: in rc.local attach new device to bridge
   lineinfile: dest=/etc/rc.d/rc.local

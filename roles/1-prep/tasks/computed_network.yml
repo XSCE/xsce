@@ -49,9 +49,11 @@
   changed_when: false
 # This returns "" for not found
 
-- name: Convert the returned number of lan interfaces into an integer
-  set_fact: 
-      num_lan_interfaces: '{{ num_lan_interfaces_result.stdout | int }}'
+- name: Create list of  LAN ifaces
+  shell: "/sbin/ip link show | grep -v  -e lo -e br0: -e tun -e {{ xsce_wan_iface }}| grep mtu 
+  register: lan_list_result
+  ignore_errors: True
+  changed_when: false
 
 - name: Set xsce discovered lan fact
   set_fact:
@@ -96,7 +98,7 @@
     dhcpd_enabled: False
     wondershaper_enabled: False
     xsce_network_mode: "Appliance"
-  when: 'xsce_lan_iface == "none" or user_lan_iface == "none"' 
+  when: xsce_lan_iface == "none" or user_lan_iface == "none" or xsce_lan_enabled == False
 
 - name: LAN configured - LanController mode
   set_fact:
@@ -106,7 +108,7 @@
     squid_enabled: False
     wondershaper_enabled: False
     xsce_network_mode: "LanController"
-  when: 'xsce_lan_iface != "" and xsce_wan_iface == "none"'
+  when: xsce_lan_iface != "" and xsce_wan_iface == "none" and xsce_lan_enabled == True
 
 - name: LAN configured - Gateway mode
   set_fact:
