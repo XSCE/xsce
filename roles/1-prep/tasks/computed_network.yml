@@ -99,7 +99,7 @@
 - name: Set xsce discovered lan fact
   set_fact:
     discovered_lan_iface: "{{ item|trim }}"
-  when: item|trim != discovered_wireless_iface
+  when: item|trim != discovered_wireless_iface and item|trim != discovered_wan_iface
   with_items:
       - "{{ lan_list_result.stdout_lines }}"
 
