@@ -34,8 +34,6 @@
   register: rtc_response
   ignore_errors: yes
 
-- debug: var=rtc_response
-
 - name: Record whether rtc hardware was detected
   set_fact:
      rtc_id: "DS3231"

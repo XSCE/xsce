@@ -6,6 +6,7 @@
     discovered_wireless_iface: "none"
     xsce_wireless_lan_iface: "none"
     xsce_lan_iface: "none"
+    xsce_wan_iface: "none"
 
 # Discover  do we have a gateway? -- if ansible detects gateway, becomes WAN candidate
 - name: Found gateway
@@ -29,8 +30,8 @@
 # maybe never TODO: deal with more that one wireless device
 - name: Set the discovered wireless, if found
   set_fact:
-     discovered_wireless_iface: "{{ wireless_list.stdout }}"
-  when: wireless_list.stdout != "" and wireless_list.stdout != xsce_wan_iface
+     discovered_wireless_iface: "{{ wireless_list.stdout|trim }}"
+  when: wireless_list.stdout != "" and wireless_list.stdout|trim != discovered_wan_iface
 
 # override with user_wan_iface setting if no longer in auto
 - name: setting user WAN fact
@@ -49,16 +50,13 @@
 - name: Set xsce discovered lan fact
   set_fact:
     discovered_lan_iface: "{{ item|trim }}"
-  when: item != discovered_wireless_iface
+  when: item|trim != discovered_wireless_iface
   with_items:
       - "{{ lan_list_result.stdout_lines }}"
 
-- debug: var=lan_list_result
-- debug: var=discovered_lan_iface
-- debug: var=discovered_wireless_iface
 
 - name: Count LAN ifaces
-  shell: "/sbin/ip link show | grep -v  -e lo -e br0: -e tun -e {{ xsce_wan_iface }} | grep mtu | wc | gawk '{print $1}'"
+  shell: "/sbin/ip link show | grep -v  -e lo -e br0: -e tun -e {{ discovered_wan_iface }} | grep mtu | wc | gawk '{print $1}'"
   register: num_lan_interfaces_result
   ignore_errors: True
   changed_when: false
@@ -76,12 +74,9 @@
 - name: if only one lan interface, combine wireless and lan
   set_fact:
     discovered_lan_iface: "{{ xsce_wireless_lan_iface|trim }}"
-    when: discovered_lan_iface == "none" and num_lan_interfaces == "1"
+  when: discovered_lan_iface == "none" and num_lan_interfaces == "1"
 
-- debug: var='{{ xsce_wireless_lan_iface }}'
-- debug: var='{{ discovered_lan_iface }}'
 
-- pause: seconds=10
 
 # use value only if present
 - name: Setting detected lan

@@ -55,12 +55,12 @@ lan_netmask: 255.255.224.0
 #xsce_wan_enabled: True
 #
 # Lan controller mode
-#xsce_lan_enabled: True  
-#xsce_wan_enabled: False
+xsce_lan_enabled: True  
+xsce_wan_enabled: False
 #
 # Gateway  
-xsce_lan_enabled: True
-xsce_wan_enabled: True
+#xsce_lan_enabled: True
+#xsce_wan_enabled: True
 
 ssh_port: 22
 gui_wan: True
