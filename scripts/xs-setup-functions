@@ -131,8 +131,10 @@ function gateway()
         cp /etc/sysconfig/olpc-scripts/iptables-xs.in /etc/sysconfig/olpc-scripts/iptables-xs
         cp /etc/sysconfig/olpc-scripts/ip6tables-xs.in /etc/sysconfig/olpc-scripts/ip6tables-xs
         cp /etc/sysconfig/olpc-scripts/firewall-xs.in /etc/sysconfig/olpc-scripts/firewall-xs
-        systemctl enable iptables.serice
+        systemctl enable iptables.service
         systemctl start iptables.service
+        #systemd has a check for exist /etc/sysconfig/iptables - so ensure that it exists
+        /etc/sysconfig/iptables-config
         touch $SETUPSTATEDIR/gateway
         ;;
 	"no")
@@ -147,7 +149,7 @@ function httpd()
 {
 	case "$1" in
 	"yes")
-		yum -y install httpd php 2>&1 | tee -a $LOG
+		yum -y install httpd php  2>&1 | tee -a $LOG
         cp -p /etc/httpd/conf/httpd-xs.conf.in /etc/httpd/conf/httpd-xs.conf
 		# Choose a config depending on memory
 		MEMSIZE=$(grep '^MemTotal' /proc/meminfo | grep -oP '\d+')
@@ -420,7 +422,7 @@ function vnc()
         ln -sf $DESTDIR/etc/systemd/system/vncserver\@.service \
             $DESTDIR/etc/systemd/system/multi-user.target.wants/vncserver\@\:1.service
         cp $CFGDIR/etc/sysconfig/vnc/xstartup /home/$DEFAULTUSER/.vnc/
-        chown $DEFAULTUSER:$DEFAULTUSER /home/$DEFAULTUSER/.vnc/*
+        chown -R $DEFAULTUSER:$DEFAULTUSER /home/$DEFAULTUSER/.vnc
 		systemctl enable vncserver\@\:1.service 2>&1 | tee -a $LOG
         systemctl start vncserver\@\:1.service 2>&1 | tee -a $LOG
         systemctl start vncserverweb.service 2>&1 | tee -a $LOG
@@ -439,6 +441,7 @@ function webdav()
 	case "$1" in
 	"yes")
         cp /etc/httpd/conf.d/webdav.conf.in /etc/httpd/conf.d/webdav.conf
+        yum -y install cadaver
         mkdir -p /library/webdav
         chown apache:apache /library/webdav
         htpasswd -cb /etc/httpd/webdav.users.pwd $DEFAULTUSER $DEFAULTPASSWORD
@@ -596,6 +599,7 @@ function do_first()
         etckeeper-if-selected "after installing core packages"
         
         popd
+        xs-setup-network
     fi
     echo "do first routine completed" | tee -a $LOG
     date  2>&1 | tee -a $LOG

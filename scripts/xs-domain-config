@@ -39,8 +39,7 @@ else
 	new_domain_name=`cat "$SYSCONFIGDIR/xs_domain_name"`
     else
 	echo Using default domain name
-	new_domain_name=random.xs.laptop.org
-    fi
+	new_domain_name="local"
 fi
 echo Setting the base dns name to $new_domain_name
 

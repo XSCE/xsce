@@ -22,7 +22,7 @@ done
 # The user can request that we only perform setup steps if setup had been
 # previously performed by an admin. This is useful for automated upgrades
 # (e.g. RPM post scripts).
-if [ -n "$opt_upgrade_only" -a ! -e "$MARKER" ]; then
+if [ -n "$opt_upgrade_only" ]; then
 	echo "$0: doing nothing, XS standard networking is not active."
 	exit 0
 fi
@@ -87,13 +87,12 @@ done
 #etckeeper commit -m "Made from $i.in"
 popd
 
-systemctl enable network.service
+#systemctl enable network.service
 systemctl enable iptables.service
 systemctl enable ip6tables.service
 systemctl enable xinetd.service
 
 #etckeeper commit -m "xs-setup-network configured services"
-touch $MARKER
 
 # must re-run domain-config as some domain-config parts change behaviour
 # depending on whether we are running the standard XS network config or not

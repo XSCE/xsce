@@ -35,11 +35,8 @@ if [ -n "$opt_upgrade_only" -a ! -e "$MARKER" ]; then
 	exit 0
 fi
 
-
 # seed low-level network conf and domain
 xs-domain-config $DOMAIN
-
-
 
 #systemd change
 echo '-y' > /fsckoptions
@@ -50,6 +47,8 @@ echo '-y' > /fsckoptions
 #
 # for testing, let's load all the available options
 source /usr/bin/xs-setup-functions
+
+# prep the XO
 do-first
 set-etckeeper yes
 yum-etckeeper yes
@@ -58,21 +57,26 @@ yum-etckeeper no
 set-etckeeper no
 manpages yes
 mlocate yes
-dhcpd yes
-named yes
-ejabberd yes
 
-#for normal use, choose either of the following (gateway turns on masquerade)
-squid yes
-gateway yes
-
+# Remote admin services 
 httpd yes
 vnc yes
-webdav yes
+
+# Core services offered
+ejabberd yes
 idmgr yes
 postgresql yes
 moodle-xs yes
 xs-security yes
+webdav yes
+
+# for normal use, choose either of the following (gateway turns on masquerade)
+squid yes
+gateway yes
+dhcpd yes
+named yes
+
+# Finalize install
 yum-etckeeper yes
 do-last
 echo "XS configured; services will activate upon reboot."
