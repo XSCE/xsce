@@ -89,7 +89,7 @@
 - name: Connect LAN device(s) to Bridge
   lineinfile: line="/usr/sbin/brctl addif br0 {{ item|trim }}"
               dest=/etc/rc.d/rc.local
-  when: num_lan_interfaces > "0" and xsce_lan_iface == "br0"
+  when: num_lan_interfaces > "0" and xsce_lan_iface == "br0" and item|trim != xsce_wan_iface
   with_items:
       - "{{ lan_list_result.stdout_lines }}"
 
