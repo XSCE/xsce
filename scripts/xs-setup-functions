@@ -130,8 +130,15 @@ function gateway()
 	"yes")
         cp /etc/sysconfig/olpc-scripts/iptables-xs.in /etc/sysconfig/olpc-scripts/iptables-xs
         cp /etc/sysconfig/olpc-scripts/ip6tables-xs.in /etc/sysconfig/olpc-scripts/ip6tables-xs
+        cp /etc/sysconfig/olpc-scripts/firewall-xs.in /etc/sysconfig/olpc-scripts/firewall-xs
+        systemctl enable iptables.serice
+        systemctl start iptables.service
+        touch $SETUPSTATEDIR/gateway
         ;;
 	"no")
+        rm $SETUPSTATEDIR/gateway
+        /etc/sysconfig/olpcs-scripts/firewall-xs
+        squid no
         ;;
 	esac
 }
@@ -185,14 +192,19 @@ function idmgr()
         /etc/sysconfig/olpc-scripts/setup.d/idmgr
         #we'll leave the script in place and call it from systemd
         cp /etc/init.d/idmgr /usr/libexec/idmgr.init
+        
         #setup ds-backup symlinks to config locations
         ln -sf /usr/share/ds-backup/apache-ds-backup.conf \
             /etc/httpd/conf.d/050-ds-backup.conf
         ln -sf /usr/share/ds-backup/cron-ds-backup-server.conf \
             /etc/cron.d/ds-bakup-server.conf
+        
         # incrond doesn't accept syslinks
         cp -f /usr/share/ds-backup/incron-ds-backup.conf /etc/incron.d/ds-backup.conf
         cp /etc/systemd/system/idmgr.service.in /etc/systemd/system/idmgr.service
+        
+        #execute the file which creates links to enable xs-rsync
+        /etc/sysconfig/olpc-scripts/setup.d/xs-rsync
 		systemctl enable idmgr.service 2>&1 | tee -a $LOG
 		systemctl start idmgr.service 2>&1 | tee -a $LOG
         touch $SETUPSTATEDIR/idmgr
@@ -305,6 +317,34 @@ function named()
 	esac
 }
  
+function pathagar()
+{
+	case "$1" in
+	"yes")
+        httpd yes
+        yum -y mod_python mod_wsgi  python-django Django \
+                python-setuptools sqlite django-tagging
+        adduser bookserver
+        cd /home/bookserver
+        git clone git://github.com/johnsensile/django-sendfile.git
+        git clone git://github.com/manuq/pthagar
+        python setup.py install
+        rm -rf /home/bookserver/django-sendfile
+        chown -R apache:apache /home/bookserver/pathagar
+        chmod u-w -R /home/bookserver/pathagar
+        chmod g+w -R /home/bookserver/pathagar
+        cd /home/bookserver/pathagar
+        ln -fs $CFGDIR/etc/httpd/conf.d/pathagar.conf \
+                $DESTDIR/etc/httpd/conf.d/pathagar.conf
+        chmod u+w database.db static_media books
+        touch $SETUPSTATEDIR/pathagar
+        ;;
+	"no")
+        rm $SETUPSTATEDIR/pathagar
+        ;;
+	esac
+}
+
 function postgresql()
 {
 	case "$1" in
@@ -319,7 +359,8 @@ function postgresql()
             #/etc/init.d/pgsql-xs initdb -- this was used before systemd
             #postgresql-setup initdb need to move this edit upstream FIXME
             chown -R postgres:postgres /library/pgsql-xs/ 
-            sed -i -c "s/--auth='ident'/--auth='ident' --encoding='UTF8'/" /usr/bin/postgresql-setup
+            sed -i -c "s/--auth='ident'/--auth='ident' --encoding='UTF8'/" \
+                                    /usr/bin/postgresql-setup
 			/usr/bin/postgresql-setup  initdb postgresql-xs
 		fi
 
@@ -494,7 +535,7 @@ function do_first()
         fi
         
         ## Prepare config files
-        CFG_TEMPLATES="rsyslog.conf motd.olpc sysctl.conf ssh/sshd_config yum.conf
+        CFG_TEMPLATES="rsyslog.conf motd.olpc sysctl.conf ssh/sshd_config 
         sysconfig/named sysconfig/init sysconfig/squid rssh.conf php.ini
         httpd/conf.d/proxy_ajp.conf httpd/conf.d/ssl.conf"
         

@@ -36,6 +36,7 @@ Requires: avahi-ui
 #Requires: moodle-xs
 #Requires: ejabberd
 #Requires: xs-release
+Requires: yum-utils
 
 
 Requires(post): coreutils

@@ -3,8 +3,10 @@
 ## This file has an ".in" template - for details see
 ##  see /usr/share/doc/xs-config-<version>/README 
 
-IPTABLES_DATA=/etc/sysconfig/olpc-scripts/iptables-xs
-xs-gen-iptables $IPTABLES_DATA
+IPTABLES_DATA=/etc/sysconfig/olpc-scripts/iptables
+#xs-gen-iptables $IPTABLES_DATA
+/etc/sysconfig/olpc-tables/firewall-xs
+iptables-save > $IPTABLES_DATA
 
 # Load additional iptables modules (nat helpers)
 #   Default: -none-
