@@ -1,0 +1,14 @@
+debug
+sync
+noauth
+-chap
+user arcor
+plugin userpass.so
+password internet
+defaultroute
+plugin capiplugin.so
+#controller 1
+#numberprefix 0
+number 010700192070
+protocol hdlc
+/dev/null

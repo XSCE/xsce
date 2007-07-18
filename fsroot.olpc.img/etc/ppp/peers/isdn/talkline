@@ -1,0 +1,14 @@
+debug
+sync
+noauth
+-chap
+user talknet
+plugin userpass.so
+password talknet
+defaultroute
+plugin capiplugin.so
+#controller 1
+#numberprefix 0
+number 01050019251
+protocol hdlc
+/dev/null

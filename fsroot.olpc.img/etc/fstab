@@ -1,0 +1,10 @@
+LABEL=/                 /                       ext3    defaults        1 1
+devpts                  /dev/pts                devpts  gid=5,mode=620  0 0
+tmpfs                   /dev/shm                tmpfs   defaults        0 0
+/dev/Data/Library	/library                ext3    defaults        1 2
+proc                    /proc                   proc    defaults        0 0
+sysfs                   /sys                    sysfs   defaults        0 0
+LABEL=/var              /var                    ext3    defaults        1 2
+LABEL=SWAP-sda2         swap                    swap    defaults        0 0
+/dev/Data/Tmp		/var/tmp                ext3    defaults        1 2
+/dev/Data/Home		/home               	ext3    defaults        1 2

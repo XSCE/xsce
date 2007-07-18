@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog PUBLIC "-//OASIS//DTD Entity Resolution XML Catalog V1.0//EN" "http://www.oasis-open.org/committees/entity/release/1.0/catalog.dtd">
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+  <delegatePublic publicIdStartString="-//OASIS//ENTITIES DocBook XML" catalog="file:///usr/share/sgml/docbook/xmlcatalog"/>
+  <delegatePublic publicIdStartString="-//OASIS//DTD DocBook XML" catalog="file:///usr/share/sgml/docbook/xmlcatalog"/>
+  <delegatePublic publicIdStartString="ISO 8879:1986" catalog="file:///usr/share/sgml/docbook/xmlcatalog"/>
+  <delegateSystem systemIdStartString="http://www.oasis-open.org/docbook/" catalog="file:///usr/share/sgml/docbook/xmlcatalog"/>
+  <delegateURI uriStartString="http://www.oasis-open.org/docbook/" catalog="file:///usr/share/sgml/docbook/xmlcatalog"/>
+  <rewriteSystem systemIdStartString="http://docbook.sourceforge.net/release/xsl/current" rewritePrefix="file:///usr/share/sgml/docbook/xsl-stylesheets-1.72.0-1.fc6"/>
+  <rewriteURI uriStartString="http://docbook.sourceforge.net/release/xsl/current" rewritePrefix="file:///usr/share/sgml/docbook/xsl-stylesheets-1.72.0-1.fc6"/>
+  <rewriteSystem systemIdStartString="http://docbook.sourceforge.net/release/xsl/1.72.0" rewritePrefix="file:///usr/share/sgml/docbook/xsl-stylesheets-1.72.0-1.fc6"/>
+  <rewriteURI uriStartString="http://docbook.sourceforge.net/release/xsl/1.72.0" rewritePrefix="file:///usr/share/sgml/docbook/xsl-stylesheets-1.72.0-1.fc6"/>
+  <system systemId="log4j.dtd" uri="file:///usr/share/sgml/log4j/log4j.dtd"/>
+  <rewriteSystem systemIdStartString="http://scrollkeeper.sourceforge.net/dtds/scrollkeeper-omf-1.0/scrollkeeper-omf.dtd" rewritePrefix="/usr/share/xml/scrollkeeper/dtds/scrollkeeper-omf.dtd"/>
+  <rewriteURI uriStartString="http://scrollkeeper.sourceforge.net/dtds/scrollkeeper-omf-1.0/scrollkeeper-omf.dtd" rewritePrefix="/usr/share/xml/scrollkeeper/dtds/scrollkeeper-omf.dtd"/>
+</catalog>

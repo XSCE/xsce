@@ -1,0 +1,44 @@
+#
+# xfs font server configuration file
+#
+
+# allow a max of 10 clients to connect to this font server
+client-limit = 10
+
+# when a font server reaches its limit, start up a new one
+clone-self = on
+
+# alternate font servers for clients to use
+#alternate-servers = foo:7101,bar:7102
+
+# where to look for fonts
+catalogue = /usr/share/X11/fonts/misc:unscaled,
+	/usr/share/X11/fonts/75dpi:unscaled,
+	/usr/share/X11/fonts/100dpi:unscaled,
+	/usr/share/X11/fonts/Type1,
+	/usr/share/X11/fonts/TTF,
+	/usr/share/fonts/default/Type1,
+	,
+	/usr/share/fonts/chinese/misc:unscaled,
+	/usr/share/fonts/chinese/misc,
+	/usr/share/fonts/chinese/TrueType,
+	/usr/share/fonts/japanese/misc:unscaled,
+	/usr/share/fonts/japanese/misc,
+	/usr/share/fonts/japanese/TrueType,
+	/usr/share/fonts/korean/misc:unscaled,
+	/usr/share/fonts/korean/misc,
+	/usr/share/fonts/korean/TrueType
+# in 12 points, decipoints
+default-point-size = 120
+
+# 75 x 75 and 100 x 100
+default-resolutions = 75,75,100,100
+
+# use lazy loading on 16 bit fonts
+deferglyphs = 16
+
+# Log errors via syslog.
+use-syslog = on
+
+# For security, don't listen to TCP ports by default.
+no-listen = tcp

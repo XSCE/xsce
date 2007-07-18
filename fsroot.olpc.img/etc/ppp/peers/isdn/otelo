@@ -1,0 +1,14 @@
+debug
+sync
+noauth
+-chap
+user otelo
+plugin userpass.so
+password online
+defaultroute
+plugin capiplugin.so
+#controller 1
+#numberprefix 0
+number 010110191501
+protocol hdlc
+/dev/null

@@ -1,0 +1,7 @@
+/var/log/named.log {
+    missingok
+    create 0644 named named
+    postrotate
+        /sbin/service named reload  2> /dev/null > /dev/null || true
+    endscript
+}

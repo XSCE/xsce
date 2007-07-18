@@ -1,0 +1,20 @@
+#
+# AVM GmbH - Fast Internet Test Server with Multilink
+#
+debug
+sync
+noauth
+user netways
+plugin userpass.so
+password netways
+defaultroute
+plugin capiplugin.so
+number 03039984330
+protocol hdlc
+ipcp-accept-local
+ipcp-accept-remote
+multilink
+mrru 1500
+# endpoint need to be changed
+endpoint magic:4711
+/dev/null

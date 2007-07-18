@@ -1,0 +1,19 @@
+#
+# AVM GmbH - Fast Internet Test Server
+#
+debug
+sync
+noauth
+-chap
+user netways
+plugin userpass.so
+password netways
+defaultroute
+plugin capiplugin.so
+#controller 1
+#numberprefix 0
+number 03039984330
+protocol hdlc
+ipcp-accept-local
+ipcp-accept-remote
+/dev/null
