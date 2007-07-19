@@ -5,7 +5,7 @@
 olpcimg=fsroot.olpc.img
 
 name=xs-config
- ver=0.1.0
+ ver=0.1.1
   nv=$name-$ver
 
 scripts="symlink_tree.py unlink_tree.py"
