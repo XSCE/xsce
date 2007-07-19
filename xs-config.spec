@@ -10,7 +10,7 @@ Requires: python, aiccu, at, audit-libs, authconfig, autofs, bind, fontconfig, g
 
 Summary: XS/XSX default configuration
 Name: xs-config
-Version: 0.1.1
+Version: 0.1.2
 Release: 1
 BuildRoot: %{_builddir}/%{name}-root
 Group: Base System/Administration Tools

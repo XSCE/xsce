@@ -3,7 +3,7 @@ I am the author.
 
 This is the default configuration for the OLPC XS/XSX school server, described in greater detail below. Don't ever install this if you don't understand what it is!
 
-v0.1.1 - based on a configuration tree root snapshot of schoolserver.laptop.org on 7/19/07, with extensive pruning
+v0.1.2 - based on a configuration tree root snapshot of schoolserver.laptop.org on 7/19/07, with extensive pruning (twice!). MASSIVE size decrease over previous versions.
 
 to rpmbuild:
 
