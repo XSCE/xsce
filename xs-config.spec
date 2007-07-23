@@ -3,21 +3,54 @@
 
 %define OLPCROOT %{DESTDIR}/fsroot.olpc
 
-%define LINK	 %{OLPCROOT}/symlink_tree.py
-%define UNLINK   %{OLPCROOT}/unlink_tree.py
+%define LINK	 %{OLPCROOT}/symlink-tree.py
+%define UNLINK   %{OLPCROOT}/unlink-tree.py
 
-Requires: python, aiccu, at, audit-libs, authconfig, autofs, bind, fontconfig, glibc, glibc-common, httpd, info, initscripts, ipsec-tools, iptables, iptables-ipv6, isdn4k-utils, lighttpd, logrotate, mgetty, module-init-tools, nfs-utils, nscd, nss, ntp, openssh, openssh-server, pam, policycoreutils, ppp, prelink, radvd, rootfiles, rpm, selinux-policy, setup, shadow-utils, smartmontools, spamassassin, squid, sudo, sysklogd, wpa_supplicant, wvdial, xml-common, xorg-x11-xfs
+Requires: python
+
+# modified pkgs on schoolserver
+Requires: authconfig  
+Requires: bind  
+Requires: fontconfig  
+Requires: glibc  
+Requires: glibc-common  
+Requires: httpd  
+Requires: info  
+Requires: initscripts  
+Requires: iptables  
+Requires: lighttpd  
+Requires: logrotate  
+Requires: module-init-tools  
+Requires: nscd  
+Requires: nss  
+Requires: openssh-server  
+Requires: pam  
+Requires: prelink  
+Requires: radvd  
+Requires: rpm  
+Requires: selinux-policy  
+Requires: setup  
+Requires: smartmontools  
+Requires: squid  
+Requires: sudo  
+Requires: sysklogd  
+Requires: xml-common  
+Requires: xorg-x11-xfs  
 
 Summary: XS/XSX default configuration
 Name: xs-config
-Version: 0.1.2
+Version: 0.1.3
 Release: 1
 BuildRoot: %{_builddir}/%{name}-root
+Distribution: OLPC XS/XSX School Server
 Group: Base System/Administration Tools
 License: GPL
+Packager: Daniel Margo <dwm34@cornell.edu>
 Source: %{name}-%{version}.tar.gz
+URL: http://dev.laptop.org/git.do?p=projects/xs-config;a=summary
+Vendor: OLPC
 %description
-The default configuration of an OLPC XS/XSX school server. Don't install this if you don't understand what it is! (Look at the project's README).
+The default configuration of an OLPC XS/XSX school server. Don't install this if you don't understand what it is!
 
 %prep
 %setup
@@ -31,8 +64,8 @@ rm -rf $RPM_BUILD_ROOT
 %{LINK} %{OLPCROOT} %{DESTDIR}
 rm %{LINK}*
 # temporary fix to remove script symlinks
-rm %{DESTDIR}/symlink_tree.py*
-rm %{DESTDIR}/unlink_tree.py*
+rm %{DESTDIR}/symlink-tree.py*
+rm %{DESTDIR}/unlink-tree.py*
 
 %preun
 # if this is an uninstall...
