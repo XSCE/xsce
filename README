@@ -1,28 +1,47 @@
 I am the author.
 - Daniel Margo
 
-This is the default configuration for the OLPC XS/XSX school server, described in greater detail below. Don't ever install this if you don't understand what it is!
+This is the default configuration for the OLPC XS/XSX school server,
+described in greater detail below. 
+***Don't ever install this if you don't understand what it is!***
 
-v0.1.3 - based on a configuration tree root snapshot of schoolserver.laptop.org on 7/23/07, with pruning and additions (see changelog).
+v0.1.3 - based on a configuration tree root snapshot of schoolserver.laptop.org
+on 7/23/07, with pruning and additions (see changelog).
 
 to rpmbuild:
 
 1.) Never rpmbuild as root.
-2.) Set your rpm target directory in ./setup-rpm.sh
-3.) Run ./setup-rpm.sh
-4.) The package shows up in $rpm/RPMS/noarch
+2.) Make sure you update and synchronize the name-version-release
+       information in Makefile and xs-config.spec .
+3.) make $RPMDIR=<rpm target directory> rpm
 
 
 *What Is This?*
-   This package installs OLPC-default configurations for an XS/XSX school server over existing configurations. It will bash RPM-default configurations, but not user-modified configurations. It tries to make backups wherever possible. Backups are named *.olpcsave or *.olpcnew, and follow the same logic as RPM backups.
+   This package installs OLPC-default configurations for an XS/XSX school
+server over existing configurations. It will bash RPM-default configurations,
+but not user-modified configurations. It tries to make backups wherever
+possible. Backups are named *.olpcsave or *.olpcnew, and follow the same logic
+as RPM backups.
 
-   The directory fsroot.olpc.img contains the configuration tree root image to install. You can easily generate a configuration tree root image on an existing machine by running the script get-configtree.py . You can also edit the tree by hand.
+   The directory fsroot.olpc.img contains the configuration tree root image to
+install. You can easily generate a configuration tree root image on an existing
+machine by running the script get-configtree.py . You can also edit the tree
+by hand.
 
-   When the package is installed, fsroot.olpc.img is copied into the root directory of the target machine. It then recursively symlinks the image to the root directory, using the script symlink-tree.py . On uninstall, the package recursively unlinks the image and root directory using the script unlink-tree.py .
+   When the package is installed, fsroot.olpc.img is copied into the root
+directory of the target machine. It then recursively symlinks the image to the
+root directory, using the script symlink-tree.py . On uninstall, the package
+recursively unlinks the image and root directory using the script
+unlink-tree.py .
 
-   Obviously, installing this package can potentially be dangerous and *very destructive* to existing configurations.
+   Obviously, installing this package can potentially be dangerous and
+*very destructive* to existing configurations.
 
 *So Why?*
 
-   The intention of this package is to be installed on OLPC XS/XSX liveCD builds, as an "alternative default" configuration. It is *much* easier to maintain and experiment with the configuration tree than it is with postscripts. It is also much easier to locate OLPC-specific configuration files post-install when they are contained in a centralized directory.
+   The intention of this package is to be installed on OLPC XS/XSX live CD
+builds, as an "alternative default" configuration. It is *much* easier to
+maintain and experiment with the configuration tree than it is with
+postscripts. It is also much easier to locate OLPC-specific configuration files
+post-install when they are contained in a centralized directory.
 
