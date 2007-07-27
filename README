@@ -13,7 +13,7 @@ to rpmbuild:
 1.) Never rpmbuild as root.
 2.) Make sure you update and synchronize the name-version-release
        information in Makefile and xs-config.spec .
-3.) make $RPMDIR=<rpm target directory> rpm
+3.) make RPMDIR=<rpm target directory> rpm
 
 
 *What Is This?*
