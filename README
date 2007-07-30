@@ -16,7 +16,7 @@ to rpmbuild:
           BUILD  RPMS  SOURCES  SPECS  SRPMS
        This is your rpm target (top) directory.
        In your home directory, make a file .rpmmacros with the line:
-          %_topdir = <rpm target directory>
+          %_topdir <rpm target directory>
 3.) Make sure you update and synchronize the name-version-release
        information in Makefile and xs-config.spec .
 4.) make RPMDIR=<rpm target directory> rpm
