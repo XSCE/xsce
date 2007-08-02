@@ -36,7 +36,7 @@ Requires: xml-common
 Summary: XS/XSX default configuration
 Name: xs-config
 Version: 0.1.5
-Release: 1
+Release: 2
 BuildRoot: %{_builddir}/%{name}-root
 Distribution: OLPC XS/XSX School Server
 Group: Base System/Administration Tools
