@@ -1,0 +1,22 @@
+DEVICE=eth0
+# sn: 006
+# nVidia Corporation MCP51 Ethernet Controller
+HWADDR=00:40:63:EC:14:42
+# sn: 002
+# nVidia Corporation MCP51 Ethernet Controller
+#HWADDR=00:40:63:E9:99:9B
+# sn: 005
+# nVidia Corporation MCP51 Ethernet Controller
+#HWADDR=00:40:63:E7:E3:B8
+
+# In a real schoolserver, we are likely to DHCP
+#BOOTPROTO=dhcp
+#DHCP_HOSTNAME=schoolserver1
+#  Sometimes, a static address is assigned
+IPADDR=18.85.46.29
+NETMASK=255.255.255.0
+NETWORK=18.85.46.0
+BROADCAST=18.85.46.255
+GATEWAY=18.85.46.1
+ONBOOT=yes
+#IPV6ADDR=2001:4830:2446:ff00::2/64

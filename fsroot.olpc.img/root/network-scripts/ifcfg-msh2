@@ -1,0 +1,14 @@
+#  Marvell mesh network module, mesh side
+#  (this device also appears as ethN+2)
+DEVICE=msh2
+MODE=ad-hoc
+CHANNEL=11
+ESSID="olpc-mesh-3"
+IPADDR=172.18.48.1
+NETMASK=255.255.240.0
+NETWORK=172.18.48.0
+BROADCAST=172.18.63.255
+IPV6INIT=yes
+IPV6ADDR=2001:4830:2446:ff12::1/64
+ONBOOT=yes
+

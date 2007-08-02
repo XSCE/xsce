@@ -1,0 +1,8 @@
+#  Marvell mesh network module, mesh side
+#  (this device also appears as ethN+2)
+DEVICE=eth1
+MODE=ad-hoc
+CHANNEL=1
+ESSID="olpc-mesh-1"
+BOOTPROTO=none
+ONBOOT=yes
