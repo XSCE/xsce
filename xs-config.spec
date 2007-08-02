@@ -8,10 +8,11 @@
 
 Requires: python
 
-# modified pkgs on schoolserver
+#  This really should just require xs-pkgs, right ?
+#  or nothing at all...
+#  Now a list of packages modified by xs-config
 Requires: authconfig  
 Requires: bind  
-Requires: fontconfig  
 Requires: glibc  
 Requires: glibc-common  
 Requires: httpd  
@@ -19,28 +20,23 @@ Requires: info
 Requires: initscripts  
 Requires: iptables  
 Requires: lighttpd  
-Requires: logrotate  
 Requires: module-init-tools  
 Requires: nscd  
 Requires: nss  
 Requires: openssh-server  
-Requires: pam  
-Requires: prelink  
 Requires: radvd  
 Requires: rpm  
 Requires: selinux-policy  
 Requires: setup  
 Requires: smartmontools  
-Requires: squid  
 Requires: sudo  
 Requires: sysklogd  
 Requires: xml-common  
-Requires: xorg-x11-xfs  
 
 Summary: XS/XSX default configuration
 Name: xs-config
-Version: 0.1.3
-Release: 2
+Version: 0.1.5
+Release: 1
 BuildRoot: %{_builddir}/%{name}-root
 Distribution: OLPC XS/XSX School Server
 Group: Base System/Administration Tools

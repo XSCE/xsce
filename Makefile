@@ -23,8 +23,8 @@ OLPCIMG = fsroot.olpc.img
 
 # symbols
 NAME = xs-config
-VERSION = 0.1.3
-RELEASE = 2
+VERSION = 0.1.5
+RELEASE = 1
 ARCH = noarch
 
 NV = $(NAME)-$(VERSION)

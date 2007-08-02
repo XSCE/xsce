@@ -94,13 +94,8 @@ root	ALL=(ALL) 	ALL
 
 wad	ALL=(ALL)	ALL
 holger	ALL=(ALL)	ALL
-martin	ALL=(ALL)	ALL
-dcbw	ALL=(ALL)	ALL
-dwmw2	ALL=(ALL)	ALL
 danjared ALL=(ALL)	ALL
-nelhage	 ALL=(ALL)	ALL
 cananian ALL=(ALL)	ALL
-dan_margo ALL=(ALL)	ALL
 
 # Allow the lighttpd fastcgi process to create new users
 Defaults:lighttpd  !requiretty

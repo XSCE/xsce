@@ -1,0 +1,6 @@
+@ in soa localhost. root 1 3H 15M 1W 1D
+  ns localhost.
+
+schoolserver	IN	A	172.18.0.1
+xs		IN	A	172.18.0.1
+library		IN	A	172.18.0.1
