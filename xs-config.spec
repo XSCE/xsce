@@ -36,7 +36,7 @@ Requires: xml-common
 Summary: XS/XSX default configuration
 Name: xs-config
 Version: 0.1.5
-Release: 3
+Release: 4
 BuildRoot: %{_builddir}/%{name}-root
 Distribution: OLPC XS/XSX School Server
 Group: Base System/Administration Tools
@@ -58,13 +58,25 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 %{LINK} %{OLPCROOT} %{DESTDIR}
+#
+#  If any kernel modules are being installed using this mechanism, you
+#  have to depmod them in...
+depmod -b %{DESTDIR}/lib/modules/2.6.22.1-41.fc7/ -c %{DESTDIR}/etc/depmod.d/
+#
+#  There are some files which must be copied, not symlinked
+#  syslog.conf, sysctl.conf, and sudoers are examples.
+cp -fp %{OLPCROOT}/etc/sudoers %{DESTDIR}/etc/
+cp -fp %{OLPCROOT}/etc/syslog.conf %{DESTDIR}/etc/
+cp -fp %{OLPCROOT}/etc/sysctl.conf %{DESTDIR}/etc/
+#
+#  Delete link script ?
 rm %{LINK}*
-# temporary fix to remove script symlinks
+#  Temporary fix to remove script symlinks
 rm %{DESTDIR}/symlink-tree.py*
 rm %{DESTDIR}/unlink-tree.py*
 
 %preun
-# if this is an uninstall...
+#  If this is an uninstall...
 if [ $1 -eq 0 ]
 then
    %{UNLINK} %{OLPCROOT} %{DESTDIR}
@@ -73,4 +85,3 @@ fi
 
 %files
 %config(noreplace) %{OLPCROOT}
-
