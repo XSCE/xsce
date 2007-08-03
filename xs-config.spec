@@ -35,18 +35,18 @@ Requires: xml-common
 
 Summary: XS/XSX default configuration
 Name: xs-config
-Version: 0.1.5
-Release: 4
+Version: 0.1.6
+Release: 1
 BuildRoot: %{_builddir}/%{name}-root
 Distribution: OLPC XS/XSX School Server
 Group: Base System/Administration Tools
 License: GPL
-Packager: Daniel Margo <dwm34@cornell.edu>
+Packager: John Watlington <wad@laptop.org>
 Source: %{name}-%{version}.tar.gz
 URL: http://dev.laptop.org/git.do?p=projects/xs-config;a=summary
 Vendor: OLPC
 %description
-The default configuration of an OLPC XS/XSX school server. Don't install this if you don't understand what it is!
+The default configuration of an OLPC XS School server. Don't install this if you don't understand what it is!
 
 %prep
 %setup
@@ -61,12 +61,15 @@ rm -rf $RPM_BUILD_ROOT
 #
 #  If any kernel modules are being installed using this mechanism, you
 #  have to depmod them in...
-depmod -b %{DESTDIR}/lib/modules/2.6.22.1-41.fc7/ -c %{DESTDIR}/etc/depmod.d/
+depmod -b %{DESTDIR}/lib/modules/2.6.22.1-41.fc7/ -F %{DESTDIR}/boot/System.map-2.6.22-41.fc7 -C %{DESTDIR}/etc/depmod.d/
 #
 #  There are some files which must be copied, not symlinked
 #  syslog.conf, sysctl.conf, and sudoers are examples.
+rm %{DESTDIR}/etc/sudoers
 cp -fp %{OLPCROOT}/etc/sudoers %{DESTDIR}/etc/
+rm %{DESTDIR}/etc/syslog.conf
 cp -fp %{OLPCROOT}/etc/syslog.conf %{DESTDIR}/etc/
+rm %{DESTDIR}/etc/sysctl.conf
 cp -fp %{OLPCROOT}/etc/sysctl.conf %{DESTDIR}/etc/
 #
 #  Delete link script ?
