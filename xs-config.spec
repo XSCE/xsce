@@ -36,7 +36,7 @@ Requires: xml-common
 Summary: XS/XSX default configuration
 Name: xs-config
 Version: 0.1.6
-Release: 1
+Release: 2
 BuildRoot: %{_builddir}/%{name}-root
 Distribution: OLPC XS/XSX School Server
 Group: Base System/Administration Tools
@@ -61,7 +61,7 @@ rm -rf $RPM_BUILD_ROOT
 #
 #  If any kernel modules are being installed using this mechanism, you
 #  have to depmod them in...
-depmod -b %{DESTDIR}/lib/modules/2.6.22.1-41.fc7/ -F %{DESTDIR}/boot/System.map-2.6.22-41.fc7 -C %{DESTDIR}/etc/depmod.d/
+depmod -b %{DESTDIR}/lib/modules/2.6.22.1-41.fc7/ -C %{DESTDIR}/etc/depmod.d/
 #
 #  There are some files which must be copied, not symlinked
 #  syslog.conf, sysctl.conf, and sudoers are examples.
