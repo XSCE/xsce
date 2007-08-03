@@ -1,0 +1,2 @@
+#  This file linked in an OLPC preference
+RUN_FIRSTBOOT=NO
