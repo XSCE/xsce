@@ -1,0 +1,25 @@
+#!/bin/bash
+#
+# olpc-network-config:  Starts the network config script
+#
+# chkconfig: 345 05 95
+#
+# description:       network-config is a druid style program that runs
+#                    on the first time a school server is booted after
+#                    an image is installed.  It checks for the existence
+#                    of an /etc/sysconfig/olpc-net-config file.  If it
+#		     doesn't find the file, it configures the network I/F
+#		     files.
+#
+case "$1" in
+ start)
+	/etc/sysconfig/olpc-scripts/network_config.py
+	exit 0
+	;;
+
+ *)
+   echo $"Usage: $0 {start}"
+   RETVAL=1
+esac
+
+exit $RETVAL

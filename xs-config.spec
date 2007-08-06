@@ -32,11 +32,13 @@ Requires: smartmontools
 Requires: sudo  
 Requires: sysklogd  
 Requires: xml-common  
+Requires: xs-pkgs
+Requires: kernel
 
 Summary: XS/XSX default configuration
 Name: xs-config
 Version: 0.1.6
-Release: 2
+Release: 3
 BuildRoot: %{_builddir}/%{name}-root
 Distribution: OLPC XS/XSX School Server
 Group: Base System/Administration Tools
@@ -61,12 +63,13 @@ rm -rf $RPM_BUILD_ROOT
 #
 #  If any kernel modules are being installed using this mechanism, you
 #  have to depmod them in...
-depmod -b %{DESTDIR}/lib/modules/2.6.22.1-41.fc7/ -C %{DESTDIR}/etc/depmod.d/
+depmod -b %{DESTDIR} -C %{DESTDIR}/etc/depmod.d
 #
 #  There are some files which must be copied, not symlinked
 #  syslog.conf, sysctl.conf, and sudoers are examples.
 rm %{DESTDIR}/etc/sudoers
 cp -fp %{OLPCROOT}/etc/sudoers %{DESTDIR}/etc/
+chmod 0440 %{DESTDIR}/etc/sudoers
 rm %{DESTDIR}/etc/syslog.conf
 cp -fp %{OLPCROOT}/etc/syslog.conf %{DESTDIR}/etc/
 rm %{DESTDIR}/etc/sysctl.conf

@@ -1,9 +1,10 @@
 #  Marvell mesh network module, mesh side
 #  (this device also appears as ethN+2)
 DEVICE=msh1
+TYPE=Ethernet
 MODE=ad-hoc
 CHANNEL=6
-ESSID="olpc-mesh-2"
+ESSID="school-mesh-2"
 IPADDR=172.18.32.1
 NETMASK=255.255.240.0
 NETWORK=172.18.32.0

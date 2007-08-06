@@ -1,5 +1,0 @@
-#  Marvell mesh network module, infrastructure mode side
-#  (this device also appears as mshN-2)
-DEVICE=eth2
-MACADDR=00:17:C4:00:00:01
-ONBOOT=yes
