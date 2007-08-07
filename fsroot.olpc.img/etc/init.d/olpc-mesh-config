@@ -1,0 +1,68 @@
+#!/bin/sh
+#
+# olpc-mesh-config
+#   This script ensures that the wireless mesh interfaces are
+#   configured to 
+#   
+# chkconfig: 345 22 75
+# description: OLPC sets anycast mode in mesh interfaces
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Source networking configuration.
+. /etc/sysconfig/network
+
+# Check that networking is up.
+[ ${NETWORKING} = "no" ] && exit 0
+
+start() {
+	# Start daemons.
+	echo -n $"Starting $prog: "
+
+#  The meat of the script
+
+	echo 1 > /sys/class/net/msh0/anycast_mask || true;
+	echo 1 > /sys/class/net/msh1/anycast_mask || true;
+	echo 1 > /sys/class/net/msh2/anycast_mask || true;
+
+	RETVAL=$?
+	echo
+	if [ $RETVAL -eq 0 ]; then 
+	    if [ -x /usr/bin/logger ]; then
+		/usr/bin/logger -t mesh-config 'mesh networking configured'
+	    fi;
+	else
+	    if [ -x /usr/bin/logger ]; then
+		/usr/bin/logger -t mesh-config 'mesh networking configured'
+	    fi;
+        fi
+	return $RETVAL
+}
+
+stop() {
+	# Stop daemons.
+	echo -n $"Shutting down $prog: "
+	RETVAL=$?
+}
+
+# See how we were called.
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart|reload)
+	stop
+	start
+	RETVAL=$?
+	;;
+  *)
+	echo $"Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $RETVAL
+
