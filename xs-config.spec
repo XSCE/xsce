@@ -38,7 +38,7 @@ Requires: kernel
 Summary: XS/XSX default configuration
 Name: xs-config
 Version: 0.1.6
-Release: 4
+Release: 5
 BuildRoot: %{_builddir}/%{name}-root
 Distribution: OLPC XS/XSX School Server
 Group: Base System/Administration Tools
@@ -62,7 +62,7 @@ rm -rf $RPM_BUILD_ROOT
 %{LINK} %{OLPCROOT} %{DESTDIR}
 #
 #  If any kernel modules are being installed using this mechanism, you
-#  have to depmod them in...
+#  need to depmod them in...
 depmod -b %{DESTDIR} -C %{DESTDIR}/etc/depmod.d
 #
 #  There are some files which must be copied, not symlinked
@@ -74,6 +74,8 @@ rm %{DESTDIR}/etc/syslog.conf
 cp -fp %{OLPCROOT}/etc/syslog.conf %{DESTDIR}/etc/
 rm %{DESTDIR}/etc/sysctl.conf
 cp -fp %{OLPCROOT}/etc/sysctl.conf %{DESTDIR}/etc/
+rm %{DESTDIR}/etc/httpd/conf/httpd.conf
+cp -fp %{OLPCROOT}/etc/httpd/conf/httpd.conf %{DESTDIR}/etc/httpd/conf/
 #
 #  Delete link script ?
 rm %{LINK}*

@@ -32,6 +32,7 @@
 #  ifcfg-msh0  (MSH interface)
 #  ifcfg-msh1  (MSH interface)
 #  ifcfg-msh2  (MSH interface)
+#  ifcfg-tun0 (for IPv6 tunnel, requires manual configuration)
 #  iptables    (firewall configuration)
 #  ip6tables   (firewall configuration)
 #
@@ -64,7 +65,7 @@
 #
 import commands, syslog, os, sys
 
-#  Table of WAN likely network MAC addresses
+#  Table of likely WAN network MAC addresses
 wan_mac_addresses = [
  [ 0x00, 0x19 ],   #  DLink DFE-550 Ethernet adapter
  [ 0x00, 0x04 ],   #  Linksys Tulip
@@ -80,7 +81,8 @@ FIREWALL_CONFIG_DIR = "/etc/sysconfig/"
 firewall_script_list = [
 #          source,                      destination
  [ OLPC_CONFIG_DIR + 'iptables', FIREWALL_CONFIG_DIR + 'iptables' ],
- [ OLPC_CONFIG_DIR + 'ip6tables', FIREWALL_CONFIG_DIR + 'ip6tables' ]
+ [ OLPC_CONFIG_DIR + 'ip6tables', FIREWALL_CONFIG_DIR + 'ip6tables' ],
+ [ OLPC_CONFIG_DIR + 'ifcfg-tun0', NETWORK_CONFIG_DIR + 'ifcfg-tun0' ]
 ]
 
 #  Name of the file used when there is no wired LAN device
@@ -282,31 +284,10 @@ def remove_dummy():
     filename = NETWORK_CONFIG_DIR + DUMMY_LAN
     try:
         #  Backup the dummy file
-	os.rename( filename, filename + BACKUP_SUFFIX )
+        if os.path.exists( filename ):
+            os.rename( filename, filename + BACKUP_SUFFIX )
     except IOError, (errno, strerror):
         pass    #  Take no action if destination or backup file don't exist !
-    return
-
-def mark_completed():
-    """Indicate that we've done our work, so we don't get called again !
-
-    Write out a new configuration file that indicates that
-    we have already configured this network.
-    """
-    dont_configure = """#  This file is used to trigger a configuration of the
-#  network upon boot.
-#  If the following variable is set to a non-zero value, the
-#  network will be configured the next time the system is booted.
-CONFIGURE_NETWORK_ON_BOOT=0
-"""
-    try:
-        cfg_file = open( CONFIG_FILE, 'w' )
-        cfg_file.write( dont_configure )
-        cfg_file.close()
-    except IOError, (errno, strerror):
-        #  If this fails, just log the error
-        syslog.syslog( "Error writing config file %s (%s): %s" \
-              % (CONFIG_FILE, errno, strerror))
     return
 
 ###########################################################################
@@ -315,18 +296,6 @@ CONFIGURE_NETWORK_ON_BOOT=0
 ##
 if __name__ == "__main__":
     syslog.openlog( 'olpc_net_cfg', 0, syslog.LOG_DAEMON )
-
-    #  Check if we should even do anything.
-    #  Search the configuration file for the run variable
-    #  The following is a hack, but works well enough to get moving
-    config_variable = commands.getoutput( 'grep CONFIGURE_NETWORK_ON_BOOT ' + CONFIG_FILE )
-    do_config = config_variable.split('=')
-    if len( do_config ) > 1:    #  if there was an equals sign
-        if int( do_config[1] ) == 0:   #  and the value after it was zero
-            syslog.syslog( 'Network interfaces already configured and not touched')
-            exit( 0 )
-
-    syslog.syslog( 'Configuring network interfaces' )
 
     #  Get list of network interfaces
     iface_list = commands.getoutput( '/sbin/ifconfig -a | grep HWaddr' )
@@ -395,7 +364,6 @@ if __name__ == "__main__":
     #  We must create a dummy device to account for the lan !
        copy_file( OLPC_CONFIG_DIR + DUMMY_LAN, NETWORK_CONFIG_DIR + DUMMY_LAN )
     #  And exit
-       mark_completed()
        exit( 0 )
 
     #  Now find the LAN interface
@@ -420,11 +388,11 @@ if __name__ == "__main__":
        copy_mesh( 1, 3 )
        copy_mesh( 2, 4 )
        #  And exit
-       mark_completed()
        exit( 0 )
 
     elif num_wired > 2:
        #  Fix this !!!!
        syslog.syslog( 'Too many wired network interfaces found.  Aborting!' )
+       print( 'Too many wired network interfaces found.  Aborting!' )
        #  Repeat on next reboot !
        exit( 1 )
