@@ -2,5 +2,9 @@
   ns localhost.
 
 schoolserver	IN	A	172.18.0.1
+school		IN	A	172.18.0.1
+www		IN	A	172.18.0.1
+ntp		IN	A	172.18.0.1
+time		IN	A	172.18.0.1
 xs		IN	A	172.18.0.1
 library		IN	A	172.18.0.1
