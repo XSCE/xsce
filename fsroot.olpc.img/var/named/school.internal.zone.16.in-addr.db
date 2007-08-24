@@ -1,4 +1,4 @@
 @ in soa localhost. root 1 3H 15M 1W 1D
   ns localhost.
 
-1		IN	PTR	schoolserver.open.net.
+1		IN	PTR	school.random.xs.laptop.org.
