@@ -210,35 +210,7 @@ def copy_and_add( src, mac ):
     dst_filename = NETWORK_CONFIG_DIR + filename
     new_line = MAC_STATEMENT + mac + '\n'
 
-    #  Try to keep multiple invocations of this script
-    #  from clobbering the "original" backup file.
     try:
-        #  These are small files, so no need to "chunk" the read and compare
-        dst_file = open( dst_filename, 'r' )
-        src_file = open( src_filename, 'r' )
-	src_data = src_file.read()
-	dst_data = dst_file.read()
-	src_file.close()
-        dst_file.close()
-	src_len = len(src_data)
-        #  The + 1 at the end accounts for the newline
-	src_new_len = src_len + len(new_line)
-	if src_new_len == len(dst_data):
-            files_equal = 1
-	    for index in range( src_len ):
-	        if src_data[ index ] != dst_data[ index ]:
-		    files_equal = 0
-		    break
-            if files_equal:
-                for index in range( len(new_line) ):
-                    if new_line[ index ] != dst_data[ index + src_len ]:
-                        files_equal = 0
-                        break
-
-            if files_equal:
-	        syslog.syslog( "src (%s) and dst (%s) are identical, not copying" \
-		   % ( src_filename, dst_filename ))
-	        return
         #  Backup the destination
 	os.rename( dst_filename, dst_filename + BACKUP_SUFFIX )
     except IOError, (errno, strerror):

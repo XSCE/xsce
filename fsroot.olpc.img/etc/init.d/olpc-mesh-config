@@ -13,6 +13,8 @@
 # Source networking configuration.
 . /etc/sysconfig/network
 
+prog=olpc-mesh-config
+
 # Check that networking is up.
 [ ${NETWORKING} = "no" ] && exit 0
 
@@ -22,10 +24,15 @@ start() {
 
 #  The meat of the script
 
-	echo 1 > /sys/class/net/msh0/anycast_mask || true;
-	echo 1 > /sys/class/net/msh1/anycast_mask || true;
-	echo 1 > /sys/class/net/msh2/anycast_mask || true;
-
+	if [ -d /sys/class/net/msh0 ] ; then
+	    echo 1 > /sys/class/net/msh0/anycast_mask || true;
+	fi
+	if [ -d /sys/class/net/msh1 ] ; then
+	    echo 1 > /sys/class/net/msh1/anycast_mask || true;
+	fi
+	if [ -d /sys/class/net/msh2 ] ; then
+	    echo 1 > /sys/class/net/msh2/anycast_mask || true;
+	fi
 	RETVAL=$?
 	echo
 	if [ $RETVAL -eq 0 ]; then 
