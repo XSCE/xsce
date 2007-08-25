@@ -69,11 +69,16 @@ import commands, syslog, os, sys
 #  These are the first two bytes of ethernet devices likely to
 #  be the WAN interface.
 #  Feel free to add your own here.
-wan_mac_addresses = [
- [ 0x00, 0x19 ],   #  DLink DFE-550 Ethernet adapter
- [ 0x00, 0x04 ],   #  Linksys Tulip
- [ 0x00, 0x20 ]    #  Linksys Tulip
+wan_mac_addresses =[
+ [ '00', '19' ],   #  DLink DFE-550 Ethernet adapter
+ [ '00', '04' ],   #  Linksys Tulip
+ [ '00', '20' ]    #  Linksys Tulip
 ]
+
+#  The MAC address prefix of the Mesh Interfaces
+MESH_MODULE_MAC_BYTE1  = '00'
+MESH_MODULE_MAC1_BYTE2 = '50'
+MESH_MODULE_MAC2_BYTE2 = '79'
 
 #  Location of the network configuration files
 OLPC_CONFIG_DIR = "/etc/sysconfig/olpc-scripts/"
@@ -91,7 +96,7 @@ firewall_script_list = [
 #  Array of mesh network channel assignments.
 #  The first mesh device uses the first channel_number entry, the
 #  second uses the second channel_number entry, etc...
-CHANNEL_NUMBER = [ 1, 11, 6 ]
+CHANNEL_NUMBER = [ "1", "11", "6" ]
 
 #  Name of the file used when there is no wired LAN device
 DUMMY_LAN = "ifcfg-dummy0"
@@ -102,9 +107,6 @@ MAC_STATEMENT='HWADDR='
 #  Define the prefix used for certain interface types
 MESH_PREFIX='msh'
 ETHERNET_PREFIX='eth'
-
-#  Location and name of this script's configuration file
-CONFIG_FILE = "/etc/sysconfig/olpc_net_config"
 
 #  Suffix used for backup copies of files
 BACKUP_SUFFIX = ".bak"
@@ -323,7 +325,11 @@ if __name__ == "__main__":
 	for possible_mac in wan_mac_addresses:
 	    if (possible_mac[0] == test_mac[0]) and (possible_mac[1] == test_mac[1]):
 	       wan_index = ifindex
-	       break
+               syslog.syslog( 'Using WAN interface ' + str( ifindex ) + ': ' + iface_mac[ ifindex ]  )
+               break
+        #  Use the lowest numbered WAN candidate
+        if wan_index != -1 :
+            break
 
     #  If we didn't find an interface from the MAC range we expect,
     #  use the lowest numbered non-mesh interface
@@ -331,12 +337,16 @@ if __name__ == "__main__":
         for ifindex in range( num_interfaces ):
 	    parsed_mac = iface_mac[ ifindex ].split(':')
 	    #  Is this a mesh interface ?
-            if (iface_name[0:3] == ETHERNET_PREFIX) and \
-                   ((parsed_mac[0] != 0) or \
-                    ((parsed_mac[1] != 0x50) and (parsed_mac[1] != 0x79))):
+            if (iface_name[0:3] == ETHERNET_PREFIX) and not \
+                   ((parsed_mac[0] == MESH_MODULE_MAC_BYTE1) and \
+                    ((parsed_mac[1] == MESH_MODULE_MAC1_BYTE2) or \
+                     (parsed_mac[1] == MESH_MODULE_MAC2_BYTE2))) :
                 wan_index = ifindex
+                syslog.syslog( 'Using WAN interface ' + str( ifindex ) + ': ' + iface_mac[ ifindex ] )
                 break
-
+    
+    #  Since we aborted earlier if there was no wired interface,
+    #  wan_index should now point to a valied ethernet interface.
     #  Copy the config file for eth0, modifying it along the way
     copy_and_add( "0", iface_mac[ wan_index ] )
 
