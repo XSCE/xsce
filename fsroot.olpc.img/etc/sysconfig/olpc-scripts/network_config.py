@@ -66,6 +66,9 @@
 import commands, syslog, os, sys
 
 #  Table of likely WAN network MAC addresses
+#  These are the first two bytes of ethernet devices likely to
+#  be the WAN interface.
+#  Feel free to add your own here.
 wan_mac_addresses = [
  [ 0x00, 0x19 ],   #  DLink DFE-550 Ethernet adapter
  [ 0x00, 0x04 ],   #  Linksys Tulip
@@ -84,6 +87,11 @@ firewall_script_list = [
  [ OLPC_CONFIG_DIR + 'ip6tables', FIREWALL_CONFIG_DIR + 'ip6tables' ],
  [ OLPC_CONFIG_DIR + 'ifcfg-tun0', NETWORK_CONFIG_DIR + 'ifcfg-tun0' ]
 ]
+
+#  Array of mesh network channel assignments.
+#  The first mesh device uses the first channel_number entry, the
+#  second uses the second channel_number entry, etc...
+CHANNEL_NUMBER = [ 1, 11, 6 ]
 
 #  Name of the file used when there is no wired LAN device
 DUMMY_LAN = "ifcfg-dummy0"
@@ -158,12 +166,16 @@ def write_mesh_eth_file( M_num, N_num ):
     overwrite a backup file.
     """
     N = str( N_num )
+    M = str( M_num )
     filename = NETWORK_CONFIG_DIR + 'ifcfg-eth' + N
     contents = \
 """#  OLPC School server
 #  This is an active antenna wireless mesh interface, infrastructure mode side
-#  (this device also appears as msh""" + str(M_num) + """ 
+#  (this device also appears as msh""" + M + """)
 DEVICE=eth""" + N + """ 
+MODE=ad-hoc
+CHANNEL=""" + CHANNEL_NUMBER[ M_num ] + """
+ESSID=\"school-mesh-""" + M + """\"
 ONBOOT=yes
 """
     #  First we see what to do with any existing backup file

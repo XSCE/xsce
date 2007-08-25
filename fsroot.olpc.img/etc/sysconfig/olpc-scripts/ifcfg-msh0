@@ -2,9 +2,6 @@
 #  (this device also appears as ethN+2)
 DEVICE=msh0
 TYPE=Ethernet
-MODE=ad-hoc
-CHANNEL=1
-ESSID="school-mesh"
 IPADDR=172.18.16.1
 NETMASK=255.255.240.0
 NETWORK=172.18.16.0
