@@ -107,9 +107,23 @@ MAC_STATEMENT='HWADDR='
 #  Define the prefix used for certain interface types
 MESH_PREFIX='msh'
 ETHERNET_PREFIX='eth'
+DEVICE_PREFIX='dev'      # used by Fedora when confused
 
 #  Suffix used for backup copies of files
 BACKUP_SUFFIX = ".bak"
+
+def is_wired( iface ):
+    """determines if an interface is a wired interface
+
+    Takes the first three characters of the name of an interface
+    and decides if it is a wired interface or not.
+    Returns true if it is.
+    """
+    if (iface == ETHERNET_PREFIX) or \
+       (iface == DEVICE_PREFIX):
+        return 1
+    else:
+        return 0
 
 def copy_file( src, dst ):
     """copies a network configuration file
@@ -298,7 +312,7 @@ if __name__ == "__main__":
 	iface_mac.append( parsed[4] )
         if iface[0:3] == MESH_PREFIX:
             num_mesh_interfaces += 1
-        if iface[0:3] == ETHERNET_PREFIX:
+        if is_wired( iface[0:3] ):
             num_eth_interfaces += 1
 
     num_wired = num_eth_interfaces - num_mesh_interfaces
@@ -336,8 +350,10 @@ if __name__ == "__main__":
     if wan_index == -1 :
         for ifindex in range( num_interfaces ):
 	    parsed_mac = iface_mac[ ifindex ].split(':')
-	    #  Is this a mesh interface ?
-            if (iface_name[0:3] == ETHERNET_PREFIX) and not \
+            the_name = iface_name[ ifindex ]
+	    #  Is this a mesh or dummy interface ?
+            syslog.syslog( 'Comparing ' + str( ifindex ) + ': ' + iface_mac[ ifindex ] + ' ' + str( is_wired( the_name[0:3] )) )
+            if is_wired( the_name[0:3] ) and not \
                    ((parsed_mac[0] == MESH_MODULE_MAC_BYTE1) and \
                     ((parsed_mac[1] == MESH_MODULE_MAC1_BYTE2) or \
                      (parsed_mac[1] == MESH_MODULE_MAC2_BYTE2))) :
@@ -367,8 +383,9 @@ if __name__ == "__main__":
 	   continue
         parsed_mac = iface_mac[ ifindex ].split(':')
 	#  If not a mesh interface
-	if (parsed_mac[0] != 0) or \
-               ((parsed_mac[1] != 0x50) and (parsed_mac[1] != 0x17)):
+	if (parsed_mac[0] != MESH_MODULE_MAC_BYTE1) or \
+               ((parsed_mac[1] != MESH_MODULE_MAC1_BYTE2) and \
+                (parsed_mac[1] != MESH_MODULE_MAC2_BYTE2)):
             lan_index = ifindex
             break
 
