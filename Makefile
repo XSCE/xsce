@@ -12,7 +12,6 @@ install: $(OLPCROOT) $(DESTDIR)
 $(DESTDIR):
 	mkdir -p $(DESTDIR)
 
-
 # For developers:
 
 # rpm target directory
@@ -23,7 +22,7 @@ OLPCIMG = fsroot.olpc.img
 
 # symbols
 NAME = xs-config
-VERSION = 0.1.8
+VERSION = 0.2.0
 RELEASE = 1
 ARCH = noarch
 
