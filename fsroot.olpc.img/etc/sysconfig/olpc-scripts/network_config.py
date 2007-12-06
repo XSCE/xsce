@@ -32,7 +32,10 @@
 #  ifcfg-msh0  (MSH interface)
 #  ifcfg-msh1  (MSH interface)
 #  ifcfg-msh2  (MSH interface)
-#  ifcfg-tun0 (for IPv6 tunnel, requires manual configuration)
+#  ifcfg-br0   (bridge for MSH interface)
+#  ifcfg-br1   (bridge for MSH interface)
+#  ifcfg-br2   (bridge for MSH interface)
+#  ifcfg-tun0  (for IPv6 tunnel, requires manual configuration)
 #  iptables    (firewall configuration)
 #  ip6tables   (firewall configuration)
 #
@@ -107,6 +110,7 @@ MAC_STATEMENT='HWADDR='
 #  Define the prefix used for certain interface types
 MESH_PREFIX='msh'
 ETHERNET_PREFIX='eth'
+BRIDGE_PREFIX='br'
 DEVICE_PREFIX='dev'      # used by Fedora when confused
 
 #  Suffix used for backup copies of files
@@ -268,6 +272,9 @@ def copy_mesh( msh_dst, eth_dst ):
     write_mesh_eth_file( msh_dst, eth_dst )
     #  Copy the mshN file
     filename = 'ifcfg-' + MESH_PREFIX + str(msh_dst)
+    copy_file( OLPC_CONFIG_DIR + filename, NETWORK_CONFIG_DIR + filename )
+    #  Copy the brN file
+    filename = 'ifcfg-' + BRIDGE_PREFIX + str(msh_dst)
     copy_file( OLPC_CONFIG_DIR + filename, NETWORK_CONFIG_DIR + filename )
     return
 
