@@ -1,8 +1,0 @@
-NETWORKING=yes
-HOSTNAME=schoolserver
-NETWORKING_IPV6=yes
-IPV6FORWARDING=yes
-# IPV6_DEFAULTDEV="tun0"
-# We don't want to be picking up addresses from RA automatically; we 
-# want to use our explicitly-configured tunnels. This turns off accept_ra
-IPV6_AUTOCONF=no
