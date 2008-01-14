@@ -12,14 +12,14 @@
 #                    the network I/F files and runs depmod -a
 #
 CONFIG_FILE=/etc/sysconfig/olpc_net_config
-NETWORK_CONFIG=/etc/sysconfig/olpc-scripts/network_config.py
+NETWORK_CONFIG=/etc/sysconfig/olpc-scripts/network_config
 
 start () {
        #  Check if we should even do anything.
        #  Search the configuration file for the run variable
        #  The following is a hack, but works well enough to get moving
 	if [ ! -f $CONFIG_FILE ] ; then
-	    $NETWORK_CONFIG
+	    $NETWORK_CONFIG 1
 	    RETVAL=$?
             [ $RETVAL -eq 0 ] && touch $CONFIG_FILE
 	    #  This rebuilds the module dependency table to include
