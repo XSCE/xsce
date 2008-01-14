@@ -22,7 +22,17 @@ start() {
 	# Start daemons.
 	echo -n $"Starting $prog: "
 
-#  The meat of the script
+#  Set up static routes
+	route add -net 172.18.8.0  netmask 255.255.248.0 gw 172.18.1.1
+	route add -net 172.18.16.0 netmask 255.255.248.0 gw 172.18.1.2
+	route add -net 172.18.24.0 netmask 255.255.248.0 gw 172.18.1.3
+	route add -net 172.18.32.0 netmask 255.255.248.0 gw 172.18.1.4
+	route add -net 172.18.40.0 netmask 255.255.248.0 gw 172.18.1.5
+	route add -net 172.18.48.0 netmask 255.255.248.0 gw 172.18.1.6
+	route add -net 172.18.56.0 netmask 255.255.248.0 gw 172.18.1.7
+	route add -net 172.18.64.0 netmask 255.255.248.0 gw 172.18.1.8
+
+#  The old meat of the script, now handled by a udev script...
 
 	if [ -d /sys/class/net/msh0 ] ; then
 	    echo 1 > /sys/class/net/msh0/anycast_mask || true;
@@ -35,6 +45,7 @@ start() {
 	fi
 	RETVAL=$?
 	echo
+
 	if [ $RETVAL -eq 0 ]; then 
 	    if [ -x /usr/bin/logger ]; then
 		/usr/bin/logger -t mesh-config 'mesh networking configured'

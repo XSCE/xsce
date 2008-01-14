@@ -37,7 +37,7 @@ Requires: kernel
 
 Summary: XS/XSX default configuration
 Name: xs-config
-Version: 0.2.3
+Version: 0.2.5
 Release: 1
 BuildRoot: %{_builddir}/%{name}-root
 Distribution: OLPC XS/XSX School Server
@@ -76,10 +76,8 @@ rm %{DESTDIR}/etc/sysctl.conf
 cp -fp %{OLPCROOT}/etc/sysctl.conf %{DESTDIR}/etc/
 rm %{DESTDIR}/etc/httpd/conf/httpd.conf
 cp -fp %{OLPCROOT}/etc/httpd/conf/httpd.conf %{DESTDIR}/etc/httpd/conf/
-#
-#  Massive hack, done instead of fixing symlink-tree at this time!
-ln -s %{OLPCROOT}/etc/named.conf %{DESTDIR}/etc/named.conf
-#
+mv -f %{DESTDIR}/etc/sysconfig/network  %{DESTDIR}/etc/sysconfig/network.old
+cp -fp %{OLPCROOT}/etc/sysconfig/network %{DESTDIR}/etc/sysconfig 
 #
 #  Delete link script ?
 rm %{LINK}*

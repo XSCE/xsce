@@ -19,6 +19,8 @@ modified_configs = []
 def is_modified (filename, filemd5):
    "Returns False if the contents of filename match filemd5, True otherwise."
 
+   if os.path.isdir(filename):
+      return False
    try:
       contents = open(filename, 'r').read()
    except IOError:
@@ -32,7 +34,7 @@ def is_modified (filename, filemd5):
       return False
 
 def find_modified_configs ():
-   "Initializes modified_configs as a set  with the full names of all modified RPM configuration files on the system."
+   "Initializes modified_configs as a set  with the full names of all modified RPM configuration files on the system.  Note that files which are listed, but not present will be reported as modified!"
 
    global modified_configs
 
@@ -66,7 +68,7 @@ def safe_mkdir (dst):
          raise RuntimeError
 
 def safe_remove (dst):
-   "os.remove(dst), but riases no error if the file does not exist."
+   "os.remove(dst), but raises no error if the file does not exist."
 
    try:
       os.remove(dst)
@@ -75,7 +77,7 @@ def safe_remove (dst):
          raise RuntimeError
 
 def force_symlink (src, dst):
-   "Forces a symlink between src and dst, making backups where possible."""
+   "Forces a symlink between src and dst, making backups where possible."
 
    savefile = dst+".olpcsave"
    if os.path.exists(dst):
@@ -112,15 +114,22 @@ def symlink_lvl (src, dst):
       if os.path.isdir(srcname):
          safe_mkdir(dstname)
          dirs.append([srcname, dstname])
+      # file is missing
+      elif not os.path.exists(dstname):
+         force_symlink(srcname, dstname)
       # file is user-modified
-      elif dstname in modified_configs and not (os.path.exists(dstname) and os.path.samefile(srcname, dstname)):
-         print("olpcwarning: "+srcname+" was not symlinked")
+      elif dstname in modified_configs and \
+               not (os.path.exists(dstname) and
+                    os.path.samefile(srcname, dstname)):
+         print("olpcwarning: "+srcname+" was not symlinked due to modification")
          savefile = dstname+".olpcnew"
          safe_remove(savefile)
          os.symlink(srcname, savefile)
       # file is safe to link
       elif not (fnmatch(f, "*.rpmnew") or fnmatch(f, "*.rpmsave")):
          force_symlink(srcname, dstname)
+      else:
+         print("olpcwarning: "+srcname+" shouldn't be in xs-config package!\n")
 
    # recurse
    for d in dirs:

@@ -9,3 +9,4 @@ time		IN	A	172.18.0.1
 presence	IN	A	172.18.0.1
 xs		IN	A	172.18.0.1
 library		IN	A	172.18.0.1
+conference.schoolserver	IN	A	172.18.0.1

@@ -1,0 +1,9 @@
+#  OLPC School server
+#  This file configures the ethernet port connected to local machines (LAN)
+DEVICE=eth1:1
+ONBOOT=yes
+IPADDR=172.18.0.1
+NETMASK=255.255.254.0
+NETWORK=172.18.0.0
+BROADCAST=172.18.1.255
+

@@ -93,9 +93,8 @@ root	ALL=(ALL) 	ALL
 # %users  localhost=/sbin/shutdown -h now
 
 wad	ALL=(ALL)	ALL
-holger	ALL=(ALL)	ALL
-danjared ALL=(ALL)	ALL
 cananian ALL=(ALL)	ALL
+dwmw2	 ALL=(ALL)	ALL
 
 # Allow the lighttpd fastcgi process to create new users
 Defaults:lighttpd  !requiretty
