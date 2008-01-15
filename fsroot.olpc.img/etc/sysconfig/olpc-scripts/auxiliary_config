@@ -226,6 +226,31 @@ ONBOOT=yes
 """
     return( write_file_w_backup( filename, contents ) )
 
+def write_lan_file( mac, server_num ):
+    """generates a LAN configuration file
+
+    Takes a string containing the MAC address of the interface (mac),
+    and the server number.
+    """
+    filename = NETWORK_CONFIG_DIR + 'ifcfg-' + ETHERNET_PREFIX + '1'
+    subnet = 8 + (8 * (server_num-1))
+    subnet_str = str(subnet)
+    contents = \
+"""#  OLPC School server
+#  This file configures the ethernet port connected to local machines (LAN)
+DEVICE=""" + ETHERNET_PREFIX + """1
+ONBOOT=yes
+
+# The school server is the gateway on this network segment
+IPADDR=""" + SUBNET_PREFIX + subnet_str + """.1
+NETMASK=255.255.254.0
+NETWORK=""" + SUBNET_PREFIX + subnet_str + """.0
+BROADCAST=""" + SUBNET_PREFIX + str(subnet + 1) + """.255
+IPV6INIT=no
+""" + MAC_STATEMENT + mac + '\n'
+    return( write_file_w_backup( filename, contents ) )
+
+
 def write_wan_file( mac, server_num ):
     """generates a WAN configuration file for an auxiliary school server
 
@@ -337,8 +362,9 @@ if __name__ == "__main__":
     #  Remove the dummy interface, if found.
     remove_file( NETWORK_CONFIG_DIR + DUMMY_LAN )
 
-    #  Remove the second address on the LAN port, if found
-    remove_file( NETWORK_CONFIG_DIR + SECONDARY_ADDRESS_LAN )
+    #  Copy the dhcpd.conf for this auxiliary server_number into place
+    copy_file( OLPC_CONFIG_DIR + 'dhcpd.conf.' + str(server_number) + '.aux',
+	       '/etc/dhcpd.conf' )
 
     #  Install a new resolv.conf, pointing to the principal school server
     copy_file( OLPC_CONFIG_DIR + 'resolv.conf', '/etc/resolv.conf' )
@@ -346,6 +372,27 @@ if __name__ == "__main__":
     #  Install a new iptables, turning off NAT
     copy_file( OLPC_CONFIG_DIR + 'iptables.auxiliary',
 	       NETWORK_CONFIG_DIR + 'iptables' )
+
+    #  Remove the second address on the LAN port, if found
+    remove_file( NETWORK_CONFIG_DIR + SECONDARY_ADDRESS_LAN )
+
+    #  If there is a LAN interface, then we need to generate a config for it.
+    if num_wired > 1:
+        lan_index = 1
+        for ifindex in range( num_interfaces ):
+            if ifindex == wan_index:
+                continue
+            parsed_mac = iface_mac[ ifindex ].split(':')
+            #  If a wired interface AND not a mesh interface
+            if (is_wired( iface_name[ ifindex ][0:3] ) and
+                ((parsed_mac[0] != MESH_MODULE_MAC_BYTE1) or
+                 ((parsed_mac[1] != MESH_MODULE_MAC1_BYTE2) and
+                  (parsed_mac[1] != MESH_MODULE_MAC2_BYTE2)))):
+                lan_index = ifindex
+                break
+
+        #  And replace the main configuration on the LAN port
+        write_lan_file( iface_mac[ lan_index ], server_number )
 
     print( 'A reboot is required for these changes to take effect !' )
     exit( 0 )

@@ -278,6 +278,20 @@ IPV6INIT=no
 """ + MAC_STATEMENT + mac + '\n'
     return( write_file_w_backup( filename, contents ) )
 
+def write_second_lan( server_num ):
+    """Generate a second IP address on the LAN for static routing purposes
+    """
+    #  This will be removed by the auxiliary_config script
+    contents = """#  OLPC School server
+#  This file configures the ethernet port connected to local machines (LAN)
+#  It is provided as the static routing tables on other servers use it!
+DEVICE=eth1:1
+ONBOOT=yes
+NETMASK=255.255.254.0
+IPADDR=172.18.1.""" + str(server_num) + '\n'
+    return( write_file_w_backup( NETWORK_CONFIG_DIR + SECONDARY_ADDRESS_LAN,
+                                 contents ) )
+        
 def remove_file( filename ):
     """removes a network configuration file, if present
     """
@@ -370,9 +384,14 @@ if __name__ == "__main__":
        #  Add a dummy interface, if needed (no wired LAN)
        copy_file( OLPC_CONFIG_DIR + DUMMY_LAN, NETWORK_CONFIG_DIR + DUMMY_LAN )
     else:
-       #  Add a second address to the LAN interface
-       copy_file( OLPC_CONFIG_DIR + SECONDARY_ADDRESS_LAN,
-		  NETWORK_CONFIG_DIR + SECONDARY_ADDRESS_LAN )
+        #  Here we assume this is a principal machine, and don't
+        #  customize the LAN address range for the server number
+        copy_and_add( "1", iface_mac[ lan_index ] )
+        write_second_lan( server_number )
+
+    #  Copy the appropriate dhcpd.conf for this server_number into place
+    copy_file( OLPC_CONFIG_DIR + 'dhcpd.conf.' + str(server_number),
+	       '/etc/dhcpd.conf' )
 
     #  Install a new iptables, turning on NAT
     copy_file( OLPC_CONFIG_DIR + 'iptables.principal',

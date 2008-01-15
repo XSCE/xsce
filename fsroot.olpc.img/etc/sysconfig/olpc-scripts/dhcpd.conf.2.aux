@@ -8,11 +8,11 @@ option domain-name "random.xs.laptop.org";
 option domain-name-servers      172.18.0.1;
 option ntp-servers		172.18.0.1;
 
-subnet 172.18.0.0 netmask 255.255.254.0 {
-	option routers			172.18.0.1;
+subnet 172.18.16.0 netmask 255.255.254.0 {
+	option routers			172.18.16.1;
 	option subnet-mask		255.255.254.0;
-	option broadcast-address	172.18.1.255;
-	range                           172.18.0.32 172.18.1.254;
+	option broadcast-address	172.18.17.255;
+	range                           172.18.16.2 172.18.17.254;
 #  As this subnet is wired, these lease times are on the long side
 	default-lease-time 	10800;
 	max-lease-time 		21600;

@@ -55,7 +55,7 @@
 #  iptables.principal    (firewall configuration)
 #  iptables.auxiliary    (firewall configuration)
 #  ip6tables		 (firewall configuration)
-#  dhcpd.conf.[1-8]	 (DHCP server configuration)
+#  dhcpd.conf.[1-8][.aux]  (DHCP server configuration)
 #
 #  This script performs the following operations:
 #
@@ -85,7 +85,8 @@
 #     to reflect the server number
 #
 #   - It copies into place the appropriate /etc/dhcpd.conf file for this
-#     server number
+#     server number.  There are TOO MANY of these, but I didn't want to
+#     take the time to switch to generating them...yet.
 #
 #   - It copies into place the appropriate /etc/sysconfig/network file for
 #     this server number
@@ -280,30 +281,6 @@ BROADCAST=""" + SUBNET_PREFIX + str(subnet + 1) + """.255
 IPV6INIT=no
 ONBOOT=yes
 """
-    return( write_file_w_backup( filename, contents ) )
-
-def write_lan_file( mac, server_num ):
-    """generates a LAN configuration file
-
-    Takes a string containing the MAC address of the interface (mac),
-    and the server number.
-    """
-    filename = NETWORK_CONFIG_DIR + 'ifcfg-' + ETHERNET_PREFIX + '1'
-    subnet = 8 + (8 * (server_num-1))
-    subnet_str = str(subnet)
-    contents = \
-"""#  OLPC School server
-#  This file configures the ethernet port connected to local machines (LAN)
-DEVICE=""" + ETHERNET_PREFIX + """1
-ONBOOT=yes
-
-# The school server is the gateway on this network segment
-IPADDR=""" + SUBNET_PREFIX + subnet_str + """.1
-NETMASK=255.255.254.0
-NETWORK=""" + SUBNET_PREFIX + subnet_str + """.0
-BROADCAST=""" + SUBNET_PREFIX + str(subnet + 1) + """.255
-IPV6INIT=no
-""" + MAC_STATEMENT + mac + '\n'
     return( write_file_w_backup( filename, contents ) )
 
 def write_network_config( server_num ):
@@ -524,12 +501,10 @@ if __name__ == "__main__":
             break
 
     #  Generate the config file for eth1
-    write_lan_file( iface_mac[ lan_index ], server_number )
-
-    #  Copy the config file for the principal's LAN
-    #  This will be removed by the auxiliary_config script
-    copy_file( OLPC_CONFIG_DIR + SECONDARY_ADDRESS_LAN,
-	       NETWORK_CONFIG_DIR + SECONDARY_ADDRESS_LAN )
+    #  Here we assume this is a principal machine, and don't
+    #  customize the LAN address range for the server number
+    copy_and_add( "1", iface_mac[ lan_index ] )
+    write_second_lan( server_number )
 
     remove_dummy()   # just in case it is left from a previous config!
     
