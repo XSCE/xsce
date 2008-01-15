@@ -99,13 +99,18 @@ BACKUP_SUFFIX = ".bak"
 def is_wired( iface ):
     """determines if an interface is a wired interface
 
-    Takes the first three characters of the name of an interface
-    and decides if it is a wired interface or not.
+    Takes an interface name, and generally uses the
+    first three characters of the name of an interface
+    to decides if it is a wired interface or not.
+    Secondary interfaces (e.g. eth1:1) are reported as not wired.
     Returns true if it is.
     """
-    if (iface == ETHERNET_PREFIX) or \
-       (iface == DEVICE_PREFIX):
-        return 1
+    if (iface[0:3] == ETHERNET_PREFIX) or \
+       (iface[0:3] == DEVICE_PREFIX):
+        if iface.find(':') >= 0:
+            return 0
+        else:
+            return 1
     else:
         return 0
 
@@ -302,7 +307,7 @@ if __name__ == "__main__":
 	iface_mac.append( parsed[4] )
         if iface[0:3] == MESH_PREFIX:
             num_mesh_interfaces += 1
-        if is_wired( iface[0:3] ):
+        if is_wired( parsed[0] ):
             num_eth_interfaces += 1
 
     num_wired = num_eth_interfaces - num_mesh_interfaces
@@ -341,8 +346,8 @@ if __name__ == "__main__":
 	    parsed_mac = iface_mac[ ifindex ].split(':')
             the_name = iface_name[ ifindex ]
 	    #  Is this a mesh or dummy interface ?
-            print( 'Comparing ' + str( ifindex ) + ': ' + iface_mac[ ifindex ] + ' ' + str( is_wired( the_name[0:3] )) )
-            if is_wired( the_name[0:3] ) and not \
+            print( 'Comparing ' + str( ifindex ) + ': ' + iface_mac[ ifindex ] + ' ' + str( is_wired( the_name )) )
+            if is_wired( the_name ) and not \
                    ((parsed_mac[0] == MESH_MODULE_MAC_BYTE1) and \
                     ((parsed_mac[1] == MESH_MODULE_MAC1_BYTE2) or \
                      (parsed_mac[1] == MESH_MODULE_MAC2_BYTE2))) :
@@ -384,7 +389,7 @@ if __name__ == "__main__":
                 continue
             parsed_mac = iface_mac[ ifindex ].split(':')
             #  If a wired interface AND not a mesh interface
-            if (is_wired( iface_name[ ifindex ][0:3] ) and
+            if (is_wired( iface_name[ ifindex ] ) and
                 ((parsed_mac[0] != MESH_MODULE_MAC_BYTE1) or
                  ((parsed_mac[1] != MESH_MODULE_MAC1_BYTE2) and
                   (parsed_mac[1] != MESH_MODULE_MAC2_BYTE2)))):
