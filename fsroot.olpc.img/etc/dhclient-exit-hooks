@@ -4,7 +4,7 @@
 #  default search domain, and the school DNS server is used first...
 
 logger "changing /etc/resolv.conf for principal school server"
-grep nameserver /etc/resolv.conf > /tmp/$$
+grep nameserver /etc/resolv.conf | tail -2 > /tmp/$$
 cp /etc/sysconfig/olpc-scripts/resolv.conf /etc/resolv.conf
 cat /tmp/$$ >> /etc/resolv.conf
 rm /tmp/$$

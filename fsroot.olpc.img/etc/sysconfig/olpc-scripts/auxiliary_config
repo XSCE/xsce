@@ -271,6 +271,7 @@ ONBOOT=yes
 IPADDR=""" + SUBNET_PREFIX + '1.' + str( server_num ) + """
 NETMASK=255.255.254.0
 NETWORK=""" + SUBNET_PREFIX + """0.0
+GATEWAY=""" + SUBNET_PREFIX + """0.1
 BROADCAST=""" + SUBNET_PREFIX + """1.255
 IPV6INIT=no
 """ + MAC_STATEMENT + mac + '\n'
