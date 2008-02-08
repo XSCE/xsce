@@ -1,0 +1,11 @@
+#!/bin/bash
+#  Directions for turning Squid caching off
+
+#  First, restore a normal set of iptables
+cp /etc/sysconfig/olpc-scripts/iptables.principal /etc/sysconfig/iptables
+/sbin/service iptables restart
+
+#  Turn it off now
+/sbin/service squid stop
+#  Turn it off after the next reboot
+/sbin/chkconfig  squid off

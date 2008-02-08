@@ -1,0 +1,13 @@
+#!/bin/bash
+#  Directions for turning Squid caching on
+
+#  Turn squid on after the next reboot
+/sbin/chkconfig --levels 345 squid on
+#  Turn squid on now
+/sbin/service squid start
+
+#  Now, copy in a set of iptables that redirects forwarded traffic
+#  to port 80 to port 3128 on this machine
+cp /etc/sysconfig/olpc-scripts/iptables.principal.cache /etc/sysconfig/iptables
+/sbin/service iptables restart
+
