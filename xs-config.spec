@@ -37,8 +37,8 @@ Requires: kernel
 
 Summary: XS/XSX default configuration
 Name: xs-config
-Version: 0.2.5
-Release: 8
+Version: 0.2.6
+Release: 1
 BuildRoot: %{_builddir}/%{name}-root
 Distribution: OLPC XS/XSX School Server
 Group: Base System/Administration Tools

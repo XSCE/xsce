@@ -1,0 +1,46 @@
+#!/bin/sh -e
+#  This file is called when the domain name is changed, to change any
+#  ejabberd configuration files affected.
+#
+#  The first argument is the old domain name,
+#  the second argument is the new domain name
+
+#  Copyright 2008, One Laptop per Child
+#  Author: John Watlington
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public
+# License along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+#  This is the name of the service (for stopping and restarting)
+SERVICE_NAME=ejabberd
+
+#  This is a config file related to this service which will have
+#  the domain name globally replaced inside it
+CONFIG_FILE=/fsroot.olpc/etc/ejabberd/ejabberd.cfg
+
+#  This is the suffix which original versions of modified files will have
+BACKUP_SUFFIX=old
+
+old_name=$1
+new_name=$2
+
+# echo Changing $SERVICE_NAME config from $old_name to $new_name
+
+# service $SERVICE_NAME stop
+
+mv $CONFIG_FILE $CONFIG_FILE.$BACKUP_SUFFIX
+sed -e s/$old_name/$new_name/ $CONFIG_FILE.$BACKUP_SUFFIX > $CONFIG_FILE
+
+# service $SERVICE_NAME start
