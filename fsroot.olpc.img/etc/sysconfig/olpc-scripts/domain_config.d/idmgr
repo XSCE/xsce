@@ -28,7 +28,7 @@ SERVICE_NAME=idmgr
 
 #  This is a config file related to this service which will have
 #  the domain name globally replaced inside it
-CONFIG_FILE=/fsroot.olpc/etc/idmgr.conf
+CONFIG_FILE=/etc/idmgr.conf
 
 #  This is the suffix which original versions of modified files will have
 BACKUP_SUFFIX=old
