@@ -38,7 +38,7 @@ Requires: kernel
 Summary: XS/XSX default configuration
 Name: xs-config
 Version: 0.2.6
-Release: 2
+Release: 3
 BuildRoot: %{_builddir}/%{name}-root
 Distribution: OLPC XS/XSX School Server
 Group: Base System/Administration Tools
@@ -76,8 +76,6 @@ rm %{DESTDIR}/etc/sysctl.conf
 cp -fp %{OLPCROOT}/etc/sysctl.conf %{DESTDIR}/etc/
 rm %{DESTDIR}/etc/httpd/conf/httpd.conf
 cp -fp %{OLPCROOT}/etc/httpd/conf/httpd.conf %{DESTDIR}/etc/httpd/conf/
-mv -f %{DESTDIR}/etc/sysconfig/network  %{DESTDIR}/etc/sysconfig/network.old
-cp -fp %{OLPCROOT}/etc/sysconfig/network %{DESTDIR}/etc/sysconfig 
 #
 #  Delete link script ?
 rm %{LINK}*
