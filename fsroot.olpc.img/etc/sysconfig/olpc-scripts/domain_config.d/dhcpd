@@ -28,7 +28,7 @@ SERVICE_NAME=dhcpd
 
 #  This is a config file related to this service which will have
 #  the domain name globally replaced inside it
-CONFIG_FILE=/fsroot.olpc/etc/dhcpd.conf
+CONFIG_FILE=/etc/dhcpd.conf
 
 #  This is the suffix which original versions of modified files will have
 BACKUP_SUFFIX=old
