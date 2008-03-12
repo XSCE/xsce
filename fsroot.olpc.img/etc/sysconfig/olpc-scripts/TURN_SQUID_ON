@@ -1,11 +1,13 @@
 #!/bin/bash
 #  Directions for turning Squid caching on
 SQUID_CACHEDIR="/library/cache"
+SQUID_USER="squid:squid"
 
 #  Make sure that the cache directory is present.
 #  Squid crashes if it isn't (although it will create all subdirs...)
 if [ ! -d $SQUID_CACHEDIR ]; then
     mkdir $SQUID_CACHEDIR
+    chown $SQUID_USER $SQUID_CACHEDIR
 fi
 
 #  Turn squid on after the next reboot
