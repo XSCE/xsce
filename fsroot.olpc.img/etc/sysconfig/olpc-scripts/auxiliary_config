@@ -288,6 +288,16 @@ def remove_file( filename ):
         pass    #  Take no action if destination or backup file don't exist !
     return
 
+def write_network_config( server_num ):
+    "generates the network configuration file"
+    contents = \
+"""NETWORKING=yes
+NETWORKING_IPV6=no
+IPV6FORWARDING=no
+IPV6_AUTOCONF=no
+HOSTNAME=schoolserver""" + str(server_num) + '\n'
+    return( write_file_w_backup( FIREWALL_CONFIG_DIR + 'network', contents ) )
+
 ###########################################################################
 ##
 ##   This is the actual script
@@ -374,6 +384,10 @@ if __name__ == "__main__":
 
     #  Install a new resolv.conf, pointing to the principal school server
     copy_file( OLPC_CONFIG_DIR + 'resolv.conf', '/etc/resolv.conf' )
+
+    #  Generate a new network config file, containing a hostname
+    #  with the server number
+    write_network_config( server_num )
 
     #  Install a new iptables, turning off NAT
     copy_file( OLPC_CONFIG_DIR + 'iptables.auxiliary',

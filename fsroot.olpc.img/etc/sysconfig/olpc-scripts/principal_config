@@ -308,6 +308,18 @@ def remove_file( filename ):
         pass    #  Take no action if destination or backup file don't exist !
     return
 
+def write_network_config():
+    "generates the network configuration file"
+    contents = \
+"""NETWORKING=yes
+NETWORKING_IPV6=no
+IPV6FORWARDING=no
+IPV6_AUTOCONF=no
+HOSTNAME=schoolserver
+"""
+    #  + str(server_num) + '\n'     Used for only auxiliary servers
+    return( write_file_w_backup( FIREWALL_CONFIG_DIR + 'network', contents ) )
+
 ###########################################################################
 ##
 ##   This is the actual script
@@ -344,6 +356,10 @@ if __name__ == "__main__":
 	exit( 1 )
 
     server_number = read_server_number()
+
+    #  Write out a network config file that has a hostname without
+    #  the suffix.  ejabberd will be much happier.
+    write_network_config()
 
     #  Identify the interfaces
     #  The WAN interface is defined as having a MAC address from

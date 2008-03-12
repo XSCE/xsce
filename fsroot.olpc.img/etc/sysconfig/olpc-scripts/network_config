@@ -38,7 +38,7 @@
 # The server number should be unique to the school network this server
 # will be part of.  When run at first boot, this number is always 1.
 # Server numbers do not have to be sequential, and currently only
-# numbers 1 through 8 are supported.
+# numbers 1 through 8 are currently supported.
 #
 # This script assumes that the server will be the principal school server
 # (the one that connects to the internet).  Auxiliary servers will also
@@ -309,7 +309,9 @@ def write_network_config( server_num ):
 NETWORKING_IPV6=no
 IPV6FORWARDING=no
 IPV6_AUTOCONF=no
-HOSTNAME=schoolserver""" + str(server_num) + '\n'
+HOSTNAME=schoolserver
+"""
+    #  + str(server_num) + '\n'     Used for auxiliary servers
     return( write_file_w_backup( FIREWALL_CONFIG_DIR + 'network', contents ) )
 
 def write_hosts( server_num ):
