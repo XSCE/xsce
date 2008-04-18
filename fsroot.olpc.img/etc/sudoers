@@ -92,10 +92,9 @@ root	ALL=(ALL) 	ALL
 ## Allows members of the users group to shutdown this system
 # %users  localhost=/sbin/shutdown -h now
 
-wad	ALL=(ALL)	ALL
-cananian ALL=(ALL)	ALL
-dwmw2	 ALL=(ALL)	ALL
 
+## XS Specific ##
 # Allow the lighttpd fastcgi process to create new users
 Defaults:lighttpd  !requiretty
 lighttpd ALL=(root)  NOPASSWD: /var/www/idmgr/create_user
+
