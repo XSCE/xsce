@@ -20,3 +20,15 @@ xs		IN	A	172.18.0.1
 library		IN	A	172.18.0.1
 
 conference.schoolserver	IN	A	172.18.0.1
+
+
+# translations of school - in plain latin script
+# or un punycode of the utf-8 representation
+
+# es - escuela
+escuela         IN      C       school
+
+# de - schüle - utf-8 and latin
+xn--schle-mva   IN      C       school
+schule          IN      C       school
+
