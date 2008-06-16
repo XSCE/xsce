@@ -28,7 +28,6 @@ conference.schoolserver	IN	A	172.18.0.1
 # es - escuela
 escuela         IN      C       school
 
-# de - schüle - utf-8 and latin
-xn--schle-mva   IN      C       school
+# de - schule
 schule          IN      C       school
 
