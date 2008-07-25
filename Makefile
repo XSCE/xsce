@@ -15,29 +15,38 @@ $(DESTDIR):
 # For developers:
 
 # rpm target directory
-RPMDIR = /usr/src/redhat
+BUILDDIR = $(PWD)/build
 
 # olpc configuration tree
 OLPCIMG = fsroot.olpc.img
 
 # symbols
-NAME = xs-config
-VERSION = 0.2.7
-RELEASE = 2
+PKGNAME = xs-config
+VERSION = $(shell git describe | sed 's/^v//' | sed 's/-/./g')
+RELEASE = 1
 ARCH = noarch
 
-NV = $(NAME)-$(VERSION)
+NV = $(PKGNAME)-$(VERSION)
+
+RPMBUILD = rpmbuild \
+	--define "_topdir $(BUILDDIR)" \
 
 SOURCES: Makefile $(SCRIPTS)
+	mkdir -p $(BUILDDIR)/BUILD $(BUILDDIR)/RPMS \
+	$(BUILDDIR)/SOURCES $(BUILDDIR)/SPECS $(BUILDDIR)/SRPMS
 	mkdir -p $(NV)
 	cp -p Makefile $(NV)
 	rsync -ar $(OLPCIMG)/ $(NV)/$(OLPCROOT)
 	cp -p $(SCRIPTS) $(NV)/$(OLPCROOT)
-	tar czf $(RPMDIR)/SOURCES/$(NV).tar.gz $(NV)
+	tar czf $(BUILDDIR)/SOURCES/$(NV).tar.gz $(NV)
 	rm -rf $(NV)
 
-rpm: SOURCES
-	rpmbuild -ba --target $(ARCH) $(NAME).spec
-	rm -f $(NV)-*.$(ARCH).rpm
-	cp -p $(RPMDIR)/RPMS/$(ARCH)/$(NV)-$(RELEASE).$(ARCH).rpm .
+xs-config.spec: xs-config.spec.in
+	sed -e 's:@VERSION@:$(VERSION):g' < $< > $@
 
+.PHONY: xs-config.spec.in
+
+rpm: SOURCES xs-config.spec
+	$(RPMBUILD) -ba --target $(ARCH) $(PKGNAME).spec
+	rm -fr $(BUILDDIR)/BUILD/$(NV)
+	rpmlint $(BUILDDIR)/RPMS/$(ARCH)/$(NV)-$(ARCH).rpm
