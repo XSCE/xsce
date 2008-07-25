@@ -1,5 +1,5 @@
-I am the author.
-- Daniel Margo
+I am the author.   I am the maintainer.
+- Daniel Margo     ~ Martin Langhoff
 
 This is the default configuration for the OLPC XS/XSX school server,
 described in greater detail below. 
@@ -11,16 +11,12 @@ on 7/23/07, with pruning and additions (see changelog).
 to rpmbuild:
 
 1.) Never rpmbuild as root.
-2.) Set up your rpmbuild environment. You should only need to do this once:
-       Make a directory that contains five subdirectories:
-          BUILD  RPMS  SOURCES  SPECS  SRPMS
-       This is your rpm target (top) directory.
-       In your home directory, make a file .rpmmacros with the line:
-          %_topdir <rpm target directory>
-3.) Make sure you update and synchronize the name-version-release
-       information in Makefile and xs-config.spec .
-4.) make RPMDIR=<rpm target directory> rpm
-
+2.) The version information will be based on the output of
+    git describe. If you are on a tag, it will use that tag.
+    If you are X commits past that tag, it will count the commits
+    and add that as a suffix minor version.
+3.) make rpm
+4.) your rpms will be there in build/RPMS/
 
 *What Is This?*
    This package installs OLPC-default configurations for an XS/XSX school
