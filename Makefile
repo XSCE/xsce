@@ -45,6 +45,7 @@ xs-config.spec: xs-config.spec.in
 	sed -e 's:@VERSION@:$(VERSION):g' < $< > $@
 
 .PHONY: xs-config.spec.in
+	# This forces a rebuild of xs-config.spec.in
 
 rpm: SOURCES xs-config.spec
 	$(RPMBUILD) -ba --target $(ARCH) $(PKGNAME).spec
