@@ -24,7 +24,9 @@ new_name=$2
 
 # echo Changing $SERVICE_NAME config from $old_name to $new_name
 
-service $SERVICE_NAME stop
+# stop but don't die on set -e
+service $SERVICE_NAME stop || \
+    echo "Stopping $SERVICE failed, continuing to update config";
 
 for config in $CONFIG_LIST;
 do
