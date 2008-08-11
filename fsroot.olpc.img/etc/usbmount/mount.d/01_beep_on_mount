@@ -1,0 +1,21 @@
+#!/bin/bash -x
+# Part of the xs-sync package
+# Author: Martin Langhoff <martin@laptop.org>
+# Copyright: One Laptop per Child
+
+set -e
+
+VERBOSE=no
+
+# Log a string via the syslog facility.
+log()
+{
+    if test $1 != debug || expr "$VERBOSE" : "[yY]" > /dev/null; then
+	logger -p user.$1 -t "xs-usbmount[$$]" -- "$2"
+    fi
+}
+log notice 'XS found a USB disk and mounted it - checking for new software and content to install...';
+### Bell? 
+### echo -en '\007' > /dev/tty1
+###
+

@@ -1,0 +1,23 @@
+#!/bin/bash -x
+# Part of the xs-sync package
+# Author: Martin Langhoff <martin@laptop.org>
+# Copyright: One Laptop per Child
+
+set -e
+
+VERBOSE=no
+
+# Log a string via the syslog facility.
+log()
+{
+    if test $1 != debug || expr "$VERBOSE" : "[yY]" > /dev/null; then
+	logger -p user.$1 -t "xs-usbmount[$$]" -- "$2"
+    fi
+}
+log notice 'XS done installing new software and content...';
+### Bell? 
+### echo -en '\007' > /dev/tty1
+### sleep 0.5
+### echo -en '\007' > /dev/tty1
+### sleep 0.5
+### echo -en '\007' > /dev/tty1

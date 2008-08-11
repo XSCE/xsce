@@ -33,7 +33,9 @@ Requires: sudo
 Requires: sysklogd  
 Requires: xml-common  
 Requires: xs-pkgs
-Requires: kernel
+
+Requires: usbmount
+
 
 Summary: XS/XSX default configuration
 Name: xs-config
