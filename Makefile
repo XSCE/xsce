@@ -26,7 +26,9 @@ VERSION = $(shell git describe | sed 's/^v//' | sed 's/-/./g')
 RELEASE = 1
 ARCH = noarch
 
+# NOTE: Release is hardcoded in the spec file to 1
 NV = $(PKGNAME)-$(VERSION)
+REL = 1
 
 RPMBUILD = rpmbuild \
 	--define "_topdir $(BUILDDIR)" \
@@ -50,4 +52,11 @@ xs-config.spec: xs-config.spec.in
 rpm: SOURCES xs-config.spec
 	$(RPMBUILD) -ba --target $(ARCH) $(PKGNAME).spec
 	rm -fr $(BUILDDIR)/BUILD/$(NV)
-	rpmlint $(BUILDDIR)/RPMS/$(ARCH)/$(NV)-$(ARCH).rpm
+	rpmlint $(BUILDDIR)/RPMS/$(ARCH)/$(NV)-$(REL).$(ARCH).rpm
+
+publish:
+	scp $(BUILDDIR)/RPMS/$(ARCH)/$(NV)-$(REL).$(ARCH).rpm \
+	    xs-dev.laptop.org:/xsrepos/testing/olpc/7/i386/
+	scp $(BUILDDIR)/SRPMS/$(NV)-$(REL).src.rpm \
+	    xs-dev.laptop.org:/xsrepos/testing/olpc/7/source/SRPMS/
+	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/7/i386

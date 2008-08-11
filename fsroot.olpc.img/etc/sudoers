@@ -98,3 +98,7 @@ root	ALL=(ALL) 	ALL
 Defaults:lighttpd  !requiretty
 lighttpd ALL=(root)  NOPASSWD: /var/www/idmgr/create_user
 
+# Some scripts run as root and use sudo - instead
+# of su -c 'messy escaped cmd' - so let it be w/o tty
+Defaults:root !requiretty
+
