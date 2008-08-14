@@ -59,7 +59,7 @@ view "localhost_resolver"
 	include "/var/named-xs/named.rfc1912.zones";
 
 	/* and these are the local subnet names  */
-	zone "random.xs.laptop.org" in {
+	zone "@@BASEDNSNAME@@" in {
 		type master;
 		file "school.internal.zone.db";
 		allow-update {127.0.0.1; };
@@ -80,7 +80,7 @@ view "internal"
 	// These are your "authoritative" internal zones, and would probably
 	// also be included in the "localhost_resolver" view above :
 
-	zone "random.xs.laptop.org" { 
+	zone "@@BASEDNSNAME@@" { 
 		type master;
 		file "school.internal.zone.db";
 		allow-update {127.0.0.1; };
