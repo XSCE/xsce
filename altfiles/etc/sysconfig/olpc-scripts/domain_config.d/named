@@ -13,19 +13,19 @@ SERVICE_NAME=named
 
 #  This is a list of files related to this service which will have
 #  the domain name globally replaced inside them
-CONFIG_LIST="/var/named/school.internal.zone.in-addr.db /var/named/school.internal.zone.in-addr.db  /var/named/school.internal.zone.16.in-addr.db /var/named/school.internal.zone.32.in-addr.db /var/named/school.internal.zone.48.in-addr.db"
+CONFIG_LIST="/var/named-xs/school.internal.zone.in-addr.db /var/named-xs/school.internal.zone.in-addr.db  /var/named-xs/school.internal.zone.16.in-addr.db /var/named-xs/school.internal.zone.32.in-addr.db /var/named-xs/school.internal.zone.48.in-addr.db"
 
 #  This is the suffix which original versions of modified files will have
 BACKUP_SUFFIX=old
 
 new_name=$1
 
-# echo Changing $SERVICE_NAME config from $old_name to $new_name
-
 for config in $CONFIG_LIST;
 do
     if [ -e $config.in ]; then
-	mv $config $config.$BACKUP_SUFFIX
+	if [ -e $config ]; then
+	    mv $config $config.$BACKUP_SUFFIX
+	fi
 	sed -e s/@@BASEDNSNAME@@/$new_name/ $config.in > $config ;
     else
 	echo WARNING: Skipped $config - template file is missing!

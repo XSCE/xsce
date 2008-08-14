@@ -25,7 +25,9 @@ new_name=$1
 for config in $CONFIG_LIST;
 do
     if [ -e $config.in ]; then
-	mv $config $config.$BACKUP_SUFFIX
+	if [ -e $config ]; then
+	    mv $config $config.$BACKUP_SUFFIX
+	fi
 	sed -e s/@@BASEDNSNAME@@/$new_name/ $config.in > $config ;
     else
 	echo WARNING: Skipped $config - template file is missing!
