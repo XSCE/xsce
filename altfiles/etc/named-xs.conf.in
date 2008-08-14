@@ -15,7 +15,7 @@ options
 	query-source-v6 port 53;
 	listen-on-v6 { any; };	
 	// Put files that named is allowed to write in the data/ directory:
-	directory "/var/named"; // the default
+	directory "/var/named-xs"; // the default
 	dump-file 		"data/cache_dump.db";
         statistics-file 	"data/named_stats.txt";
         memstatistics-file 	"data/named_mem_stats.txt";
