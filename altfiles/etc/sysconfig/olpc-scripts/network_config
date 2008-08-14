@@ -445,7 +445,7 @@ if __name__ == "__main__":
 
     #  Copy the appropriate dhcpd.conf for this server_number into place
     copy_file( OLPC_CONFIG_DIR + 'dhcpd.conf.' + str(server_number),
-	       '/etc/dhcpd.conf.in' )
+	       '/etc/dhcpd-xs.conf.in' )
 
     #  Generate some network config files using the server number
     write_network_config( server_number )
