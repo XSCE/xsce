@@ -50,13 +50,13 @@ view "localhost_resolver"
 	match-destinations	{ localhost; };
 	recursion yes;
 	# all views must contain the root hints zone:
-	include "/var/named/named.root.hints";
+	include "/var/named-xs/named.root.hints";
 
         /* these are zones that contain definitions for all the localhost
          * names and addresses, as recommended in RFC1912 - these names should
 	 * ONLY be served to localhost clients:
 	 */
-	include "/var/named/named.rfc1912.zones";
+	include "/var/named-xs/named.rfc1912.zones";
 
 	/* and these are the local subnet names  */
 	zone "random.xs.laptop.org" in {
@@ -75,7 +75,7 @@ view "internal"
 	recursion yes;
 
 	// all views must contain the root hints zone:
-	include "/var/named/named.root.hints";
+	include "/var/named-xs/named.root.hints";
  
 	// These are your "authoritative" internal zones, and would probably
 	// also be included in the "localhost_resolver" view above :
@@ -113,12 +113,12 @@ view "external"
         match-clients           { any; };   // implicit
         recursion yes;
         // all views must contain the root hints zone:
-        include "/var/named/named.root.hints";
+        include "/var/named-xs/named.root.hints";
  
         // These are your "authoritative" external zones, and would probably
         // also be included in the "localhost_resolver" view above :
 
-        zone "random.xs.laptop.org" { 
+        zone "@@BASEDNSNAME@@" { 
                 type master;
                 file "school.external.zone.db";
                 allow-update {127.0.0.1; };

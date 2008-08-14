@@ -1,5 +1,12 @@
 # BIND named process options
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+###
+### XS overrides - we will point named
+### to a different non-conflicting config file
+###
+OPTIONS='-c /etc/named-xs.conf'
+
 # Currently, you can use the following options:
 #
 # ROOTDIR="/some/where"  --  will run named in a chroot environment.

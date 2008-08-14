@@ -55,6 +55,7 @@ The default configuration of an OLPC XS School server. Don't install this if you
 %prep
 %setup
 %install
+echo $PWD
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT/%{DESTDIR} install
 %clean
@@ -95,3 +96,7 @@ fi
 
 %files
 %config(noreplace) %{OLPCROOT}
+
+%config(noreplace) %{_sysconfdir}/named-xs.conf.in
+%config(noreplace) %{_sysconfdir}/sysconfig/olpc-scripts/
+%config(noreplace) /var/named-xs
