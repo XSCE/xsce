@@ -380,7 +380,7 @@ if __name__ == "__main__":
 
     #  Copy the dhcpd.conf for this auxiliary server_number into place
     copy_file( OLPC_CONFIG_DIR + 'dhcpd.conf.' + str(server_number) + '.aux',
-	       '/etc/dhcpd.conf' )
+	       '/etc/dhcpd.conf.in' )
 
     #  Install a new resolv.conf, pointing to the principal school server
     copy_file( OLPC_CONFIG_DIR + 'resolv.conf', '/etc/resolv.conf' )
