@@ -41,7 +41,7 @@ acl apache rep_header Server ^Apache
 #
 # NOTE: it must start with a dot
 #
-append_domain .random.xs.laptop.org
+append_domain .@@BASEDNSNAME@@
 
 
 ###############################
