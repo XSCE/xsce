@@ -98,5 +98,11 @@ fi
 %config(noreplace) %{OLPCROOT}
 
 %config(noreplace) %{_sysconfdir}/named-xs.conf.in
+%config(noreplace) %{_sysconfdir}/resolv.conf.in
+%config(noreplace) %{_sysconfdir}/idmgr.conf.in
+%config(noreplace) %{_sysconfdir}/squid/squid-xs.conf.in
+%config(noreplace) %{_sysconfdir}/ejabberd/ejabberd.cfg.in
+%config(noreplace) %{_sysconfdir}/ejabberd/ejabberd.pem
+
 %config(noreplace) %{_sysconfdir}/sysconfig/olpc-scripts/
 %config(noreplace) /var/named-xs

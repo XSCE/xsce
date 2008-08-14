@@ -113,7 +113,6 @@ install: $(OLPCROOT) $(DESTDIR)
 	install -D altfiles/etc/sysconfig/olpc-scripts/mkaccount    $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/network_config $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/principal_config $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/resolv.conf  $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/var/named-xs/localdomain.zone         $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/localhost.zone           $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/named.broadcast          $(DESTDIR)/var/named-xs/ 
@@ -129,3 +128,13 @@ install: $(OLPCROOT) $(DESTDIR)
 	install -D altfiles/var/named-xs/school.internal.zone.48.in-addr.db.in $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/school.internal.zone.db               $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/school.internal.zone.in-addr.db.in    $(DESTDIR)/var/named-xs/
+
+	install -D -d $(DESTDIR)/etc/squid
+	install -D altfiles/etc/squid/squid-xs.conf.in  $(DESTDIR)/etc/squid
+
+	install -D -d $(DESTDIR)/etc/ejabberd
+	install -D altfiles/etc/ejabberd/ejabberd.cfg.in  $(DESTDIR)/etc/ejabberd
+	install -D altfiles/etc/ejabberd/ejabberd.pem     $(DESTDIR)/etc/ejabberd
+
+	install -D altfiles/etc/resolv.conf.in  $(DESTDIR)/etc/
+	install -D altfiles/etc/idmgr.conf.in  $(DESTDIR)/etc/
