@@ -67,7 +67,7 @@ install: $(OLPCROOT) $(DESTDIR)
 	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts
 	install -D -d $(DESTDIR)/var
 	install -D -d $(DESTDIR)/var/named-xs
-
+	install -D -d $(DESTDIR)/var/named-xs/data
 
 	install -D altfiles/etc/named-xs.conf.in  $(DESTDIR)/etc
 	install -D altfiles/etc/sysconfig/olpc-scripts/TURN_SQUID_OFF $(DESTDIR)/etc/sysconfig/olpc-scripts/

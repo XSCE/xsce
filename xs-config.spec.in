@@ -86,6 +86,57 @@ rm %{LINK}*
 rm %{DESTDIR}/symlink-tree.py*
 rm %{DESTDIR}/unlink-tree.py*
 
+%pre
+
+## this is to clear the way for a better pkg
+BADLINKS=" /etc/named-xs.conf
+	/etc/sysconfig/olpc-scripts/TURN_SQUID_OFF
+	/etc/sysconfig/olpc-scripts/TURN_SQUID_ON 
+	/etc/sysconfig/olpc-scripts/auxiliary_config
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.1    
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.1.aux
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.2    
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.2.aux
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.3    
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.3.aux
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.4    
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.4.aux
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.5    
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.5.aux
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.6    
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.6.aux
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.7    
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.7.aux
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.8    
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.8.aux
+	/etc/sysconfig/olpc-scripts/domain_config   
+	/etc/sysconfig/olpc-scripts/domain_config.d/dhcpd   
+	/etc/sysconfig/olpc-scripts/domain_config.d/ejabberd
+	/etc/sysconfig/olpc-scripts/domain_config.d/idmgr   
+	/etc/sysconfig/olpc-scripts/domain_config.d/named   
+	/etc/sysconfig/olpc-scripts/domain_config.d/squid   
+	/etc/sysconfig/olpc-scripts/ifcfg-dummy0
+	/etc/sysconfig/olpc-scripts/ifcfg-eth0  
+	/etc/sysconfig/olpc-scripts/ifcfg-eth0.auxiliary
+	/etc/sysconfig/olpc-scripts/ifcfg-eth1
+	/etc/sysconfig/olpc-scripts/ifcfg-msh0
+	/etc/sysconfig/olpc-scripts/ifcfg-msh1
+	/etc/sysconfig/olpc-scripts/ifcfg-msh2
+	/etc/sysconfig/olpc-scripts/ifcfg-tun0
+	/etc/sysconfig/olpc-scripts/ip6tables 
+	/etc/sysconfig/olpc-scripts/iptables.auxiliary 
+	/etc/sysconfig/olpc-scripts/iptables.principal 
+	/etc/sysconfig/olpc-scripts/iptables.principal.cache
+	/etc/sysconfig/olpc-scripts/mkaccount   
+	/etc/sysconfig/olpc-scripts/network_config 
+	/etc/sysconfig/olpc-scripts/principal_config 
+	/etc/ejabberd/ejabberd.pem     "
+for PATH in $BADLINKS; do
+    if [ -L "$DESTDIR/$PATH" ]; then
+       /bin/rm "$DESTDIR/$PATH"
+    fi
+done
+
 %preun
 #  If this is an uninstall...
 if [ $1 -eq 0 ]
@@ -106,3 +157,6 @@ fi
 
 %config(noreplace) %{_sysconfdir}/sysconfig/olpc-scripts/
 %config(noreplace) /var/named-xs
+
+%attr(750, root , named)   %dir /var/named-xs
+%attr(770, named , named) %dir /var/named-xs/data
