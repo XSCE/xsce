@@ -13,13 +13,8 @@ Requires: python
 #  Now a list of packages modified by xs-config
 Requires: authconfig  
 Requires: bind  
-Requires: glibc  
-Requires: glibc-common  
-Requires: httpd  
-Requires: info  
 Requires: initscripts  
 Requires: iptables  
-Requires: lighttpd  
 Requires: module-init-tools  
 Requires: nscd  
 Requires: nss  
@@ -32,7 +27,6 @@ Requires: smartmontools
 Requires: sudo  
 Requires: sysklogd  
 Requires: xml-common  
-Requires: xs-pkgs
 
 Requires: usbmount
 
@@ -77,8 +71,6 @@ rm %{DESTDIR}/etc/syslog.conf
 cp -fp %{OLPCROOT}/etc/syslog.conf %{DESTDIR}/etc/
 rm %{DESTDIR}/etc/sysctl.conf
 cp -fp %{OLPCROOT}/etc/sysctl.conf %{DESTDIR}/etc/
-rm %{DESTDIR}/etc/httpd/conf/httpd.conf
-cp -fp %{OLPCROOT}/etc/httpd/conf/httpd.conf %{DESTDIR}/etc/httpd/conf/
 #
 #  Delete link script ?
 rm %{LINK}*
@@ -132,8 +124,30 @@ BADLINKS=" /etc/named-xs.conf
 	/etc/sysconfig/olpc-scripts/principal_config 
 	/etc/ejabberd/ejabberd.pem  
 
+	/etc/ppp/chap-secrets
+	/etc/ppp/pap-secrets
+	/etc/ppp/peers/isdn/arcor
+	/etc/ppp/peers/isdn/avm
+	/etc/ppp/peers/isdn/avm-ml
+	/etc/ppp/peers/isdn/leased
+	/etc/ppp/peers/isdn/otelo
+	/etc/ppp/peers/isdn/talkline
+	/etc/ppp/peers/wvdial
+	/etc/dhclient-exit-hooks
+	/etc/dhclient-eth0.conf
+	/etc/ssh/moduli
+	/etc/httpd/conf/httpd.conf
+	/etc/inittab
+	/etc/default/useradd
+	/etc/autofs_ldap_auth.conf
+ 	/etc/isdn/vboxgetty.conf
+	/etc/racoon/psk.txt
+	/etc/racoon/racoon.conf
+	/etc/isdn/vboxd.conf
 	/etc/aiccu.conf
-
+	/etc/lighttpd/lighttpd.conf
+	/etc/libaudit.conf
+	/etc/pki/nssdb/secmod.db
    "
 for FPATH in $BADLINKS; do
     if [ -L "$DESTDIR/$FPATH" ]; then
@@ -176,3 +190,4 @@ fi
 
 %attr(750, root , named)   %dir /var/named-xs
 %attr(770, named , named) %dir /var/named-xs/data
+
