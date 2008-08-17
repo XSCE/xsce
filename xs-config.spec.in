@@ -130,12 +130,25 @@ BADLINKS=" /etc/named-xs.conf
 	/etc/sysconfig/olpc-scripts/mkaccount   
 	/etc/sysconfig/olpc-scripts/network_config 
 	/etc/sysconfig/olpc-scripts/principal_config 
-	/etc/ejabberd/ejabberd.pem     "
-for PATH in $BADLINKS; do
-    if [ -L "$DESTDIR/$PATH" ]; then
-       /bin/rm "$DESTDIR/$PATH"
+	/etc/ejabberd/ejabberd.pem  
+
+	/etc/aiccu.conf
+
+   "
+for FPATH in $BADLINKS; do
+    if [ -L "$DESTDIR/$FPATH" ]; then
+       /bin/rm "$DESTDIR/$FPATH"
+       if [ -e "$FPATH.olpcsave" ]; then
+       	  mv "$FPATH.olpcsave" "$FPATH"
+       fi
     fi
 done
+
+# remove olpcsave links and olpcnew links in /etc/rd.d
+find /etc/rc.d -type l -name '*.olpcnew' -print0 | xargs -0 --no-run-if-empty rm
+find /etc/rc.d -type l -name '*.olpcsave' -print0 | xargs -0 --no-run-if-empty rm
+
+
 
 %preun
 #  If this is an uninstall...
@@ -144,6 +157,9 @@ then
    %{UNLINK} %{OLPCROOT} %{DESTDIR}
    rm %{UNLINK}*
 fi
+
+
+
 
 %files
 %config(noreplace) %{OLPCROOT}
