@@ -148,6 +148,8 @@ BADLINKS=" /etc/named-xs.conf
 	/etc/lighttpd/lighttpd.conf
 	/etc/libaudit.conf
 	/etc/pki/nssdb/secmod.db
+
+	/etc/udev/rules.d/10-olpcmesh.rules
    "
 for FPATH in $BADLINKS; do
     if [ -L "$DESTDIR/$FPATH" ]; then
@@ -188,6 +190,15 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/olpc-scripts/
 %config(noreplace) /var/named-xs
 
-%attr(750, root , named)   %dir /var/named-xs
-%attr(770, named , named) %dir /var/named-xs/data
 
+%config(noreplace) %{_sysconfdir}/httpd/conf.d/mime_olpc.conf
+
+
+%attr(750, root , named)   %dir /var/named-xs
+%attr(770, named , named)  %dir /var/named-xs/data
+
+%{_sysconfdir}/udev/rules.d/10-olpcmesh.rules
+%{_sysconfdir}/init.d/olpc-network-config
+%{_sysconfdir}/init.d/olpc-mesh-config
+%{_sysconfdir}/usbmount/mount.d/01_beep_on_mount
+%{_sysconfdir}/usbmount/mount.d/99_beep_when_done
