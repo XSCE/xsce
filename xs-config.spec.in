@@ -220,7 +220,7 @@ fi
 %config(noreplace) %{_sysconfdir}/sysctl.conf.in
 %config(noreplace) %{_sysconfdir}/syslog.conf.in
 %config(noreplace) %{_sysconfdir}/yum.conf.in
-
+%config(noreplace) %{_sysconfdir}/rssh.conf.in
 
 
 %attr(750, root , named)   %dir /var/named-xs

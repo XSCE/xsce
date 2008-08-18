@@ -144,6 +144,7 @@ install: $(OLPCROOT) $(DESTDIR)
 	install -D altfiles/etc/syslog.conf.in  $(DESTDIR)/etc/
 	install -D altfiles/etc/sysctl.conf.in  $(DESTDIR)/etc/
 	install -D altfiles/etc/yum.conf.in     $(DESTDIR)/etc/
+	install -D altfiles/etc/rssh.conf.in    $(DESTDIR)/etc/
 	install -D altfiles/etc/motd.in         $(DESTDIR)/etc/
 
 	# conf.d-style conffiles
