@@ -139,6 +139,14 @@ install: $(OLPCROOT) $(DESTDIR)
 	install -D altfiles/etc/resolv.conf.in  $(DESTDIR)/etc/
 	install -D altfiles/etc/idmgr.conf.in  $(DESTDIR)/etc/
 
+	# makefile-driven set
+	install -D altfiles/etc/xs-config.make  $(DESTDIR)/etc/
+	install -D altfiles/etc/syslog.conf.in  $(DESTDIR)/etc/
+	install -D altfiles/etc/sysctl.conf.in  $(DESTDIR)/etc/
+	install -D altfiles/etc/yum.conf.in     $(DESTDIR)/etc/
+	install -D altfiles/etc/motd.in         $(DESTDIR)/etc/
+
+	# conf.d-style conffiles
 	install -D -d $(DESTDIR)/etc/udev/rules.d
 	install -D altfiles/etc/udev/rules.d/10-olpcmesh.rules  $(DESTDIR)/etc/udev/rules.d
 

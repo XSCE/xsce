@@ -27,6 +27,7 @@ Requires: smartmontools
 Requires: sudo  
 Requires: sysklogd  
 Requires: xml-common  
+Requires: git-core
 
 Requires: usbmount
 
@@ -56,6 +57,12 @@ make DESTDIR=$RPM_BUILD_ROOT/%{DESTDIR} install
 rm -rf $RPM_BUILD_ROOT
 
 %post
+
+## Make all the makefile-driven config files
+pushd /etc
+make -f xs-config.make all
+popd 
+
 %{LINK} %{OLPCROOT} %{DESTDIR}
 #
 #  If any kernel modules are being installed using this mechanism, you
@@ -67,10 +74,9 @@ depmod -b %{DESTDIR} -C %{DESTDIR}/etc/depmod.d
 rm %{DESTDIR}/etc/sudoers
 cp -fp %{OLPCROOT}/etc/sudoers %{DESTDIR}/etc/
 chmod 0440 %{DESTDIR}/etc/sudoers
-rm %{DESTDIR}/etc/syslog.conf
-cp -fp %{OLPCROOT}/etc/syslog.conf %{DESTDIR}/etc/
-rm %{DESTDIR}/etc/sysctl.conf
-cp -fp %{OLPCROOT}/etc/sysctl.conf %{DESTDIR}/etc/
+
+
+
 #
 #  Delete link script ?
 rm %{LINK}*
@@ -154,6 +160,11 @@ BADLINKS=" /etc/named-xs.conf
 	/etc/usbmount/mount.d/01_beep_on_mount
 	/etc/usbmount/mount.d/99_beep_when_done
 
+	/etc/sysctl.conf
+	/etc/yum.conf
+	/etc/syslog.conf
+	/etc/motd
+
    "
 for FPATH in $BADLINKS; do
     if [ -L "$DESTDIR/$FPATH" ]; then
@@ -168,7 +179,14 @@ done
 find /etc/rc.d -type l -name '*.olpcnew' -print0 | xargs -0 --no-run-if-empty rm
 find /etc/rc.d -type l -name '*.olpcsave' -print0 | xargs -0 --no-run-if-empty rm
 
-
+## Prepare a .git directory so xs-commitchanged
+## can store its database...
+if [ !-d /etc/.git ];then
+   pushd /etc
+   git init
+   chmod 700 .git
+   popd
+fi
 
 %preun
 #  If this is an uninstall...
@@ -196,6 +214,13 @@ fi
 
 
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/mime_olpc.conf
+
+%{_sysconfdir}/xs-config.make
+%config(noreplace) %{_sysconfdir}/motd.in
+%config(noreplace) %{_sysconfdir}/sysctl.conf.in
+%config(noreplace) %{_sysconfdir}/syslog.conf.in
+%config(noreplace) %{_sysconfdir}/yum.conf.in
+
 
 
 %attr(750, root , named)   %dir /var/named-xs

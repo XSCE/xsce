@@ -1,3 +1,16 @@
+### OLPC School server -- syslog config
+###
+### NOTE: syslog.conf.in is the master file. Edit
+###       the master file if you want your changes to persist.
+###       After editing the master file, do 
+###
+###          `make -f xs-config.make <targetfile>`
+###       
+### Also see /usr/share/doc/xs-config-<version>/README for more
+### details, including how to RECOVER changes you have made if
+### they are overwritten.
+###
+
 # Log all kernel messages to the console.
 # Logging much else clutters up the screen.
 kern.alert						/dev/console
@@ -25,5 +38,8 @@ uucp,news.crit						/var/log/spooler
 # Save boot messages also to boot.log
 local7.*						/var/log/boot.log
 
+
+# On the XS we want the user logs to be collected as we will
+# be showing them to end users.
 user.*						/var/log/user.log
 
