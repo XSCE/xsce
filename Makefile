@@ -36,7 +36,8 @@ SOURCES: Makefile $(SCRIPTS)
 	mkdir -p $(NV)
 	cp -p Makefile $(NV)
 	rsync -ar $(OLPCIMG)/ $(NV)/$(OLPCROOT)
-	rsync -ar altfiles/ $(NV)/altfiles
+	rsync -ar altfiles/   $(NV)/altfiles
+	rsync -ar scripts/    $(NV)/scripts
 	cp -p $(SCRIPTS) $(NV)/$(OLPCROOT)
 	tar czf $(BUILDDIR)/SOURCES/$(NV).tar.gz $(NV)
 	rm -rf $(NV)
@@ -167,4 +168,6 @@ install: $(OLPCROOT) $(DESTDIR)
 	install -D altfiles/etc/usbmount/mount.d/01_beep_on_mount  $(DESTDIR)/etc/usbmount/mount.d
 	install -D altfiles/etc/usbmount/mount.d/99_beep_when_done $(DESTDIR)/etc/usbmount/mount.d
 
-
+	# scripts
+	install -D -d $(DESTDIR)/usr/bin
+	install -D scripts/xs-commitchanged $(DESTDIR)/usr/bin

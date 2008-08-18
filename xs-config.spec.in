@@ -188,7 +188,7 @@ find /etc/rc.d -type l -name '*.olpcsave' -print0 | xargs -0 --no-run-if-empty r
 
 ## Prepare a .git directory so xs-commitchanged
 ## can store its database...
-if [ !-d /etc/.git ];then
+if [ ! -d /etc/.git ];then
    pushd /etc
    git init
    chmod 700 .git
@@ -239,3 +239,5 @@ fi
 %{_sysconfdir}/init.d/olpc-mesh-config
 %{_sysconfdir}/usbmount/mount.d/01_beep_on_mount
 %{_sysconfdir}/usbmount/mount.d/99_beep_when_done
+
+%{_bindir}/xs-commitchanged
