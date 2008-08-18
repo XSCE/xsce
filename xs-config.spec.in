@@ -158,7 +158,14 @@ BADLINKS=" /etc/named-xs.conf
 	/etc/rndc.key
 	/etc/xml/catalog
 	/etc/radvd.conf
-
+	/etc/sysconfig/authconfig
+	/etc/sysconfig/firstboot
+	/etc/sysconfig/ip6tables-config
+	/etc/sysconfig/dhcpd
+	/etc/sysconfig/named 
+	/etc/sysconfig/init
+	/etc/sysconfig/iptables-config
+	/etc/sysconfig/squid
 	/etc/udev/rules.d/10-olpcmesh.rules
 	/etc/usbmount/usbmount.conf
 	/etc/usbmount/mount.d/01_beep_on_mount
@@ -231,7 +238,11 @@ fi
 %config(noreplace) %{_sysconfdir}/yum.conf.in
 %config(noreplace) %{_sysconfdir}/rssh.conf.in
 %config(noreplace) %{_sysconfdir}/ssh/sshd_config.in
-
+%config(noreplace) %{_sysconfdir}/sysconfig/dhcpd.in
+%config(noreplace) %{_sysconfdir}/sysconfig/named.in
+%config(noreplace) %{_sysconfdir}/sysconfig/init.in
+%config(noreplace) %{_sysconfdir}/sysconfig/iptables-config.in
+%config(noreplace) %{_sysconfdir}/sysconfig/squid.in
 
 %attr(750, root , named)   %dir /var/named-xs
 %attr(770, named , named)  %dir /var/named-xs/data

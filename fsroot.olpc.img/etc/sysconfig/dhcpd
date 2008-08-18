@@ -1,2 +1,0 @@
-# Point dhcpd to the XS-specific config
-DHCPDARGS='-cf /etc/dhcpd-xs.conf'

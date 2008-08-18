@@ -1,5 +1,7 @@
-# BIND named process options
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~
+## XS Config override
+##
+## This file has an ".in" template - for details see
+##  see /usr/share/doc/xs-config-<version>/README 
 
 ###
 ### XS overrides - we will point named

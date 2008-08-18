@@ -1,3 +1,8 @@
+## XS Config override
+##
+## This file has an ".in" template - for details see
+##  see /usr/share/doc/xs-config-<version>/README 
+
 # color => new RH6.0 bootup
 # verbose => old-style bootup
 # anything else => new style bootup without ANSI colors or positioning

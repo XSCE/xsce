@@ -1,3 +1,8 @@
+## XS Config override
+##
+## This file has an ".in" template - for details see
+##  see /usr/share/doc/xs-config-<version>/README 
+
 # squid options for the School Server
 # -D disables initial dns checks. If you most likely will not to have an
 #    internet connection when you start squid, uncomment this

@@ -4,7 +4,9 @@
 ## See /usr/share/doc/xs-config-<version>/README for
 ## how this works...
 ##
-all: syslog.conf motd yum.conf sysctl.conf ssh/sshd_config
+all: syslog.conf motd yum.conf sysctl.conf ssh/sshd_config \
+     etc/sysconfig/dhcpd etc/sysconfig/named etc/sysconfig/init \
+     etc/sysconfig/iptables-config etc/sysconfig/squid
 
 # Any file that has a ".in"
 # 'template' can be made with this catch-all

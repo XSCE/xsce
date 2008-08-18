@@ -1,3 +1,8 @@
+## XS Config override
+##
+## This file has an ".in" template - for details see
+##  see /usr/share/doc/xs-config-<version>/README 
+
 # Load additional iptables modules (nat helpers)
 #   Default: -none-
 # Space separated list of nat helpers (e.g. 'nf_nat_ftp nf_nat_irc'), which
