@@ -150,6 +150,10 @@ BADLINKS=" /etc/named-xs.conf
 	/etc/pki/nssdb/secmod.db
 
 	/etc/udev/rules.d/10-olpcmesh.rules
+	/etc/usbmount/usbmount.conf
+	/etc/usbmount/mount.d/01_beep_on_mount
+	/etc/usbmount/mount.d/99_beep_when_done
+
    "
 for FPATH in $BADLINKS; do
     if [ -L "$DESTDIR/$FPATH" ]; then
