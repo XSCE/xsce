@@ -1,4 +1,15 @@
-#	$OpenBSD: sshd_config,v 1.73 2005/12/06 22:38:28 reyk Exp $
+### OLPC School server sshd configuration file
+###
+### NOTE: sshd_conf.in is the master file. Edit
+###       the master file if you want your changes to persist.
+###       After editing the master file, do 
+###
+###          `make -f xs-config.make <targetfile>`
+###       
+### Also see /usr/share/doc/xs-config-<version>/README for more
+### details, including how to RECOVER changes you have made if
+### they are overwritten.
+###
 
 # This is the sshd server system-wide configuration file.  See
 # sshd_config(5) for more information.

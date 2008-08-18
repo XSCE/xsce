@@ -147,6 +147,8 @@ install: $(OLPCROOT) $(DESTDIR)
 	install -D altfiles/etc/yum.conf.in     $(DESTDIR)/etc/
 	install -D altfiles/etc/rssh.conf.in    $(DESTDIR)/etc/
 	install -D altfiles/etc/motd.in         $(DESTDIR)/etc/
+	install -D -d $(DESTDIR)/etc/ssh
+	install -D altfiles/etc/ssh/sshd_config.in $(DESTDIR)/etc/ssh
 
 	# conf.d-style conffiles
 	install -D -d $(DESTDIR)/etc/httpd/conf.d
