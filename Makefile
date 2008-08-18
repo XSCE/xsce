@@ -148,6 +148,14 @@ install: $(OLPCROOT) $(DESTDIR)
 	install -D altfiles/etc/motd.in         $(DESTDIR)/etc/
 
 	# conf.d-style conffiles
+	install -D -d $(DESTDIR)/etc/httpd/conf.d
+	install -D altfiles/etc/httpd/conf.d/mime_olpc.conf  $(DESTDIR)/etc/httpd/conf.d
+
+	install -D -d $(DESTDIR)/etc/yum.repos.olpc.d
+	install -D altfiles/etc/yum.repos.olpc.d/testing.repo $(DESTDIR)/etc/yum.repos.olpc.d
+	install -D altfiles/etc/yum.repos.olpc.d/stable.repo  $(DESTDIR)/etc/yum.repos.olpc.d
+
+	# conf.d-style conffiles that are actually executable scripts...
 	install -D -d $(DESTDIR)/etc/udev/rules.d
 	install -D altfiles/etc/udev/rules.d/10-olpcmesh.rules  $(DESTDIR)/etc/udev/rules.d
 
@@ -159,6 +167,4 @@ install: $(OLPCROOT) $(DESTDIR)
 	install -D altfiles/etc/usbmount/mount.d/01_beep_on_mount  $(DESTDIR)/etc/usbmount/mount.d
 	install -D altfiles/etc/usbmount/mount.d/99_beep_when_done $(DESTDIR)/etc/usbmount/mount.d
 
-	install -D -d $(DESTDIR)/etc/httpd/conf.d
-	install -D altfiles/etc/httpd/conf.d/mime_olpc.conf  $(DESTDIR)/etc/httpd/conf.d
 

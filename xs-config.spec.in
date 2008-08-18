@@ -154,11 +154,18 @@ BADLINKS=" /etc/named-xs.conf
 	/etc/lighttpd/lighttpd.conf
 	/etc/libaudit.conf
 	/etc/pki/nssdb/secmod.db
+	/etc/smartd.conf
+	/etc/rndc.key
+	/etc/xml/catalog
+	/etc/radvd.conf
 
 	/etc/udev/rules.d/10-olpcmesh.rules
 	/etc/usbmount/usbmount.conf
 	/etc/usbmount/mount.d/01_beep_on_mount
 	/etc/usbmount/mount.d/99_beep_when_done
+
+	/etc/yum.repos.olpc.d/stable.repo
+	/etc/yum.repos.olpc.d/testing.repo
 
 	/etc/sysctl.conf
 	/etc/yum.conf
@@ -212,7 +219,8 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/olpc-scripts/
 %config(noreplace) /var/named-xs
 
-
+%config(noreplace) %{_sysconfdir}/yum.repos.olpc.d/testing.repo
+%config(noreplace) %{_sysconfdir}/yum.repos.olpc.d/stable.repo
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/mime_olpc.conf
 
 %{_sysconfdir}/xs-config.make
