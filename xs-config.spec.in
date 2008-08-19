@@ -155,9 +155,10 @@ rm -rf $RPM_BUILD_ROOT
 ## RPM computes conflicts _before_ %pre so even if the symlinks were 
 ## removed in %pre, rpm will still divert files that it would have
 ## conflicted. So mv the rpmnew files into place if appropriate.
+BADLINKS='%{BADLINKS}'
 for FPATH in $BADLINKS; do
-    if [ ! -e "$DESTDIR/$FPATH" -a -e "$DESTDIR/$FPATH.rpmnew" ]; then
-       mv "$DESTDIR/$FPATH.rpmnew" "$DESTDIR/$FPATH"
+    if [ ! -e "%{DESTDIR}$FPATH" -a -e "%{DESTDIR}$FPATH.rpmnew" ]; then
+       mv "%{DESTDIR}$FPATH.rpmnew" "%{DESTDIR}$FPATH"
     fi
 done
 
@@ -184,11 +185,12 @@ find /etc/rc.d -type l -name '*.olpcsave' -print0 | xargs -0 --no-run-if-empty r
 ## if they exist. Note that removing the symlinks
 ## in %pre is not enough to avoid conflicts with the
 ## new files. See %post for further cleanup actions.
+BADLINKS='%{BADLINKS}'
 for FPATH in $BADLINKS; do
-    if [ -L "$DESTDIR/$FPATH" ]; then
-       /bin/rm "$DESTDIR/$FPATH"
-       if [ -e "$DESTDIR/$FPATH.olpcsave" ]; then
-       	  mv "$DESTDIR/$FPATH.olpcsave" "$DESTDIR/$FPATH"
+    if [ -L "%{DESTDIR}$FPATH" ]; then
+       /bin/rm "%{DESTDIR}$FPATH"
+       if [ -e "%{DESTDIR}/$FPATH.olpcsave" ]; then
+       	  mv "%{DESTDIR}/$FPATH.olpcsave" "%{DESTDIR}/$FPATH"
        fi
     fi
 done
