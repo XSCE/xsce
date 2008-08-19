@@ -177,6 +177,9 @@ install: $(OLPCROOT) $(DESTDIR)
 	install -D altfiles/etc/usbmount/mount.d/01_beep_on_mount  $(DESTDIR)/etc/usbmount/mount.d
 	install -D altfiles/etc/usbmount/mount.d/99_beep_when_done $(DESTDIR)/etc/usbmount/mount.d
 
+	install -D --mode 750 -d $(DESTDIR)/etc/sudoers.d
+	install -D --mode 440 altfiles/etc/sudoers.d/00-base  $(DESTDIR)/etc/sudoers.d
+
 	# scripts
 	install -D -d $(DESTDIR)/usr/bin
 	install -D scripts/xs-commitchanged $(DESTDIR)/usr/bin

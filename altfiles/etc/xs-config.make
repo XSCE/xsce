@@ -6,7 +6,8 @@
 ##
 all: syslog.conf motd yum.conf sysctl.conf ssh/sshd_config \
      sysconfig/dhcpd sysconfig/named sysconfig/init \
-     sysconfig/iptables-config sysconfig/squid
+     sysconfig/iptables-config sysconfig/squid \
+     sudoers
 
 # Any file that has a ".in"
 # 'template' can be made with this catch-all
@@ -22,4 +23,13 @@ all: syslog.conf motd yum.conf sysctl.conf ssh/sshd_config \
 	# Overwrite
 	cp -p $@.in $@
 	xs-commitchanged -m "Made from $@.in" $@
+
+sudoers: sudoers.d/*
+	touch sudoers.tmp
+	chmod 640 sudoers.tmp
+	cat-parts sudoers.d > sudoers.tmp
+	chmod 440 sudoers.tmp
+	xs-commitchanged -m 'Dirty state' $@
+	mv -f sudoers.tmp sudoers
+	xs-commitchanged -m "Made from sudoers.d" $@
 
