@@ -180,3 +180,4 @@ install: $(OLPCROOT) $(DESTDIR)
 	# scripts
 	install -D -d $(DESTDIR)/usr/bin
 	install -D scripts/xs-commitchanged $(DESTDIR)/usr/bin
+	install -D scripts/cat-parts $(DESTDIR)/usr/bin

@@ -254,3 +254,4 @@ fi
 %{_sysconfdir}/usbmount/mount.d/99_beep_when_done
 
 %{_bindir}/xs-commitchanged
+%{_bindir}/cat-parts
