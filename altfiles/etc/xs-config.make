@@ -5,8 +5,8 @@
 ## how this works...
 ##
 all: syslog.conf motd yum.conf sysctl.conf ssh/sshd_config \
-     etc/sysconfig/dhcpd etc/sysconfig/named etc/sysconfig/init \
-     etc/sysconfig/iptables-config etc/sysconfig/squid
+     sysconfig/dhcpd sysconfig/named sysconfig/init \
+     sysconfig/iptables-config sysconfig/squid
 
 # Any file that has a ".in"
 # 'template' can be made with this catch-all
@@ -22,3 +22,4 @@ all: syslog.conf motd yum.conf sysctl.conf ssh/sshd_config \
 	# Overwrite
 	cp -p $@.in $@
 	xs-commitchanged -m "Made from $@.in" $@
+
