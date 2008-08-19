@@ -78,6 +78,11 @@ rm -rf $RPM_BUILD_ROOT
 	/etc/sysconfig/olpc-scripts/domain_config.d/idmgr    \
 	/etc/sysconfig/olpc-scripts/domain_config.d/named    \
 	/etc/sysconfig/olpc-scripts/domain_config.d/squid    \
+	/etc/sysconfig/olpc-scripts/domain_config.d/dhcpd.orig    \
+	/etc/sysconfig/olpc-scripts/domain_config.d/idmgr.orig    \
+	/etc/sysconfig/olpc-scripts/domain_config.d/ejabberd.rej  \
+	/etc/sysconfig/olpc-scripts/domain_config.d/named.orig    \
+	/etc/sysconfig/olpc-scripts/domain_config.d/ejabberd.orig \
 	/etc/sysconfig/olpc-scripts/ifcfg-dummy0             \
 	/etc/sysconfig/olpc-scripts/ifcfg-eth0               \
 	/etc/sysconfig/olpc-scripts/ifcfg-eth0.auxiliary     \
