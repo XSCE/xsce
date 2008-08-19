@@ -180,9 +180,9 @@ depmod -b %{DESTDIR} -C %{DESTDIR}/etc/depmod.d
 ##
 ## clear the way for a better pkg
 ##
-## remove olpcsave links and olpcnew symlinks in /etc/rd.d
-find /etc/rc.d -type l -name '*.olpcnew'  -lname '*fsroot*' -print0 | xargs -0 --no-run-if-empty rm
-find /etc/rc.d -type l -name '*.olpcsave' -lname '*fsroot*' -print0 | xargs -0 --no-run-if-empty rm
+## remove olpcsave links and olpcnew symlinks in /etc
+find /etc -type l -name '*.olpcnew'  -lname '*fsroot*' -print0 | xargs -0 --no-run-if-empty rm
+find /etc -type l -name '*.olpcsave' -lname '*fsroot*' -print0 | xargs -0 --no-run-if-empty rm
 
 ## Remove symlinks and reinstate original files
 ## if they exist. Note that removing the symlinks
