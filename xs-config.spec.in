@@ -160,18 +160,19 @@ BADLINKS=" /etc/named-xs.conf
 	/etc/ssh/sshd_config
 
    "
+
+# remove olpcsave links and olpcnew symlinks in /etc/rd.d
+find /etc/rc.d -type l -name '*.olpcnew'  -print0 | xargs -0 --no-run-if-empty rm
+find /etc/rc.d -type l -name '*.olpcsave' -print0 | xargs -0 --no-run-if-empty rm
+
 for FPATH in $BADLINKS; do
     if [ -L "$DESTDIR/$FPATH" ]; then
        /bin/rm "$DESTDIR/$FPATH"
-       if [ -e "$FPATH.olpcsave" ]; then
-       	  mv "$FPATH.olpcsave" "$FPATH"
+       if [ -e "$DESTDIR/$FPATH.olpcsave" ]; then
+       	  mv "$DESTDIR/$FPATH.olpcsave" "$DESTDIR/$FPATH"
        fi
     fi
 done
-
-# remove olpcsave links and olpcnew links in /etc/rd.d
-find /etc/rc.d -type l -name '*.olpcnew' -print0 | xargs -0 --no-run-if-empty rm
-find /etc/rc.d -type l -name '*.olpcsave' -print0 | xargs -0 --no-run-if-empty rm
 
 ## Prepare a .git directory so xs-commitchanged
 ## can store its database...
