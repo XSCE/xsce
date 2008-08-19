@@ -53,6 +53,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %define BADLINKS /etc/named-xs.conf \
+	/etc/named.conf   \
+	/etc/squid/squid.conf   \
 	/etc/sysconfig/olpc-scripts/TURN_SQUID_OFF \
 	/etc/sysconfig/olpc-scripts/TURN_SQUID_ON \
 	/etc/sysconfig/olpc-scripts/auxiliary_config \
@@ -72,6 +74,7 @@ rm -rf $RPM_BUILD_ROOT
 	/etc/sysconfig/olpc-scripts/dhcpd.conf.7.aux \
 	/etc/sysconfig/olpc-scripts/dhcpd.conf.8     \
 	/etc/sysconfig/olpc-scripts/dhcpd.conf.8.aux \
+	/etc/sysconfig/olpc-scripts/resolv.conf \
 	/etc/sysconfig/olpc-scripts/domain_config    \
 	/etc/sysconfig/olpc-scripts/domain_config.d/dhcpd    \
 	/etc/sysconfig/olpc-scripts/domain_config.d/ejabberd \
@@ -178,8 +181,8 @@ depmod -b %{DESTDIR} -C %{DESTDIR}/etc/depmod.d
 ## clear the way for a better pkg
 ##
 ## remove olpcsave links and olpcnew symlinks in /etc/rd.d
-find /etc/rc.d -type l -name '*.olpcnew'  -print0 | xargs -0 --no-run-if-empty rm
-find /etc/rc.d -type l -name '*.olpcsave' -print0 | xargs -0 --no-run-if-empty rm
+find /etc/rc.d -type l -name '*.olpcnew'  -lname '*fsroot*' -print0 | xargs -0 --no-run-if-empty rm
+find /etc/rc.d -type l -name '*.olpcsave' -lname '*fsroot*' -print0 | xargs -0 --no-run-if-empty rm
 
 ## Remove symlinks and reinstate original files
 ## if they exist. Note that removing the symlinks
