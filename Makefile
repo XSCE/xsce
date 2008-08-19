@@ -3,9 +3,6 @@
 # install root
 DESTDIR = /
 
-SCRIPTS = symlink-tree.py unlink-tree.py
-OLPCROOT = fsroot.olpc
-
 $(DESTDIR):
 	mkdir -p $(DESTDIR)
 
@@ -13,9 +10,6 @@ $(DESTDIR):
 
 # rpm target directory
 BUILDDIR = $(PWD)/build
-
-# olpc configuration tree
-OLPCIMG = fsroot.olpc.img
 
 # symbols
 PKGNAME = xs-config
@@ -30,15 +24,13 @@ REL = 1
 RPMBUILD = rpmbuild \
 	--define "_topdir $(BUILDDIR)" \
 
-SOURCES: Makefile $(SCRIPTS)
+SOURCES: Makefile
 	mkdir -p $(BUILDDIR)/BUILD $(BUILDDIR)/RPMS \
 	$(BUILDDIR)/SOURCES $(BUILDDIR)/SPECS $(BUILDDIR)/SRPMS
 	mkdir -p $(NV)
 	cp -p Makefile $(NV)
-	rsync -ar $(OLPCIMG)/ $(NV)/$(OLPCROOT)
 	rsync -ar altfiles/   $(NV)/altfiles
 	rsync -ar scripts/    $(NV)/scripts
-	cp -p $(SCRIPTS) $(NV)/$(OLPCROOT)
 	tar czf $(BUILDDIR)/SOURCES/$(NV).tar.gz $(NV)
 	rm -rf $(NV)
 
@@ -60,8 +52,7 @@ publish:
 	    xs-dev.laptop.org:/xsrepos/testing/olpc/7/source/SRPMS/
 	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/7/i386
 
-install: $(OLPCROOT) $(DESTDIR)
-	rsync -ar $(OLPCROOT) $(DESTDIR)
+install: $(DESTDIR)
 
 	install -D -d $(DESTDIR)/etc
 	install -D -d $(DESTDIR)/etc/sysconfig

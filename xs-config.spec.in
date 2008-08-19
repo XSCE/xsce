@@ -1,11 +1,6 @@
 # install root
 %define DESTDIR  /
 
-%define OLPCROOT %{DESTDIR}/fsroot.olpc
-
-%define LINK	 %{OLPCROOT}/symlink-tree.py
-%define UNLINK   %{OLPCROOT}/unlink-tree.py
-
 Requires: python
 
 #  This really should just require xs-pkgs, right ?
@@ -63,26 +58,10 @@ pushd /etc
 make -f xs-config.make all
 popd 
 
-%{LINK} %{OLPCROOT} %{DESTDIR}
 #
 #  If any kernel modules are being installed using this mechanism, you
 #  need to depmod them in...
 depmod -b %{DESTDIR} -C %{DESTDIR}/etc/depmod.d
-#
-#  There are some files which must be copied, not symlinked
-#  syslog.conf, sysctl.conf, and sudoers are examples.
-rm %{DESTDIR}/etc/sudoers
-cp -fp %{OLPCROOT}/etc/sudoers %{DESTDIR}/etc/
-chmod 0440 %{DESTDIR}/etc/sudoers
-
-
-
-#
-#  Delete link script ?
-rm %{LINK}*
-#  Temporary fix to remove script symlinks
-rm %{DESTDIR}/symlink-tree.py*
-rm %{DESTDIR}/unlink-tree.py*
 
 %pre
 
@@ -204,18 +183,8 @@ if [ ! -d /etc/.git ];then
 fi
 
 %preun
-#  If this is an uninstall...
-if [ $1 -eq 0 ]
-then
-   %{UNLINK} %{OLPCROOT} %{DESTDIR}
-   rm %{UNLINK}*
-fi
-
-
-
 
 %files
-%config(noreplace) %{OLPCROOT}
 
 %config(noreplace) %{_sysconfdir}/named-xs.conf.in
 %config(noreplace) %{_sysconfdir}/resolv.conf.in
