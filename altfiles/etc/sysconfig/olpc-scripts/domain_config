@@ -25,18 +25,34 @@ BASEDIR=`dirname $0`
 DOMAIN_CONFIG_DIR="$BASEDIR/domain_config.d/"
 
 #  Check the number of arguments and print usage if abnormal
-if [ $# -lt 1 -o $# -gt 2 ]; then
-  echo "usage:  domain_config <new_domain_name>"
+if [ "$1" = '-h' -o $# -gt 1 ]; then
+  echo "usage:  domain_config [ <new_domain_name> ]"
   exit 0 ;
 fi
 
 #  Parse arguments
 new_domain_name=$1
-echo $new_domain_name > "$BASEDIR/xs-domain-name"
+if [ -n "$new_domain_name" ];then
+    echo $new_domain_name > "$BASEDIR/xs-domain-name"
+else
+    if [ -e "$BASEDIR/xs-domain-name" ];then
+	new_domain_name=`cat "$BASEDIR/xs-domain-name"`
+    else
+	echo Using default domain name
+	new_domain_name=random.xs.laptop.org
+	fi
+fi
 echo Setting the base dns name to $new_domain_name
 
 #  Apply each executable in the config directory
 for file in `find $DOMAIN_CONFIG_DIR -maxdepth 1 -type f -perm /u+x ! -name "*~" -print` ;
 do
-  eval $file $new_domain_name ;
+    # skip saved/backup files
+    [ "${file%.cfsaved}" != "${file}" ] && continue
+    [ "${file%.rpmsave}" != "${file}" ] && continue
+    [ "${file%.rpmorig}" != "${file}" ] && continue
+    [ "${file%.rpmnew}" != "${file}" ]  && continue
+    [ "${file%.swp}" != "${file}" ]     && continue
+    [ "${file%,v}" != "${file}" ]       && continue
+    eval $file $new_domain_name ;
 done
