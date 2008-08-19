@@ -258,3 +258,10 @@ fi
 
 %{_bindir}/xs-commitchanged
 %{_bindir}/cat-parts
+
+# remove for F9
+/lib/firmware/usb8388.bin
+/lib/firmware/LICENSE-usb8388.bin
+/lib/modules/2.6.23.1-21.fc7/kernel/drivers/net/wireless/libertas/usb8xxx.ko
+/lib/modules/2.6.23.1-21.fc7/kernel/drivers/net/wireless/libertas/libertas.ko
+
