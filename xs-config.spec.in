@@ -102,6 +102,7 @@ rm -rf $RPM_BUILD_ROOT
 	/etc/sysconfig/olpc-scripts/network_config           \
 	/etc/sysconfig/olpc-scripts/principal_config         \
 	/etc/ejabberd/ejabberd.pem                           \
+	/etc/ejabberd/ejabberd.cfg                           \
                                                              \
 	/etc/ppp/chap-secrets         \
 	/etc/ppp/pap-secrets          \
