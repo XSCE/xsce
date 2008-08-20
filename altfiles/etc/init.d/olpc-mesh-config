@@ -4,7 +4,7 @@
 #   This script ensures that the wireless mesh interfaces are
 #   configured to 
 #   
-# chkconfig: 345 22 75
+# chkconfig: - 22 75
 # description: OLPC sets anycast mode in mesh interfaces
 
 # Source function library.

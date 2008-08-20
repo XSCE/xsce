@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-# olpc-network-config:  Starts the network config script
+# olpc-network-config  Starts the network config script
 #
-# chkconfig: 345 05 95
+# chkconfig: - 05 95
 #
 # description:       olpc-network-config runs the first time a school server
 #                    is booted after an image is installed, or after a
@@ -13,13 +13,13 @@
 #
 CONFIG_FILE=/etc/sysconfig/olpc_net_config
 NETWORK_CONFIG=/etc/sysconfig/olpc-scripts/network_config
-
+DOMAIN_CONFIG=/etc/sysconfig/olpc-scripts/domain_config
 start () {
        #  Check if we should even do anything.
        #  Search the configuration file for the run variable
        #  The following is a hack, but works well enough to get moving
 	if [ ! -f $CONFIG_FILE ] ; then
-	    $NETWORK_CONFIG 1
+	    $NETWORK_CONFIG 1 && $DOMAIN_CONFIG
 	    RETVAL=$?
             [ $RETVAL -eq 0 ] && touch $CONFIG_FILE
 	    #  This rebuilds the module dependency table to include
