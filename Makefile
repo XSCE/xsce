@@ -28,11 +28,13 @@ SOURCES: Makefile
 	mkdir -p $(BUILDDIR)/BUILD $(BUILDDIR)/RPMS \
 	$(BUILDDIR)/SOURCES $(BUILDDIR)/SPECS $(BUILDDIR)/SRPMS
 	mkdir -p $(NV)
-	cp -p Makefile $(NV)
-	rsync -ar altfiles/   $(NV)/altfiles
-	rsync -ar scripts/    $(NV)/scripts
-	tar czf $(BUILDDIR)/SOURCES/$(NV).tar.gz $(NV)
-	rm -rf $(NV)
+	git archive --format=tar --prefix="$(NV)/" HEAD > $(NV).tar
+	mkdir -p $(NV)
+	echo $(VERSION) > $(NV)/build-version
+	tar -rf $(NV).tar $(NV)/build-version
+	rm -fr $(NV)
+	gzip  $(NV).tar
+	mv $(NV).tar.gz $(BUILDDIR)/SOURCES/
 
 xs-config.spec: xs-config.spec.in
 	sed -e 's:@VERSION@:$(VERSION):g' < $< > $@

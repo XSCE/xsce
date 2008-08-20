@@ -1,11 +1,9 @@
 # install root
 %define DESTDIR  /
 
+#  Requires a few tools and
+#  a list of packages modified by xs-config
 Requires: python
-
-#  This really should just require xs-pkgs, right ?
-#  or nothing at all...
-#  Now a list of packages modified by xs-config
 Requires: authconfig  
 Requires: bind  
 Requires: initscripts  
@@ -23,9 +21,7 @@ Requires: sudo
 Requires: sysklogd  
 Requires: xml-common  
 Requires: git-core
-
 Requires: usbmount
-
 
 Summary: XS/XSX default configuration
 Name: xs-config
@@ -34,13 +30,14 @@ Release: 1
 BuildRoot: %{_builddir}/%{name}-root
 Distribution: OLPC XS/XSX School Server
 Group: Base System/Administration Tools
-License: GPL
-Packager: John Watlington <wad@laptop.org>
+License: GPLv2
+Packager: Martin Langhoff <martin@laptop.org>
 Source: %{name}-%{version}.tar.gz
 URL: http://dev.laptop.org/git.do?p=projects/xs-config;a=summary
 Vendor: OLPC
 %description
-The default configuration of an OLPC XS School server. Don't install this if you don't understand what it is!
+
+The default configuration of an OLPC XS School server.
 
 %prep
 %setup
@@ -261,3 +258,4 @@ fi
 /lib/modules/2.6.23.1-21.fc7/kernel/drivers/net/wireless/libertas/usb8xxx.ko
 /lib/modules/2.6.23.1-21.fc7/kernel/drivers/net/wireless/libertas/libertas.ko
 
+%doc README
