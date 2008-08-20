@@ -117,6 +117,7 @@ rm -rf $RPM_BUILD_ROOT
 	/etc/dhclient-eth0.conf       \
 	/etc/ssh/moduli               \
 	/etc/httpd/conf/httpd.conf    \
+	/etc/httpd/conf.d/mime_olpc.conf \
 	/etc/inittab                  \
 	/etc/default/useradd          \
 	/etc/autofs_ldap_auth.conf    \
