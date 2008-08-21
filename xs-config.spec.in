@@ -171,8 +171,11 @@ popd
 
 #
 #  If any kernel modules are being installed using this mechanism, you
-#  need to depmod them in...
-depmod -b %{DESTDIR} -C %{DESTDIR}/etc/depmod.d
+#  need to depmod them in... however this will sometimes
+#  run in a chroot / during livecd creation, and will fail
+#  due to a mismatched uname.
+depmod -b %{DESTDIR} -C %{DESTDIR}/etc/depmod.d \
+       || echo depmod failed - this is not fatal
 
 chkconfig --add olpc-network-config
 chkconfig --add olpc-mesh
