@@ -7,7 +7,7 @@
 all: syslog.conf motd yum.conf sysctl.conf ssh/sshd_config \
      sysconfig/dhcpd sysconfig/named sysconfig/init \
      sysconfig/iptables-config sysconfig/squid \
-     sudoers
+     sudoers rssh.conf
 
 # Any file that has a ".in"
 # 'template' can be made with this catch-all
