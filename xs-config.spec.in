@@ -229,6 +229,7 @@ fi
 %config(noreplace) %{_sysconfdir}/yum.repos.olpc.d/testing.repo
 %config(noreplace) %{_sysconfdir}/yum.repos.olpc.d/stable.repo
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/mime_olpc.conf
+%config(noreplace) %{_sysconfdir}/logrotate.d/syslog-xslogs
 
 %{_sysconfdir}/xs-config.make
 %config(noreplace) %{_sysconfdir}/motd.in

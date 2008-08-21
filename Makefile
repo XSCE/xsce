@@ -159,6 +159,9 @@ install: $(DESTDIR)
 	install -D altfiles/etc/yum.repos.olpc.d/testing.repo $(DESTDIR)/etc/yum.repos.olpc.d
 	install -D altfiles/etc/yum.repos.olpc.d/stable.repo  $(DESTDIR)/etc/yum.repos.olpc.d
 
+	install -D -d $(DESTDIR)/etc/logrotate.d
+	install -D altfiles/etc/logrotate.d/syslog-xslogs  $(DESTDIR)/etc/logrotate.d
+
 	# conf.d-style conffiles that are actually executable scripts...
 	install -D -d $(DESTDIR)/etc/udev/rules.d
 	install -D altfiles/etc/udev/rules.d/10-olpcmesh.rules  $(DESTDIR)/etc/udev/rules.d
