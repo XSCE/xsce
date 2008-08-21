@@ -92,6 +92,7 @@ install: $(DESTDIR)
 	install -D altfiles/etc/sysconfig/olpc-scripts/domain_config.d/named    $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d
 	install -D altfiles/etc/sysconfig/olpc-scripts/domain_config.d/squid    $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d
 	install -D altfiles/etc/sysconfig/olpc-scripts/domain_config.d/resolvconf    $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d
+	install -D altfiles/etc/sysconfig/olpc-scripts/resolv.conf.in           $(DESTDIR)/etc/sysconfig/olpc-scripts
 
 	install -D altfiles/etc/sysconfig/olpc-scripts/ifcfg-dummy0 $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/ifcfg-eth0   $(DESTDIR)/etc/sysconfig/olpc-scripts/
@@ -162,7 +163,9 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/etc/logrotate.d
 	install -D altfiles/etc/logrotate.d/syslog-xslogs  $(DESTDIR)/etc/logrotate.d
 
-	# conf.d-style conffiles that are actually executable scripts...
+	# conf.d-style or non-conflicting conffiles that are actually executable scripts...
+	install -D altfiles/etc/dhclient-exit-hooks $(DESTDIR)/etc
+
 	install -D -d $(DESTDIR)/etc/udev/rules.d
 	install -D altfiles/etc/udev/rules.d/10-olpcmesh.rules  $(DESTDIR)/etc/udev/rules.d
 

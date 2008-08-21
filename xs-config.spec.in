@@ -247,6 +247,7 @@ fi
 %attr(750, root , named)   %dir /var/named-xs
 %attr(770, named , named)  %dir /var/named-xs/data
 
+%{_sysconfdir}/dhclient-exit-hooks
 %{_sysconfdir}/udev/rules.d/10-olpcmesh.rules
 %{_sysconfdir}/init.d/olpc-network-config
 %{_sysconfdir}/init.d/olpc-mesh-config
