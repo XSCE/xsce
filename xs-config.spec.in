@@ -178,7 +178,7 @@ depmod -b %{DESTDIR} -C %{DESTDIR}/etc/depmod.d \
        || echo depmod failed - this is not fatal
 
 chkconfig --add olpc-network-config
-chkconfig --add olpc-mesh
+chkconfig --add olpc-mesh-config
 
 %pre
 
