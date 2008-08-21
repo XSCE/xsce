@@ -1,5 +1,5 @@
 #  This is a configuration file for the OLPC idmgr
 #  See http://wiki.laptop.org/go/School_Identity_Manager
-BACKUP=schoolserver.@@BASEDNSDOMAIN@@
-PRESENCE=schoolserver.@@BASEDNSDOMAIN@@
+BACKUP=schoolserver.@@BASEDNSNAME@@
+PRESENCE=schoolserver.@@BASEDNSNAME@@
 
