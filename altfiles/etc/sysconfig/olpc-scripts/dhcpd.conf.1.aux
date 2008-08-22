@@ -1,0 +1,46 @@
+#
+# School server 1 DHCP Server Configuration file.
+#
+ddns-update-style interim;
+#ignore client-updates;
+
+option domain-name "@@BASEDNSNAME@@";
+option domain-name-servers      172.18.0.1;
+option ntp-servers		172.18.0.1;
+
+subnet 172.18.8.0 netmask 255.255.254.0 {
+	option routers			172.18.8.1;
+	option subnet-mask		255.255.254.0;
+	option broadcast-address	172.18.9.255;
+	range                           172.18.8.2 172.18.9.254;
+#  As this subnet is wired, these lease times are on the long side
+	default-lease-time 	21600;
+	max-lease-time 		43200;
+}
+
+subnet 172.18.10.0 netmask 255.255.254.0 {
+	option routers			172.18.10.1;
+	option subnet-mask		255.255.254.0;
+	option broadcast-address	172.18.11.255;
+	range                           172.18.10.2 172.18.11.254;
+	default-lease-time	600;
+	max-lease-time 		1800;
+}
+
+subnet 172.18.12.0 netmask 255.255.254.0 {
+	option routers			172.18.12.1;
+	option subnet-mask		255.255.254.0;
+	option broadcast-address	172.18.13.255;
+	range                           172.18.12.2 172.18.13.254;
+	default-lease-time	600;
+	max-lease-time 		1800;
+}
+
+subnet 172.18.14.0 netmask 255.255.254.0 {
+	option routers			172.18.14.1;
+	option subnet-mask		255.255.254.0;
+	option broadcast-address	172.18.15.255;
+	range                           172.18.14.2 172.18.15.254;
+	default-lease-time	600;
+	max-lease-time 		1800;
+}

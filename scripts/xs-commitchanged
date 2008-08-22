@@ -1,0 +1,37 @@
+#!/usr/bin/python
+
+""" Commit a file if
+    - needs to be added
+    - has changed
+
+    This is just a bit of convenience scripts -- replaces
+    a bit of ugly shell that was hard to make sane.
+
+    Author: Martin Langhoff <martin@laptop.org>
+    Copyright: One Laptop per Child
+    License: GPLv2
+"""
+from subprocess import call, check_call, Popen, PIPE
+import os.path, sys, os, re, tempfile, shutil, stat
+from optparse import OptionParser
+
+def main():
+
+    parser = OptionParser(usage='%prog -m "msg" filea [fileb filec]')
+    parser.add_option('-m', dest='msg', default='')
+    (options, filepaths) = parser.parse_args()
+
+    for fpath in filepaths:
+        if os.path.exists(fpath):
+            isnewcmd = ['git','ls-files', '--others',   fpath]
+            ismodcmd = ['git','ls-files', '--modified', fpath]
+            if Popen(isnewcmd, stdout=PIPE).communicate()[0]:
+                check_call(['git', 'add', fpath])
+                msg = options.msg + ' - new file ' + fpath
+                check_output = call(['git', 'commit', '-m', msg, fpath])
+            elif Popen(ismodcmd, stdout=PIPE).communicate()[0]:
+                check_call(['git', 'add', fpath])
+                msg = options.msg + ' - ' + fpath
+                check_call(['git', 'commit', '-m', msg, fpath])
+
+if __name__ == '__main__': main ()

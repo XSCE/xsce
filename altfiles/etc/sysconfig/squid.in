@@ -1,0 +1,13 @@
+## XS Config override
+##
+## This file has an ".in" template - for details see
+##  see /usr/share/doc/xs-config-<version>/README 
+
+# squid options for the School Server
+# -D disables initial dns checks. If you most likely will not to have an
+#    internet connection when you start squid, uncomment this
+SQUID_OPTS="-D -f /etc/squid/squid-xs.conf"
+
+# Time to wait for Squid to shut down when asked. Should not be necessary
+# most of the time.
+SQUID_SHUTDOWN_TIMEOUT=100

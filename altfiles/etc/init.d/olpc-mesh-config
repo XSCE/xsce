@@ -1,0 +1,86 @@
+#!/bin/sh
+#
+# olpc-mesh-config
+#   This script ensures that the wireless mesh interfaces are
+#   configured to 
+#   
+# chkconfig: - 22 75
+# description: OLPC sets anycast mode in mesh interfaces
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Source networking configuration.
+. /etc/sysconfig/network
+
+prog=olpc-mesh-config
+
+# Check that networking is up.
+[ ${NETWORKING} = "no" ] && exit 0
+
+start() {
+	# Start daemons.
+	echo -n $"Starting $prog: "
+
+#  Set up static routes
+	route add -net 172.18.8.0  netmask 255.255.248.0 gw 172.18.1.1
+	route add -net 172.18.16.0 netmask 255.255.248.0 gw 172.18.1.2
+	route add -net 172.18.24.0 netmask 255.255.248.0 gw 172.18.1.3
+	route add -net 172.18.32.0 netmask 255.255.248.0 gw 172.18.1.4
+	route add -net 172.18.40.0 netmask 255.255.248.0 gw 172.18.1.5
+	route add -net 172.18.48.0 netmask 255.255.248.0 gw 172.18.1.6
+	route add -net 172.18.56.0 netmask 255.255.248.0 gw 172.18.1.7
+	route add -net 172.18.64.0 netmask 255.255.248.0 gw 172.18.1.8
+
+#  The old meat of the script, now handled by a udev script...
+
+	if [ -d /sys/class/net/msh0 ] ; then
+	    echo 1 > /sys/class/net/msh0/anycast_mask || true;
+	fi
+	if [ -d /sys/class/net/msh1 ] ; then
+	    echo 1 > /sys/class/net/msh1/anycast_mask || true;
+	fi
+	if [ -d /sys/class/net/msh2 ] ; then
+	    echo 1 > /sys/class/net/msh2/anycast_mask || true;
+	fi
+	RETVAL=$?
+	echo
+
+	if [ $RETVAL -eq 0 ]; then 
+	    if [ -x /usr/bin/logger ]; then
+		/usr/bin/logger -t mesh-config 'mesh networking configured'
+	    fi;
+	else
+	    if [ -x /usr/bin/logger ]; then
+		/usr/bin/logger -t mesh-config 'mesh networking configured'
+	    fi;
+        fi
+	return $RETVAL
+}
+
+stop() {
+	# Stop daemons.
+	echo -n $"Shutting down $prog: "
+	RETVAL=$?
+}
+
+# See how we were called.
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart|reload)
+	stop
+	start
+	RETVAL=$?
+	;;
+  *)
+	echo $"Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $RETVAL
+

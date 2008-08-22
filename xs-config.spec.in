@@ -1,25 +1,13 @@
 # install root
 %define DESTDIR  /
 
-%define OLPCROOT %{DESTDIR}/fsroot.olpc
-
-%define LINK	 %{OLPCROOT}/symlink-tree.py
-%define UNLINK   %{OLPCROOT}/unlink-tree.py
-
+#  Requires a few tools and
+#  a list of packages modified by xs-config
 Requires: python
-
-#  This really should just require xs-pkgs, right ?
-#  or nothing at all...
-#  Now a list of packages modified by xs-config
 Requires: authconfig  
 Requires: bind  
-Requires: glibc  
-Requires: glibc-common  
-Requires: httpd  
-Requires: info  
 Requires: initscripts  
 Requires: iptables  
-Requires: lighttpd  
 Requires: module-init-tools  
 Requires: nscd  
 Requires: nss  
@@ -32,10 +20,8 @@ Requires: smartmontools
 Requires: sudo  
 Requires: sysklogd  
 Requires: xml-common  
-Requires: xs-pkgs
-
+Requires: git-core
 Requires: usbmount
-
 
 Summary: XS/XSX default configuration
 Name: xs-config
@@ -44,54 +30,240 @@ Release: 1
 BuildRoot: %{_builddir}/%{name}-root
 Distribution: OLPC XS/XSX School Server
 Group: Base System/Administration Tools
-License: GPL
-Packager: John Watlington <wad@laptop.org>
+License: GPLv2
+Packager: Martin Langhoff <martin@laptop.org>
 Source: %{name}-%{version}.tar.gz
 URL: http://dev.laptop.org/git.do?p=projects/xs-config;a=summary
 Vendor: OLPC
 %description
-The default configuration of an OLPC XS School server. Don't install this if you don't understand what it is!
+
+The default configuration of an OLPC XS School server.
 
 %prep
 %setup
 %install
+echo $PWD
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT/%{DESTDIR} install
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+
+%define BADLINKS /etc/named-xs.conf \
+	/etc/named.conf   \
+	/etc/squid/squid.conf   \
+	/etc/sysconfig/olpc-scripts/TURN_SQUID_OFF \
+	/etc/sysconfig/olpc-scripts/TURN_SQUID_ON \
+	/etc/sysconfig/olpc-scripts/auxiliary_config \
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.1    \
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.1.aux \
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.2    \
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.2.aux \
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.3     \
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.3.aux \
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.4     \
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.4.aux \
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.5     \
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.5.aux \
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.6     \
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.6.aux \
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.7     \
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.7.aux \
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.8     \
+	/etc/sysconfig/olpc-scripts/dhcpd.conf.8.aux \
+	/etc/sysconfig/olpc-scripts/resolv.conf \
+	/etc/sysconfig/olpc-scripts/domain_config    \
+	/etc/sysconfig/olpc-scripts/domain_config.d/dhcpd    \
+	/etc/sysconfig/olpc-scripts/domain_config.d/ejabberd \
+	/etc/sysconfig/olpc-scripts/domain_config.d/idmgr    \
+	/etc/sysconfig/olpc-scripts/domain_config.d/named    \
+	/etc/sysconfig/olpc-scripts/domain_config.d/squid    \
+	/etc/sysconfig/olpc-scripts/domain_config.d/dhcpd.orig    \
+	/etc/sysconfig/olpc-scripts/domain_config.d/idmgr.orig    \
+	/etc/sysconfig/olpc-scripts/domain_config.d/ejabberd.rej  \
+	/etc/sysconfig/olpc-scripts/domain_config.d/named.orig    \
+	/etc/sysconfig/olpc-scripts/domain_config.d/ejabberd.orig \
+	/etc/sysconfig/olpc-scripts/ifcfg-dummy0             \
+	/etc/sysconfig/olpc-scripts/ifcfg-eth0               \
+	/etc/sysconfig/olpc-scripts/ifcfg-eth0.auxiliary     \
+	/etc/sysconfig/olpc-scripts/ifcfg-eth1               \
+	/etc/sysconfig/olpc-scripts/ifcfg-msh0               \
+	/etc/sysconfig/olpc-scripts/ifcfg-msh1               \
+	/etc/sysconfig/olpc-scripts/ifcfg-msh2               \
+	/etc/sysconfig/olpc-scripts/ifcfg-tun0               \
+	/etc/sysconfig/olpc-scripts/ip6tables                \
+	/etc/sysconfig/olpc-scripts/iptables.auxiliary       \
+	/etc/sysconfig/olpc-scripts/iptables.principal       \
+	/etc/sysconfig/olpc-scripts/iptables.principal.cache \
+	/etc/sysconfig/olpc-scripts/mkaccount                \
+	/etc/sysconfig/olpc-scripts/network_config           \
+	/etc/sysconfig/olpc-scripts/principal_config         \
+	/etc/ejabberd/ejabberd.pem                           \
+	/etc/ejabberd/ejabberd.cfg                           \
+                                                             \
+	/etc/ppp/chap-secrets         \
+	/etc/ppp/pap-secrets          \
+	/etc/ppp/peers/isdn/arcor     \
+	/etc/ppp/peers/isdn/avm       \
+	/etc/ppp/peers/isdn/avm-ml    \
+	/etc/ppp/peers/isdn/leased    \
+	/etc/ppp/peers/isdn/otelo     \
+	/etc/ppp/peers/isdn/talkline  \
+	/etc/ppp/peers/wvdial         \
+	/etc/dhclient-exit-hooks      \
+	/etc/dhclient-eth0.conf       \
+	/etc/ssh/moduli               \
+	/etc/httpd/conf/httpd.conf    \
+	/etc/httpd/conf.d/mime_olpc.conf \
+	/etc/inittab                  \
+	/etc/default/useradd          \
+	/etc/autofs_ldap_auth.conf    \
+ 	/etc/isdn/vboxgetty.conf      \
+	/etc/racoon/psk.txt           \
+	/etc/racoon/racoon.conf       \
+	/etc/isdn/vboxd.conf          \
+	/etc/aiccu.conf               \
+	/etc/lighttpd/lighttpd.conf   \
+	/etc/libaudit.conf            \
+	/etc/pki/nssdb/secmod.db      \
+	/etc/smartd.conf              \
+	/etc/rndc.key                 \
+	/etc/xml/catalog              \
+	/etc/radvd.conf               \
+	/etc/sysconfig/authconfig     \
+	/etc/sysconfig/firstboot      \
+	/etc/sysconfig/ip6tables-config \
+	/etc/sysconfig/dhcpd          \
+	/etc/sysconfig/named          \
+	/etc/sysconfig/init           \
+	/etc/sysconfig/iptables-config \
+	/etc/sysconfig/squid          \
+	/etc/udev/rules.d/10-olpcmesh.rules \
+	/etc/usbmount/usbmount.conf   \
+	/etc/usbmount/mount.d/01_beep_on_mount  \
+	/etc/usbmount/mount.d/99_beep_when_done \
+                                                \
+	/etc/yum.repos.olpc.d/stable.repo   \
+	/etc/yum.repos.olpc.d/testing.repo  \
+                                            \
+	/etc/sysctl.conf  \
+	/etc/yum.conf     \
+	/etc/syslog.conf  \
+	/etc/motd         \
+	/etc/ssh/sshd_config 
+
 %post
-%{LINK} %{OLPCROOT} %{DESTDIR}
+
+## RPM computes conflicts _before_ %pre so even if the symlinks were 
+## removed in %pre, rpm will still divert files that it would have
+## conflicted. So mv the rpmnew files into place if appropriate.
+BADLINKS='%{BADLINKS}'
+for FPATH in $BADLINKS; do
+    if [ ! -e "%{DESTDIR}$FPATH" -a -e "%{DESTDIR}$FPATH.rpmnew" ]; then
+       mv "%{DESTDIR}$FPATH.rpmnew" "%{DESTDIR}$FPATH"
+    fi
+done
+
+## Make all the makefile-driven config files
+pushd /etc
+make -f xs-config.make all
+popd 
+
 #
 #  If any kernel modules are being installed using this mechanism, you
-#  need to depmod them in...
-depmod -b %{DESTDIR} -C %{DESTDIR}/etc/depmod.d
-#
-#  There are some files which must be copied, not symlinked
-#  syslog.conf, sysctl.conf, and sudoers are examples.
-rm %{DESTDIR}/etc/sudoers
-cp -fp %{OLPCROOT}/etc/sudoers %{DESTDIR}/etc/
-chmod 0440 %{DESTDIR}/etc/sudoers
-rm %{DESTDIR}/etc/syslog.conf
-cp -fp %{OLPCROOT}/etc/syslog.conf %{DESTDIR}/etc/
-rm %{DESTDIR}/etc/sysctl.conf
-cp -fp %{OLPCROOT}/etc/sysctl.conf %{DESTDIR}/etc/
-rm %{DESTDIR}/etc/httpd/conf/httpd.conf
-cp -fp %{OLPCROOT}/etc/httpd/conf/httpd.conf %{DESTDIR}/etc/httpd/conf/
-#
-#  Delete link script ?
-rm %{LINK}*
-#  Temporary fix to remove script symlinks
-rm %{DESTDIR}/symlink-tree.py*
-rm %{DESTDIR}/unlink-tree.py*
+#  need to depmod them in... however this will sometimes
+#  run in a chroot / during livecd creation, and will fail
+#  due to a mismatched uname.
+depmod -b %{DESTDIR} -C %{DESTDIR}/etc/depmod.d \
+       || echo depmod failed - this is not fatal
 
-%preun
-#  If this is an uninstall...
-if [ $1 -eq 0 ]
-then
-   %{UNLINK} %{OLPCROOT} %{DESTDIR}
-   rm %{UNLINK}*
+chkconfig --add olpc-network-config
+chkconfig --add olpc-mesh-config
+
+%pre
+
+##
+## clear the way for a better pkg
+##
+## remove olpcsave links and olpcnew symlinks in /etc
+find /etc -type l -name '*.olpcnew'  -lname '*fsroot*' -print0 | xargs -0 --no-run-if-empty rm
+find /etc -type l -name '*.olpcsave' -lname '*fsroot*' -print0 | xargs -0 --no-run-if-empty rm
+
+## Remove symlinks and reinstate original files
+## if they exist. Note that removing the symlinks
+## in %pre is not enough to avoid conflicts with the
+## new files. See %post for further cleanup actions.
+BADLINKS='%{BADLINKS}'
+for FPATH in $BADLINKS; do
+    if [ -L "%{DESTDIR}$FPATH" ]; then
+       /bin/rm "%{DESTDIR}$FPATH"
+       if [ -e "%{DESTDIR}/$FPATH.olpcsave" ]; then
+       	  mv "%{DESTDIR}/$FPATH.olpcsave" "%{DESTDIR}/$FPATH"
+       fi
+    fi
+done
+
+## Prepare a .git directory so xs-commitchanged
+## can store its database...
+if [ ! -d /etc/.git ];then
+   pushd /etc
+   git init
+   chmod 700 .git
+   popd
 fi
 
+%preun
+
 %files
-%config(noreplace) %{OLPCROOT}
+
+%config(noreplace) %{_sysconfdir}/named-xs.conf.in
+%config(noreplace) %{_sysconfdir}/resolv.conf.in
+%config(noreplace) %{_sysconfdir}/idmgr.conf.in
+%config(noreplace) %{_sysconfdir}/squid/squid-xs.conf.in
+%config(noreplace) %{_sysconfdir}/ejabberd/ejabberd.cfg.in
+%config(noreplace) %{_sysconfdir}/ejabberd/ejabberd.pem
+
+%config(noreplace) %{_sysconfdir}/sysconfig/olpc-scripts/
+%config(noreplace) /var/named-xs
+
+%config(noreplace) %{_sysconfdir}/yum.repos.olpc.d/testing.repo
+%config(noreplace) %{_sysconfdir}/yum.repos.olpc.d/stable.repo
+%config(noreplace) %{_sysconfdir}/httpd/conf.d/mime_olpc.conf
+%config(noreplace) %{_sysconfdir}/logrotate.d/syslog-xslogs
+
+%{_sysconfdir}/xs-config.make
+%config(noreplace) %{_sysconfdir}/motd.in
+%config(noreplace) %{_sysconfdir}/sysctl.conf.in
+%config(noreplace) %{_sysconfdir}/syslog.conf.in
+%config(noreplace) %{_sysconfdir}/yum.conf.in
+%config(noreplace) %{_sysconfdir}/rssh.conf.in
+%config(noreplace) %{_sysconfdir}/ssh/sshd_config.in
+%config(noreplace) %{_sysconfdir}/sysconfig/dhcpd.in
+%config(noreplace) %{_sysconfdir}/sysconfig/named.in
+%config(noreplace) %{_sysconfdir}/sysconfig/init.in
+%config(noreplace) %{_sysconfdir}/sysconfig/iptables-config.in
+%config(noreplace) %{_sysconfdir}/sysconfig/squid.in
+
+%attr(750, root , named)   %dir /var/named-xs
+%attr(770, named , named)  %dir /var/named-xs/data
+
+%{_sysconfdir}/dhclient-exit-hooks
+%{_sysconfdir}/udev/rules.d/10-olpcmesh.rules
+%{_sysconfdir}/init.d/olpc-network-config
+%{_sysconfdir}/init.d/olpc-mesh-config
+%{_sysconfdir}/usbmount/mount.d/01_beep_on_mount
+%{_sysconfdir}/usbmount/mount.d/99_beep_when_done
+
+%attr(750, root , root)   %dir %{_sysconfdir}/sudoers.d
+%attr(440, root , root) %config(noreplace) %{_sysconfdir}/sudoers.d/00-base
+
+%{_bindir}/xs-commitchanged
+%{_bindir}/cat-parts
+
+# remove for F9
+/lib/firmware/usb8388.bin
+/lib/firmware/LICENSE-usb8388.bin
+/lib/modules/2.6.23.1-21.fc7/kernel/drivers/net/wireless/libertas/usb8xxx.ko
+/lib/modules/2.6.23.1-21.fc7/kernel/drivers/net/wireless/libertas/libertas.ko
+
+%doc README

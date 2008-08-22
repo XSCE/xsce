@@ -1,0 +1,422 @@
+#!/usr/bin/python
+#  Copyright 2008, One Laptop per Child
+#  Author: John Watlington
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public
+# License along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# principal_config
+# This program is run manually to turn an auxiliary school server into
+# a principal school server.  It takes no command line arguments.
+#
+# It is reversed by running "auxiliary_config"
+#
+#  This script performs the following operations:
+#
+#   - It generates a generic ifcfg-eth0 (WAN) file (DHCP by default)
+#
+#   - It turns on necessary services:
+#       ejabberd (for now)
+#       apache
+#       named
+#
+#   - A dummy interface (ifcfg-dummy0) is put into place if needed
+#     (because this server has a single wired network interface)
+#
+#   - An ifcfg-eth1:1 file is generated if needed (because this
+#     server has two or more wired interfaces)
+#    
+
+import commands, os, sys
+
+enabled_services = [ 'ejabberd', 'named', 'httpd' ]
+
+CHKCONFIG = '/sbin/chkconfig'
+
+#  Table of likely WAN network MAC addresses
+#  These are the first two bytes of ethernet devices likely to
+#  be the WAN interface.
+#  These interfaces are deliberately chosen to be older, well-tested
+#  hardware and drivers to ensure that remote access to a schoolserver
+#  is most likely to work.   The interfaces provided on motherboards
+#  (especially new ones) are less well tested, and may have "features"
+#  unknown to us.
+#  Feel free to add your own here.
+wan_mac_addresses =[
+ [ '00', '19' ],   #  DLink DFE-550 Ethernet adapter
+ [ '00', '04' ],   #  Linksys Tulip
+ [ '00', '20' ]    #  Linksys Tulip
+]
+
+#  The MAC address prefix of the Mesh Interfaces
+#  As production increases, additional values are likely to
+#  be needed here.
+MESH_MODULE_MAC_BYTE1  = '00'
+MESH_MODULE_MAC1_BYTE2 = '50'
+MESH_MODULE_MAC2_BYTE2 = '79'
+
+#  Subnet prefix
+#  This is the first sixteen bits of the IP address used for the
+#  school LAN.   If changed, the auxiliary_config and principal_config
+#  scripts should also be changed.   The trailing '.' is important.
+SUBNET_PREFIX="172.18."
+
+#  Location of the network configuration files
+OLPC_CONFIG_DIR = "/etc/sysconfig/olpc-scripts/"
+NETWORK_CONFIG_DIR = "/etc/sysconfig/network-scripts/"
+FIREWALL_CONFIG_DIR = "/etc/sysconfig/"
+
+SERVER_NUM_FILE = 'server_number'
+
+#  Name of the file used when there is no wired LAN device
+DUMMY_LAN = "ifcfg-dummy0"
+
+SECONDARY_ADDRESS_LAN = 'ifcfg-eth1:1'
+
+#  String defining the HW MAC address of an interface
+MAC_STATEMENT='HWADDR='
+
+#  Define the prefix used for certain interface types
+MESH_PREFIX='msh'
+ETHERNET_PREFIX='eth'
+BRIDGE_PREFIX='br'
+DEVICE_PREFIX='dev'      # used by Fedora when REALLY confused
+
+#  Suffix used for backup copies of files
+BACKUP_SUFFIX = ".bak"
+
+def is_wired( iface ):
+    """determines if an interface is a wired interface
+
+    Takes an interface name, and generally uses the
+    first three characters of the name of an interface
+    to decides if it is a wired interface or not.
+    Secondary interfaces (e.g. eth1:1) are reported as not wired.
+    Returns true if it is.
+    """
+    if (iface[0:3] == ETHERNET_PREFIX) or \
+       (iface[0:3] == DEVICE_PREFIX):
+        if iface.find(':') >= 0:
+            return 0
+        else:
+            return 1
+    else:
+        return 0
+
+def write_file_w_backup( filename, contents ):
+    """writes out a file, being careful to backup any existing one
+    """
+    #  First we see what to do with any existing backup file
+    #  We can't keep an infinite stack of backups.
+    #  But we can keep multiple invocations of this script
+    #  from clobbering the "original" backup file.
+    try:
+        #  These are small files, so no need to "chunk" the read and compare
+        dst_file = open( filename, 'r' )
+	dst_data = dst_file.read()
+        dst_file.close()
+	dst_len = len(dst_data)
+	if dst_len == len(contents):
+            files_equal = 1
+	    for index in range( dst_len ):
+	        if contents[ index ] != dst_data[ index ]:
+		    files_equal = 0
+		    break
+            if files_equal:
+	        print( "file (%s) left untouched" % ( filename ))
+	        return
+        #  Backup the destination
+	os.rename( filename, filename + BACKUP_SUFFIX )
+    except IOError, (errno, strerror):
+        pass    #  Take no action if destination or backup file don't exist !
+    try:
+        cfg_file = open( filename, 'w' )
+        cfg_file.write( contents )
+        cfg_file.close()
+    except IOError, (errno, strerror):
+        #  If this fails, just log the error
+        print( "Error writing network config file %s (%s): %s" \
+              % (filename, errno, strerror))
+	return( -1 )
+    return( 0 )
+
+def copy_file( src, dst ):
+    """copies a network configuration file
+
+    Takes two full pathnames as arguments.
+    Performs some checking to ensure that we don't needlessly
+    overwrite a backup file.
+    """
+
+    try:	
+        src_file = open( src, 'r' )
+	contents = src_file.read()
+        src_file.close()
+    except IOError, (errno, strerror):
+        #  If this fails, just log the error
+        print( "Error copying file %s -> %s (%s): %s" \
+              % (src, dst, errno, strerror))
+	return( -1 )
+    return( write_file_w_backup( dst, contents ) )
+
+def copy_and_add( src, mac ):
+    """copies a network configuration file, adding a HW MAC address
+
+    Takes a string containing the interface number (src), and a
+    string containing the MAC address of the interface (mac).
+    """
+    filename = 'ifcfg-' + ETHERNET_PREFIX + src
+    src_filename = OLPC_CONFIG_DIR + filename
+    dst_filename = NETWORK_CONFIG_DIR + filename
+    new_line = MAC_STATEMENT + mac + '\n'
+
+    try:
+        #  Backup the destination
+	os.rename( dst_filename, dst_filename + BACKUP_SUFFIX )
+    except IOError, (errno, strerror):
+        pass    #  Take no action if destination or backup file don't exist !
+
+    #   Now actually copy the file, adding the MAC address at the end
+    try:
+        src_file = open( src_filename, 'r' )
+        dst_file = open( dst_filename, 'w' )
+        dst_file.write( src_file.read() )
+	dst_file.write( new_line )
+        src_file.close()
+        dst_file.close()
+    except IOError, (errno, strerror):
+        syslog.syslog( "Error writing network config file %s (%s): %s" \
+              % (filename, errno, strerror))
+	exit( 1 )
+    return
+
+def write_mesh_eth_file( M_num, N_num ):
+    """writes out a network configuration file for a mesh I/F ethernet I/F
+
+    Takes two numbers, indicating the suffix of the mesh (M_num) and the
+    ethernet interface (N_num).
+    Performs some checking to ensure that we don't needlessly
+    overwrite a backup file.
+    """
+    N = str( N_num )
+    M = str( M_num )
+    filename = NETWORK_CONFIG_DIR + 'ifcfg-' + ETHERNET_PREFIX + N
+    contents = \
+"""#  OLPC School server
+#  This is an active antenna wireless mesh interface, infrastructure mode side
+#  (this device also appears as msh""" + M + """)
+DEVICE=""" + ETHERNET_PREFIX + N + """ 
+MODE=ad-hoc
+CHANNEL=""" + CHANNEL_NUMBER[ M_num ] + """
+ESSID=\"school-mesh-""" + M + """\"
+ONBOOT=yes
+"""
+    return( write_file_w_backup( filename, contents ) )
+
+def read_server_number():
+    "reads the current server number from a file, and returns it"
+    filename = NETWORK_CONFIG_DIR + SERVER_NUM_FILE
+    try:
+        f = open( filename, 'r' )
+	server_num_str = f.read()
+        f.close()
+    except IOError, (errno, strerror):
+	print( "Error reading server number from %s" % filename )
+	exit( 1 )
+    return( int(server_num_str) )
+
+def write_mesh_br_file( M_num, server_num ):
+    """writes out a network configuration file for a mesh I/F ethernet I/F
+
+    Takes two numbers, indicating the suffix of the mesh (M_num) and the
+    server number.
+    """
+    M = str( M_num )
+
+    filename = NETWORK_CONFIG_DIR + 'ifcfg-' + BRIDGE_PREFIX + M
+    subnet = 10 + (8 * (server_num-1)) + (2 * M_num)
+    subnet_str = str(subnet)
+    contents = \
+"""#  OLPC School server
+#  This is a bridge serving a single mesh interface, msh""" + M + """
+#  (which may come and go as it is an external USB device).
+DEVICE=""" + BRIDGE_PREFIX + M + """ 
+TYPE=Bridge
+IPADDR=""" + SUBNET_PREFIX + subnet_str + """.1
+NETMASK=255.255.254.0
+NETWORK=""" + SUBNET_PREFIX + subnet_str + """.0
+BROADCAST=""" + SUBNET_PREFIX + str(subnet + 1) + """.255
+IPV6INIT=no
+ONBOOT=yes
+"""
+    return( write_file_w_backup( filename, contents ) )
+
+def write_wan_file( mac, server_num ):
+    """generates a WAN configuration file for an auxiliary school server
+
+    Takes a string containing the MAC address of the interface (mac),
+    and the server number.
+    """
+    filename = NETWORK_CONFIG_DIR + 'ifcfg-' + ETHERNET_PREFIX + '0'
+    contents = \
+"""#  OLPC School server
+#  This file configures the ethernet port connected to the school LAN
+DEVICE=""" + ETHERNET_PREFIX + """0
+ONBOOT=yes
+IPADDR=""" + SUBNET_PREFIX + '1.' + str( server_num ) + """
+NETMASK=255.255.254.0
+NETWORK=""" + SUBNET_PREFIX + """0.0
+BROADCAST=""" + SUBNET_PREFIX + """1.255
+IPV6INIT=no
+""" + MAC_STATEMENT + mac + '\n'
+    return( write_file_w_backup( filename, contents ) )
+
+def write_second_lan( server_num ):
+    """Generate a second IP address on the LAN for static routing purposes
+    """
+    #  This will be removed by the auxiliary_config script
+    contents = """#  OLPC School server
+#  This file configures the ethernet port connected to local machines (LAN)
+#  It is provided as the static routing tables on other servers use it!
+DEVICE=eth1:1
+ONBOOT=yes
+NETMASK=255.255.254.0
+IPADDR=172.18.1.""" + str(server_num) + '\n'
+    return( write_file_w_backup( NETWORK_CONFIG_DIR + SECONDARY_ADDRESS_LAN,
+                                 contents ) )
+        
+def remove_file( filename ):
+    """removes a network configuration file, if present
+    """
+    try:
+        #  Backup the dummy file
+        if os.path.exists( filename ):
+            os.rename( filename, filename + BACKUP_SUFFIX )
+    except IOError, (errno, strerror):
+        pass    #  Take no action if destination or backup file don't exist !
+    return
+
+def write_network_config():
+    "generates the network configuration file"
+    contents = \
+"""NETWORKING=yes
+NETWORKING_IPV6=no
+IPV6FORWARDING=no
+IPV6_AUTOCONF=no
+HOSTNAME=schoolserver
+"""
+    #  + str(server_num) + '\n'     Used for only auxiliary servers
+    return( write_file_w_backup( FIREWALL_CONFIG_DIR + 'network', contents ) )
+
+###########################################################################
+##
+##   This is the actual script
+##
+if __name__ == "__main__":
+    #  Get list of network interfaces
+    iface_list = commands.getoutput( '/sbin/ifconfig -a | grep HWaddr' )
+    interfaces = iface_list.split( '\n' )
+    num_interfaces = len( interfaces )
+    num_mesh_interfaces = 0
+    num_eth_interfaces = 0
+    iface_name = []
+    iface_mac = []
+    for iface in interfaces:
+	#  parse interfaces here
+	parsed = iface.split()
+	iface_name.append( parsed[0] )
+	iface_mac.append( parsed[4] )
+        if iface[0:3] == MESH_PREFIX:
+            num_mesh_interfaces += 1
+        if is_wired( parsed[0] ):
+            num_eth_interfaces += 1
+
+    num_wired = num_eth_interfaces - num_mesh_interfaces
+    print( '%d interfaces' % ( num_interfaces ))
+    print( '%d mesh interfaces' % ( num_mesh_interfaces ))
+    print( '%d wired interfaces' % ( num_wired ))
+
+    for index in range( num_interfaces ):
+        print( '%d: %s %s' % (index, iface_name[ index ], iface_mac[ index ] ))
+
+    if num_wired < 1:
+        print( 'No wired network interfaces found.  Aborting' )
+	exit( 1 )
+
+    server_number = read_server_number()
+
+    #  Write out a network config file that has a hostname without
+    #  the suffix.  ejabberd will be much happier.
+    write_network_config()
+
+    #  Identify the interfaces
+    #  The WAN interface is defined as having a MAC address from
+    #  a limited range of MAC addresses
+    wan_index = -1
+    for ifindex in range( num_interfaces ):
+        test_mac = iface_mac[ ifindex ].split(':')
+	for possible_mac in wan_mac_addresses:
+	    if (possible_mac[0] == test_mac[0]) and (possible_mac[1] == test_mac[1]):
+	       wan_index = ifindex
+               print( 'Using WAN interface ' + str( ifindex ) + ': ' + iface_mac[ ifindex ]  )
+               break
+        #  Use the lowest numbered WAN candidate
+        if wan_index != -1 :
+            break
+
+    #  If we didn't find an interface from the MAC range we expect,
+    #  use the lowest numbered non-mesh interface
+    if wan_index == -1 :
+        for ifindex in range( num_interfaces ):
+	    parsed_mac = iface_mac[ ifindex ].split(':')
+            the_name = iface_name[ ifindex ]
+	    #  Is this a mesh or dummy interface ?
+            print( 'Comparing ' + str( ifindex ) + ': ' + iface_mac[ ifindex ] + ' ' + str( is_wired( the_name )) )
+            if is_wired( the_name ) and not \
+                   ((parsed_mac[0] == MESH_MODULE_MAC_BYTE1) and \
+                    ((parsed_mac[1] == MESH_MODULE_MAC1_BYTE2) or \
+                     (parsed_mac[1] == MESH_MODULE_MAC2_BYTE2))) :
+                wan_index = ifindex
+                print( 'Using WAN interface ' + str( ifindex ) + ': ' + iface_mac[ ifindex ] )
+                break
+    
+    #  Since we aborted earlier if there was no wired interface,
+    #  wan_index should now point to a valid ethernet interface.
+    #  Record the MAC address in the eth0 file
+    copy_and_add( "0", iface_mac[ wan_index ] )
+
+    #  Turn on enabled services
+    for srv in enabled_services:
+	os.system( CHKCONFIG + ' --level 345 ' + srv + ' on' )
+
+    if num_wired == 1:     #  no LAN interface
+       #  Add a dummy interface, if needed (no wired LAN)
+       copy_file( OLPC_CONFIG_DIR + DUMMY_LAN, NETWORK_CONFIG_DIR + DUMMY_LAN )
+    else:
+        #  Here we assume this is a principal machine, and don't
+        #  customize the LAN address range for the server number
+        copy_and_add( "1", iface_mac[ lan_index ] )
+        write_second_lan( server_number )
+
+    #  Copy the appropriate dhcpd.conf for this server_number into place
+    copy_file( OLPC_CONFIG_DIR + 'dhcpd.conf.' + str(server_number),
+	       '/etc/dhcpd-xs.conf.in' )
+
+    #  Install a new iptables, turning on NAT
+    copy_file( OLPC_CONFIG_DIR + 'iptables.principal',
+	       NETWORK_CONFIG_DIR + 'iptables' )
+
+    print( 'A reboot is required for these changes to take effect !' )
+    exit( 0 )
