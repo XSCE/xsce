@@ -16,6 +16,7 @@ PKGNAME = xs-config
 VERSION = $(shell git describe | sed 's/^v//' | sed 's/-/./g')
 RELEASE = 1
 ARCH = noarch
+BRANCH = $(shell git branch | grep '*' | sed 's/* //')
 
 # NOTE: Release is hardcoded in the spec file to 1
 NV = $(PKGNAME)-$(VERSION)
@@ -53,6 +54,17 @@ publish:
 	scp $(BUILDDIR)/SRPMS/$(NV)-$(REL).src.rpm \
 	    xs-dev.laptop.org:/xsrepos/testing/olpc/7/source/SRPMS/
 	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/7/i386
+	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/7/source/SRPMS
+
+publish-stable:
+
+	scp $(BUILDDIR)/RPMS/$(ARCH)/$(NV)-$(REL).$(ARCH).rpm \
+	    xs-dev.laptop.org:/xsrepos/testing/olpc/$(BRANCH)/i386/
+	scp $(BUILDDIR)/SRPMS/$(NV)-$(REL).src.rpm \
+	    xs-dev.laptop.org:/xsrepos/testing/olpc/$(BRANCH)/source/SRPMS/
+	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/$(BRANCH)/i386
+	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/$(BRANCH)/source/SRPMS
+
 
 install: $(DESTDIR)
 
