@@ -50,11 +50,11 @@ rpm: SOURCES xs-config.spec
 
 publish:
 	scp $(BUILDDIR)/RPMS/$(ARCH)/$(NV)-$(REL).$(ARCH).rpm \
-	    xs-dev.laptop.org:/xsrepos/testing/olpc/7/i386/
+	    xs-dev.laptop.org:/xsrepos/testing/olpc/9/i386/
 	scp $(BUILDDIR)/SRPMS/$(NV)-$(REL).src.rpm \
-	    xs-dev.laptop.org:/xsrepos/testing/olpc/7/source/SRPMS/
-	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/7/i386
-	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/7/source/SRPMS
+	    xs-dev.laptop.org:/xsrepos/testing/olpc/9/source/SRPMS/
+	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/9/i386
+	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/9/source/SRPMS
 
 publish-stable:
 
