@@ -18,7 +18,7 @@ Requires: selinux-policy
 Requires: setup  
 Requires: smartmontools  
 Requires: sudo  
-Requires: sysklogd  
+Requires: syslog 
 Requires: xml-common  
 Requires: git-core
 Requires: usbmount
