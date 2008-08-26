@@ -197,11 +197,3 @@ install: $(DESTDIR)
 	install -D scripts/xs-commitchanged $(DESTDIR)/usr/bin
 	install -D scripts/cat-parts $(DESTDIR)/usr/bin
 
-	# libertas modules and fw ## REMOVE in F9
-	install -D -d $(DESTDIR)/lib/firmware
-	install -D -d $(DESTDIR)/lib/modules/2.6.23.1-21.fc7/kernel/drivers/net/wireless/libertas
-	install -D altfiles/lib/firmware/LICENSE-usb8388.bin $(DESTDIR)/lib/firmware
-	install -D altfiles/lib/firmware/usb8388.bin         $(DESTDIR)/lib/firmware
-	install -D altfiles/lib/modules/2.6.23.1-21.fc7/kernel/drivers/net/wireless/libertas/libertas.ko $(DESTDIR)/lib/modules/2.6.23.1-21.fc7/kernel/drivers/net/wireless/libertas
-	install -D altfiles/lib/modules/2.6.23.1-21.fc7/kernel/drivers/net/wireless/libertas/usb8xxx.ko $(DESTDIR)/lib/modules/2.6.23.1-21.fc7/kernel/drivers/net/wireless/libertas
-
