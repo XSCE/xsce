@@ -1,0 +1,33 @@
+#!/bin/sh
+#
+# Part of the OLPC XS Scripts
+#
+# Author: Jerry Vonau <jvonau@shaw.ca>
+#
+if [ x${1} = x ]; then
+  exit
+else
+case $1 in
+   wlan0)
+
+   /sbin/ip addr flush dev msh0 2>/dev/null
+   /sbin/ifup msh0
+   ;;
+   wlan1)
+
+   /sbin/ip addr flush dev msh1 2>/dev/null
+   /sbin/ifup msh1
+   ;;
+   wlan2)
+
+   /sbin/ip addr flush dev msh2 2>/dev/null
+   /sbin/ifup msh1
+   ;;
+   msh0)
+   /sbin/ifup br0
+   ;;
+   msh1)
+   /sbin/ifup br1
+   ;;
+esac
+fi

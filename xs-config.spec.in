@@ -14,7 +14,7 @@ Requires: nss
 Requires: openssh-server  
 Requires: radvd  
 Requires: rpm  
-Requires: selinux-policy  
+Requires: selinux-policy
 Requires: setup  
 Requires: smartmontools  
 Requires: sudo  
@@ -169,13 +169,9 @@ pushd /etc
 make -f xs-config.make all
 popd 
 
-#
-#  If any kernel modules are being installed using this mechanism, you
-#  need to depmod them in... however this will sometimes
-#  run in a chroot / during livecd creation, and will fail
-#  due to a mismatched uname.
-depmod -b %{DESTDIR} -C %{DESTDIR}/etc/depmod.d \
-       || echo depmod failed - this is not fatal
+# Change the network infra we use
+chkconfig --add network
+chkconfig --del NetworkManager
 
 chkconfig --add olpc-network-config
 chkconfig --add olpc-mesh-config
@@ -249,6 +245,7 @@ fi
 
 %{_sysconfdir}/dhclient-exit-hooks
 %{_sysconfdir}/udev/rules.d/10-olpcmesh.rules
+%{_sysconfdir}/udev/rules.d/65-xsmeshnames.rules
 %{_sysconfdir}/init.d/olpc-network-config
 %{_sysconfdir}/init.d/olpc-mesh-config
 %{_sysconfdir}/usbmount/mount.d/01_beep_on_mount
@@ -259,5 +256,6 @@ fi
 
 %{_bindir}/xs-commitchanged
 %{_bindir}/cat-parts
-
+/sbin/ifup-local
+/lib/udev/mesh-namer
 %doc README

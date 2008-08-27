@@ -179,7 +179,8 @@ install: $(DESTDIR)
 	install -D altfiles/etc/dhclient-exit-hooks $(DESTDIR)/etc
 
 	install -D -d $(DESTDIR)/etc/udev/rules.d
-	install -D altfiles/etc/udev/rules.d/10-olpcmesh.rules  $(DESTDIR)/etc/udev/rules.d
+	install -D altfiles/etc/udev/rules.d/10-olpcmesh.rules    $(DESTDIR)/etc/udev/rules.d
+	install -D altfiles/etc/udev/rules.d/65-xsmeshnames.rules $(DESTDIR)/etc/udev/rules.d
 
 	install -D -d $(DESTDIR)/etc/init.d
 	install -D altfiles/etc/init.d/olpc-network-config  $(DESTDIR)/etc/init.d
@@ -197,3 +198,8 @@ install: $(DESTDIR)
 	install -D scripts/xs-commitchanged $(DESTDIR)/usr/bin
 	install -D scripts/cat-parts $(DESTDIR)/usr/bin
 
+	install -D -d $(DESTDIR)/sbin
+	install -D scripts/ifup-local $(DESTDIR)/sbin
+
+	install -D -d $(DESTDIR)/lib/udev
+	install -D scripts/udev-mesh-namer $(DESTDIR)/lib/udev/mesh-namer
