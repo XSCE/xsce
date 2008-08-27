@@ -22,6 +22,7 @@ Requires: syslog
 Requires: xml-common  
 Requires: git-core
 Requires: usbmount
+Requires: libertas-usb8388-firmware
 
 Summary: XS/XSX default configuration
 Name: xs-config
