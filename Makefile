@@ -121,6 +121,21 @@ install: $(DESTDIR)
 	install -D altfiles/etc/sysconfig/olpc-scripts/mkaccount    $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/network_config $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/principal_config $(DESTDIR)/etc/sysconfig/olpc-scripts/
+
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-br0    $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-br1    $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-br2    $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-eth0   $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-eth1   $(DESTDIR)/etc/sysconfig/network-script/s
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-eth1:1 $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-msh0   $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-msh1   $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-msh2   $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wlan0  $(DESTDIR)/etc/sysconfig/network-scripts
+ 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wlan1  $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wlan2  $(DESTDIR)/etc/sysconfig/network-scripts
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-dummy0 $(DESTDIR)/etc/sysconfig/network-scripts/
+
 	install -D altfiles/var/named-xs/localdomain.zone         $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/localhost.zone           $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/named.broadcast          $(DESTDIR)/var/named-xs/ 
