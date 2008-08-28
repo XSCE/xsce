@@ -1,12 +1,11 @@
 #  OLPC School server
 #  This is a bridge serving a single mesh interface, msh0
 #  (which may come and go as it is an external USB device).
-DEVICE=br0
+DEVICE=br2
 TYPE=Bridge
 IPADDR=172.18.14.1
 NETMASK=255.255.254.0
 NETWORK=172.18.14.0
 BROADCAST=172.18.15.255
 IPV6INIT=no
-# Will be brought up by msh0
-ONBOOT=no
+ONBOOT=yes

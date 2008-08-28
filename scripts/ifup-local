@@ -23,11 +23,5 @@ case $1 in
    /sbin/ip addr flush dev msh2 2>/dev/null
    /sbin/ifup msh1
    ;;
-   msh0)
-   /sbin/ifup br0
-   ;;
-   msh1)
-   /sbin/ifup br1
-   ;;
 esac
 fi
