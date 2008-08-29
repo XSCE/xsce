@@ -106,13 +106,6 @@ install: $(DESTDIR)
 	install -D altfiles/etc/sysconfig/olpc-scripts/domain_config.d/resolvconf    $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d
 	install -D altfiles/etc/sysconfig/olpc-scripts/resolv.conf.in           $(DESTDIR)/etc/sysconfig/olpc-scripts
 
-	install -D altfiles/etc/sysconfig/olpc-scripts/ifcfg-dummy0 $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/ifcfg-eth0   $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/ifcfg-eth0.auxiliary $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/ifcfg-eth1   $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/ifcfg-msh0   $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/ifcfg-msh1   $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/ifcfg-msh2   $(DESTDIR)/etc/sysconfig/olpc-scripts/ 
 	install -D altfiles/etc/sysconfig/olpc-scripts/ifcfg-tun0   $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/ip6tables    $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/iptables.auxiliary  $(DESTDIR)/etc/sysconfig/olpc-scripts/
@@ -132,7 +125,7 @@ install: $(DESTDIR)
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-msh1   $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-msh2   $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wlan0  $(DESTDIR)/etc/sysconfig/network-scripts
- 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wlan1  $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wlan1  $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wlan2  $(DESTDIR)/etc/sysconfig/network-scripts
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-dummy0 $(DESTDIR)/etc/sysconfig/network-scripts/
 
