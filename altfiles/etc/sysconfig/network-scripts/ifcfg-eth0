@@ -1,19 +1,33 @@
 #  OLPC School server
-#  This file configures the ethernet port connected to the Internet (WAN)
+#
+#  On the main (or only) school server, this file configures
+#     the ethernet port connected to the Internet (WAN).
+#  On secondary servers, eth0 is the inteface to the LAN.
+#
 DEVICE=eth0
 ONBOOT=yes
 
-#  Sometimes, a static address is assigned
-#IPADDR=18.85.46.29
-#IPV6ADDR=2001:4830:2446:ff00::2/64
-#NETMASK=255.255.255.0
-#NETWORK=18.85.46.0
-#BROADCAST=18.85.46.255
-#GATEWAY=18.85.46.1
+### If this is the main or only school server, then eth0
+### defaults to looking for a DHCP lease - if you want to 
+### set a static address, create a file called
+### ifcfg-eth0-local in this directory - look at
+### the ifcfg-eth0-local.example file provided
 
-#  These defines are used to request a dynamic address
-BOOTPROTO=dhcp
-DHCP_HOSTNAME=schoolserver
+if [ -e /etc/sysconfig/network-scripts/ifcfg-eth0-local ]; then
+    . /etc/sysconfig/network-scripts/ifcfg-eth0-local
+else
+    . /etc/sysconfig/xs_network_config
+    if [ "foo$XS_ETH0_IPADDR" = "foo" ];then
+	# no IP addr set - try DHCP
+	BOOTPROTO=dhcp
+	DHCP_HOSTNAME=schoolserver
+    else
+	IPADDR=
+	#IPV6ADDR=$XS_ETH0_IPV6ADDR
+	NETMASK=255.255.255.0
+	#NETWORK=$XS_ETH0_NETWORK
+	#BROADCAST=$XS_ETH0_BROADCAST
+	GATEWAY=172.18.0.1
 
-#  This is tied to a particular ethernet interface
+fi
 
