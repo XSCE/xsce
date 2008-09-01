@@ -44,8 +44,8 @@ import commands, syslog, os, sys
 SUBNET_PREFIX="172.18."
 
 #  Name of the file used to store the server number
-#SERVER_NUM_FILE = '/etc/sysconfig/xs_server_number'
-SERVER_NUM_FILE = '/tmp/xs_server_number'
+SERVER_NUM_FILE = '/etc/sysconfig/xs_server_number'
+# SERVER_NUM_FILE = '/tmp/xs_server_number'
 
 def print_mesh_br( M_num, server_num ):
     """writes network config values for a mesh I/F ethernet I/F
@@ -60,9 +60,6 @@ def print_mesh_br( M_num, server_num ):
     print 'XS_BR'+M+'_IPADDR='    + SUBNET_PREFIX + subnet_str + '.1'
     print 'XS_BR'+M+'_NETWORK='   + SUBNET_PREFIX + subnet_str + '.0'
     print 'XS_BR'+M+'_BROADCAST=' + SUBNET_PREFIX + str(subnet + 1) + '.255'
-
-def print_second_lan( server_num ):
-    print 'XS_ETH11_IPADDR=172.18.1.' + str(server_num) + '\n'
 
 ###########################################################################
 ##
@@ -116,9 +113,9 @@ if __name__ == "__main__":
     ##      - on the other servers it ill be unused
     ##
     if server_num==1:
+        print 'XS_ETH1_IPADDR=172.18.0.' + str(server_num)
         print 'XS_ETH10_IPADDR=172.18.1.' + str(server_num)
         print 'XS_DUMMY0_IPADDR=172.18.1.' + str(server_num)
-
 
     ##
     ## The bridges for the MSH devices
