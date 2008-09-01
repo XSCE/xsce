@@ -1,8 +1,12 @@
 #  OLPC School server
 #  This file configures the ethernet port connected to local machines (LAN)
 DEVICE=eth1
-ONBOOT=yes
-IPADDR=172.18.0.1
-NETMASK=255.255.254.0
-NETWORK=172.18.0.0
-BROADCAST=172.18.1.255
+. /etc/sysconfig/xs_network_config
+
+if [ "foo$XS_ETH1_IPADDR" != "foo" ]; then
+   ONBOOT=yes
+   IPADDR="$XS_ETH1_IPADDR"
+   NETMASK=255.255.254.0
+   #NETWORK=172.18.0.0
+   #BROADCAST=172.18.1.255
+fi
