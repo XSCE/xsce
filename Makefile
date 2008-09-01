@@ -119,7 +119,7 @@ install: $(DESTDIR)
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-br1    $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-br2    $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-eth0   $(DESTDIR)/etc/sysconfig/network-scripts/
-	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-eth1   $(DESTDIR)/etc/sysconfig/network-script/s
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-eth1   $(DESTDIR)/etc/sysconfig/network-scripts
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-eth1:1 $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-msh0   $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-msh1   $(DESTDIR)/etc/sysconfig/network-scripts/
