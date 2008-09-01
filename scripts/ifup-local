@@ -1,0 +1,34 @@
+#!/bin/sh
+#
+# Part of the OLPC XS Scripts
+#
+# Authors: Jerry Vonau <jvonau@shaw.ca>
+#          Martin Langhoff <martin@laptop.org>
+#  
+if [ x${1} = x ]; then
+    exit
+else
+    case $1 in
+	wlan0)
+	    /sbin/ip addr flush dev msh0 2>/dev/null
+	    /sbin/ifup msh0
+	    ;;
+	wlan1)
+	    /sbin/ip addr flush dev msh1 2>/dev/null
+	    /sbin/ifup msh1
+	    ;;
+	wlan2)
+	    /sbin/ip addr flush dev msh2 2>/dev/null
+	    /sbin/ifup msh1
+	    ;;
+       # if we are bringing up eth1
+       # bring down the dummy if
+       # and vice versa.
+	eth1)
+	    /sbin/ifdown dummy0
+	    ;;
+	dummy0)
+	    /sbin/ifdown eth1
+	    ;;
+    esac
+fi

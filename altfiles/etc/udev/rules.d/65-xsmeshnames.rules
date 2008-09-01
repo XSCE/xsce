@@ -1,0 +1,15 @@
+## These rules pull in our mesh-namer script
+## which ensures that the "eth*" device gets
+## renamed to wlanN where N matches the mshN
+## device. So the pairs line up:
+##
+##  wlan0 == msh0
+##  wlan1 == msh1
+##  wlan2 == msh2
+##
+## making the rest of the network infra much simpler.
+##
+## Credit: Jerry Vonau <jvonau@shaw.ca>
+##
+ACTION=="add", SUBSYSTEM=="net", KERNEL=="eth*", ATTRS{idVendor}=="1286", ATTRS{idProduct}=="2001", ENV{INTERFACE_NAME}="msh"
+ACTION=="add", SUBSYSTEM=="net", KERNEL=="eth*", ATTRS{idVendor}=="1286", ATTRS{idProduct}=="2001", PROGRAM="/lib/udev/mesh-namer", RESULT=="?*", ENV{INTERFACE_NAME}="$result"

@@ -1,0 +1,14 @@
+##
+## This is the 'mesh' interface
+## of the wlanX / mshX pair that the Marvell
+## mesh IF appears as...
+##
+DEVICE=msh0
+TYPE=Ethernet
+BRIDGE=br0
+# Will be brought up by wlanX
+ONBOOT=no
+IPV6INIT=no
+HOTPLUG=yes
+NM_CONTROLLED=no
+LINKDELAY=0

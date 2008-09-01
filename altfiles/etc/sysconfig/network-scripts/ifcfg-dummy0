@@ -1,0 +1,25 @@
+#  OLPC School server
+#  This is a dummy interface, used when a server has no wired LAN
+#  This keeps other software, which uses 172.18.0.1 to represent the
+#  school server, happy.
+DEVICE=dummy0
+. /etc/sysconfig/xs_network_config
+
+if [ "foo$XS_DUMMY0_IPADDR" = "foo" ];then
+    ONBOOT=no
+    # If we do not provide IPADDR
+    # or DCHP values, it will error out
+    # without stopping the process.
+    # If we exit here - we might prevent
+    # other interfaces from coming up
+    # not setting anything.
+else
+    # We always bring up dummy0 - if eth1
+    # comes up later, ifup-local will
+    # bring dummy0 down.
+    ONBOOT=yes
+    IPADDR=$XS_DUMMY0_IPADDR
+    NETMASK=255.255.240.0
+fi
+
+

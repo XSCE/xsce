@@ -1,0 +1,12 @@
+#  OLPC School server
+#  This is a bridge serving a single mesh interface, msh2
+#  (which may come and go as it is an external USB device).
+. /etc/sysconfig/xs_network_config
+DEVICE=br2
+TYPE=Bridge
+IPADDR=$XS_BR2_IPADDR
+NETMASK=255.255.254.0
+NETWORK=$XS_BR2_NETWORK
+BROADCAST=$XS_BR2_BROADCAST
+IPV6INIT=no
+ONBOOT=yes

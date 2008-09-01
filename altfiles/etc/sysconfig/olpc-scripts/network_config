@@ -5,122 +5,37 @@
 #  needs to set idmgr backup name based on server number
 
 #  Copyright 2008, One Laptop per Child
-#  Author: John Watlington
+#  Authors: John Watlington, Martin Langhoff
+#  License: GPLv2
 #
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU Library General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU Library General Public
-# License along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA.
-
 # network_config
-# This application runs early in the first boot process, before networking
-# is brought up, in order to tailor the network configuration files
-# to the hardware on this particular machine.
 #
-# It may also be run manually to respond to changes in hardware
-# (addition or removal of wired network cards), but should not be
-# run trivially -- if the server number is changed, any laptops
-# registered with this server will have to be re-registered.
+# This script has 2 purposes
 #
-# Command Line:
-#   network_config <server_number>
+# - Set a "server number" role for the machine for 
+#   environemtns with many 'school server' machines.
+#
+#   This value is stored in /etc/sysconfig/xs_server_number
+#   (in early releases as /etc/sysconfig/server_number)
+#
+#   If no role # is defined, it will assume '1'.
+#
+#   Command Line to set:
+#        network_config <server_number>
+#
+# - Print the network config settings for that role
+#   these config settings get stored in 
+#   /etc/sysconfig/xs_network_settings
+#
+#   Invoke with no parameters to get the settings.
 #
 # The server number should be unique to the school network this server
 # will be part of.  When run at first boot, this number is always 1.
 # Server numbers do not have to be sequential, and currently only
 # numbers 1 through 8 are currently supported.
 #
-# This script assumes that the server will be the principal school server
-# (the one that connects to the internet).  Auxiliary servers will also
-# need to run the auxiliary_config script.
-#
-# This script assumes that a software image which has not been configured for
-# a particular machine has the following configuration files in
-# OLPC_CONFIG_DIR (/etc/sysconfig/olpc-scripts):
-#  ifcfg-eth0  (WAN interface)
-#  ifcfg-eth1:1 (LAN interface for principal)
-#  ifcfg-dummy0 (when LAN interface is missing)
-#  ifcfg-msh[0-2]  (MSH interface)
-#  ifcfg-tun0  (for IPv6 tunnel, requires manual configuration)
-#  iptables.principal    (firewall configuration)
-#  iptables.auxiliary    (firewall configuration)
-#  ip6tables		 (firewall configuration)
-#  dhcpd.conf.[1-8][.aux]  (DHCP server configuration)
-#
-#  This script performs the following operations:
-#
-#   - If the number of ethernet interfaces is not equal to
-#     the number of mesh interfaces plus two (WAN & LAN), it does the
-#     following:
-#
-#     If there is a single wired ethernet interface, it assumes that
-#     there is no wired LAN, renames ifcfg-eth1 to be ifcfg-eth1~,
-#     renames ifcfg-eth[2-4] to be ifcfg-eth[1-3].
-#     A dummy interface is assigned the base LAN address, to avoid
-#     reconfiguring a vast number of files.
-#    
-#     If there are more than two wired ethernet interfaces, we don't bring
-#     up the extra ones (we would need to either bridge them or mess with
-#     the DHCP server).  ifcfg-eth[2-4] are shifted upwards to make room
-#     for the new files.
-#
-#   - It customizes the provided ifcfg-eth0 file with the MAC
-#     address likely to be that of the WAN port
-#
-#   - If there is a second wired interface, it customizes the
-#     provided ifcfg-eth1 file with the MAC address likely to be
-#     that of the LAN port
-#
-#   - It customizes the ifcfg-br[0-2] and ifcfg-eth1 (LAN) files
-#     to reflect the server number
-#
-#   - It copies into place the appropriate /etc/dhcpd.conf file for this
-#     server number.  There are TOO MANY of these, but I didn't want to
-#     take the time to switch to generating them...yet.
-#
-#   - It copies into place the appropriate /etc/sysconfig/network file for
-#     this server number
-#
-#   - It copies into place the appropriate /etc/hosts file for this
-#     server number
-#
-#  The script that calls this upon first boot examines the exit
-#  value.  If it is non-zero, this script will be executed again
-#  the next time the system boots.
 
 import commands, syslog, os, sys
-
-#  Table of likely WAN network MAC addresses
-#  These are the first two bytes of ethernet devices likely to
-#  be the WAN interface.
-#  These interfaces are deliberately chosen to be older, well-tested
-#  hardware and drivers to ensure that remote access to a schoolserver
-#  is most likely to work.   The interfaces provided on motherboards
-#  (especially new ones) are less well tested, and may have "features"
-#  unknown to us.
-#  Feel free to add your own here.
-wan_mac_addresses =[
- [ '00', '19' ],   #  DLink DFE-550 Ethernet adapter
- [ '00', '04' ],   #  Linksys Tulip
- [ '00', '20' ]    #  Linksys Tulip
-]
-
-#  The MAC address prefix of the Mesh Interfaces
-#  As production increases, additional values are likely to
-#  be needed here.
-MESH_MODULE_MAC_BYTE1  = '00'
-MESH_MODULE_MAC1_BYTE2 = '50'
-MESH_MODULE_MAC2_BYTE2 = '79'
 
 #  Subnet prefix
 #  This is the first sixteen bits of the IP address used for the
@@ -128,418 +43,84 @@ MESH_MODULE_MAC2_BYTE2 = '79'
 #  scripts should also be changed.   The trailing '.' is important.
 SUBNET_PREFIX="172.18."
 
-#  Location of the network configuration files
-OLPC_CONFIG_DIR = "/etc/sysconfig/olpc-scripts/"
-NETWORK_CONFIG_DIR = "/etc/sysconfig/network-scripts/"
-FIREWALL_CONFIG_DIR = "/etc/sysconfig/"
+#  Name of the file used to store the server number
+SERVER_NUM_FILE = '/etc/sysconfig/xs_server_number'
+# SERVER_NUM_FILE = '/tmp/xs_server_number'
 
-#  Firewall Scripts  (and any others you want copied w. no change)
-firewall_script_list = [
-#          source,                           destination
- [ OLPC_CONFIG_DIR + 'iptables.principal', FIREWALL_CONFIG_DIR + 'iptables' ],
- [ OLPC_CONFIG_DIR + 'ip6tables', FIREWALL_CONFIG_DIR + 'ip6tables' ],
- [ OLPC_CONFIG_DIR + 'ifcfg-tun0', NETWORK_CONFIG_DIR + 'ifcfg-tun0' ]
-]
-
-#  Array of mesh network channel assignments.
-#  The first mesh device uses the first channel_number entry, the
-#  second uses the second channel_number entry, etc...
-CHANNEL_NUMBER = [ "1", "11", "6" ]
-
-#  Name of the file used to store the server number (in NETWORK_CONFIG_DIR)
-SERVER_NUM_FILE = 'server_number'
-
-#  Name of the file used when there is no wired LAN device
-DUMMY_LAN = "ifcfg-dummy0"
-SECONDARY_ADDRESS_LAN = 'ifcfg-eth1:1'
-
-#  String defining the HW MAC address of an interface
-MAC_STATEMENT='HWADDR='
-
-#  Define the prefix used for certain interface types
-MESH_PREFIX='msh'
-ETHERNET_PREFIX='eth'
-BRIDGE_PREFIX='br'
-DEVICE_PREFIX='dev'      # used by Fedora when REALLY confused
-
-#  Suffix used for backup copies of files
-BACKUP_SUFFIX = ".bak"
-
-def is_wired( iface ):
-    """determines if an interface is a wired interface
-
-    Takes an interface name, and generally uses the
-    first three characters of the name of an interface
-    to decides if it is a wired interface or not.
-    Secondary interfaces (e.g. eth1:1) are reported as not wired.
-    Returns true if it is.
-    """
-    if (iface[0:3] == ETHERNET_PREFIX) or \
-       (iface[0:3] == DEVICE_PREFIX):
-        if iface.find(':') >= 0:
-            return 0
-        else:
-            return 1
-    else:
-        return 0
-
-def write_file_w_backup( filename, contents ):
-    """writes out a file, being careful to backup any existing one
-    """
-    #  First we see what to do with any existing backup file
-    #  We can't keep an infinite stack of backups.
-    #  But we can keep multiple invocations of this script
-    #  from clobbering the "original" backup file.
-    try:
-        #  These are small files, so no need to "chunk" the read and compare
-        dst_file = open( filename, 'r' )
-	dst_data = dst_file.read()
-        dst_file.close()
-	dst_len = len(dst_data)
-	if dst_len == len(contents):
-            files_equal = 1
-	    for index in range( dst_len ):
-	        if contents[ index ] != dst_data[ index ]:
-		    files_equal = 0
-		    break
-            if files_equal:
-	        syslog.syslog( "file (%s) left untouched" % ( filename ))
-	        return
-        #  Backup the destination
-	os.rename( filename, filename + BACKUP_SUFFIX )
-    except IOError, (errno, strerror):
-        pass    #  Take no action if destination or backup file don't exist !
-    try:
-        cfg_file = open( filename, 'w' )
-        cfg_file.write( contents )
-        cfg_file.close()
-    except IOError, (errno, strerror):
-        #  If this fails, just log the error
-        syslog.syslog( "Error writing network config file %s (%s): %s" \
-              % (filename, errno, strerror))
-	return( -1 )
-    return( 0 )
-
-def copy_file( src, dst ):
-    """copies a network configuration file
-
-    Takes two full pathnames as arguments.
-    Performs some checking to ensure that we don't needlessly
-    overwrite a backup file.
-    """
-
-    try:	
-        src_file = open( src, 'r' )
-	contents = src_file.read()
-        src_file.close()
-    except IOError, (errno, strerror):
-        #  If this fails, just log the error
-        syslog.syslog( "Error copying file %s -> %s (%s): %s" \
-              % (src, dst, errno, strerror))
-	return( -1 )
-    return( write_file_w_backup( dst, contents ) )
-
-def write_mesh_eth_file( M_num, N_num ):
-    """writes out a network configuration file for a mesh I/F ethernet I/F
-
-    Takes two numbers, indicating the suffix of the mesh (M_num) and the
-    ethernet interface (N_num).
-    Performs some checking to ensure that we don't needlessly
-    overwrite a backup file.
-    """
-    N = str( N_num )
-    M = str( M_num )
-    filename = NETWORK_CONFIG_DIR + 'ifcfg-' + ETHERNET_PREFIX + N
-    contents = \
-"""#  OLPC School server
-#  This is an active antenna wireless mesh interface, infrastructure mode side
-#  (this device also appears as msh""" + M + """)
-DEVICE=""" + ETHERNET_PREFIX + N + """ 
-MODE=ad-hoc
-CHANNEL=""" + CHANNEL_NUMBER[ M_num ] + """
-ESSID=\"school-mesh-""" + M + """\"
-ONBOOT=yes
-"""
-    return( write_file_w_backup( filename, contents ) )
-
-def write_mesh_br_file( M_num, server_num ):
-    """writes out a network configuration file for a mesh I/F ethernet I/F
+def print_mesh_br( M_num, server_num ):
+    """writes network config values for a mesh I/F ethernet I/F
 
     Takes two numbers, indicating the suffix of the mesh (M_num) and the
     server number.
     """
     M = str( M_num )
 
-    filename = NETWORK_CONFIG_DIR + 'ifcfg-' + BRIDGE_PREFIX + M
     subnet = 10 + (8 * (server_num-1)) + (2 * M_num)
     subnet_str = str(subnet)
-    contents = \
-"""#  OLPC School server
-#  This is a bridge serving a single mesh interface, msh""" + M + """
-#  (which may come and go as it is an external USB device).
-DEVICE=""" + BRIDGE_PREFIX + M + """ 
-TYPE=Bridge
-IPADDR=""" + SUBNET_PREFIX + subnet_str + """.1
-NETMASK=255.255.254.0
-NETWORK=""" + SUBNET_PREFIX + subnet_str + """.0
-BROADCAST=""" + SUBNET_PREFIX + str(subnet + 1) + """.255
-IPV6INIT=no
-ONBOOT=yes
-"""
-    return( write_file_w_backup( filename, contents ) )
-
-def write_second_lan( server_num ):
-    """Generate a second IP address on the LAN for static routing purposes
-    """
-    #  This will be removed by the auxiliary_config script
-    contents = """#  OLPC School server
-#  This file configures the ethernet port connected to local machines (LAN)
-#  It is provided as the static routing tables on other servers use it!
-DEVICE=eth1:1
-ONBOOT=yes
-NETMASK=255.255.254.0
-IPADDR=172.18.1.""" + str(server_num) + '\n'
-    return( write_file_w_backup( NETWORK_CONFIG_DIR + SECONDARY_ADDRESS_LAN,
-                                 contents ) )
-        
-def write_network_config( server_num ):
-    "generates the network configuration file"
-    contents = \
-"""NETWORKING=yes
-NETWORKING_IPV6=no
-IPV6FORWARDING=no
-IPV6_AUTOCONF=no
-HOSTNAME=schoolserver
-"""
-    #  + str(server_num) + '\n'     Used for auxiliary servers
-    return( write_file_w_backup( FIREWALL_CONFIG_DIR + 'network', contents ) )
-
-def write_hosts( server_num ):
-    "generates the hosts configuration file"
-    contents = '127.0.0.1		schoolserver' + \
-    str( server_num ) + """ localhost.localdomain localhost
-127.0.0.1		conference.schoolserver
-::1		localhost6.localdomain6 localhost6
-"""
-    return( write_file_w_backup( '/etc/hosts', contents ) )
-
-def copy_and_add( src, mac ):
-    """copies a network configuration file, adding a HW MAC address
-
-    Takes a string containing the interface number (src), and a
-    string containing the MAC address of the interface (mac).
-    """
-    filename = 'ifcfg-' + ETHERNET_PREFIX + src
-    src_filename = OLPC_CONFIG_DIR + filename
-    dst_filename = NETWORK_CONFIG_DIR + filename
-    new_line = MAC_STATEMENT + mac + '\n'
-
-    try:
-        #  Backup the destination
-	os.rename( dst_filename, dst_filename + BACKUP_SUFFIX )
-    except IOError, (errno, strerror):
-        pass    #  Take no action if destination or backup file don't exist !
-
-    #   Now actually copy the file, adding the MAC address at the end
-    try:
-        src_file = open( src_filename, 'r' )
-        dst_file = open( dst_filename, 'w' )
-        dst_file.write( src_file.read() )
-	dst_file.write( new_line )
-        src_file.close()
-        dst_file.close()
-    except IOError, (errno, strerror):
-        syslog.syslog( "Error writing network config file %s (%s): %s" \
-              % (filename, errno, strerror))
-	exit( 1 )
-    return
-
-def copy_mesh( msh_dst, eth_dst, server_num ):
-    """Copy the mesh interface files for one interface into place
-
-    This copies the appropriate ifcfg-mshM file (M = msh_dst) and
-    generates an appropriate ifcfg-ethN file (where N = eth_dst)
-    and ifcfg-brM file as well
-    """
-    #  Generate the ethM file
-    write_mesh_eth_file( msh_dst, eth_dst )
-
-    #  Generate the brN file
-    write_mesh_br_file( msh_dst, server_num )
-
-    #  Copy the mshN file
-    filename = 'ifcfg-' + MESH_PREFIX + str(msh_dst)
-    copy_file( OLPC_CONFIG_DIR + filename, NETWORK_CONFIG_DIR + filename )
-    return
-
-def copy_firewall():
-    """Copy the firewall scripts (and others) into place
-    """
-    for file in firewall_script_list:
-         copy_file( file[0], file[1] )
-    return
-
-def remove_dummy():
-    """removes the dummy0 network configuration file
-    """
-    filename = NETWORK_CONFIG_DIR + DUMMY_LAN
-    try:
-        #  Backup the dummy file
-        if os.path.exists( filename ):
-            os.rename( filename, filename + BACKUP_SUFFIX )
-    except IOError, (errno, strerror):
-        pass    #  Take no action if destination or backup file don't exist !
-    return
+    print 'XS_BR'+M+'_IPADDR='    + SUBNET_PREFIX + subnet_str + '.1'
+    print 'XS_BR'+M+'_NETWORK='   + SUBNET_PREFIX + subnet_str + '.0'
+    print 'XS_BR'+M+'_BROADCAST=' + SUBNET_PREFIX + str(subnet + 1) + '.255'
 
 ###########################################################################
 ##
 ##   This is the actual script
 ##
 if __name__ == "__main__":
-    #  syslog logging is really only useful if run manually...
-    #  It turns out that networking is brought up before syslog is,
-    #  and this script is run before bringing up networking!
-    syslog.openlog( 'olpc_net_cfg', 0, syslog.LOG_DAEMON )
 
     #  Get the server number from the command line and check it for sanity
-    if len(sys.argv) != 2:
+    if len(sys.argv) > 2:
        syslog.syslog( 'Incorrect number of arguments' )
        exit(1)
 
-    server_number = int(sys.argv[1])
-    if (server_number < 1) or (server_number > 8):
-       syslog.syslog( 'Server number (%d) out of range' % server_number )
-       exit(1)
+    # Default - and set the scope
+    server_num = 1
 
-    write_file_w_backup( NETWORK_CONFIG_DIR + SERVER_NUM_FILE,
-			 str(server_number) )
+    if len(sys.argv) == 2:
+        server_num = int(sys.argv[1])
+        if (server_num < 1) or (server_num > 8):
+            syslog.syslog( 'Server number (%d) out of range' % server_num )
+            exit(1)
+        cfg_file = open(SERVER_NUM_FILE, 'w')
+        cfg_file.write(str(server_num))
+        cfg_file.close()
+        syslog.syslog('Configured the system to perform XS role ' + str(server_num))
+    else:
+        if os.path.exists(SERVER_NUM_FILE):
+            cfg_file = open(SERVER_NUM_FILE, 'r')
+            server_num = cfg_file.read()
+            cfg_file.close()
+            server_num = int(server_num.strip())
+        else:
+            msg = SERVER_NUM_FILE + ' does not exist. Defaulting to 1.'
+            syslog.syslog(msg)
+            sys.stderr.write(msg+"\n")
 
-    #  Get list of network interfaces
-    iface_list = commands.getoutput( '/sbin/ifconfig -a | grep HWaddr' )
-    interfaces = iface_list.split( '\n' )
-    num_interfaces = len( interfaces )
-    num_mesh_interfaces = 0
-    num_eth_interfaces = 0
-    iface_name = []
-    iface_mac = []
-    for iface in interfaces:
-	#  parse interfaces here
-	parsed = iface.split()
-	iface_name.append( parsed[0] )
-	iface_mac.append( parsed[4] )
-        if iface[0:3] == MESH_PREFIX:
-            num_mesh_interfaces += 1
-	elif is_wired( parsed[0] ):
-            num_eth_interfaces += 1
+    print "#"
+    print "# Generated by network_config"
+    print "# do not edit by hand "
+    print "#"
+    print "XS_SERVER_NUM=" + str(server_num)
+    ##
+    ##
+    ## eth0 is WAN on Server 1 so it will be locally configured or using DHCP
+    ##      - on the other servers it will be LAN
+    ##
+    if server_num != 1:
+        print 'XS_ETH0_IPADDR=172.18.1.' + str(server_num)
 
-    num_wired = num_eth_interfaces - num_mesh_interfaces
-    syslog.syslog( '%d interfaces' % ( num_interfaces ))
-    syslog.syslog( '%d mesh interfaces' % ( num_mesh_interfaces ))
-    syslog.syslog( '%d wired interfaces' % ( num_wired ))
+    ##
+    ## eth1 is LAN on Server 1 - where we want it to also have an eth1:1 
+    ##      - on the other servers it ill be unused
+    ##
+    if server_num==1:
+        print 'XS_ETH1_IPADDR=172.18.0.' + str(server_num)
+        print 'XS_ETH10_IPADDR=172.18.1.' + str(server_num)
+        print 'XS_DUMMY0_IPADDR=172.18.1.' + str(server_num)
 
-    for index in range( num_interfaces ):
-        syslog.syslog( '%d: %s %s' % (index, iface_name[ index ], iface_mac[ index ] ))
-
-    #  Copy a number of files into appropriate places
-    copy_firewall()
-
-    #  Copy the appropriate dhcpd.conf for this server_number into place
-    copy_file( OLPC_CONFIG_DIR + 'dhcpd.conf.' + str(server_number),
-	       '/etc/dhcpd-xs.conf.in' )
-
-    #  Generate some network config files using the server number
-    write_network_config( server_number )
-    write_hosts( server_number )
-
-    if num_wired < 1:
-        syslog.syslog( 'No wired network interfaces found.  Aborting' )
-	#  Repeat on next reboot !
-	exit( 1 )
-
-    #  Identify the interfaces
-    #  The WAN interface is defined as having a MAC address from
-    #  a limited range of MAC addresses
-    wan_index = -1
-    for ifindex in range( num_interfaces ):
-        test_mac = iface_mac[ ifindex ].split(':')
-	for possible_mac in wan_mac_addresses:
-	    if (possible_mac[0] == test_mac[0]) and (possible_mac[1] == test_mac[1]):
-	       wan_index = ifindex
-               syslog.syslog( 'Using WAN interface ' + str( ifindex ) + ': ' + iface_mac[ ifindex ]  )
-               break
-        #  Use the lowest numbered WAN candidate
-        if wan_index != -1 :
-            break
-
-    #  If we didn't find an interface from the MAC range we expect,
-    #  use the lowest numbered non-mesh interface
-    if wan_index == -1 :
-        for ifindex in range( num_interfaces ):
-	    parsed_mac = iface_mac[ ifindex ].split(':')
-            the_name = iface_name[ ifindex ]
-	    #  Is this a mesh or dummy interface ?
-            syslog.syslog( 'Comparing ' + str( ifindex ) + ': ' + iface_mac[ ifindex ] + ' ' + str( is_wired( the_name )) )
-            if is_wired( the_name ) and not \
-                   ((parsed_mac[0] == MESH_MODULE_MAC_BYTE1) and \
-                    ((parsed_mac[1] == MESH_MODULE_MAC1_BYTE2) or \
-                     (parsed_mac[1] == MESH_MODULE_MAC2_BYTE2))) :
-                wan_index = ifindex
-                syslog.syslog( 'Using WAN interface ' + str( ifindex ) + ': ' + iface_mac[ ifindex ] )
-                break
-    
-    #  Since we aborted earlier if there was no wired interface,
-    #  wan_index should now point to a valid ethernet interface.
-    #  Copy the config file for eth0, modifying it along the way
-    copy_and_add( "0", iface_mac[ wan_index ] )
-
-    #  If this machine is later turned into an auxiliary school server,
-    #  the auxiliary_config script will change ifcfg-eth0 to reflect
-    #  a preset WAN (actually school LAN) address.
-
-    if num_wired == 1:     #  no LAN interface
-    #  Copy the mesh config into eth1 - eth3	 	         
-       copy_mesh( 0, 1, server_number )
-       copy_mesh( 1, 2, server_number )
-       copy_mesh( 2, 3, server_number )
-    #  We must create a dummy device to account for the LAN !
-    #  This will be removed later if auxiliary_config is run
-       copy_file( OLPC_CONFIG_DIR + DUMMY_LAN, NETWORK_CONFIG_DIR + DUMMY_LAN )
-    #  And exit
-       exit( 0 )
-
-    #  Now find the LAN interface
-    lan_index = 1
-    for ifindex in range( num_interfaces ):
-        if ifindex == wan_index:
-	   continue
-        parsed_mac = iface_mac[ ifindex ].split(':')
-	#  If a wired interface AND not a mesh interface
-	if (is_wired( iface_name[ ifindex ] ) and
-	    ((parsed_mac[0] != MESH_MODULE_MAC_BYTE1) or
-             ((parsed_mac[1] != MESH_MODULE_MAC1_BYTE2) and
-                (parsed_mac[1] != MESH_MODULE_MAC2_BYTE2)))):
-            lan_index = ifindex
-            break
-
-    #  Generate the config file for eth1
-    #  Here we assume this is a principal machine, and don't
-    #  customize the LAN address range for the server number
-    copy_and_add( "1", iface_mac[ lan_index ] )
-    write_second_lan( server_number )
-
-    remove_dummy()   # just in case it is left from a previous config!
-    
-    if num_wired == 2:
-        #  Copy the mesh config into eth2 - eth4
-       copy_mesh( 0, 2, server_number )
-       copy_mesh( 1, 3, server_number )
-       copy_mesh( 2, 4, server_number )
-       #  And exit
-       exit( 0 )
-
-    elif num_wired > 2:
-       #  Fix this !!!!
-       syslog.syslog( 'Too many wired network interfaces found.  Aborting!' )
-       print( 'Too many wired network interfaces found.  Aborting!' )
-       #  Repeat on next reboot !
-       exit( 1 )
+    ##
+    ## The bridges for the MSH devices
+    ##
+    # TODO : we might need to add a special bridge for server 1
+    #        to support early activation
+    for meshbr in range(0,3):
+        print_mesh_br(meshbr, server_num)

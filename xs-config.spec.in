@@ -14,14 +14,17 @@ Requires: nss
 Requires: openssh-server  
 Requires: radvd  
 Requires: rpm  
-Requires: selinux-policy  
+Requires: selinux-policy
 Requires: setup  
 Requires: smartmontools  
 Requires: sudo  
-Requires: sysklogd  
+Requires: syslog 
 Requires: xml-common  
 Requires: git-core
 Requires: usbmount
+Requires: libertas-usb8388-firmware
+Requires: bridge-utils
+Requires: dhcp
 
 Summary: XS/XSX default configuration
 Name: xs-config
@@ -169,16 +172,14 @@ pushd /etc
 make -f xs-config.make all
 popd 
 
-#
-#  If any kernel modules are being installed using this mechanism, you
-#  need to depmod them in... however this will sometimes
-#  run in a chroot / during livecd creation, and will fail
-#  due to a mismatched uname.
-depmod -b %{DESTDIR} -C %{DESTDIR}/etc/depmod.d \
-       || echo depmod failed - this is not fatal
+# Change the network infra we use
+# note that 'network' now defaults to off
+chkconfig --level 345 network on
+chkconfig --del NetworkManager
 
-chkconfig --add olpc-network-config
-chkconfig --add olpc-mesh-config
+## TODO: make olpc-network-config
+## a well-formed init script
+chkconfig --level 345 olpc-network-config on
 
 %pre
 
@@ -210,6 +211,11 @@ if [ ! -d /etc/.git ];then
    git init
    chmod 700 .git
    popd
+fi
+
+# remove start scripts before removal
+if [ -e /etc/init.d/olpc-mesh-config
+   chkconfig --del olpc-mesh-config
 fi
 
 %preun
@@ -249,8 +255,8 @@ fi
 
 %{_sysconfdir}/dhclient-exit-hooks
 %{_sysconfdir}/udev/rules.d/10-olpcmesh.rules
+%{_sysconfdir}/udev/rules.d/65-xsmeshnames.rules
 %{_sysconfdir}/init.d/olpc-network-config
-%{_sysconfdir}/init.d/olpc-mesh-config
 %{_sysconfdir}/usbmount/mount.d/01_beep_on_mount
 %{_sysconfdir}/usbmount/mount.d/99_beep_when_done
 
@@ -259,11 +265,6 @@ fi
 
 %{_bindir}/xs-commitchanged
 %{_bindir}/cat-parts
-
-# remove for F9
-/lib/firmware/usb8388.bin
-/lib/firmware/LICENSE-usb8388.bin
-/lib/modules/2.6.23.1-21.fc7/kernel/drivers/net/wireless/libertas/usb8xxx.ko
-/lib/modules/2.6.23.1-21.fc7/kernel/drivers/net/wireless/libertas/libertas.ko
-
-%doc README
+/sbin/ifup-local
+/lib/udev/mesh-namer
+%doc README ifcfg-eth0-local.example

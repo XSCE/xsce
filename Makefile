@@ -16,6 +16,7 @@ PKGNAME = xs-config
 VERSION = $(shell git describe | sed 's/^v//' | sed 's/-/./g')
 RELEASE = 1
 ARCH = noarch
+BRANCH = $(shell git branch | grep '*' | sed 's/* //')
 
 # NOTE: Release is hardcoded in the spec file to 1
 NV = $(PKGNAME)-$(VERSION)
@@ -49,10 +50,21 @@ rpm: SOURCES xs-config.spec
 
 publish:
 	scp $(BUILDDIR)/RPMS/$(ARCH)/$(NV)-$(REL).$(ARCH).rpm \
-	    xs-dev.laptop.org:/xsrepos/testing/olpc/7/i386/
+	    xs-dev.laptop.org:/xsrepos/testing/olpc/9/i386/
 	scp $(BUILDDIR)/SRPMS/$(NV)-$(REL).src.rpm \
-	    xs-dev.laptop.org:/xsrepos/testing/olpc/7/source/SRPMS/
-	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/7/i386
+	    xs-dev.laptop.org:/xsrepos/testing/olpc/9/source/SRPMS/
+	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/9/i386
+	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/9/source/SRPMS
+
+publish-stable:
+
+	scp $(BUILDDIR)/RPMS/$(ARCH)/$(NV)-$(REL).$(ARCH).rpm \
+	    xs-dev.laptop.org:/xsrepos/testing/olpc/$(BRANCH)/i386/
+	scp $(BUILDDIR)/SRPMS/$(NV)-$(REL).src.rpm \
+	    xs-dev.laptop.org:/xsrepos/testing/olpc/$(BRANCH)/source/SRPMS/
+	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/$(BRANCH)/i386
+	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/$(BRANCH)/source/SRPMS
+
 
 install: $(DESTDIR)
 
@@ -94,13 +106,6 @@ install: $(DESTDIR)
 	install -D altfiles/etc/sysconfig/olpc-scripts/domain_config.d/resolvconf    $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d
 	install -D altfiles/etc/sysconfig/olpc-scripts/resolv.conf.in           $(DESTDIR)/etc/sysconfig/olpc-scripts
 
-	install -D altfiles/etc/sysconfig/olpc-scripts/ifcfg-dummy0 $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/ifcfg-eth0   $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/ifcfg-eth0.auxiliary $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/ifcfg-eth1   $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/ifcfg-msh0   $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/ifcfg-msh1   $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/ifcfg-msh2   $(DESTDIR)/etc/sysconfig/olpc-scripts/ 
 	install -D altfiles/etc/sysconfig/olpc-scripts/ifcfg-tun0   $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/ip6tables    $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/iptables.auxiliary  $(DESTDIR)/etc/sysconfig/olpc-scripts/
@@ -109,6 +114,21 @@ install: $(DESTDIR)
 	install -D altfiles/etc/sysconfig/olpc-scripts/mkaccount    $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/network_config $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/principal_config $(DESTDIR)/etc/sysconfig/olpc-scripts/
+
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-br0    $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-br1    $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-br2    $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-eth0   $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-eth1   $(DESTDIR)/etc/sysconfig/network-scripts
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-eth1:1 $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-msh0   $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-msh1   $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-msh2   $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wlan0  $(DESTDIR)/etc/sysconfig/network-scripts
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wlan1  $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wlan2  $(DESTDIR)/etc/sysconfig/network-scripts
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-dummy0 $(DESTDIR)/etc/sysconfig/network-scripts/
+
 	install -D altfiles/var/named-xs/localdomain.zone         $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/localhost.zone           $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/named.broadcast          $(DESTDIR)/var/named-xs/ 
@@ -167,11 +187,11 @@ install: $(DESTDIR)
 	install -D altfiles/etc/dhclient-exit-hooks $(DESTDIR)/etc
 
 	install -D -d $(DESTDIR)/etc/udev/rules.d
-	install -D altfiles/etc/udev/rules.d/10-olpcmesh.rules  $(DESTDIR)/etc/udev/rules.d
+	install -D altfiles/etc/udev/rules.d/10-olpcmesh.rules    $(DESTDIR)/etc/udev/rules.d
+	install -D altfiles/etc/udev/rules.d/65-xsmeshnames.rules $(DESTDIR)/etc/udev/rules.d
 
 	install -D -d $(DESTDIR)/etc/init.d
 	install -D altfiles/etc/init.d/olpc-network-config  $(DESTDIR)/etc/init.d
-	install -D altfiles/etc/init.d/olpc-mesh-config  $(DESTDIR)/etc/init.d
 
 	install -D -d $(DESTDIR)/etc/usbmount/mount.d
 	install -D altfiles/etc/usbmount/mount.d/01_beep_on_mount  $(DESTDIR)/etc/usbmount/mount.d
@@ -185,11 +205,8 @@ install: $(DESTDIR)
 	install -D scripts/xs-commitchanged $(DESTDIR)/usr/bin
 	install -D scripts/cat-parts $(DESTDIR)/usr/bin
 
-	# libertas modules and fw ## REMOVE in F9
-	install -D -d $(DESTDIR)/lib/firmware
-	install -D -d $(DESTDIR)/lib/modules/2.6.23.1-21.fc7/kernel/drivers/net/wireless/libertas
-	install -D altfiles/lib/firmware/LICENSE-usb8388.bin $(DESTDIR)/lib/firmware
-	install -D altfiles/lib/firmware/usb8388.bin         $(DESTDIR)/lib/firmware
-	install -D altfiles/lib/modules/2.6.23.1-21.fc7/kernel/drivers/net/wireless/libertas/libertas.ko $(DESTDIR)/lib/modules/2.6.23.1-21.fc7/kernel/drivers/net/wireless/libertas
-	install -D altfiles/lib/modules/2.6.23.1-21.fc7/kernel/drivers/net/wireless/libertas/usb8xxx.ko $(DESTDIR)/lib/modules/2.6.23.1-21.fc7/kernel/drivers/net/wireless/libertas
+	install -D -d $(DESTDIR)/sbin
+	install -D scripts/ifup-local $(DESTDIR)/sbin
 
+	install -D -d $(DESTDIR)/lib/udev
+	install -D scripts/udev-mesh-namer $(DESTDIR)/lib/udev/mesh-namer

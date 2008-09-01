@@ -1,0 +1,42 @@
+#!/bin/sh
+#
+#
+# Part of the OLPC XS Scripts
+#
+# Author: Jerry Vonau <jvonau@shaw.ca>
+#
+
+# Grab the interfaces in use
+mshdevs=""
+mshdevs="`ls /sys/class/net/ | grep msh`" 
+ethdevs=""
+ethdevs="`ls /sys/class/net/ | grep eth`" 
+meshmac=""
+
+# parse by interface return mac addr
+for mshdev in $mshdevs; do
+    meshmac=`udevinfo -a -p /sys/class/net/${mshdev} | grep address`
+#echo $meshmac
+    
+# ok, lets look for the matching mac on the eth interface
+
+    for ethdev in $ethdevs; do
+        meshmac2=`udevinfo -a -p /sys/class/net/${ethdev} | grep address`
+#echo $meshmac
+        if [ $meshmac = $meshmac2 ]; then
+#           echo "match found"
+            # COOL... now just write the alias names to /rules.d   
+            case $mshdev in
+                msh0)
+                    echo "wlan0"    
+                    ;;
+                msh1)
+                    echo "wlan1"    
+                    ;;
+                msh2)
+                    echo "wlan2"    
+                    ;;
+            esac
+        fi 
+    done
+done
