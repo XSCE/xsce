@@ -80,21 +80,13 @@ install: $(DESTDIR)
 	install -D altfiles/etc/sysconfig/olpc-scripts/TURN_SQUID_ON  $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/auxiliary_config $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.1     $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.1.aux $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.2     $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.2.aux $(DESTDIR)/etc/sysconfig/olpc-scripts/ 
 	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.3     $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.3.aux $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.4     $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.4.aux $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.5     $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.5.aux $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.6     $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.6.aux $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.7     $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.7.aux $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.8     $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.8.aux $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/domain_config    $(DESTDIR)/etc/sysconfig/olpc-scripts/
 
 	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d
