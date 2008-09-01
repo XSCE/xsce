@@ -24,10 +24,10 @@ else
        # if we are bringing up eth1
        # bring down the dummy if
        # and vice versa.
-	ifcfg-eth1)
+	eth1)
 	    /sbin/ifdown dummy0
 	    ;;
-	ifcfg-dummy0)
+	dummy0)
 	    /sbin/ifdown eth1
 	    ;;
     esac
