@@ -23,6 +23,8 @@ Requires: xml-common
 Requires: git-core
 Requires: usbmount
 Requires: libertas-usb8388-firmware
+Requires: bridge-utils
+Requires: dhcp
 
 Summary: XS/XSX default configuration
 Name: xs-config
@@ -171,10 +173,13 @@ make -f xs-config.make all
 popd 
 
 # Change the network infra we use
-chkconfig --add network
+# note that 'network' now defaults to off
+chkconfig --level 345 network on
 chkconfig --del NetworkManager
 
-chkconfig --add olpc-network-config
+## TODO: make olpc-network-config
+## a well-formed init script
+chkconfig --level 345 olpc-network-config on
 
 %pre
 
