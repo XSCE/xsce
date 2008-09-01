@@ -15,7 +15,7 @@ if [ "foo$XS_DUMMY0_IPADDR" = "foo" ];then
     # not setting anything.
 else
     # We always bring up dummy0 - if eth1
-    # comes up later, ifup-pre-local will
+    # comes up later, ifup-local will
     # bring dummy0 down.
     ONBOOT=yes
     IPADDR=$XS_DUMMY0_IPADDR
