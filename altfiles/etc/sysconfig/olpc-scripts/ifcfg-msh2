@@ -1,7 +1,0 @@
-#  Marvell mesh network module, mesh side
-#  (this device also appears as ethN+2)
-DEVICE=msh2
-TYPE=Ethernet
-BRIDGE=br2
-ONBOOT=yes
-
