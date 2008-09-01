@@ -155,6 +155,9 @@ install: $(DESTDIR)
 	install -D altfiles/etc/resolv.conf.in  $(DESTDIR)/etc/
 	install -D altfiles/etc/idmgr.conf.in  $(DESTDIR)/etc/
 
+	# fsckoptions goes in / 
+	install -D altfiles/fsckoptions  $(DESTDIR)/
+
 	# makefile-driven set
 	install -D altfiles/etc/xs-config.make  $(DESTDIR)/etc/
 	install -D altfiles/etc/syslog.conf.in  $(DESTDIR)/etc/
