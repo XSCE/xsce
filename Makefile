@@ -192,7 +192,6 @@ install: $(DESTDIR)
 
 	install -D -d $(DESTDIR)/etc/init.d
 	install -D altfiles/etc/init.d/olpc-network-config  $(DESTDIR)/etc/init.d
-	install -D altfiles/etc/init.d/olpc-mesh-config  $(DESTDIR)/etc/init.d
 
 	install -D -d $(DESTDIR)/etc/usbmount/mount.d
 	install -D altfiles/etc/usbmount/mount.d/01_beep_on_mount  $(DESTDIR)/etc/usbmount/mount.d
