@@ -4,10 +4,12 @@
 ## See /usr/share/doc/xs-config-<version>/README for
 ## how this works...
 ##
-all: syslog.conf motd yum.conf sysctl.conf ssh/sshd_config \
+earlyset: syslog.conf motd yum.conf sysctl.conf ssh/sshd_config \
      sysconfig/dhcpd sysconfig/named sysconfig/init \
      sysconfig/iptables-config sysconfig/squid \
      sudoers rssh.conf
+
+networkset: sysconfig/network hosts
 
 # Any file that has a ".in"
 # 'template' can be made with this catch-all
@@ -32,4 +34,14 @@ sudoers: sudoers.d/*
 	xs-commitchanged -m 'Dirty state' $@
 	mv -f sudoers.tmp sudoers
 	xs-commitchanged -m "Made from sudoers.d" $@
+
+sysconfig/network:  sysconfig/network.in sysconfig/xs_server_number
+	xs-commitchanged -m 'Dirty state' $@
+	sed -e "s/@@SERVERNUM@@/$$(cat /etc/sysconfig/xs_server_number)/" < $@.in > $@
+	xs-commitchanged -m "Made from $@.in" $@
+
+hosts:  hosts.in sysconfig/xs_server_number
+	xs-commitchanged -m 'Dirty state' $@
+	sed -e "s/@@SERVERNUM@@/$$(cat /etc/sysconfig/xs_server_number)/" < $@.in > $@
+	xs-commitchanged -m "Made from $@.in" $@
 

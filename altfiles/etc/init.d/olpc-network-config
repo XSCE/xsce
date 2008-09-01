@@ -19,12 +19,13 @@ start () {
        #  Search the configuration file for the run variable
        #  The following is a hack, but works well enough to get moving
 	if [ ! -f $CONFIG_FILE ] ; then
-	    $NETWORK_CONFIG 1 && $DOMAIN_CONFIG
+	    $NETWORK_CONFIG > /etc/sysconfig/xs_network_config && $DOMAIN_CONFIG
 	    RETVAL=$?
+	    # Nasty
+	    pushd /etc
+	    make -f xs-config networkset
+	    popd
             [ $RETVAL -eq 0 ] && touch $CONFIG_FILE
-	    #  This rebuilds the module dependency table to include
-	    # the libertas drivers added manually.
-	    depmod -a
 	fi
 	exit 0
 }

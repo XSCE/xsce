@@ -169,7 +169,7 @@ done
 
 ## Make all the makefile-driven config files
 pushd /etc
-make -f xs-config.make all
+make -f xs-config.make earlyset
 popd 
 
 # Change the network infra we use
@@ -239,6 +239,7 @@ fi
 
 %{_sysconfdir}/xs-config.make
 %config(noreplace) %{_sysconfdir}/motd.in
+%config(noreplace) %{_sysconfdir}/hosts.in
 %config(noreplace) %{_sysconfdir}/sysctl.conf.in
 %config(noreplace) %{_sysconfdir}/syslog.conf.in
 %config(noreplace) %{_sysconfdir}/yum.conf.in
@@ -249,6 +250,7 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/init.in
 %config(noreplace) %{_sysconfdir}/sysconfig/iptables-config.in
 %config(noreplace) %{_sysconfdir}/sysconfig/squid.in
+%config(noreplace) %{_sysconfdir}/sysconfig/network.in
 
 %attr(750, root , named)   %dir /var/named-xs
 %attr(770, named , named)  %dir /var/named-xs/data

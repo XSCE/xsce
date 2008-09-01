@@ -153,6 +153,7 @@ install: $(DESTDIR)
 	install -D altfiles/etc/yum.conf.in     $(DESTDIR)/etc/
 	install -D altfiles/etc/rssh.conf.in    $(DESTDIR)/etc/
 	install -D altfiles/etc/motd.in         $(DESTDIR)/etc/
+	install -D altfiles/etc/hosts.in        $(DESTDIR)/etc/
 
 	install -D -d $(DESTDIR)/etc/ssh
 	install -D altfiles/etc/ssh/sshd_config.in $(DESTDIR)/etc/ssh
@@ -162,6 +163,7 @@ install: $(DESTDIR)
 	install -D altfiles/etc/sysconfig/named.in $(DESTDIR)/etc/sysconfig
 	install -D altfiles/etc/sysconfig/squid.in $(DESTDIR)/etc/sysconfig
 	install -D altfiles/etc/sysconfig/iptables-config.in $(DESTDIR)/etc/sysconfig
+	install -D altfiles/etc/sysconfig/network.in $(DESTDIR)/etc/sysconfig
 
 	# conf.d-style conffiles
 	install -D -d $(DESTDIR)/etc/httpd/conf.d
