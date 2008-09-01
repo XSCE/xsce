@@ -11,8 +11,9 @@ ONBOOT=yes
 ### defaults to looking for a DHCP lease - if you want to 
 ### set a static address, create a file called
 ### ifcfg-eth0-local in this directory - look at
-### the ifcfg-eth0-local.example file provided
-
+### the example file provided under
+### /usr/share/doc/xs-config-*/ifcfg-eth0-local.example
+###
 if [ -e /etc/sysconfig/network-scripts/ifcfg-eth0-local ]; then
     . /etc/sysconfig/network-scripts/ifcfg-eth0-local
 else

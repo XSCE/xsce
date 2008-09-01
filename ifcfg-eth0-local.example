@@ -1,0 +1,9 @@
+#### To set a static address, copy or rename this file to
+####   /etc/sysconfig/network-scripts/ifcfg-eth0-local
+#### and set the values below appropriately
+IPADDR=18.85.46.29
+IPV6ADDR=2001:4830:2446:ff00::2/64
+NETMASK=255.255.255.0
+NETWORK=18.85.46.0
+BROADCAST=18.85.46.255
+GATEWAY=18.85.46.1

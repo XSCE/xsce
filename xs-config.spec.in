@@ -259,4 +259,4 @@ fi
 %{_bindir}/cat-parts
 /sbin/ifup-local
 /lib/udev/mesh-namer
-%doc README
+%doc README ifcfg-eth0-local.example
