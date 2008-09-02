@@ -301,6 +301,7 @@ fi
 
 %{_bindir}/xs-commitchanged
 %{_bindir}/cat-parts
+%{_bindir}/xs-swapnics
 /sbin/ifup-local
 /lib/udev/mesh-namer
 %doc README ifcfg-eth0-local.example
