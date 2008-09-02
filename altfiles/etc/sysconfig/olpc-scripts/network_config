@@ -36,10 +36,6 @@
 #
 
 import commands, syslog, os, sys
-import shutil, subprocess
-
-#  Location of the network configuration files
-OLPC_CONFIG_DIR = "/etc/sysconfig/olpc-scripts/"
 
 #  Subnet prefix
 #  This is the first sixteen bits of the IP address used for the
@@ -128,11 +124,3 @@ if __name__ == "__main__":
     #        to support early activation
     for meshbr in range(0,3):
         print_mesh_br(meshbr, server_num)
-
-    # Copy the 'current' dhcpd.conf into place
-    # TODO: come up with a better strategy for this
-    #       as this forces us to 'remake' the actual file 
-    #       with the new template to domain_config
-    shutil.copyfile( OLPC_CONFIG_DIR + 'dhcpd.conf.' + str(server_num),
-                     '/etc/dhcpd-xs.conf.in' )
-    subprocess.check_call([ os.path.join(OLPC_CONFIG_DIR, 'domain_config') ])
