@@ -23,6 +23,7 @@
 # 02111-1307, USA.
 BASEDIR=`dirname $0`
 DOMAIN_CONFIG_DIR="$BASEDIR/domain_config.d/"
+SYSCONFIGDIR=`dirname $BASEDIR`
 
 #  Check the number of arguments and print usage if abnormal
 if [ "$1" = '-h' -o $# -gt 1 ]; then
@@ -33,14 +34,14 @@ fi
 #  Parse arguments
 new_domain_name=$1
 if [ -n "$new_domain_name" ];then
-    echo $new_domain_name > "$BASEDIR/xs-domain-name"
+    echo $new_domain_name > "$SYSCONFIGDIR/xs_domain_name"
 else
-    if [ -e "$BASEDIR/xs-domain-name" ];then
-	new_domain_name=`cat "$BASEDIR/xs-domain-name"`
+    if [ -e "$SYSCONFIGDIR/xs_domain_name" ];then
+	new_domain_name=`cat "$SYSCONFIGDIR/xs_domain_name"`
     else
 	echo Using default domain name
 	new_domain_name=random.xs.laptop.org
-	fi
+    fi
 fi
 echo Setting the base dns name to $new_domain_name
 

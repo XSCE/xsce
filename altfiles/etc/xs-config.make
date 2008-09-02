@@ -45,3 +45,12 @@ hosts:  hosts.in sysconfig/xs_server_number
 	sed -e "s/@@SERVERNUM@@/$$(cat /etc/sysconfig/xs_server_number)/" < $@.in > $@
 	xs-commitchanged -m "Made from $@.in" $@
 
+dhcpd-xs.conf:  sysconfig/xs_server_number sysconfig/xs_domain_name
+	xs-commitchanged -m 'Dirty state' $@
+	#	SERVERNUM := $(shell cat sysconfig/xs_server_number)
+	#BASEDNSNAME := $(shell cat sysconfig/xs_domain_name)
+	cp /etc/sysconfig/olpc-scripts/dhcpd.conf.$(shell cat sysconfig/xs_server_number) $@.tmp
+	sed -i -e "s/@@BASEDNSNAME@@/$(shell cat sysconfig/xs_domain_name)/" $@.tmp
+	mv $@.tmp $@
+	xs-commitchanged -m "Made from /etc/sysconfig/olpc-scripts/dhcpd.conf.${SERVERNUM}" $@
+

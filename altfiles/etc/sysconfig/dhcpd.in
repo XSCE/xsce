@@ -5,3 +5,13 @@
 #
 # Point dhcpd to the XS-specific config
 DHCPDARGS='-cf /etc/dhcpd-xs.conf'
+
+# the dhcpd-xs.conf file is 'made' based on
+# a couple of files - complain if we don't have them
+if [ ! -e /etc/sysconfig/xs-domain-name -o ! -e /etc/sysconfig/xs_server_num ];then
+    echo "You must run network_config and domain_config before DHCPd can run"
+    exit 1
+fi
+pushd /etc
+make -f xs-config.make dhcpd-xs-conf
+popd
