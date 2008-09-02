@@ -175,6 +175,13 @@ if [ -e /etc/sysconfig/network-scripts/server_number ];then
    mv /etc/sysconfig/network-scripts/server_number /etc/sysconfig/xs_server_number
 fi
 
+## Update flag for httpd cache
+if [ ! -e /etc/sysconfig/xs_httpcache_on ]; then
+   if [ chkconfig --level 3 squid ]; then
+      touch /etc/sysconfig/xs_httpcache_on
+   fi
+fi
+
 ## Make all the makefile-driven config files
 pushd /etc
 make -f xs-config.make earlyset
