@@ -182,19 +182,20 @@ if [ ! -e /etc/sysconfig/xs_httpcache_on ]; then
    fi
 fi
 
-## Make all the makefile-driven config files
+## Prepare config files
 pushd /etc
+# these don't need network settings
 make -f xs-config.make earlyset
+# seed low-level network conf and domain
+/etc/sysconfig/olpc-scripts/network_config > /etc/sysconfig/xs_network_config
+/etc/sysconfig/olpc-scripts/domain_config
+make -f xs-config networkset
 popd 
 
 # Change the network infra we use
 # note that 'network' now defaults to off
 chkconfig --level 345 network on
 chkconfig --del NetworkManager
-
-## TODO: make olpc-network-config
-## a well-formed init script
-chkconfig --level 345 olpc-network-config on
 
 %pre
 
@@ -228,9 +229,12 @@ if [ ! -d /etc/.git ];then
    popd
 fi
 
-# remove start scripts before removal
-if [ -e /etc/init.d/olpc-mesh-config
-   chkconfig --del olpc-mesh-config
+# remove old stale init scripts
+if [ chkconfig --level 3 olpc-mesh-config ]; then
+      chkconfig --del olpc-mesh-config
+fi
+if [ chkconfig --level 3 olpc-network-config ]; then
+      chkconfig --del olpc-network-config
 fi
 
 %preun
@@ -274,7 +278,6 @@ fi
 %{_sysconfdir}/dhclient-exit-hooks
 %{_sysconfdir}/udev/rules.d/10-olpcmesh.rules
 %{_sysconfdir}/udev/rules.d/65-xsmeshnames.rules
-%{_sysconfdir}/init.d/olpc-network-config
 %{_sysconfdir}/usbmount/mount.d/01_beep_on_mount
 %{_sysconfdir}/usbmount/mount.d/99_beep_when_done
 

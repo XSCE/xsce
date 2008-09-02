@@ -1,16 +1,18 @@
 #!/usr/bin/python
 
-#  Still to do:
-#  static routing table needed (olpc-mesh-config ?  see new_routes)
-#  needs to set idmgr backup name based on server number
-
 #  Copyright 2008, One Laptop per Child
 #  Authors: John Watlington, Martin Langhoff
 #  License: GPLv2
 #
 # network_config
 #
-# This script has 2 purposes
+# This script is run
+#
+#   - in %post for installs / upgrades
+#
+#   - manually when the role of the machine is set or changed
+#
+# Goals
 #
 # - Set a "server number" role for the machine for 
 #   environemtns with many 'school server' machines.
