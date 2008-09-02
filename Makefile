@@ -199,7 +199,8 @@ install: $(DESTDIR)
 	# scripts
 	install -D -d $(DESTDIR)/usr/bin
 	install -D scripts/xs-commitchanged $(DESTDIR)/usr/bin
-	install -D scripts/cat-parts $(DESTDIR)/usr/bin
+	install -D scripts/cat-parts   $(DESTDIR)/usr/bin
+	install -D scripts/xs-swapnics $(DESTDIR)/usr/bin
 
 	install -D -d $(DESTDIR)/sbin
 	install -D scripts/ifup-local $(DESTDIR)/sbin
