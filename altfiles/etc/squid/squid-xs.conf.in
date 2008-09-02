@@ -15,6 +15,7 @@ acl manager proto cache_object
 acl school src 172.18.0.0/255.255.0.0
 acl localhost src 127.0.0.1/255.255.255.255
 acl to_localhost dst 127.0.0.0/8
+acl to_schoolserver dst 178.16.0.1/16  # to schoolserver or other local hosts.
 acl SSL_ports port 443
 acl Safe_ports port 80          # http
 acl Safe_ports port 21          # ftp
@@ -49,6 +50,10 @@ append_domain .@@BASEDNSNAME@@
 # The default is to cache everything
 # The following prevents caching of known scripts, etc
 cache deny QUERY
+
+# Don't cache or otherwise meddle with local requests.
+always_direct allow to_schoolserver
+cache deny to_schoolserver
 
 # Common server don't quite work right...
 # Apache mod_gzip and mod_deflate known to be broken so don't trust

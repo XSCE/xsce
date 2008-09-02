@@ -266,6 +266,7 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/iptables-config.in
 %config(noreplace) %{_sysconfdir}/sysconfig/squid.in
 %config(noreplace) %{_sysconfdir}/sysconfig/network.in
+%config(noreplace) /fsckoptions
 
 %attr(750, root , named)   %dir /var/named-xs
 %attr(770, named , named)  %dir /var/named-xs/data
