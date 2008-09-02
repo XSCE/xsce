@@ -167,6 +167,14 @@ for FPATH in $BADLINKS; do
     fi
 done
 
+## Rename old conffiles
+if [ -e /etc/sysconfig/olpc-scripts/xs-domain-name ]; then
+   mv /etc/sysconfig/olpc-scripts/xs-domain-name /etc/sysconfig/xs_domain_name
+fi
+if [ -e /etc/sysconfig/network-scripts/server_number ];then
+   mv /etc/sysconfig/network-scripts/server_number /etc/sysconfig/xs_server_number
+fi
+
 ## Make all the makefile-driven config files
 pushd /etc
 make -f xs-config.make earlyset
