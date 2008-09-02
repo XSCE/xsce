@@ -272,6 +272,21 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/network.in
 %config(noreplace) /fsckoptions
 
+%config(noreplace) %{_sysconfdir}/sysconfig/network-scripts/ifcfg-br0
+%config(noreplace) %{_sysconfdir}/sysconfig/network-scripts/ifcfg-br1
+%config(noreplace) %{_sysconfdir}/sysconfig/network-scripts/ifcfg-br2
+%config(noreplace) %{_sysconfdir}/sysconfig/network-scripts/ifcfg-dummy0
+%config(noreplace) %{_sysconfdir}/sysconfig/network-scripts/ifcfg-eth0
+%config(noreplace) %{_sysconfdir}/sysconfig/network-scripts/ifcfg-eth1
+%config(noreplace) %{_sysconfdir}/sysconfig/network-scripts/ifcfg-eth1:1
+%config(noreplace) %{_sysconfdir}/sysconfig/network-scripts/ifcfg-msh0
+%config(noreplace) %{_sysconfdir}/sysconfig/network-scripts/ifcfg-msh1
+%config(noreplace) %{_sysconfdir}/sysconfig/network-scripts/ifcfg-msh2
+%config(noreplace) %{_sysconfdir}/sysconfig/network-scripts/ifcfg-wlan0
+%config(noreplace) %{_sysconfdir}/sysconfig/network-scripts/ifcfg-wlan1
+%config(noreplace) %{_sysconfdir}/sysconfig/network-scripts/ifcfg-wlan2
+
+
 %attr(750, root , named)   %dir /var/named-xs
 %attr(770, named , named)  %dir /var/named-xs/data
 

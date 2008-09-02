@@ -106,6 +106,7 @@ install: $(DESTDIR)
 	install -D altfiles/etc/sysconfig/olpc-scripts/network_config $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/principal_config $(DESTDIR)/etc/sysconfig/olpc-scripts/
 
+	install -D -d $(DESTDIR)/etc/sysconfig/network-scripts
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-br0    $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-br1    $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-br2    $(DESTDIR)/etc/sysconfig/network-scripts/
@@ -187,7 +188,6 @@ install: $(DESTDIR)
 	install -D altfiles/etc/udev/rules.d/65-xsmeshnames.rules $(DESTDIR)/etc/udev/rules.d
 
 	install -D -d $(DESTDIR)/etc/init.d
-	install -D altfiles/etc/init.d/olpc-network-config  $(DESTDIR)/etc/init.d
 
 	install -D -d $(DESTDIR)/etc/usbmount/mount.d
 	install -D altfiles/etc/usbmount/mount.d/01_beep_on_mount  $(DESTDIR)/etc/usbmount/mount.d
