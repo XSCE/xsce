@@ -3,6 +3,17 @@
 ## This file has an ".in" template - for details see
 ##  see /usr/share/doc/xs-config-<version>/README 
 
+## pick the right iptables file depending on
+## config settings
+SERVER_NUM=`cat /etc/sysconfig/xs_server_number`
+if [ $SERVER_NUM=1 ];then
+    if [ -e /etc/sysconfig/xs_httpcache_on ]; then
+	IPTABLES_DATA=/etc/sysconfig/olpc-scripts/iptables.principal.cache
+    else
+	IPTABLES_DATA=/etc/sysconfig/olpc-scripts/iptables.principal
+    fi
+fi
+
 # Load additional iptables modules (nat helpers)
 #   Default: -none-
 # Space separated list of nat helpers (e.g. 'nf_nat_ftp nf_nat_irc'), which

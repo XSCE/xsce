@@ -18,6 +18,6 @@ fi
 
 #  Now, copy in a set of iptables that redirects forwarded traffic
 #  to port 80 to port 3128 on this machine
-cp /etc/sysconfig/olpc-scripts/iptables.principal.cache /etc/sysconfig/iptables
+touch /etc/sysconfig/xs_httpcache_on
 /sbin/service iptables restart
 
