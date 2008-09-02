@@ -1,0 +1,90 @@
+Overview
+========
+
+Network configuration on the XS follows an IP numbering and
+routing scheme outlined in 
+
+   http://wiki.laptop.org/go/XS_Configuration_Management
+
+So the IP addresses, netmasks and routes for all the LAN and 
+mesh WLANs are defined by the 'server number' (the 'role' of
+the server).
+
+To assign a server role, run 
+
+   # this script updates /etc/sysconfig/xs_server_number
+   # and writes to STDOUT the rest of the configuration
+   /etc/sysconfig/olpc-scripts/network_config N > /etc/sysconfig/xs_network_config
+
+   # update any config files that integrate network config
+
+   cd /etc
+   make -f xs-config networkset
+
+   # and 
+   /etc/init.d/network restart
+
+In some cases you may need to restart for the update to
+completely take effect.
+
+
+Configuring the Internet/WAN connection
+===================================
+
+If your internet connection is on eth0 and you want to set
+a static address, create a file called
+
+   /etc/sysconfig/network-scripts/ifcfg-eth0-local 
+
+- and it will override the defaults provided. You have a 
+template for that file in
+
+   /usr/share/doc/xs-config-*/ifcfg-eth0-local.example
+
+
+How configuration is managed
+============================
+
+All the /etc/sysconfig/network-scripts/ifcfg-<device> files read
+values from /etc/sysconfig/xs_network_config and configure the
+device according to the role.
+
+If you want to override this, edit /etc/sysconfig/network-scripts/ifcfg-<device>
+-- updates will respect your local configurations (but you will need to review
+and integrate changes to the distributed files).
+
+
+Firewalling
+===========
+
+If you want to override the firewall rules, you will want to
+review /etc/sysconfig/iptables-config.in which decides which
+rules to load, and the rules files in /etc/sysconfig/olpc-scripts
+
+NOTE: Firewall rules are only loaded for server number 1 - 
+other servers are not exposed to the internet.
+
+
+Which network device is which?
+==============================
+
+If you have 2 NICs, the installer will have decided which one is eth0 and which one
+is eth1 based on which one is seen by the kernel first. In other words, pretty much
+random.
+
+If they are different brand / type of cards, you can see which one is which doing
+
+   cat /etc/udev/rules.d/70-persistent-net.rules
+
+If they are not set the way you want them, you can use the provided `xs-swapnic` 
+script which will immediately (and silently!) swap them over. Reboot for it to take effect.
+
+
+If you only have one NIC
+========================
+
+It will by default be set to be eth0 (the WAN connection). This is the recommended
+configuration. However, if you want to have that only NIC as your LAN connection,
+use the xs-swapnic utility which will set it to be eth1. Reboot for it to take effect.
+
+

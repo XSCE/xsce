@@ -304,4 +304,4 @@ fi
 %{_bindir}/xs-swapnics
 /sbin/ifup-local
 /lib/udev/mesh-namer
-%doc README ifcfg-eth0-local.example
+%doc README ifcfg-eth0-local.example README.networking
