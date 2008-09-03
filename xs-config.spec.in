@@ -177,7 +177,7 @@ fi
 
 ## Update flag for httpd cache
 if [ ! -e /etc/sysconfig/xs_httpcache_on ]; then
-   if [ chkconfig --level 3 squid ]; then
+   if chkconfig --level 3 squid ; then
       touch /etc/sysconfig/xs_httpcache_on
    fi
 fi
@@ -195,7 +195,9 @@ popd
 # Change the network infra we use
 # note that 'network' now defaults to off
 chkconfig --level 345 network on
-chkconfig --del NetworkManager
+if chkconfig --level 3 NetworkManager ; then
+   chkconfig --del NetworkManager
+fi
 
 %pre
 
@@ -230,10 +232,10 @@ if [ ! -d /etc/.git ];then
 fi
 
 # remove old stale init scripts
-if [ chkconfig --level 3 olpc-mesh-config ]; then
+if chkconfig --level 3 olpc-mesh-config ; then
       chkconfig --del olpc-mesh-config
 fi
-if [ chkconfig --level 3 olpc-network-config ]; then
+if chkconfig --level 3 olpc-network-config ; then
       chkconfig --del olpc-network-config
 fi
 
