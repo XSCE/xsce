@@ -189,7 +189,7 @@ make -f xs-config.make earlyset
 # seed low-level network conf and domain
 /etc/sysconfig/olpc-scripts/network_config > /etc/sysconfig/xs_network_config
 /etc/sysconfig/olpc-scripts/domain_config
-make -f xs-config networkset
+make -f xs-config.make networkset
 popd 
 
 # Change the network infra we use
