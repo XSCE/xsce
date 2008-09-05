@@ -23,15 +23,17 @@ def main():
 
     for fpath in filepaths:
         if os.path.exists(fpath):
-            isnewcmd = ['git','ls-files', '--others',   fpath]
-            ismodcmd = ['git','ls-files', '--modified', fpath]
+            os.chdir(os.path.dirname(fpath))
+            fname = os.path.basename(fpath)
+            isnewcmd = ['git','ls-files', '--others',   fname]
+            ismodcmd = ['git','ls-files', '--modified', fname]
             if Popen(isnewcmd, stdout=PIPE).communicate()[0]:
-                check_call(['git', 'add', fpath])
+                check_call(['git', 'add', fname])
                 msg = options.msg + ' - new file ' + fpath
-                check_output = call(['git', 'commit', '-m', msg, fpath])
+                check_output = call(['git', 'commit', '-m', msg, fname])
             elif Popen(ismodcmd, stdout=PIPE).communicate()[0]:
-                check_call(['git', 'add', fpath])
+                check_call(['git', 'add', fname])
                 msg = options.msg + ' - ' + fpath
-                check_call(['git', 'commit', '-m', msg, fpath])
+                check_call(['git', 'commit', '-m', msg, fname])
 
 if __name__ == '__main__': main ()
