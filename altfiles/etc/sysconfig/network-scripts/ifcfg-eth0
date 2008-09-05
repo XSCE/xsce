@@ -4,6 +4,9 @@
 #     the ethernet port connected to the Internet (WAN).
 #  On secondary servers, eth0 is the inteface to the LAN.
 #
+###
+### NOTE: This file will be _replaced_ in xs-config updates
+###
 DEVICE=eth0
 ONBOOT=yes
 

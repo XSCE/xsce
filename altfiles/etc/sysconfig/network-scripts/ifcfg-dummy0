@@ -2,6 +2,9 @@
 #  This is a dummy interface, used when a server has no wired LAN
 #  This keeps other software, which uses 172.18.0.1 to represent the
 #  school server, happy.
+###
+### NOTE: This file will be _replaced_ in xs-config updates
+###
 DEVICE=dummy0
 . /etc/sysconfig/xs_network_config
 

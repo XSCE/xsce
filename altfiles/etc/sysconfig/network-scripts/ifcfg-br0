@@ -1,6 +1,10 @@
+
 #  OLPC School server
 #  This is a bridge serving a single mesh interface, msh0
 #  (which may come and go as it is an external USB device).
+###
+### NOTE: This file will be _replaced_ in xs-config updates
+###
 . /etc/sysconfig/xs_network_config
 DEVICE=br0
 TYPE=Bridge

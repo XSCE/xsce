@@ -3,6 +3,9 @@
 ## of the wlanX / mshX pair that the Marvell
 ## mesh IF appears as...
 ##
+###
+### NOTE: This file will be _replaced_ in xs-config updates
+###
 DEVICE=msh0
 TYPE=Ethernet
 BRIDGE=br0
