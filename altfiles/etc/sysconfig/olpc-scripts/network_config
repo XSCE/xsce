@@ -116,8 +116,8 @@ if __name__ == "__main__":
     ##
     if server_num==1:
         print 'XS_ETH1_IPADDR=172.18.0.' + str(server_num)
+        print 'XS_DUMMY0_IPADDR=172.18.0.' + str(server_num)
         print 'XS_ETH10_IPADDR=172.18.1.' + str(server_num)
-        print 'XS_DUMMY0_IPADDR=172.18.1.' + str(server_num)
 
     ##
     ## The bridges for the MSH devices
