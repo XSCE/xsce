@@ -23,6 +23,7 @@ def main():
 
     for fpath in filepaths:
         if os.path.exists(fpath):
+            fpath = os.path.abspath(fpath)
             os.chdir(os.path.dirname(fpath))
             fname = os.path.basename(fpath)
             isnewcmd = ['git','ls-files', '--others',   fname]
