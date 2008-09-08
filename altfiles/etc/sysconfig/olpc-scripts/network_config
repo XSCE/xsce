@@ -60,9 +60,9 @@ def print_mesh_br( M_num, server_num ):
 
     subnet = 10 + (8 * (server_num-1)) + (2 * M_num)
     subnet_str = str(subnet)
-    print_conf('XS_BR'+M+'_IPADDR='    + SUBNET_PREFIX + subnet_str + '.1')
-    print_conf('XS_BR'+M+'_NETWORK='   + SUBNET_PREFIX + subnet_str + '.0')
-    print_conf('XS_BR'+M+'_BROADCAST=' + SUBNET_PREFIX + str(subnet + 1) + '.255')
+    print_conf('XS_MSHBOND'+M+'_IPADDR='    + SUBNET_PREFIX + subnet_str + '.1')
+    print_conf('XS_MSHBOND'+M+'_NETWORK='   + SUBNET_PREFIX + subnet_str + '.0')
+    print_conf('XS_MSHBOND'+M+'_BROADCAST=' + SUBNET_PREFIX + str(subnet + 1) + '.255')
 
 def print_conf( str ):
     """ Writes to the configuration file, if appropriate"""
