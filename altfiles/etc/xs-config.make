@@ -7,7 +7,8 @@
 earlyset: syslog.conf motd yum.conf sysctl.conf ssh/sshd_config \
      sysconfig/named sysconfig/init \
      sysconfig/iptables-config sysconfig/squid \
-     sudoers rssh.conf
+     sudoers rssh.conf \
+     sysconfig/network-scripts/ifcfg-eth0 sysconfig/network-scripts/ifcfg-eth1
 
 networkset: sysconfig/network hosts sysconfig/dhcpd 
 
@@ -25,6 +26,20 @@ networkset: sysconfig/network hosts sysconfig/dhcpd
 	# Overwrite
 	cp -p $@.in $@
 	xs-commitchanged -m "Made from $@.in" $@
+
+sysconfig/network-scripts/ifcfg-eth0:
+	# It may be dirty
+	xs-commitchanged -m 'Dirty state' $@
+	# Overwrite
+	cp -p sysconfig/olpc-scripts/ifcfg-eth0 $@
+	xs-commitchanged -m "Made from olpc-scripts" $@
+
+sysconfig/network-scripts/ifcfg-eth1:
+	# It may be dirty
+	xs-commitchanged -m 'Dirty state' $@
+	# Overwrite
+	cp -p sysconfig/olpc-scripts/ifcfg-eth1 $@
+	xs-commitchanged -m "Made from olpc-scripts" $@
 
 sudoers: sudoers.d/*
 	touch sudoers.tmp
