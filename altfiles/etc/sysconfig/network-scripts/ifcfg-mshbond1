@@ -1,15 +1,20 @@
+#
 #  OLPC School server
 #  This is a bridge serving a single mesh interface, msh1
 #  (which may come and go as it is an external USB device).
+#
+#  See /usr/share/doc/xs-config-*/README.networking on how and why
+#  we use bonded interfaces.
+#
 ###
 ### NOTE: This file will be _replaced_ in xs-config updates
 ###
 . /etc/sysconfig/xs_network_config
-DEVICE=br1
-TYPE=Bridge
-IPADDR=$XS_BR1_IPADDR
+DEVICE=mshbond0
+# TYPE=Bridge
+IPADDR=$XS_MSHBOND1_IPADDR
 NETMASK=255.255.254.0
-NETWORK=$XS_BR1_NETWORK
-BROADCAST=$XS_BR1_BROADCAST
+NETWORK=$XS_MSHBOND1_NETWORK
+BROADCAST=$XS_MSHBOND1_BROADCAST
 IPV6INIT=no
 ONBOOT=yes

@@ -8,7 +8,8 @@
 ###
 DEVICE=msh0
 TYPE=Ethernet
-BRIDGE=br0
+MASTER=mshbond0
+SLAVE=yes
 # Will be brought up by wlanX
 ONBOOT=no
 IPV6INIT=no

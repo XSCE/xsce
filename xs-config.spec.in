@@ -275,13 +275,12 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/network.in
 %config(noreplace) /fsckoptions
 
-%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-br0
-%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-br1
-%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-br2
-%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-dummy0
+%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-mshbond0
+%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-mshbond1
+%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-mshbond2
+%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-lanbond0
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-eth0
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-eth1
-%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-eth1:1
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-msh0
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-msh1
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-msh2
@@ -293,6 +292,7 @@ fi
 %attr(750, root , named)   %dir /var/named-xs
 %attr(770, named , named)  %dir /var/named-xs/data
 
+%{_sysconfdir}/modprobe.d/xs_bonding
 %{_sysconfdir}/dhclient-exit-hooks
 %{_sysconfdir}/udev/rules.d/10-olpcmesh.rules
 %{_sysconfdir}/udev/rules.d/65-xsmeshnames.rules

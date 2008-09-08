@@ -107,19 +107,19 @@ install: $(DESTDIR)
 	install -D altfiles/etc/sysconfig/olpc-scripts/principal_config $(DESTDIR)/etc/sysconfig/olpc-scripts/
 
 	install -D -d $(DESTDIR)/etc/sysconfig/network-scripts
-	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-br0    $(DESTDIR)/etc/sysconfig/network-scripts/
-	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-br1    $(DESTDIR)/etc/sysconfig/network-scripts/
-	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-br2    $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-lanbond0    $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-mshbond0    $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-mshbond1    $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-mshbond2    $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-eth0   $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-eth1   $(DESTDIR)/etc/sysconfig/network-scripts
-	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-eth1:1 $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-msh0   $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-msh1   $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-msh2   $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wlan0  $(DESTDIR)/etc/sysconfig/network-scripts
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wlan1  $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wlan2  $(DESTDIR)/etc/sysconfig/network-scripts
-	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-dummy0 $(DESTDIR)/etc/sysconfig/network-scripts/
+
 
 	install -D altfiles/var/named-xs/localdomain.zone         $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/localhost.zone           $(DESTDIR)/var/named-xs/
@@ -179,6 +179,9 @@ install: $(DESTDIR)
 
 	install -D -d $(DESTDIR)/etc/logrotate.d
 	install -D altfiles/etc/logrotate.d/syslog-xslogs  $(DESTDIR)/etc/logrotate.d
+
+	install -D -d $(DESTDIR)/etc/modprobe.d
+	install -D altfiles/etc/modprobe.d/xs_bonding  $(DESTDIR)/etc/modprobe.d
 
 	# conf.d-style or non-conflicting conffiles that are actually executable scripts...
 	install -D altfiles/etc/dhclient-exit-hooks $(DESTDIR)/etc

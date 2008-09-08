@@ -8,7 +8,8 @@
 ###
 DEVICE=msh2
 TYPE=Ethernet
-BRIDGE=br2
+MASTER=mshbond2
+SLAVE=yes
 ONBOOT=no
 IPV6INIT=no
 HOTPLUG=yes

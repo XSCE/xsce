@@ -21,14 +21,5 @@ else
 	    /sbin/ip addr flush dev msh2 2>/dev/null
 	    /sbin/ifup msh1
 	    ;;
-       # if we are bringing up eth1
-       # bring down the dummy if
-       # and vice versa.
-	eth1)
-	    /sbin/ifdown dummy0
-	    ;;
-	dummy0)
-	    /sbin/ifdown eth1
-	    ;;
     esac
 fi

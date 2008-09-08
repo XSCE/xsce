@@ -109,15 +109,13 @@ if __name__ == "__main__":
     ##
     if server_num != 1:
         print 'XS_ETH0_IPADDR=172.18.1.' + str(server_num)
-
-    ##
-    ## eth1 is LAN on Server 1 - where we want it to also have an eth1:1 
-    ##      - on the other servers it ill be unused
-    ##
-    if server_num==1:
-        print 'XS_ETH1_IPADDR=172.18.0.' + str(server_num)
-        print 'XS_DUMMY0_IPADDR=172.18.0.' + str(server_num)
-        print 'XS_ETH10_IPADDR=172.18.1.' + str(server_num)
+    else: 
+        ##
+        ## eth1 is LAN on Server 1 - where we want it to also have an eth1:1 
+        ##      - on the other servers it ill be unused
+        ##
+        print 'XS_LANBOND0_IPADDR=172.18.0.'  + str(server_num)
+        print 'XS_LANBOND01_IPADDR=172.18.1.' + str(server_num)
 
     ##
     ## The bridges for the MSH devices
