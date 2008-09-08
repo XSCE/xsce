@@ -288,7 +288,8 @@ fi
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-wlan0
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-wlan1
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-wlan2
-
+%config %{_sysconfdir}/sysconfig/network-scripts/route-eth0
+%config %{_sysconfdir}/sysconfig/network-scripts/route-lanbond0
 
 %attr(750, root , named)   %dir /var/named-xs
 %attr(770, named , named)  %dir /var/named-xs/data

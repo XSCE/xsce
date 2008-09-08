@@ -1,5 +1,5 @@
 #  OLPC School server
-#  This file configures routing rules for eth1
+#  This file configures routing rules for lanbong0 (eth1)
 #  ONLY for server number 1
 #    On the other servers, these routes are for
 #    eth0 instead.

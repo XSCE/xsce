@@ -116,7 +116,9 @@ install: $(DESTDIR)
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-msh2   $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wlan0  $(DESTDIR)/etc/sysconfig/network-scripts
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wlan1  $(DESTDIR)/etc/sysconfig/network-scripts/
-	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wlan2  $(DESTDIR)/etc/sysconfig/network-scripts
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wlan2  $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/route-eth0     $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/route-lanbond0 $(DESTDIR)/etc/sysconfig/network-scripts/
 
 
 	install -D altfiles/var/named-xs/localdomain.zone         $(DESTDIR)/var/named-xs/
