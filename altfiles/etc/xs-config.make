@@ -5,11 +5,11 @@
 ## how this works...
 ##
 earlyset: syslog.conf motd yum.conf sysctl.conf ssh/sshd_config \
-     sysconfig/dhcpd sysconfig/named sysconfig/init \
+     sysconfig/named sysconfig/init \
      sysconfig/iptables-config sysconfig/squid \
      sudoers rssh.conf
 
-networkset: sysconfig/network hosts
+networkset: sysconfig/network hosts sysconfig/dhcpd 
 
 # Any file that has a ".in"
 # 'template' can be made with this catch-all
