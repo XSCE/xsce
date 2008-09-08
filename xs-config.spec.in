@@ -279,6 +279,7 @@ fi
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-mshbond1
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-mshbond2
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-lanbond0
+%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-lanbond0:1
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-eth0
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-eth1
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-msh0
