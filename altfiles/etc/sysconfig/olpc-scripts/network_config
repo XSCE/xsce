@@ -132,6 +132,14 @@ if __name__ == "__main__":
             syslog.syslog(msg)
             sys.stderr.write(msg+"\n")
 
+            if not opts.dryrun:
+                cfg_file = open(SERVER_NUM_FILE, 'w')
+                cfg_file.write(str(server_num))
+                cfg_file.close()
+                syslog.syslog('Configured the system to perform XS role ' + str(server_num))
+                if opts.verbose:
+                    print ('Configured the system to perform XS role ' + str(server_num))
+
     if not opts.dryrun:
         netcfg=open(SERVER_CONF_FILE, 'w')
 
