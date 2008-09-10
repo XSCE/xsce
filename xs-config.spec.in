@@ -200,6 +200,35 @@ if chkconfig --level 3 NetworkManager ; then
    chkconfig --del NetworkManager
 fi
 
+###
+### CLEANUP XS 0.4 to XS 0.5
+###
+# Remove old configs that are unambiguously old
+OLDCONFIGS="/etc/sysconfig/network-scripts/ifcfg-dummy0
+            /etc/sysconfig/network-scripts/ifcfg-br0
+            /etc/sysconfig/network-scripts/ifcfg-br1
+            /etc/sysconfig/network-scripts/ifcfg-br2  "
+for FPATH in $OLDCONFIGS; do
+    if [ -e "%{DESTDIR}$FPATH" ];then
+       /usr/bin/xs-commitchanged --remove -m 'Remove old conffile' "%{DESTDIR}$FPATH"
+    fi
+done
+# Remove ifcfg-ethX files that refer to libertas devices
+# these have been replaced with wlanX devices
+for FPATH in %{DESTDIR}/etc/sysconfig/network-scripts/ifcfg-eth*; do
+    # Here the implicit ls has incorporated %{DESTDIR}
+    if grep -q '^ESSID=\"school-mesh-' "$FPATH" ;then
+        /usr/bin/xs-commitchanged --remove -m 'Remove old libertas conffile' "$FPATH"
+    fi
+done
+# remove eth1:1 if it's the 'school server master address'
+FPATH="%{DESTDIR}/etc/sysconfig/network-scripts/ifcfg-eth1:1"
+if [ -e "$FPATH" ];then
+    if grep -q '^IPADDR=172.18.1.1' "$FPATH" ;then
+        /usr/bin/xs-commitchanged --remove -m 'Remove old conffile' "$FPATH"
+    fi
+fi
+
 %pre
 
 ##
@@ -209,6 +238,7 @@ fi
 find /etc -type l -name '*.olpcnew'  -lname '*fsroot*' -print0 | xargs -0 --no-run-if-empty rm
 find /etc -type l -name '*.olpcsave' -lname '*fsroot*' -print0 | xargs -0 --no-run-if-empty rm
 
+### CLEANUP "old" to XS 0.4 upgrade
 ## Remove symlinks and reinstate original files
 ## if they exist. Note that removing the symlinks
 ## in %pre is not enough to avoid conflicts with the
