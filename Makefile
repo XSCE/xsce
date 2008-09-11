@@ -154,7 +154,6 @@ install: $(DESTDIR)
 	install -D altfiles/etc/xs-config.make  $(DESTDIR)/etc/
 	install -D altfiles/etc/syslog.conf.in  $(DESTDIR)/etc/
 	install -D altfiles/etc/sysctl.conf.in  $(DESTDIR)/etc/
-	install -D altfiles/etc/yum.conf.in     $(DESTDIR)/etc/
 	install -D altfiles/etc/rssh.conf.in    $(DESTDIR)/etc/
 	install -D altfiles/etc/motd.in         $(DESTDIR)/etc/
 	install -D altfiles/etc/hosts.in        $(DESTDIR)/etc/
@@ -172,10 +171,6 @@ install: $(DESTDIR)
 	# conf.d-style conffiles
 	install -D -d $(DESTDIR)/etc/httpd/conf.d
 	install -D altfiles/etc/httpd/conf.d/mime_olpc.conf  $(DESTDIR)/etc/httpd/conf.d
-
-	install -D -d $(DESTDIR)/etc/yum.repos.olpc.d
-	install -D altfiles/etc/yum.repos.olpc.d/testing.repo $(DESTDIR)/etc/yum.repos.olpc.d
-	install -D altfiles/etc/yum.repos.olpc.d/stable.repo  $(DESTDIR)/etc/yum.repos.olpc.d
 
 	install -D -d $(DESTDIR)/etc/logrotate.d
 	install -D altfiles/etc/logrotate.d/syslog-xslogs  $(DESTDIR)/etc/logrotate.d
