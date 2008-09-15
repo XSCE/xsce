@@ -178,6 +178,15 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/etc/modprobe.d
 	install -D altfiles/etc/modprobe.d/xs_bonding  $(DESTDIR)/etc/modprobe.d
 
+	# Pg - nonconflicting
+	install -D -d $(DESTDIR)/etc/init.d
+	install -D -d  $(DESTDIR)/etc/sysconfig/pgsql
+	install -D -d $(DESTDIR)/etc/pgsql-xs
+	install -D -d $(DESTDIR)/library/pgsql-xs/data-8.3
+	install -D altfiles/etc/pgsql-xs/p*.conf $(DESTDIR)/etc/pgsql-xs
+	install -D altfiles/etc/sysconfig/pgsql/pgsql-xs $(DESTDIR)/etc/sysconfig/pgsql
+	install -D altfiles/etc/init.d/pgsql-xs $(DESTDIR)/etc/init.d
+
 	# conf.d-style or non-conflicting conffiles that are actually executable scripts...
 	install -D altfiles/etc/dhclient-exit-hooks $(DESTDIR)/etc
 
@@ -185,7 +194,6 @@ install: $(DESTDIR)
 	install -D altfiles/etc/udev/rules.d/10-olpcmesh.rules    $(DESTDIR)/etc/udev/rules.d
 	install -D altfiles/etc/udev/rules.d/65-xsmeshnames.rules $(DESTDIR)/etc/udev/rules.d
 
-	install -D -d $(DESTDIR)/etc/init.d
 
 	install -D -d $(DESTDIR)/etc/usbmount/mount.d
 	install -D altfiles/etc/usbmount/mount.d/01_beep_on_mount  $(DESTDIR)/etc/usbmount/mount.d
