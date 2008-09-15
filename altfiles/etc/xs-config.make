@@ -27,17 +27,19 @@ networkset: sysconfig/network hosts sysconfig/dhcpd
 	cp -p $@.in $@
 	xs-commitchanged -m "Made from $@.in" $@
 
-sysconfig/network-scripts/ifcfg-eth0:
-	# It may be dirty
+sysctl.conf:
 	xs-commitchanged -m 'Dirty state' $@
-	# Overwrite
+	cp -p $@.in $@
+	xs-commitchanged -m "Made from $@.in" $@
+	sysctl -p $@
+
+sysconfig/network-scripts/ifcfg-eth0:
+	xs-commitchanged -m 'Dirty state' $@
 	cp -p sysconfig/olpc-scripts/ifcfg-eth0 $@
 	xs-commitchanged -m "Made from olpc-scripts" $@
 
 sysconfig/network-scripts/ifcfg-eth1:
-	# It may be dirty
 	xs-commitchanged -m 'Dirty state' $@
-	# Overwrite
 	cp -p sysconfig/olpc-scripts/ifcfg-eth1 $@
 	xs-commitchanged -m "Made from olpc-scripts" $@
 
@@ -62,7 +64,7 @@ hosts:  hosts.in sysconfig/xs_server_number
 
 dhcpd-xs.conf:  sysconfig/xs_server_number sysconfig/xs_domain_name
 	xs-commitchanged -m 'Dirty state' $@
-	#	SERVERNUM := $(shell cat sysconfig/xs_server_number)
+	#SERVERNUM := $(shell cat sysconfig/xs_server_number)
 	#BASEDNSNAME := $(shell cat sysconfig/xs_domain_name)
 	cp /etc/sysconfig/olpc-scripts/dhcpd.conf.$(shell cat sysconfig/xs_server_number) $@.tmp
 	sed -i -e "s/@@BASEDNSNAME@@/$(shell cat sysconfig/xs_domain_name)/" $@.tmp

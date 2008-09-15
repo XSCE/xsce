@@ -28,3 +28,8 @@ kernel.core_uses_pid = 1
 
 # Controls the use of TCP syncookies
 net.ipv4.tcp_syncookies = 1
+
+# Higher shmmax so that Pg, PHP and others
+# can share large segments. 256MB
+kernel.shmmax = 268435456
+
