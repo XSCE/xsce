@@ -140,6 +140,9 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/etc/squid
 	install -D altfiles/etc/squid/squid-xs.conf.in  $(DESTDIR)/etc/squid
 
+	install -D -d $(DESTDIR)/etc/httpd/conf
+	install -D altfiles/etc/httpd/conf/httpd-xs.conf  $(DESTDIR)/etc/httpd/conf
+
 	install -D -d $(DESTDIR)/etc/ejabberd
 	install -D altfiles/etc/ejabberd/ejabberd.cfg.in  $(DESTDIR)/etc/ejabberd
 	install -D altfiles/etc/ejabberd/ejabberd.pem     $(DESTDIR)/etc/ejabberd
@@ -161,12 +164,7 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/etc/ssh
 	install -D altfiles/etc/ssh/sshd_config.in $(DESTDIR)/etc/ssh
 
-	install -D altfiles/etc/sysconfig/dhcpd.in $(DESTDIR)/etc/sysconfig
-	install -D altfiles/etc/sysconfig/init.in  $(DESTDIR)/etc/sysconfig
-	install -D altfiles/etc/sysconfig/named.in $(DESTDIR)/etc/sysconfig
-	install -D altfiles/etc/sysconfig/squid.in $(DESTDIR)/etc/sysconfig
-	install -D altfiles/etc/sysconfig/iptables-config.in $(DESTDIR)/etc/sysconfig
-	install -D altfiles/etc/sysconfig/network.in $(DESTDIR)/etc/sysconfig
+	install -D altfiles/etc/sysconfig/*.in $(DESTDIR)/etc/sysconfig
 
 	# conf.d-style conffiles
 	install -D -d $(DESTDIR)/etc/httpd/conf.d

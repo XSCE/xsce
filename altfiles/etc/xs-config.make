@@ -7,7 +7,7 @@
 earlyset: syslog.conf motd sysctl.conf ssh/sshd_config \
      sysconfig/named sysconfig/init \
      sysconfig/iptables-config sysconfig/squid \
-     sudoers rssh.conf \
+     sudoers rssh.conf sysconfig/httpd \
      sysconfig/network-scripts/ifcfg-eth0 sysconfig/network-scripts/ifcfg-eth1
 
 networkset: sysconfig/network hosts sysconfig/dhcpd 

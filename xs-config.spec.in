@@ -27,6 +27,7 @@ Requires: bridge-utils
 Requires: dhcp
 Requires: squid
 Requires: postgresql-server
+Requires: httpd
 
 Summary: XS/XSX default configuration
 Name: xs-config
@@ -289,6 +290,7 @@ chkconfig --del pgsql-xs
 %config(noreplace) %{_sysconfdir}/squid/squid-xs.conf.in
 %config(noreplace) %{_sysconfdir}/ejabberd/ejabberd.cfg.in
 %config(noreplace) %{_sysconfdir}/ejabberd/ejabberd.pem
+%config(noreplace) %{_sysconfdir}/httpd/conf/httpd-xs.conf
 
 %config(noreplace) %{_sysconfdir}/sysconfig/olpc-scripts/
 %config(noreplace) /var/named-xs
@@ -303,12 +305,7 @@ chkconfig --del pgsql-xs
 %config(noreplace) %{_sysconfdir}/syslog.conf.in
 %config(noreplace) %{_sysconfdir}/rssh.conf.in
 %config(noreplace) %{_sysconfdir}/ssh/sshd_config.in
-%config(noreplace) %{_sysconfdir}/sysconfig/dhcpd.in
-%config(noreplace) %{_sysconfdir}/sysconfig/named.in
-%config(noreplace) %{_sysconfdir}/sysconfig/init.in
-%config(noreplace) %{_sysconfdir}/sysconfig/iptables-config.in
-%config(noreplace) %{_sysconfdir}/sysconfig/squid.in
-%config(noreplace) %{_sysconfdir}/sysconfig/network.in
+%config(noreplace) %{_sysconfdir}/sysconfig/*.in
 %config(noreplace) /fsckoptions
 
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-mshbond0
