@@ -107,6 +107,7 @@ install: $(DESTDIR)
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-lanbond0    $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-lanbond0:1  $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-mshbond0    $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-mshbond0:1  $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-mshbond1    $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-mshbond2    $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-eth0   $(DESTDIR)/etc/sysconfig/olpc-scripts/ifcfg-eth0

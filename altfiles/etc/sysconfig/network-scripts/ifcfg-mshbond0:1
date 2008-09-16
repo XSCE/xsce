@@ -1,0 +1,40 @@
+#  OLPC School server
+#
+#  This is a bonding interface, which represents what we want to do
+#  if eth1 (the LAN NIC) is present. If the NIC is present, it will
+#  associate to this device and all will be happy. If it is not,
+#  then the address and routing will be in place anyway, making the
+#  software that wants to bind to it happy.
+#
+#  See /usr/share/doc/xs-config-*/README.networking on how and why
+#  we use bonded interfaces.
+#
+###
+### NOTE: This file will be _replaced_ in xs-config updates
+###
+DEVICE=mshbond0:1
+. /etc/sysconfig/xs_network_config
+
+if [ "$XS_SERVER_NUMBER" = "1" ];then
+    # Get this interface listening on the
+    # 172.18.16.x segment so we serve activation
+    # leases over mesh wifi...
+    ONBOOT=yes
+    IPADDR=172.18.16.1
+    NETMASK=255.255.255.0
+    BOOTPROTO=static
+    #BONDING_OPTS=""
+    IPV6INIT=no
+
+else
+    ONBOOT=no
+    # If we do not provide IPADDR
+    # or DCHP values, it will error out
+    # without stopping the process.
+    # If we exit here - we might prevent
+    # other interfaces from coming up
+    # not setting anything.
+
+fi
+
+
