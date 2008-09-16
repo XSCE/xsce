@@ -28,6 +28,7 @@ Requires: dhcp
 Requires: squid
 Requires: postgresql-server
 Requires: httpd
+Requires: php-common
 
 Summary: XS/XSX default configuration
 Name: xs-config
@@ -284,9 +285,7 @@ chkconfig --del pgsql-xs
 
 %files
 
-%config(noreplace) %{_sysconfdir}/named-xs.conf.in
-%config(noreplace) %{_sysconfdir}/resolv.conf.in
-%config(noreplace) %{_sysconfdir}/idmgr.conf.in
+%config(noreplace) %{_sysconfdir}/*.in
 %config(noreplace) %{_sysconfdir}/squid/squid-xs.conf.in
 %config(noreplace) %{_sysconfdir}/ejabberd/ejabberd.cfg.in
 %config(noreplace) %{_sysconfdir}/ejabberd/ejabberd.pem

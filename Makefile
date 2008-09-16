@@ -147,8 +147,7 @@ install: $(DESTDIR)
 	install -D altfiles/etc/ejabberd/ejabberd.cfg.in  $(DESTDIR)/etc/ejabberd
 	install -D altfiles/etc/ejabberd/ejabberd.pem     $(DESTDIR)/etc/ejabberd
 
-	install -D altfiles/etc/resolv.conf.in  $(DESTDIR)/etc/
-	install -D altfiles/etc/idmgr.conf.in  $(DESTDIR)/etc/
+	install -D altfiles/etc/*.in  $(DESTDIR)/etc/
 
 	# fsckoptions goes in / 
 	install -D altfiles/fsckoptions  $(DESTDIR)/
