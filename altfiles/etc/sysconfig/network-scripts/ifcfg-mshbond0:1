@@ -15,7 +15,7 @@
 DEVICE=mshbond0:1
 . /etc/sysconfig/xs_network_config
 
-if [ "$XS_SERVER_NUMBER" = "1" ];then
+if [ "$XS_SERVER_NUM" = "1" ];then
     # Get this interface listening on the
     # 172.18.16.x segment so we serve activation
     # leases over mesh wifi...
