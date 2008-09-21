@@ -10,7 +10,7 @@
 ### NOTE: This file will be _replaced_ in xs-config updates
 ###
 . /etc/sysconfig/xs_network_config
-DEVICE=mshbond0
+DEVICE=mshbond1
 # TYPE=Bridge
 IPADDR=$XS_MSHBOND1_IPADDR
 NETMASK=255.255.254.0
@@ -18,3 +18,4 @@ NETWORK=$XS_MSHBOND1_NETWORK
 BROADCAST=$XS_MSHBOND1_BROADCAST
 IPV6INIT=no
 ONBOOT=yes
+
