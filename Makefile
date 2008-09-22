@@ -184,6 +184,7 @@ install: $(DESTDIR)
 	install -D altfiles/etc/pgsql-xs/p*.conf $(DESTDIR)/etc/pgsql-xs
 	install -D altfiles/etc/sysconfig/pgsql/pgsql-xs $(DESTDIR)/etc/sysconfig/pgsql
 	install -D altfiles/etc/init.d/pgsql-xs $(DESTDIR)/etc/init.d
+	install -D altfiles/etc/init.d/*.in $(DESTDIR)/etc/init.d
 
 	# conf.d-style or non-conflicting conffiles that are actually executable scripts...
 	install -D altfiles/etc/dhclient-exit-hooks $(DESTDIR)/etc

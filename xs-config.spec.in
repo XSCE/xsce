@@ -327,6 +327,9 @@ chkconfig --del pgsql-xs
 %attr(750, root , named)   %dir /var/named-xs
 %attr(770, named , named)  %dir /var/named-xs/data
 
+
+%config(noreplace) %{_sysconfdir}/init.d/*.in
+
 #Pg
 %config(noreplace) %{_sysconfdir}/pgsql-xs/p*.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/pgsql/pgsql-xs
