@@ -58,7 +58,9 @@ cache deny to_schoolserver
 # Common server don't quite work right...
 # Apache mod_gzip and mod_deflate known to be broken so don't trust
 # Apache to signal ETag correctly on such responses
-broken_vary_encoding allow apache
+
+### Not ported to v3
+###broken_vary_encoding allow apache
 
 ###############################
 #  Cache Tuning
@@ -158,9 +160,11 @@ negative_dns_ttl 30 seconds
 range_offset_limit  1 MB
 
 #  We probably want this to be on !
-collapsed_forwarding off
+### Not ported to v3
+### collapsed_forwarding off
 
-refresh_stale_hit  0 seconds
+### Not ported to v3
+###refresh_stale_hit  0 seconds
 
 forward_timeout    2 minutes
 connect_timeout    1 minute
