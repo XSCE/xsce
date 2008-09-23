@@ -239,6 +239,10 @@ fi
 # and set it to autostart
 chkconfig --add pgsql-xs
 
+# enable no-fsck-questions 
+chkconfig --add no-fsck-questions
+
+
 %pre
 
 ##
@@ -329,6 +333,7 @@ chkconfig --del pgsql-xs
 
 
 %config(noreplace) %{_sysconfdir}/init.d/*.in
+%config(noreplace) %{_sysconfdir}/init.d/no-fsck-questions
 
 #Pg
 %config(noreplace) %{_sysconfdir}/pgsql-xs/p*.conf

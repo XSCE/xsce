@@ -183,8 +183,11 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/library/pgsql-xs/data-8.3
 	install -D altfiles/etc/pgsql-xs/p*.conf $(DESTDIR)/etc/pgsql-xs
 	install -D altfiles/etc/sysconfig/pgsql/pgsql-xs $(DESTDIR)/etc/sysconfig/pgsql
+
+	#Non-conflicting init.d scripts
 	install -D altfiles/etc/init.d/pgsql-xs $(DESTDIR)/etc/init.d
 	install -D altfiles/etc/init.d/*.in $(DESTDIR)/etc/init.d
+	install -D altfiles/etc/init.d/no-fsck-questions $(DESTDIR)/etc/init.d
 
 	# conf.d-style or non-conflicting conffiles that are actually executable scripts...
 	install -D altfiles/etc/dhclient-exit-hooks $(DESTDIR)/etc
