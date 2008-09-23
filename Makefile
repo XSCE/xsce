@@ -48,6 +48,10 @@ rpm: SOURCES xs-config.spec
 	rm -fr $(BUILDDIR)/BUILD/$(NV)
 	rpmlint $(BUILDDIR)/RPMS/$(ARCH)/$(NV)-$(REL).$(ARCH).rpm
 
+# for scp `make rpm-name` ...
+rpm-name:
+	@echo $(BUILDDIR)/RPMS/$(ARCH)/$(NV)-$(REL).$(ARCH).rpm
+
 publish:
 	scp $(BUILDDIR)/RPMS/$(ARCH)/$(NV)-$(REL).$(ARCH).rpm \
 	    xs-dev.laptop.org:/xsrepos/testing/olpc/9/i386/
