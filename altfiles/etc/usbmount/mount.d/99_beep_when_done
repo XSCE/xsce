@@ -15,9 +15,13 @@ log()
     fi
 }
 log notice 'XS done installing new software and content...';
-### Bell? 
-### echo -en '\007' > /dev/tty1
-### sleep 0.5
-### echo -en '\007' > /dev/tty1
-### sleep 0.5
-### echo -en '\007' > /dev/tty1
+
+### Bells
+
+echo -en '\33[10;900]\33[11;300]\007' > /dev/tty1
+sleep 0.3
+echo -en '\33[10;900]\33[11;300]\007' > /dev/tty1
+sleep 0.3
+echo -en '\33[10;900]\33[11;300]\007' > /dev/tty1
+sleep 0.3
+echo -en '\33[10;750]\33[11;600]\007' > /dev/tty1

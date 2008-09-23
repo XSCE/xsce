@@ -15,7 +15,8 @@ log()
     fi
 }
 log notice 'XS found a USB disk and mounted it - checking for new software and content to install...';
-### Bell? 
-### echo -en '\007' > /dev/tty1
-###
+
+# Console beep
+echo -en '\007' > /dev/tty1
+
 
