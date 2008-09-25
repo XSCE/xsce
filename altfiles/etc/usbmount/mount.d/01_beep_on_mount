@@ -27,4 +27,5 @@ while (($hz1 < 16000)); do
     hz2=$hz3
 done
 
-
+#reset beep
+echo -en '\033[10]\033[11]' > /dev/console
