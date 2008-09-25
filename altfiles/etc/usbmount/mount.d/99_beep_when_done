@@ -16,12 +16,15 @@ log()
 }
 log notice 'XS done installing new software and content...';
 
-### Bells
+### Bells, descending
+hz=15000
+while (($hz > 50)); do 
+    echo -en '\033[10;'$hz']\033[11;60]\007' > /dev/console
+    sleep 0.11
+    hz=$(($hz * 2 / 3))
+done
 
-echo -en '\33[10;900]\33[11;300]\007' > /dev/tty1
-sleep 0.3
-echo -en '\33[10;900]\33[11;300]\007' > /dev/tty1
-sleep 0.3
-echo -en '\33[10;900]\33[11;300]\007' > /dev/tty1
-sleep 0.3
-echo -en '\33[10;750]\33[11;600]\007' > /dev/tty1
+#reset beep
+echo -en '\033[10]\033[11]' > /dev/console
+
+

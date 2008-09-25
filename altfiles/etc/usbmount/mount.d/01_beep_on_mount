@@ -16,7 +16,15 @@ log()
 }
 log notice 'XS found a USB disk and mounted it - checking for new software and content to install...';
 
-# Console beep
-echo -en '\007' > /dev/tty1
+# Fibonacci console beep
+hz1=50
+hz2=50
+while (($hz1 < 16000)); do 
+    echo -en '\033[10;'$hz1']\033[11;60]\007' > /dev/console
+    sleep 0.1
+    hz3=$hz1
+    hz1=$(($hz1 + $hz2))
+    hz2=$hz3
+done
 
 
