@@ -1,11 +1,12 @@
 #!/bin/bash
-
-# no-fsck-questions       prevent fsck stalls.
 #
-# chkconfig: - 50 50
+# no-fsck-questions:       prevent fsck stalls.
+#
+# chkconfig: 2345 50 50
 # description: Prevent fsck from stalling on a y/n question.
+#
 
-# Fsck question prevention.  
+# Fsck question prevention.
 #
 # By default, on rare occasions fsck will discover errors that it is
 # not confident to fix without human permission.  It has an option
@@ -14,7 +15,7 @@
 # /fsckoptions and uses its contents as options for fsck, after which
 # it deletes it.  This script rewrites the /fsckoptions file on start.
 # It does nothing on stop, because in the normal course of events stop
-# is called before the next boot.  
+# is called before the next boot.
 
 start() {
     echo ' -y' > /fsckoptions
@@ -34,7 +35,7 @@ case "$1" in
 	#stop
 	;;
   status)
-        if [ grep -q '\-y' /fsckoptions ]; then            
+        if [ grep -q '\-y' /fsckoptions ]; then
             echo "no fsck questions on boot"
         else
             echo "fsck protection is OFF"
