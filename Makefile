@@ -159,7 +159,7 @@ install: $(DESTDIR)
 
 	# makefile-driven set
 	install -D altfiles/etc/xs-config.make  $(DESTDIR)/etc/
-	install -D altfiles/etc/rsyslog.conf.in $(DESTDIR)/etc/
+	install -D -m 644 altfiles/etc/rsyslog.conf.in $(DESTDIR)/etc/
 	install -D altfiles/etc/sysctl.conf.in  $(DESTDIR)/etc/
 	install -D altfiles/etc/rssh.conf.in    $(DESTDIR)/etc/
 	install -D altfiles/etc/motd.in         $(DESTDIR)/etc/
