@@ -4,7 +4,7 @@
 ## See /usr/share/doc/xs-config-<version>/README for
 ## how this works...
 ##
-earlyset: syslog.conf motd sysctl.conf ssh/sshd_config \
+earlyset: rsyslog.conf motd sysctl.conf ssh/sshd_config \
      sysconfig/named sysconfig/init \
      sysconfig/iptables-config sysconfig/squid \
      sudoers rssh.conf php.ini sysconfig/httpd \
