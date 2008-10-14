@@ -172,7 +172,8 @@ install: $(DESTDIR)
 
 	# conf.d-style conffiles
 	install -D -d $(DESTDIR)/etc/httpd/conf.d
-	install -D altfiles/etc/httpd/conf.d/mime_olpc.conf  $(DESTDIR)/etc/httpd/conf.d
+	install -D altfiles/etc/httpd/conf.d/mime_olpc.conf     $(DESTDIR)/etc/httpd/conf.d
+	install -D altfiles/etc/httpd/conf.d/proxy_ajp.conf.in  $(DESTDIR)/etc/httpd/conf.d
 
 	install -D -d $(DESTDIR)/etc/logrotate.d
 	install -D altfiles/etc/logrotate.d/syslog-xslogs  $(DESTDIR)/etc/logrotate.d
