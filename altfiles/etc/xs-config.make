@@ -10,7 +10,7 @@ earlyset: rsyslog.conf motd sysctl.conf ssh/sshd_config \
      sudoers rssh.conf php.ini sysconfig/httpd \
      init.d/squid \
      sysconfig/network-scripts/ifcfg-eth0 sysconfig/network-scripts/ifcfg-eth1 \
-     httpd/conf.d/proxy_ajp.conf
+     httpd/conf.d/proxy_ajp.conf httpd/conf.d/ssl.conf
 
 networkset: sysconfig/network hosts sysconfig/dhcpd 
 
