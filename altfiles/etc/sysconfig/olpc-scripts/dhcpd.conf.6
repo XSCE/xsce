@@ -8,16 +8,6 @@ option domain-name "@@BASEDNSNAME@@";
 option domain-name-servers      172.18.0.1;
 option ntp-servers		172.18.0.1;
 
-subnet 172.18.0.0 netmask 255.255.254.0 {
-	option routers			172.18.0.1;
-	option subnet-mask		255.255.254.0;
-	option broadcast-address	172.18.1.255;
-	range                           172.18.0.2 172.18.0.254;
-#  As this subnet is wired, these lease times are on the long side
-	default-lease-time 	10800;
-	max-lease-time 		21600;
-}
-
 subnet 172.18.58.0 netmask 255.255.254.0 {
 	option routers			172.18.58.1;
 	option subnet-mask		255.255.254.0;
