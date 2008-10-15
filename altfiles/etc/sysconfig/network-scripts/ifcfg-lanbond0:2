@@ -12,18 +12,13 @@
 ###
 ### NOTE: This file will be _replaced_ in xs-config updates
 ###
-DEVICE=lanbond0
+DEVICE=lanbond0:2
 . /etc/sysconfig/xs_network_config
 
 if [ $XS_SERVER_NUM = "1" ] ;then
-    # We always bring up lanbond0 - if eth1
-    # comes up it will be a slave of it.
     ONBOOT=yes
-    # This is the address where we hand out
-    # DHCP leases. DHCPd needs this to be set
-    # as the main IP for the interface.
-    IPADDR=172.18.96.1
-    NETMASK=255.255.224.0
+    IPADDR=$XS_LANBOND_MAINXS_IPADDR
+    NETMASK=255.255.255.0
     
     BOOTPROTO=static
     #BONDING_OPTS=""
@@ -38,5 +33,4 @@ else
     # not setting anything.
 
 fi
-
 
