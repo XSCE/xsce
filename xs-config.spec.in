@@ -298,11 +298,11 @@ chkconfig --del pgsql-xs
 %config(noreplace) %{_sysconfdir}/ejabberd/ejabberd.pem
 %config(noreplace) %{_sysconfdir}/httpd/conf/httpd-xs.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/*.conf.in
+%config(noreplace) %{_sysconfdir}/httpd/conf.d/*.conf
 
 %config(noreplace) %{_sysconfdir}/sysconfig/olpc-scripts/
 %config(noreplace) /var/named-xs
 
-%config(noreplace) %{_sysconfdir}/httpd/conf.d/mime_olpc.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/syslog-xslogs
 
 %{_sysconfdir}/xs-config.make
