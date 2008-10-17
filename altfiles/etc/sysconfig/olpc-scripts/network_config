@@ -167,8 +167,8 @@ if __name__ == "__main__":
         ## eth1 is LAN on Server 1 - where we want it to also have an eth1:1 
         ##      - on the other servers it ill be unused
         ##
-        print_conf('XS_LANBOND0_MAINXS_IPADDR=172.18.0.'  + str(server_num))
-        print_conf('XS_LANBOND0_ROLE_IPADDR=172.18.1.' + str(server_num))
+        print_conf('XS_LANBOND_MAINXS_IPADDR=172.18.0.'  + str(server_num))
+        print_conf('XS_LANBOND_ROLE_IPADDR=172.18.1.' + str(server_num))
     ##
     ## The bridges for the MSH devices
     ##
