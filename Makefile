@@ -150,7 +150,7 @@ install: $(DESTDIR)
 	install -D altfiles/etc/httpd/conf/httpd-xs.conf  $(DESTDIR)/etc/httpd/conf
 
 	install -D -d $(DESTDIR)/etc/ejabberd
-	install -D altfiles/etc/ejabberd/ejabberd.cfg.in  $(DESTDIR)/etc/ejabberd
+	install -D altfiles/etc/ejabberd/ejabberd-xs.cfg.in  $(DESTDIR)/etc/ejabberd
 	install -D altfiles/etc/ejabberd/ejabberd.pem     $(DESTDIR)/etc/ejabberd
 
 	install -D altfiles/etc/*.in  $(DESTDIR)/etc/
