@@ -15,7 +15,15 @@
 DEVICE=lanbond0:1
 . /etc/sysconfig/xs_network_config
 
-if [ "foo$XS_LANBOND01_IPADDR" = "foo" ];then
+if [ $XS_SERVER_NUM = "1" ] ;then
+    ONBOOT=yes
+    IPADDR=$XS_LANBOND_ROLE_IPADDR
+    NETMASK=255.255.255.0
+    
+    BOOTPROTO=static
+    #BONDING_OPTS=""
+    IPV6INIT=no
+else
     ONBOOT=no
     # If we do not provide IPADDR
     # or DCHP values, it will error out
@@ -23,16 +31,6 @@ if [ "foo$XS_LANBOND01_IPADDR" = "foo" ];then
     # If we exit here - we might prevent
     # other interfaces from coming up
     # not setting anything.
-else
-    # We always bring up lanbond0 - if eth1
-    # comes up it will be a slave of it.
-    ONBOOT=yes
-    IPADDR=$XS_LANBOND01_IPADDR
-    NETMASK=255.255.240.0
-    
-    BOOTPROTO=static
-    #BONDING_OPTS=""
-    IPV6INIT=no
-fi
 
+fi
 

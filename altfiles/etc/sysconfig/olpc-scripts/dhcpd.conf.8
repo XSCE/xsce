@@ -8,39 +8,29 @@ option domain-name "@@BASEDNSNAME@@";
 option domain-name-servers      172.18.0.1;
 option ntp-servers		172.18.0.1;
 
-subnet 172.18.0.0 netmask 255.255.254.0 {
-	option routers			172.18.0.1;
+subnet 172.18.74.0 netmask 255.255.254.0 {
+	option routers			172.18.74.1;
 	option subnet-mask		255.255.254.0;
-	option broadcast-address	172.18.1.255;
-	range                           172.18.0.2 172.18.0.254;
-#  As this subnet is wired, these lease times are on the long side
-	default-lease-time 	10800;
-	max-lease-time 		21600;
-}
-
-subnet 172.18.66.0 netmask 255.255.254.0 {
-	option routers			172.18.66.1;
-	option subnet-mask		255.255.254.0;
-	option broadcast-address	172.18.67.255;
-	range                           172.18.66.2 172.18.67.254;
+	option broadcast-address	172.18.75.255;
+	range                           172.18.74.2 172.18.75.254;
 	default-lease-time	600;
 	max-lease-time 		1800;
 }
 
-subnet 172.18.68.0 netmask 255.255.254.0 {
-	option routers			172.18.68.1;
+subnet 172.18.76.0 netmask 255.255.254.0 {
+	option routers			172.18.76.1;
 	option subnet-mask		255.255.254.0;
-	option broadcast-address	172.18.69.255;
-	range                           172.18.68.2 172.18.69.254;
+	option broadcast-address	172.18.77.255;
+	range                           172.18.76.2 172.18.76.254;
 	default-lease-time	600;
 	max-lease-time 		1800;
 }
 
-subnet 172.18.70.0 netmask 255.255.254.0 {
-	option routers			172.18.70.1;
+subnet 172.18.78.0 netmask 255.255.254.0 {
+	option routers			172.18.78.1;
 	option subnet-mask		255.255.254.0;
-	option broadcast-address	172.18.71.255;
-	range                           172.18.70.2 172.18.71.254;
+	option broadcast-address	172.18.79.255;
+	range                           172.18.78.2 172.18.79.254;
 	default-lease-time	600;
 	max-lease-time 		1800;
 }

@@ -13,4 +13,10 @@ SERVICE_NAME=dhcpd
 
 #  This config file has several replacements
 #  so it is managed from its init script
-service $SERVICE_NAME condrestart
+#                                                                                                                                
+## for some strange reason - /sbin/service                                                                                       
+## shows a reverse heisenbug - works only when                                                                                   
+## we call it with bash -x                                                                                                       
+#     service $SERVICE_NAME condrestart                                                                                          
+## so instead we use...                                                                                                          
+/etc/init.d/$SERVICE_NAME condrestart

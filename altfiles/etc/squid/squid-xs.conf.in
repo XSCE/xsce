@@ -3,7 +3,13 @@
 #
 ###############################
 #  Network Interface
-http_port 3128 transparent
+## that forces us to bind explicitly to each interface                                                                           
+http_port 172.18.0.1:3128 transparent
+http_port 172.18.96.1:3128 transparent
+http_port 172.18.10.1:3128 transparent
+http_port 172.18.12.1:3128 transparent
+http_port 172.18.14.1:3128 transparent
+
 icp_port 0
 
 ##############################

@@ -29,6 +29,7 @@ Requires: squid
 Requires: postgresql-server
 Requires: httpd
 Requires: php-common
+Requires: moodle-xs
 
 Summary: XS/XSX default configuration
 Name: xs-config
@@ -238,10 +239,13 @@ if [ ! -e /library/pgsql-xs/data-8.3/PG_VERSION ];then
 fi
 # and set it to autostart
 chkconfig --add pgsql-xs
+# Create an 'apache' user in PostgreSQL
+su  -c 'createuser -SRD apache' postgres || echo 'Could not create apache user (exists already?)'
 
 # enable no-fsck-questions 
 chkconfig --add no-fsck-questions
 
+service httpd condrestart
 
 %pre
 
@@ -294,11 +298,12 @@ chkconfig --del pgsql-xs
 %config(noreplace) %{_sysconfdir}/ejabberd/ejabberd.cfg.in
 %config(noreplace) %{_sysconfdir}/ejabberd/ejabberd.pem
 %config(noreplace) %{_sysconfdir}/httpd/conf/httpd-xs.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf.d/*.conf.in
+%config(noreplace) %{_sysconfdir}/httpd/conf.d/*.conf
 
 %config(noreplace) %{_sysconfdir}/sysconfig/olpc-scripts/
 %config(noreplace) /var/named-xs
 
-%config(noreplace) %{_sysconfdir}/httpd/conf.d/mime_olpc.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/syslog-xslogs
 
 %{_sysconfdir}/xs-config.make
@@ -317,6 +322,7 @@ chkconfig --del pgsql-xs
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-mshbond2
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-lanbond0
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-lanbond0:1
+%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-lanbond0:2
 %config %{_sysconfdir}/sysconfig/olpc-scripts/ifcfg-eth0
 %config %{_sysconfdir}/sysconfig/olpc-scripts/ifcfg-eth1
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-msh0

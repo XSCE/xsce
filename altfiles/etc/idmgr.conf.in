@@ -2,4 +2,4 @@
 #  See http://wiki.laptop.org/go/School_Identity_Manager
 BACKUP=schoolserver.@@BASEDNSNAME@@
 PRESENCE=schoolserver.@@BASEDNSNAME@@
-
+BIND_DOMAIN=172.18.0.1

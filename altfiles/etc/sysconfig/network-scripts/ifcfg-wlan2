@@ -9,7 +9,7 @@
 DEVICE=wlan2
 TYPE=Wireless
 MODE=ad-hoc
-CHANNEL=1
+CHANNEL=6
 ESSID=school-mesh-2
 ONBOOT=yes
 BOOTPROTO=none
