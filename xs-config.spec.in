@@ -246,6 +246,7 @@ su  -c 'createuser -SRD apache' postgres || echo 'Could not create apache user (
 chkconfig --add no-fsck-questions
 
 service httpd condrestart
+service rsyslog condrestart
 
 %pre
 
