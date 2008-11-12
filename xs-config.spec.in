@@ -237,8 +237,10 @@ fi
 if [ ! -e /library/pgsql-xs/data-8.3/PG_VERSION ];then
    /etc/init.d/pgsql-xs initdb
 fi
+
 # and set it to autostart
 chkconfig --add pgsql-xs
+chkconfig  postgresql off
 
 # enable no-fsck-questions 
 chkconfig --add no-fsck-questions

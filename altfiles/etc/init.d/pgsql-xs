@@ -2,7 +2,7 @@
 # pgsql-xs	This is the init script for starting up the PostgreSQL
 #		server
 #
-# chkconfig: - 64 36
+# chkconfig: 345 64 36
 # description: Starts and stops the PostgreSQL backend daemon that handles \
 #	       all database requests.
 # processname: postmaster
