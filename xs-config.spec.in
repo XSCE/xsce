@@ -239,8 +239,6 @@ if [ ! -e /library/pgsql-xs/data-8.3/PG_VERSION ];then
 fi
 # and set it to autostart
 chkconfig --add pgsql-xs
-# Create an 'apache' user in PostgreSQL
-su  -c 'createuser -SRD apache' postgres || echo 'Could not create apache user (exists already?)'
 
 # enable no-fsck-questions 
 chkconfig --add no-fsck-questions
