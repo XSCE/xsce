@@ -370,6 +370,11 @@ override_acls.
 %% To disable in-band registration, replace 'allow' with 'deny'.
 {access, register, [{allow, all}]}.
 
+%% Allow repeat registration from the same client (necessary for testing)
+%% Set to a positive integer (or comment out) to restrict with a timeout.
+%% (infinity means zero; 0 does not work)
+% {registration_timeout, infinity}.
+
 %% Everybody can create pubsub nodes
 {access, pubsub_createnode, [{allow, all}]}.
 
@@ -395,6 +400,7 @@ override_acls.
   {mod_announce, [{access, announce}]}, % requires mod_adhoc
   {mod_caps,     []},
   {mod_configure,[]}, % requires mod_adhoc
+  {mod_ctlextra, []},
   {mod_disco,    []},
   %%{mod_echo,   [{host, "echo.localhost"}]},
   {mod_irc,      []},

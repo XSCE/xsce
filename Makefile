@@ -150,7 +150,7 @@ install: $(DESTDIR)
 	install -D altfiles/etc/httpd/conf/httpd-xs.conf  $(DESTDIR)/etc/httpd/conf
 
 	install -D -d $(DESTDIR)/etc/ejabberd
-	install -D altfiles/etc/ejabberd/ejabberd.cfg.in  $(DESTDIR)/etc/ejabberd
+	install -D altfiles/etc/ejabberd/ejabberd-xs.cfg.in  $(DESTDIR)/etc/ejabberd
 	install -D altfiles/etc/ejabberd/ejabberd.pem     $(DESTDIR)/etc/ejabberd
 
 	install -D altfiles/etc/*.in  $(DESTDIR)/etc/
@@ -160,7 +160,7 @@ install: $(DESTDIR)
 
 	# makefile-driven set
 	install -D altfiles/etc/xs-config.make  $(DESTDIR)/etc/
-	install -D altfiles/etc/rsyslog.conf.in $(DESTDIR)/etc/
+	install -D -m 644 altfiles/etc/rsyslog.conf.in $(DESTDIR)/etc/
 	install -D altfiles/etc/sysctl.conf.in  $(DESTDIR)/etc/
 	install -D altfiles/etc/rssh.conf.in    $(DESTDIR)/etc/
 	install -D altfiles/etc/motd.in         $(DESTDIR)/etc/

@@ -8,11 +8,11 @@ earlyset: rsyslog.conf motd sysctl.conf ssh/sshd_config \
      sysconfig/named sysconfig/init \
      sysconfig/iptables-config sysconfig/squid \
      sudoers rssh.conf php.ini sysconfig/httpd \
-     init.d/squid \
+     init.d/squid sysconfig/ejabberd \
      sysconfig/network-scripts/ifcfg-eth0 sysconfig/network-scripts/ifcfg-eth1 \
      httpd/conf.d/proxy_ajp.conf httpd/conf.d/ssl.conf
 
-networkset: sysconfig/network hosts sysconfig/dhcpd 
+networkset: sysconfig/network hosts sysconfig/dhcpd
 
 # Any file that has a ".in"
 # 'template' can be made with this catch-all

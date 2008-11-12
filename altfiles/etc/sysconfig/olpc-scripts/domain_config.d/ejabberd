@@ -13,9 +13,8 @@ SERVICE_NAME=ejabberd
 
 #  This is a config file related to this service which will have
 #  the domain name globally replaced inside it
-# Unfortunately ejabberd's init script does not pick up overrides from
-# /etc/sysconfig 
-CONFIG_LIST=/etc/ejabberd/ejabberd.cfg
+
+CONFIG_LIST=/etc/ejabberd/ejabberd-xs.cfg
 
 #  This is the suffix which original versions of modified files will have
 BACKUP_SUFFIX=old
