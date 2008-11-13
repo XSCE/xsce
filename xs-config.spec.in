@@ -31,6 +31,8 @@ Requires: httpd
 Requires: php-common
 Requires: moodle-xs
 
+Requires(post): coreutils
+
 Summary: XS/XSX default configuration
 Name: xs-config
 Version: @VERSION@
@@ -171,6 +173,17 @@ for FPATH in $BADLINKS; do
        mv "%{DESTDIR}$FPATH.rpmnew" "%{DESTDIR}$FPATH"
     fi
 done
+
+## Some very specific files that we want to overwrite if they
+## are old files with a known content
+FPATH='/etc/yum.conf'
+BADSHA1SUM='2f12835cb11f100be169abcc8bff72525a25cff7'
+if [ -e "%{DESTDIR}$FPATH" -a -e "%{DESTDIR}$FPATH.rpmnew" ]; then
+   SHA1SUM=`sha1sum "%{DESTDIR}$FPATH" | cut -d\  -f1`
+   if [ $SHA1SUM = $BADSHA1SUM ]; then
+      mv "%{DESTDIR}$FPATH.rpmnew" "%{DESTDIR}$FPATH"
+   fi
+fi
 
 ## Rename old conffiles
 if [ -e /etc/sysconfig/olpc-scripts/xs-domain-name ]; then
