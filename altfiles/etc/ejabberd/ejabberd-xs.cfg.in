@@ -197,7 +197,7 @@ override_acls.
 %% If you want to use a different method, 
 %% comment this line and enable the correct ones.
 %%
-{auth_method, internal}.
+%%{auth_method, internal}.
 
 %%
 %% Authentication using external script
@@ -210,7 +210,7 @@ override_acls.
 %% Authentication using ODBC
 %% Remember to setup a database in the next section.
 %%
-%%{auth_method, odbc}.
+{auth_method, odbc}.
 
 %%
 %% Authentication using PAM
@@ -218,25 +218,6 @@ override_acls.
 %%{auth_method, pam}.
 %%{pam_service, "pamservicename"}.
 
-%%
-%% Authentication using LDAP
-%%
-%%{auth_method, ldap}.
-%%
-%% List of LDAP servers:
-%%{ldap_servers, ["localhost"]}.    
-%%
-%% LDAP attribute that holds user ID:
-%%{ldap_uids, [{"mail", "%u@mail.example.org"}]}. 
-%%
-%% Search base of LDAP directory:
-%%{ldap_base, "dc=example,dc=com"}. 
-%%
-%% LDAP manager:
-%%{ldap_rootdn, "dc=example,dc=com"}. 
-%%
-%% Password to LDAP manager:
-%%{ldap_password, "******"}. 
 
 %%
 %% Anonymous login support:
@@ -273,7 +254,10 @@ override_acls.
 %%
 %% PostgreSQL server:
 %%
-%%{odbc_server, {pgsql, "server", "database", "username", "password"}}.
+
+{host_config, "schoolserver.@@BASEDNSNAME@@", [{auth_method, [odbc]}]}.
+
+{odbc_server, {pgsql, "localhost", "ejabberd", "ejabberd", "ejabberd"}}.
 %%
 %% If you want to specify the port:
 %%{odbc_server, {pgsql, "server", 1234, "database", "username", "password"}}.
@@ -281,7 +265,7 @@ override_acls.
 %% If you use PostgreSQL, have a large database, and need a
 %% faster but inexact replacement for "select count(*) from users"
 %%
-%%{pgsql_users_number_estimate, true}.
+{pgsql_users_number_estimate, true}.
 
 %%
 %% ODBC compatible or MSSQL server:
@@ -373,7 +357,7 @@ override_acls.
 %% Allow repeat registration from the same client (necessary for testing)
 %% Set to a positive integer (or comment out) to restrict with a timeout.
 %% (infinity means zero; 0 does not work)
-% {registration_timeout, infinity}.
+{registration_timeout, infinity}.
 
 %% Everybody can create pubsub nodes
 {access, pubsub_createnode, [{allow, all}]}.
@@ -415,7 +399,7 @@ override_acls.
   %%{mod_muc_log,[]},
   {mod_offline,  []},
   {mod_privacy,  []},
-  {mod_private,  []},
+  {mod_private_odbc,  []},
   %%{mod_proxy65,[]},
   {mod_pubsub,   [{access_createnode, pubsub_createnode},
                   {plugins, ["default", "pep"]}
@@ -436,12 +420,12 @@ override_acls.
 
 		  {access, register}
 		 ]},
-  {mod_roster,   []},
+  {mod_roster_odbc,   []},
   %%{mod_service_log,[]},
   {mod_shared_roster,[]},
   {mod_stats,    []},
   {mod_time,     []},
-  {mod_vcard,    []},
+  {mod_vcard_odbc,    []},
   {mod_version,  []}
  ]}.
 
