@@ -6,10 +6,11 @@
 DEVICE=eth1
 . /etc/sysconfig/xs_network_config
 
-if [ "foo$XS_LANBOND_MAIN_IPADDR" != "foo" ]; then
+if [ "foo$XS_LANBOND_MAINXS_IPADDR" != "foo" ]; then
    ONBOOT=yes
    TYPE=Ethernet
    MASTER=lanbond0
    SLAVE=yes
    NM_CONTROLLED=no
+   HOTPLUG=yes
 fi
