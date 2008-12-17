@@ -22,7 +22,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 MYREALPATH=`readlink -f $0`
-BASEDIR=`dirname "MYREALPATH" `
+BASEDIR=`dirname "$MYREALPATH" `
 DOMAIN_CONFIG_DIR="$BASEDIR/domain_config.d/"
 SYSCONFIGDIR=`dirname $BASEDIR`
 

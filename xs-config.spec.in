@@ -177,12 +177,15 @@ done
 ## Some very specific files that we want to overwrite if they
 ## are old files with a known content
 FPATH='/etc/yum.conf'
-BADSHA1SUM='2f12835cb11f100be169abcc8bff72525a25cff7'
+BADSHA1SUMS="2f12835cb11f100be169abcc8bff72525a25cff7 
+             8970c4d97f3f90eb17520ea3d8590b24bc7f4691"
 if [ -e "%{DESTDIR}$FPATH" -a -e "%{DESTDIR}$FPATH.rpmnew" ]; then
-   SHA1SUM=`sha1sum "%{DESTDIR}$FPATH" | cut -d\  -f1`
-   if [ $SHA1SUM = $BADSHA1SUM ]; then
-      mv "%{DESTDIR}$FPATH.rpmnew" "%{DESTDIR}$FPATH"
-   fi
+    SHA1SUM=`sha1sum "%{DESTDIR}$FPATH" | cut -d\  -f1`
+    for BADCSUM in $BADSHA1SUMS; do
+        if [ $SHA1SUM = $BADCSUM ]; then
+            mv "%{DESTDIR}$FPATH.rpmnew" "%{DESTDIR}$FPATH"
+        fi
+    done
 fi
 
 ## Rename old conffiles
