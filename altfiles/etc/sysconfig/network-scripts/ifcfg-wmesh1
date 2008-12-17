@@ -1,19 +1,19 @@
 ##
-## This is the 'conventional wlan' interface
-## of the wlanX / mshX pair that the Marvell
+## This is the 'conventional wmesh' interface
+## of the wmeshX / mshX pair that the Marvell
 ## mesh IF appears as...
 ##
 ###
 ### NOTE: This file will be _replaced_ in xs-config updates
 ###
-DEVICE=wlan2
+DEVICE=wmesh1
 TYPE=Wireless
 MODE=ad-hoc
-CHANNEL=6
-ESSID=school-mesh-2
+CHANNEL=11
+ESSID=school-mesh-1
 ONBOOT=yes
 BOOTPROTO=none
 IPV6INIT=no
 HOTPLUG=yes
 NM_CONTROLLED=no
-LINKDELAY=2
+LINKDELAY=1

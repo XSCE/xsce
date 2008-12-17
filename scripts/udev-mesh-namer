@@ -28,13 +28,13 @@ for mshdev in $mshdevs; do
             # COOL... now just write the alias names to /rules.d   
             case $mshdev in
                 msh0)
-                    echo "wlan0"    
+                    echo "wmesh0"    
                     ;;
                 msh1)
-                    echo "wlan1"    
+                    echo "wmesh1"    
                     ;;
                 msh2)
-                    echo "wlan2"    
+                    echo "wmesh2"    
                     ;;
             esac
         fi 

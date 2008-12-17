@@ -1,11 +1,11 @@
 ## These rules pull in our mesh-namer script
 ## which ensures that the "eth*" device gets
-## renamed to wlanN where N matches the mshN
+## renamed to wmeshN where N matches the mshN
 ## device. So the pairs line up:
 ##
-##  wlan0 == msh0
-##  wlan1 == msh1
-##  wlan2 == msh2
+##  wmesh0 == msh0
+##  wmesh1 == msh1
+##  wmesh2 == msh2
 ##
 ## making the rest of the network infra much simpler.
 ##

@@ -9,15 +9,15 @@ if [ x${1} = x ]; then
     exit
 else
     case $1 in
-	wlan0)
+	wmesh0)
 	    /sbin/ip addr flush dev msh0 2>/dev/null
 	    /sbin/ifup msh0
 	    ;;
-	wlan1)
+	wmesh1)
 	    /sbin/ip addr flush dev msh1 2>/dev/null
 	    /sbin/ifup msh1
 	    ;;
-	wlan2)
+	wmesh2)
 	    /sbin/ip addr flush dev msh2 2>/dev/null
 	    /sbin/ifup msh1
 	    ;;

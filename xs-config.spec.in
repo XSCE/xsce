@@ -234,7 +234,7 @@ for FPATH in $OLDCONFIGS; do
     fi
 done
 # Remove ifcfg-ethX files that refer to libertas devices
-# these have been replaced with wlanX devices
+# these have been replaced with wmeshX devices
 for FPATH in %{DESTDIR}/etc/sysconfig/network-scripts/ifcfg-eth*; do
     # Here the implicit ls has incorporated %{DESTDIR}
     if grep -q '^ESSID=\"school-mesh-' "$FPATH" ;then
@@ -345,9 +345,9 @@ chkconfig --del pgsql-xs
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-msh0
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-msh1
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-msh2
-%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-wlan0
-%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-wlan1
-%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-wlan2
+%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-wmesh0
+%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-wmesh1
+%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-wmesh2
 %config %{_sysconfdir}/sysconfig/network-scripts/route-eth0
 %config %{_sysconfdir}/sysconfig/network-scripts/route-lanbond0
 

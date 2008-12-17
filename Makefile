@@ -120,9 +120,9 @@ install: $(DESTDIR)
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-msh0   $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-msh1   $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-msh2   $(DESTDIR)/etc/sysconfig/network-scripts/
-	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wlan0  $(DESTDIR)/etc/sysconfig/network-scripts
-	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wlan1  $(DESTDIR)/etc/sysconfig/network-scripts/
-	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wlan2  $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wmesh0  $(DESTDIR)/etc/sysconfig/network-scripts
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wmesh1  $(DESTDIR)/etc/sysconfig/network-scripts/
+	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wmesh2  $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/route-eth0     $(DESTDIR)/etc/sysconfig/network-scripts/
 	install -D altfiles/etc/sysconfig/network-scripts/route-lanbond0 $(DESTDIR)/etc/sysconfig/network-scripts/
 
