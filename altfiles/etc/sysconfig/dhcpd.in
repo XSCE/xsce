@@ -13,5 +13,5 @@ if [ ! -e /etc/sysconfig/xs_domain_name -o ! -e /etc/sysconfig/xs_server_number 
     exit 1
 fi
 pushd /etc
-make -f xs-config.make dhcpd-xs.conf
+make -B -f xs-config.make dhcpd-xs.conf
 popd
