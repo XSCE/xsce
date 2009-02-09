@@ -27,7 +27,8 @@ if [ $XS_SERVER_NUM = "1" ] ;then
     
     BOOTPROTO=static
     #BONDING_OPTS=""
-    IPV6INIT=no
+    IPV6INIT=yes
+    IPV6ADDR_SECONDARIES="fe80::abcd:ef02/64"
 else
     ONBOOT=no
     # If we do not provide IPADDR
