@@ -118,20 +118,20 @@ override_acls.
 			{access, c2s},
 			{shaper, c2s_shaper},
 			{max_stanza_size, 524288}
-		       ]},
+		       ]}
 
   %%
   %% To enable the old SSL connection method in port 5223:
   %%
-  {5223, ejabberd_c2s, [
+  , {5223, ejabberd_c2s, [
                         inet6,
   			{access, c2s},
   			{shaper, c2s_shaper},
   			tls, {certfile, "/etc/ejabberd/ejabberd.pem"},
   			{max_stanza_size, 524288}
-  		       ]},
+  		       ]}
 
-  %%{5269, ejabberd_s2s_in, [
+  %% , {5269, ejabberd_s2s_in, [
   %%			   {shaper, s2s_shaper},
   %%			   {max_stanza_size, 131072}
   %%			  ]},
@@ -139,20 +139,20 @@ override_acls.
   %%
   %% ejabberd_service: Interact with external components (transports...)
   %%
-  %%{8888, ejabberd_service, [
+  %% , {8888, ejabberd_service, [
   %%			    {access, all}, 
   %%			    {shaper_rule, fast},
   %%			    {ip, {127, 0, 0, 1}},
   %%			    {hosts, ["icq.example.org", "sms.example.org"],
   %%			     [{password, "secret"}]
   %%			    }
-  %%			   ]},
+  %%			   ]}
 
-  {5280, ejabberd_http, [
-                         inet6,
-			 http_poll, 
-			 web_admin
-			]}
+  %% , {5280, ejabberd_http, [
+  %%                       inet6,
+  %%			 http_poll, 
+  %%			 web_admin
+  %%			]}
 
  ]}.
 
@@ -312,7 +312,7 @@ override_acls.
 %%
 %%{acl, admin, {user, "aleksey", "localhost"}}.
 %%{acl, admin, {user, "ermine", "example.org"}}.
-{acl, admin, {user, "admin", "schoolserver.@@BASEDNSNAME@@"}}.
+%%{acl, admin, {user, "admin", "schoolserver.@@BASEDNSNAME@@"}}.
 
 %%
 %% Blocked users
