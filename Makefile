@@ -209,6 +209,7 @@ install: $(DESTDIR)
 
 	install -D --mode 750 -d $(DESTDIR)/etc/sudoers.d
 	install -D --mode 440 altfiles/etc/sudoers.d/00-base  $(DESTDIR)/etc/sudoers.d
+	install -D --mode 440 altfiles/etc/sudoers.d/10-ejabberdmoodle  $(DESTDIR)/etc/sudoers.d
 
 	# scripts
 	install -D -d $(DESTDIR)/usr/bin

@@ -373,7 +373,7 @@ chkconfig --del pgsql-xs
 %{_sysconfdir}/usbmount/mount.d/99_beep_when_done
 
 %attr(750, root , root)   %dir %{_sysconfdir}/sudoers.d
-%attr(440, root , root) %config(noreplace) %{_sysconfdir}/sudoers.d/00-base
+%attr(440, root , root) %config(noreplace) %{_sysconfdir}/sudoers.d/*
 
 %{_bindir}/xs-commitchanged
 %{_bindir}/cat-parts
