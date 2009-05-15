@@ -181,7 +181,7 @@ start(){
 	$SU -l postgres -c "$PGENGINE/postmaster -p '$PGPORT' -D '$PGDATA' ${PGOPTS} &" >> "$PGLOG" 2>&1 < /dev/null
 	sleep 2
 	pid=`pidof -s "$PGENGINE/postmaster"`
-	if [ $pid ] && [ -f "$PGDATA/postmaster.pid" ]
+	if [ $pid ] && [ -f "$PGDATA/postmaster.pid" ] && test_pg_connection
 	then
 		success "$PSQL_START"
 		touch /var/lock/subsys/${NAME}
@@ -260,6 +260,44 @@ initdb(){
 	    script_result=1
 	fi
     fi
+}
+
+###
+### taken from the old pg_ctl.sh
+### -- this carries its original big bold warning
+# FIXME:  This is horribly misconceived.
+# 1) If password authentication is set up, the connection will fail.
+# 2) If a virtual host is set up, the connection may fail.
+# 3) If network traffic filters are set up tight enough, the connection
+#    may fail.
+# 4) When no Unix domain sockets are available, the connection will
+#    fail.  (Using TCP/IP by default ain't better.)
+# 5) When a different port is configured, the connection will fail
+#    or go to the wrong server.
+# 6) If the dynamic loader is not set up correctly (for this user/at
+#    this time), psql will fail (to find libpq).
+# 7) If psql is misconfigured, this may fail.
+
+test_pg_connection(){
+    cnt=0
+    wait_seconds=60
+    while :
+    do
+	$SU -l postgres -c "$PGENGINE/psql -l" >/dev/null 2>&1
+	if [ $? -eq 0 ]
+	then
+	    break;
+	else
+	    cnt=`expr $cnt + 1`
+	    echo -n '.'
+	    if [ "$cnt" -gt "$wait_seconds" ];then
+		$silence_echo echo "failed"
+		echo "$CMDNAME: postmaster does not start" 1>&2
+		exit 1
+	    fi
+	    sleep 1
+	fi
+    done
 }
 
 # This script is slightly unusual in that the name of the daemon (postmaster)
