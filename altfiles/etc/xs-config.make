@@ -54,11 +54,6 @@ sudoers: sudoers.d/*
 	mv -f sudoers.tmp sudoers
 	xs-commitchanged -m "Made from sudoers.d" $@
 
-hosts:  hosts.in sysconfig/xs_domain_name
-	xs-commitchanged -m 'Dirty state' $@
-	sed -e "s/@@BASEDNSNAME@@/$$(cat /etc/sysconfig/xs_domain_name)/" < $@.in > $@
-	xs-commitchanged -m "Made from $@.in" $@
-
 dhcpd-xs.conf:  sysconfig/xs_server_number sysconfig/xs_domain_name
 	xs-commitchanged -m 'Dirty state' $@
 	#SERVERNUM := $(shell cat sysconfig/xs_server_number)
