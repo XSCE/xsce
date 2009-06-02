@@ -12,7 +12,7 @@ earlyset: rsyslog.conf motd sysctl.conf ssh/sshd_config \
      sysconfig/network-scripts/ifcfg-eth0 sysconfig/network-scripts/ifcfg-eth1 \
      httpd/conf.d/proxy_ajp.conf httpd/conf.d/ssl.conf
 
-networkset: sysconfig/network hosts sysconfig/dhcpd
+networkset: hosts sysconfig/dhcpd
 
 # Any file that has a ".in"
 # 'template' can be made with this catch-all
@@ -53,11 +53,6 @@ sudoers: sudoers.d/*
 	xs-commitchanged -m 'Dirty state' $@
 	mv -f sudoers.tmp sudoers
 	xs-commitchanged -m "Made from sudoers.d" $@
-
-sysconfig/network:  sysconfig/network.in sysconfig/xs_domain_name
-	xs-commitchanged -m 'Dirty state' $@
-	sed -e "s/@@BASEDNSNAME@@/$$(cat /etc/sysconfig/xs_domain_name)/" < $@.in > $@
-	xs-commitchanged -m "Made from $@.in" $@
 
 hosts:  hosts.in sysconfig/xs_domain_name
 	xs-commitchanged -m 'Dirty state' $@

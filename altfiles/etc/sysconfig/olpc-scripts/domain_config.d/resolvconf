@@ -11,7 +11,7 @@
 #  This is the name of the service (for stopping and restarting)
 #  This is a list of files related to this service which will have
 #  the domain name globally replaced inside them
-CONFIG_LIST="/etc/resolv.conf /etc/sysconfig/olpc-scripts/resolv.conf"
+CONFIG_LIST="/etc/resolv.conf /etc/sysconfig/network /etc/sysconfig/olpc-scripts/resolv.conf"
 
 #  This is the suffix which original versions of modified files will have
 BACKUP_SUFFIX=old
