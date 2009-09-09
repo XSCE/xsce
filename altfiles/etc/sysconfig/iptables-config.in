@@ -7,11 +7,8 @@
 ## config settings
 SERVER_NUM=`cat /etc/sysconfig/xs_server_number`
 if [ $SERVER_NUM=1 ];then
-    if [ -e /etc/sysconfig/xs_httpcache_on ]; then
-	IPTABLES_DATA=/etc/sysconfig/olpc-scripts/iptables.principal.cache
-    else
-	IPTABLES_DATA=/etc/sysconfig/olpc-scripts/iptables.principal
-    fi
+    IPTABLES_DATA=/etc/sysconfig/olpc-scripts/iptables-xs
+    /etc/sysconfig/olpc-scripts/gen-iptables $IPTABLES_DATA
 fi
 
 # Load additional iptables modules (nat helpers)

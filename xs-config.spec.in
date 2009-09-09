@@ -102,9 +102,6 @@ rm -rf $RPM_BUILD_ROOT
 	/etc/sysconfig/olpc-scripts/ifcfg-msh2               \
 	/etc/sysconfig/olpc-scripts/ifcfg-tun0               \
 	/etc/sysconfig/olpc-scripts/ip6tables                \
-	/etc/sysconfig/olpc-scripts/iptables.auxiliary       \
-	/etc/sysconfig/olpc-scripts/iptables.principal       \
-	/etc/sysconfig/olpc-scripts/iptables.principal.cache \
 	/etc/sysconfig/olpc-scripts/mkaccount                \
 	/etc/sysconfig/olpc-scripts/network_config           \
 	/etc/sysconfig/olpc-scripts/principal_config         \
@@ -345,6 +342,7 @@ fi
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-lanbond0:2
 %config %{_sysconfdir}/sysconfig/olpc-scripts/ifcfg-eth0
 %config %{_sysconfdir}/sysconfig/olpc-scripts/ifcfg-eth1
+
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-msh0
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-msh1
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-msh2
@@ -353,6 +351,8 @@ fi
 %config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-wmesh2
 %config %{_sysconfdir}/sysconfig/network-scripts/route-eth0
 %config %{_sysconfdir}/sysconfig/network-scripts/route-lanbond0
+
+%config %{_sysconfdir}/sysconfig/olpc-scripts/iptables-xs.in
 
 %attr(750, root , named)   %dir /var/named-xs
 %attr(770, named , named)  %dir /var/named-xs/data
