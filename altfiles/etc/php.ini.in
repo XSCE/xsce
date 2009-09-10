@@ -299,8 +299,7 @@ expose_php = On
 
 max_execution_time = 30     ; Maximum execution time of each script, in seconds
 max_input_time = 60	; Maximum amount of time each script may spend parsing request data
-memory_limit = 64M      ; Maximum amount of memory a script may consume (16MB)
-
+memory_limit   = 140M      ; Maximum amount of memory a script may consume (16MB)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Error handling and logging ;
@@ -465,7 +464,7 @@ register_argc_argv = Off
 auto_globals_jit = On
 
 ; Maximum size of POST data that PHP will accept.
-post_max_size = 32M
+post_max_size = 120M
 
 ; Magic quotes
 ;
@@ -570,7 +569,7 @@ file_uploads = On
 ;upload_tmp_dir =
 
 ; Maximum allowed size for uploaded files.
-upload_max_filesize = 2M
+upload_max_filesize = 110M
 
 
 ;;;;;;;;;;;;;;;;;;
