@@ -20,7 +20,8 @@ Requires: smartmontools
 Requires: sudo  
 Requires: syslog 
 Requires: xml-common  
-Requires: git-core
+Requires: git
+Requires: make
 Requires: usbmount
 Requires: libertas-usb8388-firmware
 Requires: bridge-utils
@@ -30,6 +31,7 @@ Requires: postgresql-server
 Requires: httpd
 Requires: php-common
 Requires: moodle-xs
+
 
 Requires(post): coreutils
 
