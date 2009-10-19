@@ -54,19 +54,19 @@ rpm-name:
 
 publish:
 	scp $(BUILDDIR)/RPMS/$(ARCH)/$(NV)-$(REL).$(ARCH).rpm \
-	    xs-dev.laptop.org:/xsrepos/testing/olpc/9/i386/
+	    xs-dev.laptop.org:/xsrepos/testing/olpc/11/i586/
 	scp $(BUILDDIR)/SRPMS/$(NV)-$(REL).src.rpm \
-	    xs-dev.laptop.org:/xsrepos/testing/olpc/9/source/SRPMS/
-	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/9/i386
-	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/9/source/SRPMS
+	    xs-dev.laptop.org:/xsrepos/testing/olpc/11/source/SRPMS/
+	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/11/i586
+	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/11/source/SRPMS
 
 publish-stable:
 
 	scp $(BUILDDIR)/RPMS/$(ARCH)/$(NV)-$(REL).$(ARCH).rpm \
-	    xs-dev.laptop.org:/xsrepos/testing/olpc/$(BRANCH)/i386/
+	    xs-dev.laptop.org:/xsrepos/testing/olpc/$(BRANCH)/i586/
 	scp $(BUILDDIR)/SRPMS/$(NV)-$(REL).src.rpm \
 	    xs-dev.laptop.org:/xsrepos/testing/olpc/$(BRANCH)/source/SRPMS/
-	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/$(BRANCH)/i386
+	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/$(BRANCH)/i586
 	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/$(BRANCH)/source/SRPMS
 
 
