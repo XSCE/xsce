@@ -321,6 +321,7 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/olpc-scripts/
 
 %config(noreplace) /var/named-xs
+
 %attr(750, root , named)   %dir /var/named-xs
 %attr(770, named , named)  %dir /var/named-xs/data
 
@@ -336,8 +337,10 @@ fi
 
 %{_bindir}/xs-commitchanged
 %{_bindir}/cat-parts
-%doc README.no-fsck-questions
-%doc README 
+%{_bindir}/xs-swapnics
+/sbin/ifup-local
+
+%doc README.no-fsck-questions README 
 
 %description
 The default service configuration of an OLPC XS School server.
