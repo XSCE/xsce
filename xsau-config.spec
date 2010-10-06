@@ -17,6 +17,7 @@ Source: %{name}-%{version}.tar.gz
 Vendor: OLPC
 
 #  Requires a few tools 
+Provides: xs-config
 Requires: usbmount
 Requires: git
 Requires: make

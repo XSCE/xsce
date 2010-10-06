@@ -11,6 +11,7 @@ options
 	/* make named use port 53 for the source of all queries, to allow
          * firewalls to block all ports except 53:
          */
+        forwarders	{@@BASEDNSFWD@@ };
 	listen-on { any; };
         /* listen-on-v6 { any; }; */
 	// Put files that named is allowed to write in the data/ directory:
