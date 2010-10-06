@@ -1,0 +1,56 @@
+#!/usr/bin/python
+
+""" Commit a file if
+    - needs to be added
+    - has changed
+
+    This is just a bit of convenience scripts -- replaces
+    a bit of ugly shell that was hard to make sane.
+
+    If you pass --remove, it will commit the pre-removal state
+    and then remove the file and commit the removal so that a
+    'checkout' action does not bring the file back.
+
+    Author: Martin Langhoff <martin@laptop.org>
+    Copyright: One Laptop per Child
+    License: GPLv2
+"""
+from subprocess import call, check_call, Popen, PIPE
+import os.path, sys, os, re, tempfile, shutil, stat
+from optparse import OptionParser
+
+def main():
+
+    parser = OptionParser(usage='%prog -m "msg" filea [fileb filec]')
+    parser.add_option('-m', dest='msg', default='')
+    parser.add_option('-r', '--remove', dest='rm', action='store_true')
+    (options, filepaths) = parser.parse_args()
+
+    for fpath in filepaths:
+        if os.path.exists(fpath):
+            fpath = os.path.abspath(fpath)
+            os.chdir(os.path.dirname(fpath))
+            fname = os.path.basename(fpath)
+            isnewcmd = ['git','ls-files', '--others',   '--', fname]
+            ismodcmd = ['git','ls-files', '--modified', '--', fname]
+            if Popen(isnewcmd, stdout=PIPE).communicate()[0]:
+                check_call(['git', 'add','--', fname])
+                mymsg = options.msg + ' - new file ' + fpath
+                check_output = call(['git', 'commit', '-m', mymsg,'--', fname])
+            elif Popen(ismodcmd, stdout=PIPE).communicate()[0]:
+                check_call(['git', 'add', '--',fname])
+                mymsg = options.msg + ' - changed file ' + fpath
+                check_call(['git', 'commit', '-m', mymsg,'--', fname])
+            # else - the state is not interesting
+            # to commit... (not new, not dirty...)
+
+            # If we've been told to remove the file, then
+            # remove it - git will take care of the actual removal
+            # and commit the removal - *after* we've committed
+            # the pre-removal state.
+            if options.rm:
+                check_call(['git', 'rm', '--', fname])
+                mymsg = options.msg + ' - final removal ' + fname
+                check_call(['git', 'commit', '-m', mymsg,'--', fname])
+
+if __name__ == '__main__': main ()

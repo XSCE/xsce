@@ -1,0 +1,5 @@
+#  This is a configuration file for the OLPC idmgr
+#  See http://wiki.laptop.org/go/School_Identity_Manager
+BACKUP=schoolserver.@@BASEDNSNAME@@
+PRESENCE=schoolserver.@@BASEDNSNAME@@
+BIND_ADDRESS='0.0.0.0'
