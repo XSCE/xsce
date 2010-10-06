@@ -317,7 +317,6 @@ fi
 %config(noreplace) %{_sysconfdir}/ssh/sshd_config.in
 %config(noreplace) %{_sysconfdir}/sysconfig/*.in
 %config(noreplace) %{_sysconfdir}/xinetd.d/*.in
-%config(noreplace) %{_sysconfdir}/init.d/*.in
 %config(noreplace) %{_sysconfdir}/init.d/no-fsck-questions
 %config(noreplace) %{_sysconfdir}/sysconfig/olpc-scripts/
 
