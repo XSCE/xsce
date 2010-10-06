@@ -21,7 +21,7 @@ ARCH = noarch
 
 # NOTE: Release is hardcoded in the spec file to 1
 NV = $(PKGNAME)-$(VERSION)
-REL = 1
+REL = $(RELEASE)
 
 RPMBUILD = rpmbuild \
 	--define "_topdir $(BUILDDIR)" \
