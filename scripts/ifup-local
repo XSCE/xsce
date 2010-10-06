@@ -5,21 +5,29 @@
 # Authors: Jerry Vonau <jvonau@shaw.ca>
 #          Martin Langhoff <martin@laptop.org>
 #  
-if [ x${1} = x ]; then
+if [ x"\${1}" = x ]; then
     exit
 else
-    case $1 in
-	wmesh0)
-	    /sbin/ip addr flush dev msh0 2>/dev/null
-	    /sbin/ifup msh0
-	    ;;
-	wmesh1)
-	    /sbin/ip addr flush dev msh1 2>/dev/null
-	    /sbin/ifup msh1
-	    ;;
-	wmesh2)
-	    /sbin/ip addr flush dev msh2 2>/dev/null
-	    /sbin/ifup msh1
+    case \$1 in
+	eth0|ppp0)
+            namedtpl=/etc/named-xs.conf.tpl
+            namedconf=/etc/named-xs.conf
+            FWD=""
+            for i in \`cat /etc/resolv.conf | grep nameserver | awk  '{print \$2}'\`; 
+            do 
+                if [ x\$i != x127.0.0.1 ]; then
+                    FWD="\$FWD \$i;"
+		else
+                    exit    
+		fi
+            done 
+	    cp \$namedtpl \$namedconf 
+            logger "changing /etc/named-xs.conf using forwarders \$FWD"
+            sed -i -e "s/@@BASEDNSFWD@@/\$FWD/" \$namedconf
+
+            logger "changing /etc/resolv.conf for principal school server"
+	    cp /etc/sysconfig/olpc-scripts/resolv.conf /etc/resolv.conf  
 	    ;;
     esac
 fi
+
