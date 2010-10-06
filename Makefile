@@ -13,10 +13,11 @@ BUILDDIR = $(PWD)/build
 
 # symbols
 PKGNAME = xsau-config
-VERSION = $(shell git describe | sed 's/^v//' | sed 's/-/./g')
+#VERSION = $(shell git describe | sed 's/^v//' | sed 's/-/./g')
+VERSION = 0.7.0.4
 RELEASE = 1
 ARCH = noarch
-BRANCH = $(shell git branch | grep '*' | sed 's/* //')
+#BRANCH = $(shell git branch | grep '*' | sed 's/* //')
 
 # NOTE: Release is hardcoded in the spec file to 1
 NV = $(PKGNAME)-$(VERSION)
@@ -37,13 +38,13 @@ SOURCES: Makefile
 	gzip  $(NV).tar
 	mv $(NV).tar.gz $(BUILDDIR)/SOURCES/
 
-xs-config.spec: xs-config.spec.in
+xsau-config.spec: xsau-config.spec.in
 	sed -e 's:@VERSION@:$(VERSION):g' < $< > $@
 
-.PHONY: xs-config.spec.in
+.PHONY: xsau-config.spec.in
 	# This forces a rebuild of xs-config.spec.in
 
-rpm: SOURCES xs-config.spec
+rpm: SOURCES xsau-config.spec
 	$(RPMBUILD) -ba --target $(ARCH) $(PKGNAME).spec
 	rm -fr $(BUILDDIR)/BUILD/$(NV)
 	rpmlint $(BUILDDIR)/RPMS/$(ARCH)/$(NV)-$(REL).$(ARCH).rpm
@@ -143,7 +144,7 @@ install: $(DESTDIR)
 
 	# Pg - nonconflicting
 	install -D -d $(DESTDIR)/etc/init.d
-	install -D -d  $(DESTDIR)/etc/sysconfig/pgsql
+	install -D -d $(DESTDIR)/etc/sysconfig/pgsql
 	install -D -d $(DESTDIR)/etc/pgsql-xs
 	install -D -d $(DESTDIR)/library/pgsql-xs/data-8.3
 	install -D altfiles/etc/pgsql-xs/p*.conf $(DESTDIR)/etc/pgsql-xs
@@ -151,9 +152,9 @@ install: $(DESTDIR)
 
 	#Non-conflicting init.d scripts
 	install -D altfiles/etc/init.d/pgsql-xs $(DESTDIR)/etc/init.d
-	install -D altfiles/etc/init.d/*.in $(DESTDIR)/etc/init.d
-	install -D altfiles/etc/xinetd.d/*.in $(DESTDIR)/etc/xinetd.d/
 	install -D altfiles/etc/init.d/no-fsck-questions $(DESTDIR)/etc/init.d
+	install -D altfiles/etc/xinetd.d/xs-rsync.in $(DESTDIR)/etc/xinetd.d/
+	install -D altfiles/etc/xinetd.d/xsactivation.in $(DESTDIR)/etc/xinetd.d/
 
 	# conf.d-style or non-conflicting conffiles that are actually executable scripts...
 	install -D altfiles/etc/dhclient-exit-hooks $(DESTDIR)/etc
