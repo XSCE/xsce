@@ -144,7 +144,7 @@ install: $(DESTDIR)
 	install -D altfiles/etc/logrotate.d/syslog-xslogs  $(DESTDIR)/etc/logrotate.d
 
 	# Pg - nonconflicting
-	install -D -d $(DESTDIR)/etc/init.d
+#	install -D -d $(DESTDIR)/etc/init.d
 	install -D -d $(DESTDIR)/etc/sysconfig/pgsql
 	install -D -d $(DESTDIR)/etc/pgsql-xs
 	install -D -d $(DESTDIR)/library/pgsql-xs/data-8.3
