@@ -12,7 +12,7 @@ $(DESTDIR):
 BUILDDIR = $(PWD)/build
 
 # symbols
-PKGNAME = xs-config
+PKGNAME = xsau-config
 VERSION = $(shell git describe | sed 's/^v//' | sed 's/-/./g')
 RELEASE = 1
 ARCH = noarch
