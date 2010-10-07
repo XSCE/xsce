@@ -32,5 +32,5 @@ do
     fi
 done
 
-service $SERVICE_NAME condrestart
+service $SERVICE_NAME restart
 

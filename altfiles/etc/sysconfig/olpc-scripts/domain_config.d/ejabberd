@@ -5,4 +5,4 @@
 #
 SERVICE_NAME=ejabberd
 
-service $SERVICE_NAME condrestart
+service $SERVICE_NAME restart
