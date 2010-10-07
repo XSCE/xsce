@@ -4,9 +4,10 @@
 ## See /usr/share/doc/xs-config-<version>/README for
 ## how this works...
 ##
-earlyset: hosts rsyslog.conf motd sysctl.conf ssh/sshd_config xinetd.d/* \
-     sysconfig/named sysconfig/init sudoers rssh.conf php.ini sysconfig/httpd \
-     sysconfig/ejabberd httpd/conf.d/proxy_ajp.conf httpd/conf.d/ssl.conf
+earlyset: hosts rsyslog.conf motd sysctl.conf ssh/sshd_config xinetd.d/xs-rsyncd.in \
+          xinetd.d/xsactivation.in  sysconfig/named sysconfig/init sudoers \
+          rssh.conf php.ini sysconfig/httpd sysconfig/ejabberd httpd/conf.d/ssl.conf \
+          httpd/conf.d/proxy_ajp.conf 
 
 # Any file that has a ".in"
 # 'template' can be made with this catch-all

@@ -33,6 +33,7 @@ Requires: setup
 Requires: smartmontools  
 Requires: sudo  
 Requires: syslog 
+Requires: usbmount
 
 #a list of packages modified by xs-config
 Requires: openssh-server  
@@ -44,7 +45,6 @@ Requires: php-common
 Requires: bind
 Requires: xs-rsync
 Requires: xsactivation
-Requires: usbmount
 
 %prep
 %setup
@@ -56,6 +56,14 @@ make DESTDIR=$RPM_BUILD_ROOT/%{DESTDIR} install
 rm -rf $RPM_BUILD_ROOT
 
 %post
+
+## Prepare config files
+pushd /etc
+# these don't need network settings
+make -B -f xs-config.make earlyset
+# seed low-level network and domain
+/etc/sysconfig/olpc-scripts/domain_config
+popd 
 
 # Pg - prime the DB if needed.
 if [ ! -e /library/pgsql-xs/data-8.3/PG_VERSION ];then
@@ -69,8 +77,6 @@ chkconfig  postgresql off
 # enable no-fsck-questions 
 chkconfig --add no-fsck-questions
 
-#service rsyslog condrestart
-
 %pre
 
 ## Prepare a .git directory so xs-commitchanged
@@ -80,13 +86,6 @@ if [ ! -d /etc/.git ];then
    git init
    chmod 700 .git
    popd
-fi
-
-# Change the network infra we use
-# note that 'network' now defaults to off
-chkconfig --level 345 network on
-if chkconfig --level 3 NetworkManager ; then
-   chkconfig --del NetworkManager
 fi
 
 
@@ -114,9 +113,7 @@ fi
 %config(noreplace) %{_sysconfdir}/xinetd.d/*.in
 %config(noreplace) %{_sysconfdir}/init.d/no-fsck-questions
 %config(noreplace) %{_sysconfdir}/sysconfig/olpc-scripts/
-
 %config(noreplace) /var/named-xs
-
 %attr(750, root , named)   %dir /var/named-xs
 %attr(770, named , named)  %dir /var/named-xs/data
 
@@ -139,4 +136,5 @@ fi
 
 %description
 The default service configuration of an OLPC XS School server.
+
 
