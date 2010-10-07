@@ -45,6 +45,7 @@ else
     fi
 fi
 echo Setting the base dns name to $new_domain_name
+hostname schoolserver.$new_domain_name
 
 #  Apply each executable in the config directory
 for file in `find $DOMAIN_CONFIG_DIR -maxdepth 1 -type f -perm /u+x ! -name "*~" -print` ;
