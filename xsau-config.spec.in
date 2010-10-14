@@ -13,6 +13,7 @@ Group: Base System/Administration Tools
 License: GPLv2
 Packager: Jerry Vonau <jvonau@shaw.ca>
 Source: %{name}-%{version}.tar.gz
+URL: http://download.laptop.org.au/XS/F11/XS-AU/bleeding/SOURCES/
 #URL: http://dev.laptop.org/git.do?p=projects/xs-config;a=summary
 Vendor: OLPC
 

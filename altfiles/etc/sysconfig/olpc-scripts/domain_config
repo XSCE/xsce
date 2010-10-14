@@ -44,7 +44,7 @@ else
 	new_domain_name=random.xs.laptop.org
     fi
 fi
-echo Setting the base dns name to $new_domain_name
+echo Setting the base dns name to schoolserver.$new_domain_name
 hostname schoolserver.$new_domain_name
 
 #  Apply each executable in the config directory
