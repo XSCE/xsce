@@ -4,8 +4,8 @@
 ## See /usr/share/doc/xs-config-<version>/README for
 ## how this works...
 ##
-earlyset: hosts rsyslog.conf motd sysctl.conf ssh/sshd_config xinetd.d/xs-rsyncd.in \
-          xinetd.d/xsactivation.in  sysconfig/named sysconfig/init sudoers \
+earlyset: hosts rsyslog.conf motd sysctl.conf ssh/sshd_config xinetd.d/xs-rsyncd \
+          xinetd.d/xsactivation  sysconfig/named sysconfig/init sudoers \
           rssh.conf php.ini sysconfig/httpd sysconfig/ejabberd httpd/conf.d/ssl.conf \
           httpd/conf.d/proxy_ajp.conf 
 

@@ -41,7 +41,7 @@ Requires: postgresql-server
 Requires: xml-common  
 Requires: php-common
 Requires: xs-rsync
-Requires: xsactivation
+Requires: xs-activation
 
 %prep
 %setup

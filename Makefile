@@ -154,8 +154,6 @@ install: $(DESTDIR)
 	#Non-conflicting init.d scripts
 	install -D altfiles/etc/init.d/pgsql-xs $(DESTDIR)/etc/init.d
 	install -D altfiles/etc/init.d/no-fsck-questions $(DESTDIR)/etc/init.d
-	install -D altfiles/etc/xinetd.d/xs-rsyncd.in $(DESTDIR)/etc/xinetd.d/
-	install -D altfiles/etc/xinetd.d/xsactivation.in $(DESTDIR)/etc/xinetd.d/
 
 	# conf.d-style or non-conflicting conffiles that are actually executable scripts...
 	install -D altfiles/etc/dhclient-exit-hooks $(DESTDIR)/etc

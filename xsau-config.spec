@@ -13,6 +13,7 @@ Group: Base System/Administration Tools
 License: GPLv2
 Packager: Jerry Vonau <jvonau@shaw.ca>
 Source: %{name}-%{version}.tar.gz
+URL: http://download.laptop.org.au/XS/F11/XS-AU/bleeding/SOURCES/
 #URL: http://dev.laptop.org/git.do?p=projects/xs-config;a=summary
 Vendor: OLPC
 
@@ -44,7 +45,7 @@ Requires: xml-common
 Requires: php-common
 Requires: bind
 Requires: xs-rsync
-Requires: xsactivation
+Requires: xs-activation
 
 %prep
 %setup
@@ -56,8 +57,12 @@ make DESTDIR=$RPM_BUILD_ROOT/%{DESTDIR} install
 rm -rf $RPM_BUILD_ROOT
 
 %post
-
 ## Prepare config files
+# fix xinetd.d services
+# xs-rsyncd xsactivation 
+sed -i -e "s/172.18.0.1/0.0.0.0/" /etc/xinetd.d/xs-rsyncd 
+sed -i -e "s/172.18.0.1/0.0.0.0/" /etc/xinetd.d/xsactivation  
+
 pushd /etc
 # these don't need network settings
 make -B -f xs-config.make earlyset
@@ -110,7 +115,6 @@ fi
 %config(noreplace) %{_sysconfdir}/logrotate.d/syslog-xslogs
 %config(noreplace) %{_sysconfdir}/ssh/sshd_config.in
 %config(noreplace) %{_sysconfdir}/sysconfig/*.in
-%config(noreplace) %{_sysconfdir}/xinetd.d/*.in
 %config(noreplace) %{_sysconfdir}/init.d/no-fsck-questions
 %config(noreplace) %{_sysconfdir}/sysconfig/olpc-scripts/
 %config(noreplace) /var/named-xs
