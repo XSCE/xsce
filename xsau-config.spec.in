@@ -77,7 +77,8 @@ fi
 
 # and set it to autostart
 chkconfig --add pgsql-xs
-chkconfig  postgresql off
+chkconfig --levels 2345 pgsql-xs on
+chkconfig --levels 2345 postgresql off
 
 # enable no-fsck-questions 
 chkconfig --add no-fsck-questions
