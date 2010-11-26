@@ -66,8 +66,6 @@ sed -i -e "s/172.18.0.1/0.0.0.0/" /etc/xinetd.d/xsactivation
 pushd /etc
 # these don't need network settings
 make -B -f xs-config.make earlyset
-# seed low-level network and domain
-/etc/sysconfig/olpc-scripts/domain_config
 popd 
 
 # Pg - prime the DB if needed.
