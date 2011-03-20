@@ -15,7 +15,7 @@ BUILDDIR = $(PWD)/build
 PKGNAME = xsau-config
 #VERSION = $(shell git describe | sed 's/^v//' | sed 's/-/./g')
 VERSION = 0.7.0.4
-RELEASE = 1XSAU
+RELEASE = 2XSAU
 ARCH = noarch
 #BRANCH = $(shell git branch | grep '*' | sed 's/* //')
 

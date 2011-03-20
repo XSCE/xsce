@@ -6,7 +6,7 @@ Requires(post): coreutils
 Summary: XS default service configuration
 Name: xsau-config
 Version: 0.7.0.4
-Release: 1XSAU
+Release: 2XSAU
 BuildRoot: %{_builddir}/%{name}-root
 Distribution: OLPC XS/XSX School Server
 Group: Base System/Administration Tools
@@ -66,8 +66,6 @@ sed -i -e "s/172.18.0.1/0.0.0.0/" /etc/xinetd.d/xsactivation
 pushd /etc
 # these don't need network settings
 make -B -f xs-config.make earlyset
-# seed low-level network and domain
-/etc/sysconfig/olpc-scripts/domain_config
 popd 
 
 # Pg - prime the DB if needed.
@@ -141,5 +139,3 @@ fi
 
 %description
 The default service configuration of an OLPC XS School server.
-
-
