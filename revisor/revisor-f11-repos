@@ -1,0 +1,11 @@
+#repo --name=XS-local --baseurl=file:///home/Jerry/rpmbuild/RPMS --exclude=anaconda
+repo --name=XS-testing-f11 --baseurl=http://fedora.laptop.org/xs/testing/olpc/11/i386/ 
+repo --name=XS-testing-f11b --baseurl=http://fedora.laptop.org/xs/testing/olpc/11/i586/ 
+#--exclude=xs-pkgs,ejabberd-xs,idmgr,xs-activation,xs-activity-server,xs-tools
+repo --name=XS-testing-f9 --baseurl=http://fedora.laptop.org/xs/testing/olpc/9/i386/ 
+#--exclude=xs-pkgs,ejabberd-xs,idmgr,xs-activation,xs-activity-server,xs-tools
+repo --name=XS-0.6 --baseurl=http://fedora.laptop.org/xs/stable/olpc/xs-0.6/i386/ 
+#--exclude=xs-pkgs,ejabberd-xs,idmgr,xs-activation,xs-activity-server,xs-tools
+repo --name=Fedora11 --mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=fedora-11&arch=i386 --exclude=fedora-release
+#repo --name=Fedora11 --baseurl=http://mirror.cpsc.ucalgary.ca/mirror/fedora/linux/releases/11/Everything/i386/os --exclude=fedora-release
+repo --name=Fedora-updates --mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=updates-released-f11&arch=i386

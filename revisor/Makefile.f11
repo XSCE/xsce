@@ -1,0 +1,13 @@
+
+
+REVISOR_OPTS = --cli --config revisor.conf --kickstart=anaconda-f11.ks \
+                     --kickstart-include --kickstart-default --install-unified \
+                     --model 'xs-f11-i386aus' --yes
+#  --comps /home/Jerry/xs-livecd/revisor/XS-Fedora-11-comps.xml 
+
+
+with-revisor:
+	sudo revisor $(REVISOR_OPTS) --debug 1
+
+with-revisor-debug:
+	sudo revisor $(REVISOR_OPTS) --debug 10
