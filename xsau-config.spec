@@ -5,8 +5,8 @@ Requires(post): coreutils
 
 Summary: XS default service configuration
 Name: xsau-config
-Version: 0.7.0.4
-Release: 2XSAU
+Version: 0.7.0.5
+Release: XSAU
 BuildRoot: %{_builddir}/%{name}-root
 Distribution: OLPC XS/XSX School Server
 Group: Base System/Administration Tools

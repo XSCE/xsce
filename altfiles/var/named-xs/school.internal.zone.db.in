@@ -1,0 +1,24 @@
+@ in soa localhost. root 1 3H 15M 1W 1D
+  ns localhost.
+
+schoolserver	IN	A	@@LANIP@@
+school		IN	A	@@LANIP@@
+www		IN	A	@@LANIP@@
+ntp		IN	A	@@LANIP@@
+time		IN	A	@@LANIP@@
+presence	IN	A	@@LANIP@@
+xs		IN	A	@@LANIP@@
+library		IN	A	@@LANIP@@
+
+conference.schoolserver	IN	A	@@LANIP@@
+
+
+; translations of school - in plain latin script
+; or un punycode of the utf-8 representation
+
+; es - escuela
+escuela         IN      CNAME       school
+
+; de - schule
+schule          IN      CNAME       school
+

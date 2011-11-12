@@ -64,7 +64,7 @@ view "localhost_resolver"
 		allow-update {127.0.0.1; };
 	};
 };
-acl "school-subnets" { 172.18/16; };
+acl "school-subnets" { localnets; };
 view "internal"
 {
 /* This view will contain zones you want to serve only to clients
