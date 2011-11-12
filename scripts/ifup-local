@@ -10,8 +10,7 @@ if [ x"${1}" = x ]; then
 else
     case $1 in
 	eth*|ppp*)
-            lanaddr=`ip addr ls eth0 | grep "inet " | awk '{print $2}'`
-            lanip=$lanaddr `awk -F '/' '$1=$1' | awk '{print $1}'`
+            lanip=`ip addr ls eth0 | grep "inet " | awk '{print $2}' | awk -F '/' '$1=$1' | awk '{print $1}'`
             namedtpl=/etc/named-xs.conf.tpl
             namedconf=/etc/named-xs.conf
             locallan=/var/named-xs/school.internal.zone.db
