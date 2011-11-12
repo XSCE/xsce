@@ -107,7 +107,7 @@ install: $(DESTDIR)
 	install -D altfiles/var/named-xs/school.internal.zone.16.in-addr.db.in $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/school.internal.zone.32.in-addr.db.in $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/school.internal.zone.48.in-addr.db.in $(DESTDIR)/var/named-xs/
-	install -D altfiles/var/named-xs/school.internal.zone.db               $(DESTDIR)/var/named-xs/
+	install -D altfiles/var/named-xs/school.internal.zone.db.in            $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/school.internal.zone.in-addr.db.in    $(DESTDIR)/var/named-xs/
 
 	install -D -d $(DESTDIR)/etc/httpd/conf
