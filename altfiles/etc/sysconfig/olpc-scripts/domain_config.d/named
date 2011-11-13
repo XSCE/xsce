@@ -20,8 +20,7 @@ BACKUP_SUFFIX=old
 
 new_name=$1
 
-lanaddr=`ip addr ls eth0 | grep "inet " | awk '{print $2}'`
-lanip=$lanaddr `awk -F '/' '$1=$1' | awk '{print $1}'`
+lanip=`ip addr ls eth0 | grep "inet " | awk '{print $2}' | awk -F '/' '$1=$1' | awk '{print $1}'`
 
 for config in $CONFIG_LIST;
 do
@@ -29,8 +28,8 @@ do
 	if [ -e $config ]; then
 	    mv $config $config.$BACKUP_SUFFIX
 	fi
-	sed -e s/@@BASEDNSNAME@@/$new_name/ $config.in > $config ;
-        sed -e s/@@LANIP@@/$lanip/ $config.in > $config ;
+        sed -i -e "s/@@BASEDNSNAME@@/$new_name/" $config.in > $config ;
+        sed -i -e "s/@@LANIP@@/$lanip/" $config.in > $config ;
     else
 	echo WARNING: Skipped $config - template file is missing!
     fi

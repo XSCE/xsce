@@ -20,6 +20,7 @@ Vendor: OLPC
 #  Requires a few tools 
 Provides: xs-config
 Provides: xsau-config
+Obsoletes: xs-config
 
 Requires: git
 Requires: make

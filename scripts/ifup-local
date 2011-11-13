@@ -28,7 +28,7 @@ else
             logger "changing /etc/named-xs.conf using forwarders $FWD"
             sed -i -e "s/@@BASEDNSFWD@@/$FWD/" $namedconf
             cp $locallanin $locallan
-            sed -e s/@@LANIP@@/$lanip/ $locallan ;
+            sed -i -e "s/@@LANIP@@/$lanip/" $locallan ;
 
             logger "changing /etc/resolv.conf for principal school server"
 	    cp /etc/sysconfig/olpc-scripts/resolv.conf /etc/resolv.conf  

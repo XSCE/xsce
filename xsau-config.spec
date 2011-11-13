@@ -17,9 +17,10 @@ URL: http://download.laptop.org.au/XS/F11/XS-AU/bleeding/SOURCES/
 #URL: http://dev.laptop.org/git.do?p=projects/xs-config;a=summary
 Vendor: OLPC
 
-#  Requires a few tools 
+#  Requires a few tools
 Provides: xs-config
 Provides: xsau-config
+Obsoletes: xs-config
 
 Requires: git
 Requires: make
