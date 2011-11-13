@@ -104,11 +104,7 @@ install: $(DESTDIR)
 	install -D altfiles/var/named-xs/named.root.hints         $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/named.zero               $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/school.external.zone.db  $(DESTDIR)/var/named-xs/
-	install -D altfiles/var/named-xs/school.internal.zone.16.in-addr.db.in $(DESTDIR)/var/named-xs/
-	install -D altfiles/var/named-xs/school.internal.zone.32.in-addr.db.in $(DESTDIR)/var/named-xs/
-	install -D altfiles/var/named-xs/school.internal.zone.48.in-addr.db.in $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/school.internal.zone.db.in            $(DESTDIR)/var/named-xs/
-	install -D altfiles/var/named-xs/school.internal.zone.in-addr.db.in    $(DESTDIR)/var/named-xs/
 
 	install -D -d $(DESTDIR)/etc/httpd/conf
 	install -D altfiles/etc/httpd/conf/httpd-xs.conf  $(DESTDIR)/etc/httpd/conf
