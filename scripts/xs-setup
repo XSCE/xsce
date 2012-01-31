@@ -70,6 +70,13 @@ ln -sf $CFGDIR/etc/usbmount/mount.d/* $DESTDIR/etc/usbmount/mount.d
 # sudo doesn't accept symlinks here
 install -m 440 $CFGDIR/etc/sudoers.d/* $DESTDIR/etc/sudoers.d
 
+# run setup scripts belonging to other packages
+shopt -s nullglob
+for i in /etc/sysconfig/olpc-scripts/setup.d/*; do
+	[ -x $i ] && $i
+done
+shopt -u nullglob
+
 # Change the network infra we use
 # note that 'network' now defaults to off
 chkconfig --level 345 network on

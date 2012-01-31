@@ -77,7 +77,7 @@ install: $(DESTDIR)
 
 	install -D -d $(DESTDIR)/etc
 	install -D -d $(DESTDIR)/etc/sysconfig
-	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts
+	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/setup.d
 	install -D -d $(DESTDIR)/var
 	install -D -d $(DESTDIR)/var/named-xs
 	install -D -d $(DESTDIR)/var/named-xs/data
