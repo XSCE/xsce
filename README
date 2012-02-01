@@ -10,6 +10,9 @@ so that
 
  - it does not conflict with the vanilla upstream packages
  - it respects and incorporates local changes
+ - upon package install, no system configuration changes are made.
+   xs-setup must be executed to apply configuration changes to the system
+   if/when the user wishes to convert a base OS install into an XS.
 
 
 
