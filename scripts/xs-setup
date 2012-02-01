@@ -5,6 +5,7 @@
 
 
 DESTDIR=/
+CFGDIR=/usr/share/xs-config/cfg
 
 ## Prepare a .git directory so xs-commitchanged
 ## can store its database...
@@ -62,6 +63,16 @@ make -B -f xs-config.make earlyset
 make -B -f xs-config.make networkset
 popd
 
+echo "-y" > $DESTDIR/fsckoptions
+ln -sf $CFGDIR/etc/dhclient-exit-hooks $DESTDIR/etc
+ln -sf $CFGDIR/etc/httpd/conf.d/*.conf $DESTDIR/etc/httpd/conf.d
+ln -sf $CFGDIR/etc/logrotate.d/* $DESTDIR/etc/logrotate.d
+ln -sf $CFGDIR/etc/network-scripts/* $DESTDIR/etc/network-scripts
+ln -sf $CFGDIR/etc/usbmount/mount.d/* $DESTDIR/etc/usbmount/mount.d
+
+install -m 750 -D -d $DESTDIR/etc/sudoers.d
+ln -sf $CFGDIR/etc/sudoers.d/* $DESTDIR/etc/sudoers.d
+
 # Change the network infra we use
 # note that 'network' now defaults to off
 chkconfig --level 345 network on
@@ -81,5 +92,11 @@ chkconfig  postgresql off
 # enable no-fsck-questions
 chkconfig --add no-fsck-questions
 
-service httpd condrestart
-service rsyslog condrestart
+chkconfig sshd on
+chkconfig ntpd on
+chkconfig httpd on
+chkconfig ejabberd on
+chkconfig crond on
+chkconfig incrond on
+
+echo "XS configured; services will activate upon reboot."

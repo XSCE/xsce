@@ -72,6 +72,9 @@ publish-stable:
 
 install: $(DESTDIR)
 
+	install -D -d $(DESTDIR)/usr/share/xs-config
+	cp -a cfg $(DESTDIR)/usr/share/xs-config
+
 	install -D -d $(DESTDIR)/etc
 	install -D -d $(DESTDIR)/etc/sysconfig
 	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts
@@ -105,26 +108,8 @@ install: $(DESTDIR)
 	install -D altfiles/etc/sysconfig/olpc-scripts/gen-iptables    $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/mkaccount       $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/network_config  $(DESTDIR)/etc/sysconfig/olpc-scripts/
-
-	install -D -d $(DESTDIR)/etc/sysconfig/network-scripts
-	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-lanbond0    $(DESTDIR)/etc/sysconfig/network-scripts/
-	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-lanbond0:1  $(DESTDIR)/etc/sysconfig/network-scripts/
-	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-lanbond0:2  $(DESTDIR)/etc/sysconfig/network-scripts/
-	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-mshbond0    $(DESTDIR)/etc/sysconfig/network-scripts/
-	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-mshbond0:1  $(DESTDIR)/etc/sysconfig/network-scripts/
-	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-mshbond1    $(DESTDIR)/etc/sysconfig/network-scripts/
-	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-mshbond2    $(DESTDIR)/etc/sysconfig/network-scripts/
-	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-eth0   $(DESTDIR)/etc/sysconfig/olpc-scripts/ifcfg-eth0
-	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-eth1   $(DESTDIR)/etc/sysconfig/olpc-scripts/ifcfg-eth1
-	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-msh0   $(DESTDIR)/etc/sysconfig/network-scripts/
-	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-msh1   $(DESTDIR)/etc/sysconfig/network-scripts/
-	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-msh2   $(DESTDIR)/etc/sysconfig/network-scripts/
-	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wmesh0  $(DESTDIR)/etc/sysconfig/network-scripts
-	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wmesh1  $(DESTDIR)/etc/sysconfig/network-scripts/
-	install -D altfiles/etc/sysconfig/network-scripts/ifcfg-wmesh2  $(DESTDIR)/etc/sysconfig/network-scripts/
-	install -D altfiles/etc/sysconfig/network-scripts/route-eth0     $(DESTDIR)/etc/sysconfig/network-scripts/
-	install -D altfiles/etc/sysconfig/network-scripts/route-lanbond0 $(DESTDIR)/etc/sysconfig/network-scripts/
-
+	install -D altfiles/etc/sysconfig/olpc-scripts/ifcfg-eth0   $(DESTDIR)/etc/sysconfig/olpc-scripts/ifcfg-eth0
+	install -D altfiles/etc/sysconfig/olpc-scripts/ifcfg-eth1   $(DESTDIR)/etc/sysconfig/olpc-scripts/ifcfg-eth1
 
 	install -D altfiles/var/named-xs/localdomain.zone         $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/localhost.zone           $(DESTDIR)/var/named-xs/
@@ -154,9 +139,6 @@ install: $(DESTDIR)
 
 	install -D altfiles/etc/*.in  $(DESTDIR)/etc/
 
-	# fsckoptions goes in / 
-	install -D altfiles/fsckoptions  $(DESTDIR)/
-
 	# makefile-driven set
 	install -D altfiles/etc/xs-config.make  $(DESTDIR)/etc/
 	install -D -m 644 altfiles/etc/rsyslog.conf.in $(DESTDIR)/etc/
@@ -172,11 +154,7 @@ install: $(DESTDIR)
 
 	# conf.d-style conffiles
 	install -D -d $(DESTDIR)/etc/httpd/conf.d
-	install -D altfiles/etc/httpd/conf.d/*.conf     $(DESTDIR)/etc/httpd/conf.d
 	install -D altfiles/etc/httpd/conf.d/*.conf.in  $(DESTDIR)/etc/httpd/conf.d
-
-	install -D -d $(DESTDIR)/etc/logrotate.d
-	install -D altfiles/etc/logrotate.d/syslog-xslogs  $(DESTDIR)/etc/logrotate.d
 
 	install -D -d $(DESTDIR)/etc/modprobe.d
 	install -D altfiles/etc/modprobe.d/xs_bonding  $(DESTDIR)/etc/modprobe.d
@@ -194,21 +172,10 @@ install: $(DESTDIR)
 	install -D altfiles/etc/init.d/*.in $(DESTDIR)/etc/init.d
 	install -D altfiles/etc/init.d/no-fsck-questions $(DESTDIR)/etc/init.d
 
-	# conf.d-style or non-conflicting conffiles that are actually executable scripts...
-	install -D altfiles/etc/dhclient-exit-hooks $(DESTDIR)/etc
-
 	install -D -d $(DESTDIR)/etc/udev/rules.d
 	install -D altfiles/etc/udev/rules.d/10-olpcmesh.rules    $(DESTDIR)/etc/udev/rules.d
 	install -D altfiles/etc/udev/rules.d/65-xsmeshnames.rules $(DESTDIR)/etc/udev/rules.d
 
-
-	install -D -d $(DESTDIR)/etc/usbmount/mount.d
-	install -D altfiles/etc/usbmount/mount.d/01_beep_on_mount  $(DESTDIR)/etc/usbmount/mount.d
-	install -D altfiles/etc/usbmount/mount.d/99_beep_when_done $(DESTDIR)/etc/usbmount/mount.d
-
-	install -D --mode 750 -d $(DESTDIR)/etc/sudoers.d
-	install -D --mode 440 altfiles/etc/sudoers.d/00-base  $(DESTDIR)/etc/sudoers.d
-	install -D --mode 440 altfiles/etc/sudoers.d/10-ejabberdmoodle  $(DESTDIR)/etc/sudoers.d
 
 	# scripts
 	install -D -d $(DESTDIR)/usr/bin

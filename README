@@ -19,6 +19,20 @@ so that
 Strategies
 ==========
 
+Files that can be harmlessly installed by the RPM are found in altfiles/ in the
+source. These files must not affect system behaviour until some other action
+is taken (such as the enabling of an init script).
+
+Files which cannot be put in place on the real filesystem without modifying
+system behaviour are installed into /usr/share/xs-config/cfg and are
+put in place by xs-setup when the user wishes to activate the XS capabilities
+on the system.
+
+It is advised to put as much in altfiles/ as possible, since RPM will handle
+version control aspects such as removing the file if it is later removed from
+a new version of this package.
+
+
 These are the strategies - from best to worst -
 
 conf.d
@@ -28,7 +42,8 @@ If the tool/daemon with its vanilla configuration supports a conf.d
 directory, *use it*. Any trick in the book is OK if it allows you to
 just drop a file in place without conflict.
 
-Install the file normally and mark it as a conffile.
+Install the file in cfg, and use xs-setup to put it in place on the real
+system.
 
 Example: httpd
 
@@ -42,7 +57,8 @@ pass in the cmdline to the daemon (or equivcalent overrides).
 Use that opportunity to point the daemon to a different config
 file.
 
-Install the alternative config file normally and mark it as a conffile.
+Install the alternative config file into cfg, and use xs-setup
+to put it in place on the real system.
 
 Note however that the file in /etc/sysconfig/<servicename> _will_
 conflict, use the 'make a replacement' strategy for that.

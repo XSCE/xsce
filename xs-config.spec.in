@@ -19,6 +19,7 @@ Requires: setup
 Requires: smartmontools  
 Requires: sudo  
 Requires: syslog 
+Requires: logrotate
 Requires: xml-common  
 Requires: git
 Requires: make
@@ -95,19 +96,16 @@ if [ $1 = 0 ]; then
 fi
 
 %files
-
+%{_datadir}/%{name}
 %config(noreplace) %{_sysconfdir}/*.in
 %config(noreplace) %{_sysconfdir}/squid/squid-xs.conf.in
 %config(noreplace) %{_sysconfdir}/ejabberd/ejabberd-xs.cfg.in
 %config(noreplace) %{_sysconfdir}/ejabberd/ejabberd.pem
 %config(noreplace) %{_sysconfdir}/httpd/conf/httpd-xs.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/*.conf.in
-%config(noreplace) %{_sysconfdir}/httpd/conf.d/*.conf
 
 %config(noreplace) %{_sysconfdir}/sysconfig/olpc-scripts/
 %config(noreplace) /var/named-xs
-
-%config(noreplace) %{_sysconfdir}/logrotate.d/syslog-xslogs
 
 %{_sysconfdir}/xs-config.make
 %config(noreplace) %{_sysconfdir}/motd.in
@@ -117,26 +115,9 @@ fi
 %config(noreplace) %{_sysconfdir}/rssh.conf.in
 %config(noreplace) %{_sysconfdir}/ssh/sshd_config.in
 %config(noreplace) %{_sysconfdir}/sysconfig/*.in
-%config(noreplace) /fsckoptions
 
-%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-mshbond0
-%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-mshbond0:1
-%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-mshbond1
-%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-mshbond2
-%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-lanbond0
-%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-lanbond0:1
-%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-lanbond0:2
 %config %{_sysconfdir}/sysconfig/olpc-scripts/ifcfg-eth0
 %config %{_sysconfdir}/sysconfig/olpc-scripts/ifcfg-eth1
-
-%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-msh0
-%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-msh1
-%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-msh2
-%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-wmesh0
-%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-wmesh1
-%config %{_sysconfdir}/sysconfig/network-scripts/ifcfg-wmesh2
-%config %{_sysconfdir}/sysconfig/network-scripts/route-eth0
-%config %{_sysconfdir}/sysconfig/network-scripts/route-lanbond0
 
 %config %{_sysconfdir}/sysconfig/olpc-scripts/iptables-xs.in
 
@@ -155,14 +136,8 @@ fi
 %attr(700, postgres, postgres)   %dir /library/pgsql-xs/data-8.3
 
 %{_sysconfdir}/modprobe.d/xs_bonding
-%{_sysconfdir}/dhclient-exit-hooks
 %{_sysconfdir}/udev/rules.d/10-olpcmesh.rules
 %{_sysconfdir}/udev/rules.d/65-xsmeshnames.rules
-%{_sysconfdir}/usbmount/mount.d/01_beep_on_mount
-%{_sysconfdir}/usbmount/mount.d/99_beep_when_done
-
-%attr(750, root , root)   %dir %{_sysconfdir}/sudoers.d
-%attr(440, root , root) %config(noreplace) %{_sysconfdir}/sudoers.d/*
 
 %{_bindir}/cat-parts
 %{_bindir}/xs-*
