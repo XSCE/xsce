@@ -83,10 +83,7 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/var/named-xs/data
 
 	install -D altfiles/etc/named-xs.conf.in  $(DESTDIR)/etc
-	install -D altfiles/etc/sysconfig/olpc-scripts/TURN_SQUID_OFF $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/TURN_SQUID_ON  $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.in     $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/domain_config    $(DESTDIR)/etc/sysconfig/olpc-scripts/
 
 	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d
 	install -D altfiles/etc/sysconfig/olpc-scripts/domain_config.d/dhcpd    $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d
@@ -166,3 +163,5 @@ install: $(DESTDIR)
 	install -D scripts/xs-swapnics $(DESTDIR)/usr/bin
 	install -D scripts/xs-setup $(DESTDIR)/usr/bin
 	install -D scripts/xs-setup-network $(DESTDIR)/usr/bin
+	install -D scripts/xs-domain-config $(DESTDIR)/usr/bin
+	install -D scripts/xs-httpcache $(DESTDIR)/usr/bin
