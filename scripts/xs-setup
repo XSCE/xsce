@@ -67,8 +67,8 @@ ln -sf $CFGDIR/etc/httpd/conf.d/*.conf $DESTDIR/etc/httpd/conf.d
 ln -sf $CFGDIR/etc/logrotate.d/* $DESTDIR/etc/logrotate.d
 ln -sf $CFGDIR/etc/usbmount/mount.d/* $DESTDIR/etc/usbmount/mount.d
 
-install -m 750 -D -d $DESTDIR/etc/sudoers.d
-ln -sf $CFGDIR/etc/sudoers.d/* $DESTDIR/etc/sudoers.d
+# sudo doesn't accept symlinks here
+install -m 440 $CFGDIR/etc/sudoers.d/* $DESTDIR/etc/sudoers.d
 
 # Change the network infra we use
 # note that 'network' now defaults to off

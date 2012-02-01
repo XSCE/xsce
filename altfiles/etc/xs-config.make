@@ -7,7 +7,7 @@
 earlyset: rsyslog.conf motd sysctl.conf ssh/sshd_config \
      sysconfig/named sysconfig/init \
      sysconfig/iptables-config sysconfig/squid \
-     sudoers rssh.conf php.ini sysconfig/httpd \
+     rssh.conf php.ini sysconfig/httpd \
      init.d/squid sysconfig/ejabberd \
      httpd/conf.d/proxy_ajp.conf httpd/conf.d/ssl.conf
 
@@ -33,15 +33,6 @@ sysctl.conf:
 	cp -p $@.in $@
 	xs-commitchanged -m "Made from $@.in" $@
 	sysctl -p $@
-
-sudoers: sudoers.d/*
-	touch sudoers.tmp
-	chmod 640 sudoers.tmp
-	cat-parts sudoers.d > sudoers.tmp
-	chmod 440 sudoers.tmp
-	xs-commitchanged -m 'Dirty state' $@
-	mv -f sudoers.tmp sudoers
-	xs-commitchanged -m "Made from sudoers.d" $@
 
 dhcpd-xs.conf:  sysconfig/xs_domain_name
 	xs-commitchanged -m 'Dirty state' $@

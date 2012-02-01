@@ -109,7 +109,6 @@ and using the cat-parts utility to concatenate "parts" provided by
 potentially different packages. This is also a sane way to include local
 mods.
 
-Example: sudoers
 
 
 
@@ -125,12 +124,11 @@ file or add/edit something in the ".d" directory.
 For example
 
  - edit /etc/resolv.conf.in instead of /etc/resolv.conf 
- - add a new file in /etc/sudoers.d instead of /etc/sudoers
 
 After editing the templates, do
 
  cd /etc 
- make -f xs-config.make sudoers
+ make -f xs-config.make resolv.conf
 
 If you had made a local change (and it has been clobbered) you
 can retrieve it from the git repository in /etc -- try
