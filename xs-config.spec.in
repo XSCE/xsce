@@ -32,6 +32,7 @@ Requires: postgresql-server
 Requires: httpd
 Requires: php-common
 Requires: moodle-xs
+Requires: ejabberd
 
 
 Requires(post): coreutils
@@ -100,7 +101,6 @@ fi
 %config(noreplace) %{_sysconfdir}/*.in
 %config(noreplace) %{_sysconfdir}/squid/squid-xs.conf.in
 %config(noreplace) %{_sysconfdir}/ejabberd/ejabberd-xs.cfg.in
-%config(noreplace) %{_sysconfdir}/ejabberd/ejabberd.pem
 %config(noreplace) %{_sysconfdir}/httpd/conf/httpd-xs.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/*.conf.in
 
@@ -127,6 +127,7 @@ fi
 
 %config(noreplace) %{_sysconfdir}/init.d/*.in
 %config(noreplace) %{_sysconfdir}/init.d/no-fsck-questions
+%config(noreplace) %{_sysconfdir}/init.d/ejabberd-xs
 
 #Pg
 %config(noreplace) %{_sysconfdir}/pgsql-xs/p*.conf

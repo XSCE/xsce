@@ -95,7 +95,7 @@ chkconfig --add no-fsck-questions
 chkconfig sshd on
 chkconfig ntpd on
 chkconfig httpd on
-chkconfig ejabberd on
+chkconfig ejabberd-xs on
 chkconfig crond on
 chkconfig incrond on
 

@@ -135,7 +135,6 @@ install: $(DESTDIR)
 
 	install -D -d $(DESTDIR)/etc/ejabberd
 	install -D altfiles/etc/ejabberd/ejabberd-xs.cfg.in  $(DESTDIR)/etc/ejabberd
-	install -D altfiles/etc/ejabberd/ejabberd.pem     $(DESTDIR)/etc/ejabberd
 
 	install -D altfiles/etc/*.in  $(DESTDIR)/etc/
 
@@ -169,6 +168,7 @@ install: $(DESTDIR)
 
 	#Non-conflicting init.d scripts
 	install -D altfiles/etc/init.d/pgsql-xs $(DESTDIR)/etc/init.d
+	install -D altfiles/etc/init.d/ejabberd-xs $(DESTDIR)/etc/init.d
 	install -D altfiles/etc/init.d/*.in $(DESTDIR)/etc/init.d
 	install -D altfiles/etc/init.d/no-fsck-questions $(DESTDIR)/etc/init.d
 
