@@ -1,0 +1,65 @@
+#!/bin/bash
+#
+# Install XS custom networking configuration
+#
+# Store default network settings in /etc/sysconfig/network-scripts, but
+# only make changes once (avoiding re-runs destroying network config info).
+
+ETH0_CONF="/etc/sysconfig/network-scripts/ifcfg-eth0"
+ETH1_CONF="/etc/sysconfig/network-scripts/ifcfg-eth1"
+MARKER="/.olpcxs-net-configured"
+
+cat <<EOF > $ETH0_CONF
+# XS LAN configuration
+DEVICE=eth0
+IPADDR1=172.18.96.1
+NETMASK1=255.255.224.0
+IPADDR2=172.18.0.1
+NETMASK2=255.255.255.0
+IPADDR3=172.18.1.1
+NETMASK3=255.255.255.0
+IPV6INIT=yes
+IPV6ADDR_SECONDARIES="fe80::abcd:ef02/64"
+ONBOOT=yes
+TYPE=Ethernet
+HOTPLUG=yes
+EOF
+echo "Wrote $ETH0_CONF"
+
+if [ ! -e $MARKER ]; then
+	cat <<EOF > $ETH1_CONF
+# Configure your WAN connection here.
+# The default is automatic configuration via DHCP.
+
+DEVICE=eth1
+ONBOOT=yes
+BOOTPROTO=dhcp
+DHCP_HOSTNAME=schoolserver
+HOTPLUG=yes
+
+# If you want to set a static address, remove the BOOTPROTO and DHCP_HOSTNAME
+# lines above, and use the example settings below:
+#IPADDR=18.85.46.29
+#IPV6ADDR=2001:4830:2446:ff00::2/64
+#NETMASK=255.255.255.0
+#NETWORK=18.85.46.0
+#BROADCAST=18.85.46.255
+#GATEWAY=18.85.46.1
+EOF
+	echo "Wrote $ETH1_CONF"
+fi
+
+pushd /etc
+make -B -f xs-config.make networkset
+popd
+
+chkconfig network on
+chkconfig NetworkManager off &>/dev/null
+chkconfig iptables on
+chkconfig dhcpd on
+chkconfig named on
+chkconfig xinetd on
+
+touch $MARKER
+
+echo "XS standard networking configured; services will activate upon reboot."

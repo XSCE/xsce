@@ -58,16 +58,13 @@ pushd /etc
 # these don't need network settings
 make -B -f xs-config.make earlyset
 # seed low-level network conf and domain
-/etc/sysconfig/olpc-scripts/network_config
-/etc/sysconfig/olpc-scripts/domain_config
-make -B -f xs-config.make networkset
+/etc/sysconfig/olpc-scripts/domain_config $1
 popd
 
 echo "-y" > $DESTDIR/fsckoptions
 ln -sf $CFGDIR/etc/dhclient-exit-hooks $DESTDIR/etc
 ln -sf $CFGDIR/etc/httpd/conf.d/*.conf $DESTDIR/etc/httpd/conf.d
 ln -sf $CFGDIR/etc/logrotate.d/* $DESTDIR/etc/logrotate.d
-ln -sf $CFGDIR/etc/network-scripts/* $DESTDIR/etc/network-scripts
 ln -sf $CFGDIR/etc/usbmount/mount.d/* $DESTDIR/etc/usbmount/mount.d
 
 install -m 750 -D -d $DESTDIR/etc/sudoers.d

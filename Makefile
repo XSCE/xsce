@@ -85,14 +85,7 @@ install: $(DESTDIR)
 	install -D altfiles/etc/named-xs.conf.in  $(DESTDIR)/etc
 	install -D altfiles/etc/sysconfig/olpc-scripts/TURN_SQUID_OFF $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/TURN_SQUID_ON  $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.1     $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.2     $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.3     $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.4     $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.5     $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.6     $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.7     $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.8     $(DESTDIR)/etc/sysconfig/olpc-scripts/
+	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.in     $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/domain_config    $(DESTDIR)/etc/sysconfig/olpc-scripts/
 
 	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d
@@ -107,9 +100,6 @@ install: $(DESTDIR)
 	install -D altfiles/etc/sysconfig/olpc-scripts/iptables-xs.in  $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/gen-iptables    $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/mkaccount       $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/network_config  $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/ifcfg-eth0   $(DESTDIR)/etc/sysconfig/olpc-scripts/ifcfg-eth0
-	install -D altfiles/etc/sysconfig/olpc-scripts/ifcfg-eth1   $(DESTDIR)/etc/sysconfig/olpc-scripts/ifcfg-eth1
 
 	install -D altfiles/var/named-xs/localdomain.zone         $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/localhost.zone           $(DESTDIR)/var/named-xs/
@@ -155,9 +145,6 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/etc/httpd/conf.d
 	install -D altfiles/etc/httpd/conf.d/*.conf.in  $(DESTDIR)/etc/httpd/conf.d
 
-	install -D -d $(DESTDIR)/etc/modprobe.d
-	install -D altfiles/etc/modprobe.d/xs_bonding  $(DESTDIR)/etc/modprobe.d
-
 	# Pg - nonconflicting
 	install -D -d $(DESTDIR)/etc/init.d
 	install -D -d  $(DESTDIR)/etc/sysconfig/pgsql
@@ -172,20 +159,10 @@ install: $(DESTDIR)
 	install -D altfiles/etc/init.d/*.in $(DESTDIR)/etc/init.d
 	install -D altfiles/etc/init.d/no-fsck-questions $(DESTDIR)/etc/init.d
 
-	install -D -d $(DESTDIR)/etc/udev/rules.d
-	install -D altfiles/etc/udev/rules.d/10-olpcmesh.rules    $(DESTDIR)/etc/udev/rules.d
-	install -D altfiles/etc/udev/rules.d/65-xsmeshnames.rules $(DESTDIR)/etc/udev/rules.d
-
-
 	# scripts
 	install -D -d $(DESTDIR)/usr/bin
 	install -D scripts/xs-commitchanged $(DESTDIR)/usr/bin
 	install -D scripts/cat-parts   $(DESTDIR)/usr/bin
 	install -D scripts/xs-swapnics $(DESTDIR)/usr/bin
 	install -D scripts/xs-setup $(DESTDIR)/usr/bin
-
-	install -D -d $(DESTDIR)/sbin
-	install -D scripts/ifup-local $(DESTDIR)/sbin
-
-	install -D -d $(DESTDIR)/lib/udev
-	install -D scripts/udev-mesh-namer $(DESTDIR)/lib/udev/mesh-namer
+	install -D scripts/xs-setup-network $(DESTDIR)/usr/bin

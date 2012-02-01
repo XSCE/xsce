@@ -26,7 +26,8 @@ if len(sys.argv) < 2:
 output_path = sys.argv[1]
 
 # default
-wan = 'eth0'
+lan = 'eth0'
+wan = 'eth1'
 
 wanconf_path = os.path.join(sysconfig_path, 'xs_wan_device')
 if os.path.exists(wanconf_path):
@@ -54,8 +55,7 @@ template = open(output_path + ".in")
 for line in template:
      if (re.match('@@SQUID@@', line)):
           if proxyison:
-               for inf in ('lanbond0', 'mshbond0', 'mshbond1', 'mshbond2'):
-                    os.write(destfh, '-A PREROUTING -i %s -p tcp --dport 80 -j REDIRECT --to-ports 3128\n' % inf)
+               os.write(destfh, '-A PREROUTING -i %s -p tcp --dport 80 -j REDIRECT --to-ports 3128\n' % lan)
      else:
           # line = line.rstrip()
           line = re.sub(r'\@\@WAN\@\@', wan, line)

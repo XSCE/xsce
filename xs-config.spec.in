@@ -24,8 +24,6 @@ Requires: xml-common
 Requires: git
 Requires: make
 Requires: usbmount
-Requires: libertas-usb8388-firmware
-Requires: bridge-utils
 Requires: dhcp
 Requires: squid
 Requires: postgresql-server
@@ -67,9 +65,6 @@ rm -rf $RPM_BUILD_ROOT
 ## Rename old conffiles
 if [ -e /etc/sysconfig/olpc-scripts/xs-domain-name ]; then
    mv /etc/sysconfig/olpc-scripts/xs-domain-name /etc/sysconfig/xs_domain_name
-fi
-if [ -e /etc/sysconfig/network-scripts/server_number ];then
-   mv /etc/sysconfig/network-scripts/server_number /etc/sysconfig/xs_server_number
 fi
 
 
@@ -115,10 +110,6 @@ fi
 %config(noreplace) %{_sysconfdir}/rssh.conf.in
 %config(noreplace) %{_sysconfdir}/ssh/sshd_config.in
 %config(noreplace) %{_sysconfdir}/sysconfig/*.in
-
-%config %{_sysconfdir}/sysconfig/olpc-scripts/ifcfg-eth0
-%config %{_sysconfdir}/sysconfig/olpc-scripts/ifcfg-eth1
-
 %config %{_sysconfdir}/sysconfig/olpc-scripts/iptables-xs.in
 
 %attr(750, root , named)   %dir /var/named-xs
@@ -136,13 +127,7 @@ fi
 %attr(700, postgres, postgres)   %dir /library/pgsql-xs
 %attr(700, postgres, postgres)   %dir /library/pgsql-xs/data-8.3
 
-%{_sysconfdir}/modprobe.d/xs_bonding
-%{_sysconfdir}/udev/rules.d/10-olpcmesh.rules
-%{_sysconfdir}/udev/rules.d/65-xsmeshnames.rules
-
 %{_bindir}/cat-parts
 %{_bindir}/xs-*
-/sbin/ifup-local
-/lib/udev/mesh-namer
-%doc README ifcfg-eth0-local.example README.networking
+%doc README README.networking
 %doc README.no-fsck-questions

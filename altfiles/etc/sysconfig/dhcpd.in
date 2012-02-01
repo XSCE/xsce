@@ -8,8 +8,8 @@ DHCPDARGS='-cf /etc/dhcpd-xs.conf'
 
 # the dhcpd-xs.conf file is 'made' based on
 # a couple of files - complain if we don't have them
-if [ ! -e /etc/sysconfig/xs_domain_name -o ! -e /etc/sysconfig/xs_server_number ];then
-    echo "You must run network_config and domain_config before DHCPd can run"
+if [ ! -e /etc/sysconfig/xs_domain_name ];then
+    echo "You must run domain_config before DHCPd can run"
     exit 1
 fi
 pushd /etc

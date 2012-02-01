@@ -1,6 +1,0 @@
-#  These rules are for use on an OLPC school server
-#  They enable the mesh interfaces to receive the ANYCAST_MAC
-#  addressed packets used for DHCP
-
-ACTION=="add", KERNEL=="msh[0-9]", 
-	       RUN+="/bin/sh -c 'echo 1 > /sys/class/net/%k/anycast_mask'"
