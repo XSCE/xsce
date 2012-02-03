@@ -71,7 +71,7 @@ xs-domain-config $1
 popd
 
 echo "-y" > $DESTDIR/fsckoptions
-ln -sf $CFGDIR/etc/dhclient-exit-hooks $DESTDIR/etc
+ln -sf $CFGDIR/etc/dhcp/dhclient-exit-hooks $DESTDIR/etc/dhcp
 ln -sf $CFGDIR/etc/httpd/conf.d/*.conf $DESTDIR/etc/httpd/conf.d
 ln -sf $CFGDIR/etc/logrotate.d/* $DESTDIR/etc/logrotate.d
 ln -sf $CFGDIR/etc/usbmount/mount.d/* $DESTDIR/etc/usbmount/mount.d
