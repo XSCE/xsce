@@ -1,6 +1,5 @@
 PGPORT=5432
 PGDATA=/library/pgsql-xs/data-8.3
-PGLOG=$PGDATA/pgstartup-8.3.log
 #PGOPTS=' -'
 
 # Choose a config file depending on memory
