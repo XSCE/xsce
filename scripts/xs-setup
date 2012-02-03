@@ -87,7 +87,7 @@ if chkconfig --level 3 NetworkManager ; then
 fi
 
 # Pg - prime the DB if needed.
-if [ ! -e /library/pgsql-xs/data-8.3/PG_VERSION ];then
+if [ ! -e /library/pgsql-xs/data-8.4/PG_VERSION ];then
    /etc/init.d/pgsql-xs initdb
 fi
 

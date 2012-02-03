@@ -146,7 +146,7 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/etc/init.d
 	install -D -d  $(DESTDIR)/etc/sysconfig/pgsql
 	install -D -d $(DESTDIR)/etc/pgsql-xs
-	install -D -d $(DESTDIR)/library/pgsql-xs/data-8.3
+	install -D -d $(DESTDIR)/library/pgsql-xs
 	install -D altfiles/etc/pgsql-xs/p*.conf $(DESTDIR)/etc/pgsql-xs
 	install -D altfiles/etc/sysconfig/pgsql/pgsql-xs $(DESTDIR)/etc/sysconfig/pgsql
 
