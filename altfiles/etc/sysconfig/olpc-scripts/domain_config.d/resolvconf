@@ -8,6 +8,9 @@
 #  Authors: John Watlington, Martin Langhoff
 #  License: GPLv2
 
+#  Only run if this system is configured to run the XS network layout
+[ -e /.olpcxs-net-configured ] || exit 0
+
 #  This is the name of the service (for stopping and restarting)
 #  This is a list of files related to this service which will have
 #  the domain name globally replaced inside them

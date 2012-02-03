@@ -62,4 +62,8 @@ chkconfig xinetd on
 
 touch $MARKER
 
+# must re-run domain-config as some domain-config parts change behaviour
+# depending on whether we are running the standard XS network config or not
+xs-domain-config
+
 echo "XS standard networking configured; services will activate upon reboot."
