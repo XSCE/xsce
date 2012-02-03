@@ -7,6 +7,13 @@
 DESTDIR=/
 CFGDIR=/usr/share/xs-config/cfg
 
+# Work would be needed to get the XS components playing nice with SELinux, so
+# disable it.
+if selinuxenabled; then
+	setenforce 0
+	sed -i -e 's/^SELINUX=.*/SELINUX=disabled/' /etc/selinux/config
+fi
+
 ## Prepare a .git directory so xs-commitchanged
 ## can store its database...
 if [ ! -d /etc/.git ];then
