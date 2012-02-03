@@ -59,6 +59,7 @@ for line in template:
      else:
           # line = line.rstrip()
           line = re.sub(r'\@\@WAN\@\@', wan, line)
+          line = re.sub(r'\@\@LAN\@\@', lan, line)
           os.write(destfh, line)
 
 os.close(destfh)

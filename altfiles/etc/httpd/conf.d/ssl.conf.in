@@ -24,8 +24,7 @@ LoadModule ssl_module modules/mod_ssl.so
 # When we also provide SSL we have to listen to the 
 # the HTTPS port in addition.
 #
-### Ensure we only bind to the LAN address.
-Listen 172.18.0.1:443
+Listen 0.0.0.0:443
 
 ##
 ##  SSL Global Context
