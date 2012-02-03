@@ -13,6 +13,8 @@ if [ ! -d /etc/.git ];then
    pushd /etc
    git init
    chmod 700 .git
+   git config user.name XS
+   git config user.email xs@example.com
    popd
 fi
 
