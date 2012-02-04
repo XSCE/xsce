@@ -12,12 +12,11 @@ icp_port 0
 #  Access Control Lists
 #  These are used throughout this file
 #
-acl all src 0.0.0.0/0.0.0.0
 acl manager proto cache_object
-acl school src 172.18.0.0/255.255.0.0
-acl localhost src 127.0.0.1/255.255.255.255
+acl school src 172.18.0.0/16
+acl localhost src 127.0.0.1/32
 acl to_localhost dst 127.0.0.0/8
-acl to_schoolserver dst 178.16.0.1/16  # to schoolserver or other local hosts.
+acl to_schoolserver dst 178.16.0.0/16  # to schoolserver or other local hosts.
 acl SSL_ports port 443
 acl Safe_ports port 80          # http
 acl Safe_ports port 21          # ftp
@@ -109,7 +108,7 @@ cache_dir aufs /library/cache 20000 32 256
 #  Logging
 #
 # What logformat should be used for debugging ?  in trial ?
-logformat squid  %ts.%03tu %6tr %>a %Ss/%03Hs %<st %rm %ru %un %Sh/%<A %mt
+logformat squid  %ts.%03tu %6tr %>a %Ss/%03>Hs %<st %rm %ru %un %Sh/%<A %mt
 
 access_log /var/log/squid/access.log
 cache_log /var/log/squid/cache.log
