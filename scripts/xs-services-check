@@ -1,0 +1,45 @@
+#!/bin/bash
+retcode=0
+
+check() {
+	local running=0
+	local enabled=0
+	chkconfig --level 3 $1 && enabled=1
+	service $1 status &>/dev/null && running=1
+
+	if [[ $running == 1 && $enabled == 1 ]]; then
+		echo "$1: OK"
+		return
+	fi
+
+	retcode=1
+	[[ $enabled == 0 ]] && echo "$1: ERROR: Not enabled" >&2
+	[[ $running == 0 ]] && echo "$1: ERROR: Not running" >&2
+}
+
+echo "Checking for standard XS services..."
+check pgsql-xs
+check sshd
+check ntpd
+check httpd
+check ejabberd-xs
+check crond
+check incrond
+
+echo
+echo "Checking for XS standard network services..."
+check network
+check iptables
+check dhcpd
+check named
+check xinetd
+
+if chkconfig --level 3 NetworkManager; then
+	echo "WARNING: NetworkManager is enabled, but XS standard networking is usually configured by \"network\"."
+fi
+
+if service NetworkManager status &>/dev/null; then
+	echo "WARNING: NetworkManager is running, but XS standard networking is usually configured by \"network\"."
+fi
+
+exit $retcode

@@ -163,5 +163,6 @@ install: $(DESTDIR)
 	install -D scripts/xs-swapnics $(DESTDIR)/usr/bin
 	install -D scripts/xs-setup $(DESTDIR)/usr/bin
 	install -D scripts/xs-setup-network $(DESTDIR)/usr/bin
+	install -D scripts/xs-services-check $(DESTDIR)/usr/bin
 	install -D scripts/xs-domain-config $(DESTDIR)/usr/bin
 	install -D scripts/xs-httpcache $(DESTDIR)/usr/bin
