@@ -14,10 +14,12 @@ cat <<EOF > $ETH0_CONF
 DEVICE=eth0
 IPADDR1=172.18.96.1
 NETMASK1=255.255.224.0
+
+# The actrd initramfs tries to connect to the server on 172.18.0.1 to request
+# activation. Retain this old/deprecated address binding for compatibility.
 IPADDR2=172.18.0.1
 NETMASK2=255.255.255.0
-IPADDR3=172.18.1.1
-NETMASK3=255.255.255.0
+
 IPV6INIT=yes
 IPV6ADDR_SECONDARIES="fe80::abcd:ef02/64"
 ONBOOT=yes
