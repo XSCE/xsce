@@ -100,16 +100,16 @@ setup_online_srg() {
     # ejabberdctl should handle SIGPIPE without messing up, but that's
     # a minor problem anyway.
     #
-    if ! ejabberdctl srg-list-groups "schoolserver.$domain" | grep '^Online$' > /dev/null ; then
+    if ! ejabberdctl srg_list "schoolserver.$domain" | grep '^Online$' > /dev/null ; then
 	# ejabberdctl doesn't like spaces in the description field.
 	# backslashes work - but escaping is better left alone for now :-)
-	ejabberdctl srg-create Online "schoolserver.$domain" \
+	ejabberdctl srg_create Online "schoolserver.$domain" \
 	    Online "Created_by_ejabberd_init" Online
 	[ $? -eq 0 ] || return 1
     fi
 
-    if ! ejabberdctl srg-get-info Online "schoolserver.$domain" | grep '^online_users: true$' > /dev/null ; then
-	ejabberdctl srg-user-add '@online@' "schoolserver.$domain" \
+    if ! ejabberdctl srg_get_info Online "schoolserver.$domain" | grep '^online_users: true$' > /dev/null ; then
+	ejabberdctl srg_user_add '@online@' "schoolserver.$domain" \
 	    Online "schoolserver.$domain"
 	[ $? -eq 0 ] || return 1
     fi
