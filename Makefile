@@ -137,6 +137,7 @@ install: $(DESTDIR)
 	install -D altfiles/etc/ssh/sshd_config.in $(DESTDIR)/etc/ssh
 
 	install -D altfiles/etc/sysconfig/*.in $(DESTDIR)/etc/sysconfig
+	install -m 644 altfiles/etc/sysconfig/ejabberd-xs $(DESTDIR)/etc/sysconfig
 
 	# conf.d-style conffiles
 	install -D -d $(DESTDIR)/etc/httpd/conf.d

@@ -19,8 +19,8 @@
 
 . /etc/rc.d/init.d/functions
 
-if [ -r /etc/sysconfig/ejabberd ]; then
-	. /etc/sysconfig/ejabberd
+if [ -r /etc/sysconfig/ejabberd-xs ]; then
+	. /etc/sysconfig/ejabberd-xs
 fi
 
 if [ ! "$CONFIG_FILE" ]; then
