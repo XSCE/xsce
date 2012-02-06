@@ -117,7 +117,6 @@ fi
 %attr(770, named , named)  %dir /var/named-xs/data
 
 
-%config(noreplace) %{_sysconfdir}/init.d/*.in
 %config(noreplace) %{_sysconfdir}/init.d/no-fsck-questions
 %config(noreplace) %{_sysconfdir}/init.d/ejabberd-xs
 

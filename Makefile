@@ -154,7 +154,6 @@ install: $(DESTDIR)
 	#Non-conflicting init.d scripts
 	install -D altfiles/etc/init.d/pgsql-xs $(DESTDIR)/etc/init.d
 	install -D altfiles/etc/init.d/ejabberd-xs $(DESTDIR)/etc/init.d
-	install -D altfiles/etc/init.d/*.in $(DESTDIR)/etc/init.d
 	install -D altfiles/etc/init.d/no-fsck-questions $(DESTDIR)/etc/init.d
 
 	# scripts

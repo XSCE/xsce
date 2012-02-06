@@ -8,7 +8,6 @@ earlyset: rsyslog.conf motd sysctl.conf ssh/sshd_config \
      sysconfig/named sysconfig/init \
      sysconfig/iptables-config sysconfig/squid \
      rssh.conf php.ini sysconfig/httpd \
-     init.d/squid \
      httpd/conf.d/proxy_ajp.conf httpd/conf.d/ssl.conf
 
 networkset: sysconfig/dhcpd
