@@ -6,6 +6,32 @@
 
 DESTDIR=/
 CFGDIR=/usr/share/xs-config/cfg
+MARKER=/.olpcxs-configured
+
+# Parse options
+opt_upgrade_only=
+if ! options=$(getopt -o u -l upgrade-only -- "$@"); then
+	exit 1
+fi
+
+eval set -- $options
+while [ $# -gt 0 ]; do
+	case $1 in
+		-u|--upgrade-only) opt_upgrade_only=1 ;;
+		(--) shift; break;;
+		(-*) echo "$0: error - unrecognized option $1" >&2; exit 1;;
+		(*) break;;
+	esac
+	shift
+done
+
+# The user can request that we only perform setup steps if setup had been
+# previously performed by an admin. This is useful for automated upgrades
+# (e.g. RPM post scripts).
+if [ -n "$opt_upgrade_only" -a ! -e "$MARKER" ]; then
+	echo "$0: doing nothing, XS is not active."
+	exit 0
+fi
 
 # Work would be needed to get the XS components playing nice with SELinux, so
 # disable it.
@@ -112,4 +138,5 @@ chkconfig ejabberd-xs on
 chkconfig crond on
 chkconfig incrond on
 
+touch $MARKER
 echo "XS configured; services will activate upon reboot."
