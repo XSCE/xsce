@@ -22,13 +22,13 @@ networkset: sysconfig/dhcpd
 ##    override this rule for your target.
 % :: %.in
 	# It may be dirty
-	xs-commitchanged -m 'Dirty state' $@
+	etckeeper commit -m 'Dirty state'
 	# Overwrite
 	cp -p $@.in $@
-	xs-commitchanged -m "Made from $@.in" $@
+	etckeeper commit -m "Made from $@.in"
 
 sysctl.conf:
-	xs-commitchanged -m 'Dirty state' $@
+	etckeeper commit -m 'Dirty state'
 	cp -p $@.in $@
-	xs-commitchanged -m "Made from $@.in" $@
+	etckeeper commit -m "Made from $@.in"
 	sysctl -p $@

@@ -21,7 +21,7 @@ Requires: sudo
 Requires: syslog 
 Requires: logrotate
 Requires: xml-common  
-Requires: git
+Requires: etckeeper
 Requires: make
 Requires: usbmount
 Requires: dhcp

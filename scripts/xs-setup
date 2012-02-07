@@ -40,16 +40,16 @@ if selinuxenabled; then
 	sed -i -e 's/^SELINUX=.*/SELINUX=disabled/' /etc/selinux/config
 fi
 
-## Prepare a .git directory so xs-commitchanged
-## can store its database...
+## Prepare etckeeper database
 if [ ! -d /etc/.git ];then
    pushd /etc
-   git init
-   chmod 700 .git
-   git config user.name XS
-   git config user.email xs@example.com
+   etckeeper init
+   etckeeper commit -m "Initial checkin"
+   git gc
    popd
 fi
+
+etckeeper commit -m "Dirty state"
 
 ###
 ### CLEANUP XS 0.4 to XS 0.5
@@ -61,7 +61,8 @@ OLDCONFIGS="/etc/sysconfig/network-scripts/ifcfg-dummy0
             /etc/sysconfig/network-scripts/ifcfg-br2  "
 for FPATH in $OLDCONFIGS; do
     if [ -e "$DESTDIR/$FPATH" ];then
-       /usr/bin/xs-commitchanged --remove -m 'Remove old conffile' "$DESTDIR/$FPATH"
+       rm -f "$DESTDIR/$FPATH"
+       etckeeper commit -m 'Remove old conffile'
     fi
 done
 # Remove ifcfg-ethX files that refer to libertas devices
@@ -69,14 +70,16 @@ done
 for FPATH in $DESTDIR/etc/sysconfig/network-scripts/ifcfg-eth*; do
     # Here the implicit ls has incorporated $DESTDIR
     if grep -q '^ESSID=\"school-mesh-' "$FPATH" ;then
-        /usr/bin/xs-commitchanged --remove -m 'Remove old libertas conffile' "$FPATH"
+        rm -f "$FPATH"
+        etckeeper commit -m 'Remove old libertas conffile'
     fi
 done
 # remove eth1:1 if it's the 'school server master address'
 FPATH="$DESTDIR/etc/sysconfig/network-scripts/ifcfg-eth1:1"
 if [ -e "$FPATH" ];then
     if grep -q '^IPADDR=172.18.1.1' "$FPATH" ;then
-        /usr/bin/xs-commitchanged --remove -m 'Remove old conffile' "$FPATH"
+        rm -f "$FPATH"
+        etckeeper commit -m 'Remove old conffile'
     fi
 fi
 
