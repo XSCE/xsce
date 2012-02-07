@@ -95,8 +95,6 @@ install: $(DESTDIR)
 	install -D altfiles/etc/sysconfig/olpc-scripts/resolv.conf.in           $(DESTDIR)/etc/sysconfig/olpc-scripts
 
 	install -D altfiles/etc/sysconfig/olpc-scripts/iptables-xs.in  $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/gen-iptables    $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/mkaccount       $(DESTDIR)/etc/sysconfig/olpc-scripts/
 
 	install -D altfiles/var/named-xs/localdomain.zone         $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/localhost.zone           $(DESTDIR)/var/named-xs/
@@ -164,3 +162,5 @@ install: $(DESTDIR)
 	install -D scripts/xs-services-check $(DESTDIR)/usr/bin
 	install -D scripts/xs-domain-config $(DESTDIR)/usr/bin
 	install -D scripts/xs-httpcache $(DESTDIR)/usr/bin
+	install -D scripts/xs-mkaccount $(DESTDIR)/usr/bin
+	install -D scripts/xs-gen-iptables $(DESTDIR)/usr/bin

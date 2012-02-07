@@ -15,8 +15,7 @@ import tempfile
 
 
 
-# nested one dir into sysconfig
-sysconfig_path = os.path.dirname(os.path.dirname(sys.argv[0]))
+sysconfig_path = "/etc/sysconfig"
 
 if len(sys.argv) < 2:
      sys.stderr.write("Need a filepath parameter\n")

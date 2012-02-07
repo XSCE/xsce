@@ -4,7 +4,7 @@
 ##  see /usr/share/doc/xs-config-<version>/README 
 
 IPTABLES_DATA=/etc/sysconfig/olpc-scripts/iptables-xs
-/etc/sysconfig/olpc-scripts/gen-iptables $IPTABLES_DATA
+xs-gen-iptables $IPTABLES_DATA
 
 # Load additional iptables modules (nat helpers)
 #   Default: -none-
