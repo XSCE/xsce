@@ -2,9 +2,7 @@
 ###
 ### NOTE: rssh.conf.in is the master file. Edit
 ###       the master file if you want your changes to persist.
-###       After editing the master file, do
-###
-###          `make -f xs-config.make <targetfile>`
+###       After editing the master file, run xs-setup
 ###
 ### Also see /usr/share/doc/xs-config-<version>/README for more
 ### details, including how to RECOVER changes you have made if

@@ -52,7 +52,9 @@ EOF
 fi
 
 pushd /etc
-make -B -f xs-config.make networkset
+etckeeper commit -m "Dirty state"
+cp -p sysconfig/dhcpd{.in,}
+etckeeper commit -m "Made from dhcpd.in"
 popd
 
 chkconfig network on

@@ -92,9 +92,21 @@ if [ ! -e /etc/sysconfig/xs_httpcache_on ]; then
 fi
 
 ## Prepare config files
+CFG_TEMPLATES="rsyslog.conf motd sysctl.conf ssh/sshd_config
+sysconfig/named sysconfig/init sysconfig/iptables-config sysconfig/squid
+rssh.conf php.ini sysconfig/httpd httpd/conf.d/proxy_ajp.conf
+httpd/conf.d/ssl.conf"
+
 pushd /etc
-# these don't need network settings
-make -B -f xs-config.make earlyset
+etckeeper commit -m 'Dirty state'
+for i in $CFG_TEMPLATES; do
+	cp -p $i.in $i
+	etckeeper commit -m "Made from $i.in"
+done
+
+# Load new sysctl.conf settings
+sysctl -p
+
 # seed low-level network conf and domain
 xs-domain-config $1
 popd

@@ -102,7 +102,6 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/olpc-scripts/
 %config(noreplace) /var/named-xs
 
-%{_sysconfdir}/xs-config.make
 %config(noreplace) %{_sysconfdir}/motd.in
 %config(noreplace) %{_sysconfdir}/hosts.in
 %config(noreplace) %{_sysconfdir}/sysctl.conf.in

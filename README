@@ -77,14 +77,8 @@ This trick is good for two cases (that sometimes combine):
    conditionally.
 
 In such cases, install a "template" file with a .in extension and the correct
-owner/modes and add a rule to xs-config.make so that
-
-   cd /etc
-   make foobar.conf
-
-translates from foobar.conf.in to the desired foobar.conf . Follow the style
-in xs-config.make to get the file versioned safely, and add it to the 'all'
-target. 
+owner/modes and add a rule to xs-setup, xs-setup-network or domain_config.d
+so that the template is translated into the desired output file.
 
 See below "My local edit was overwritten" for notes on the versioning.
 
@@ -127,8 +121,11 @@ For example
 
 After editing the templates, do
 
- cd /etc 
- make -f xs-config.make resolv.conf
+# xs-setup
+
+And if using the XS custom network layout:
+
+# xs-setup-network
 
 If you had made a local change (and it has been clobbered) you
 can retrieve it from the git repository in /etc -- try
