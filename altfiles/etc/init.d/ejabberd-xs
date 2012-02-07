@@ -27,8 +27,8 @@ if [ ! "$CONFIG_FILE" ]; then
 	CONFIG_FILE=/etc/ejabberd/ejabberd.cfg
 fi
 
-# we're using symlinked consolehelper to check user's rights
-progctl=/usr/bin/ejabberdctl
+# avoid using consolehelper, call ejabberdctl directly
+progctl=/usr/sbin/ejabberdctl
 
 SYS_DOMAIN_FILE=/etc/sysconfig/xs_domain_name
 OUR_DOMAIN_FILE=/etc/sysconfig/ejabberd_domain_name
@@ -118,6 +118,10 @@ setup_online_srg() {
     touch /var/lib/ejabberd/online_src_created
 }
 
+is_running() {
+	/sbin/runuser -s /bin/bash - ejabberd -c "$progctl status" &>/dev/null
+}
+
 start() {
         echo -n $"Starting ejabberd: "
 	if [ "$ULIMIT_MAX_FILES" ]; then
@@ -127,12 +131,12 @@ start() {
 	check_domain_configured
 
 	# check whether ejabberd was already started
-	if $progctl status > /dev/null 2>&1 ; then
+	if is_running; then
 		echo -n "already running" && warning && echo
 		return 0
 	fi
 
-	daemon $progctl start	--config $CONFIG_FILE \
+	daemon --user=ejabberd $progctl start	--config $CONFIG_FILE \
 				--ctl-config /etc/ejabberd/ejabberdctl.cfg \
 				--logs "/var/log/ejabberd" \
 				--spool "/var/lib/ejabberd/spool" \
@@ -156,7 +160,7 @@ stop() {
         echo -n "Shutting down ejabberd: "
 
 	# check whether ejabberd was already stopped
-	if ! $progctl status > /dev/null 2>&1 ; then
+	if ! is_running; then
 		echo -n "already stopped" && warning && echo
 		return 0
 	fi
