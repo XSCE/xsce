@@ -83,7 +83,7 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/var/named-xs/data
 
 	install -D altfiles/etc/named-xs.conf.in  $(DESTDIR)/etc
-	install -D altfiles/etc/sysconfig/olpc-scripts/dhcpd.conf.in     $(DESTDIR)/etc/sysconfig/olpc-scripts/
+	install -D altfiles/etc/dhcpd-xs.conf.in     $(DESTDIR)/etc
 
 	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d
 	install -D altfiles/etc/sysconfig/olpc-scripts/domain_config.d/dhcpd    $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d

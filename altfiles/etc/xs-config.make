@@ -32,11 +32,3 @@ sysctl.conf:
 	cp -p $@.in $@
 	xs-commitchanged -m "Made from $@.in" $@
 	sysctl -p $@
-
-dhcpd-xs.conf:  sysconfig/xs_domain_name
-	xs-commitchanged -m 'Dirty state' $@
-	cp /etc/sysconfig/olpc-scripts/dhcpd.conf.in $@.tmp
-	sed -i -e "s/@@BASEDNSNAME@@/$(shell cat sysconfig/xs_domain_name)/" $@.tmp
-	mv $@.tmp $@
-	xs-commitchanged -m "Made from /etc/sysconfig/olpc-scripts/dhcpd.conf.in" $@
-
