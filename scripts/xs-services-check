@@ -42,4 +42,8 @@ if service NetworkManager status &>/dev/null; then
 	echo "WARNING: NetworkManager is running, but XS standard networking is usually configured by \"network\"."
 fi
 
+if pgrep -x nautilus &>/dev/null; then
+	echo "WARNING: nautilus is running. This may prevent XS's usbmount setup from working correctly, as nautilus could automount the devices first."
+fi
+
 exit $retcode
