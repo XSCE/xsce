@@ -31,6 +31,7 @@ Requires: httpd
 Requires: php-common
 Requires: moodle-xs
 Requires: ejabberd
+Requires: epel-release
 
 
 Requires(post): coreutils
@@ -94,6 +95,7 @@ fi
 %files
 %{_datadir}/%{name}
 %config(noreplace) %{_sysconfdir}/*.in
+%config(noreplace) %{_sysconfdir}/yum.repos.d/*.in
 %config(noreplace) %{_sysconfdir}/squid/squid-xs.conf.in
 %config(noreplace) %{_sysconfdir}/ejabberd/ejabberd-xs.cfg.in
 %config(noreplace) %{_sysconfdir}/httpd/conf/httpd-xs.conf

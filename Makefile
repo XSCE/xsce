@@ -78,9 +78,12 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/etc
 	install -D -d $(DESTDIR)/etc/sysconfig
 	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/setup.d
+	install -D -d $(DESTDIR)/etc/yum.repos.d
 	install -D -d $(DESTDIR)/var
 	install -D -d $(DESTDIR)/var/named-xs
 	install -D -d $(DESTDIR)/var/named-xs/data
+
+	install -m 0644 altfiles/etc/yum.repos.d/* $(DESTDIR)/etc/yum.repos.d
 
 	install -D altfiles/etc/named-xs.conf.in  $(DESTDIR)/etc
 	install -D altfiles/etc/dhcpd-xs.conf.in     $(DESTDIR)/etc

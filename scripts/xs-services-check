@@ -46,4 +46,9 @@ if pgrep -x nautilus &>/dev/null; then
 	echo "WARNING: nautilus is running. This may prevent XS's usbmount setup from working correctly, as nautilus could automount the devices first."
 fi
 
+if ! rpm -q ejabberd | grep -q olpc; then
+	echo "WARNING: a non-OLPC version of ejabberd is installed. This may not support collaboration correctly."
+	echo "See https://support.process-one.net/browse/EJAB-1533"
+fi
+
 exit $retcode
