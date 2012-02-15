@@ -30,6 +30,7 @@ echo
 echo "Checking for XS standard network services..."
 check network
 check iptables
+check ip6tables
 check dhcpd
 check named
 check xinetd
