@@ -68,6 +68,10 @@ if [ -e /etc/sysconfig/olpc-scripts/xs-domain-name ]; then
    mv /etc/sysconfig/olpc-scripts/xs-domain-name /etc/sysconfig/xs_domain_name
 fi
 
+# Regenerate files, some templates could have changed in this update
+xs-setup --upgrade-only
+xs-setup-network --upgrade-only
+
 
 %pre
 
