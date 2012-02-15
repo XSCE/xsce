@@ -94,7 +94,7 @@ fi
 
 ## Prepare config files
 CFG_TEMPLATES="rsyslog.conf motd sysctl.conf ssh/sshd_config
-sysconfig/named sysconfig/init sysconfig/iptables-config sysconfig/squid
+sysconfig/named sysconfig/init sysconfig/squid
 rssh.conf php.ini sysconfig/httpd httpd/conf.d/proxy_ajp.conf
 httpd/conf.d/ssl.conf yum.repos.d/epel.repo"
 

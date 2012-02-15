@@ -55,9 +55,13 @@ fi
 
 etckeeper commit -m "xs-setup-network configured interfaces"
 
+## Prepare config files
+CFG_TEMPLATES="sysconfig/dhcpd sysconfig/iptables-config"
 pushd /etc
-cp -p sysconfig/dhcpd{.in,}
-etckeeper commit -m "Made from dhcpd.in"
+for i in $CFG_TEMPLATES; do
+	cp -p $i.in $i
+	etckeeper commit -m "Made from $i.in"
+done
 popd
 
 chkconfig network on
