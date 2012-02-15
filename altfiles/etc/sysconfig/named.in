@@ -6,8 +6,10 @@
 ###
 ### XS overrides - we will point named
 ### to a different non-conflicting config file
+### IPv6 is disabled until we have verified that the XS's IPv6 setup
+### is sane (#11630)
 ###
-OPTIONS='-c /etc/named-xs.conf'
+OPTIONS='-4 -c /etc/named-xs.conf'
 
 # Currently, you can use the following options:
 #
