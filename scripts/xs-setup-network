@@ -9,6 +9,8 @@ ETH0_CONF="/etc/sysconfig/network-scripts/ifcfg-eth0"
 ETH1_CONF="/etc/sysconfig/network-scripts/ifcfg-eth1"
 MARKER="/.olpcxs-net-configured"
 
+etckeeper commit -m "Dirty state"
+
 cat <<EOF > $ETH0_CONF
 # XS LAN configuration
 DEVICE=eth0
@@ -51,8 +53,9 @@ EOF
 	echo "Wrote $ETH1_CONF"
 fi
 
+etckeeper commit -m "xs-setup-network configured interfaces"
+
 pushd /etc
-etckeeper commit -m "Dirty state"
 cp -p sysconfig/dhcpd{.in,}
 etckeeper commit -m "Made from dhcpd.in"
 popd
@@ -63,6 +66,7 @@ chkconfig iptables on
 chkconfig dhcpd on
 chkconfig named on
 chkconfig xinetd on
+etckeeper commit -m "xs-setup-network configured services"
 
 touch $MARKER
 
