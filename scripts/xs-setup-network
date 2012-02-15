@@ -9,6 +9,31 @@ ETH0_CONF="/etc/sysconfig/network-scripts/ifcfg-eth0"
 ETH1_CONF="/etc/sysconfig/network-scripts/ifcfg-eth1"
 MARKER="/.olpcxs-net-configured"
 
+# Parse options
+opt_upgrade_only=
+if ! options=$(getopt -o u -l upgrade-only -- "$@"); then
+	exit 1
+fi
+
+eval set -- $options
+while [ $# -gt 0 ]; do
+	case $1 in
+		-u|--upgrade-only) opt_upgrade_only=1 ;;
+		(--) shift; break;;
+		(-*) echo "$0: error - unrecognized option $1" >&2; exit 1;;
+		(*) break;;
+	esac
+	shift
+done
+
+# The user can request that we only perform setup steps if setup had been
+# previously performed by an admin. This is useful for automated upgrades
+# (e.g. RPM post scripts).
+if [ -n "$opt_upgrade_only" -a ! -e "$MARKER" ]; then
+	echo "$0: doing nothing, XS standard networking is not active."
+	exit 0
+fi
+
 etckeeper commit -m "Dirty state"
 
 cat <<EOF > $ETH0_CONF
