@@ -81,7 +81,7 @@ fi
 etckeeper commit -m "xs-setup-network configured interfaces"
 
 ## Prepare config files
-CFG_TEMPLATES="sysconfig/dhcpd sysconfig/iptables-config sysconfig/ip6tables"
+CFG_TEMPLATES="sysconfig/dhcpd sysconfig/iptables-config sysconfig/ip6tables-config"
 pushd /etc
 for i in $CFG_TEMPLATES; do
 	cp -p $i.in $i
