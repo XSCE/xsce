@@ -103,6 +103,7 @@ install: $(DESTDIR)
 
 	install -D altfiles/etc/sysconfig/olpc-scripts/iptables-xs.in  $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/ip6tables-xs.in  $(DESTDIR)/etc/sysconfig/olpc-scripts/
+	install -D altfiles/etc/sysconfig/olpc-scripts/set-env.d/httpd.in  $(DESTDIR)/etc/sysconfig/olpc-scripts/set-env.d/
 
 	install -D altfiles/var/named-xs/localdomain.zone         $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/localhost.zone           $(DESTDIR)/var/named-xs/
