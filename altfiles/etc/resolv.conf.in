@@ -1,0 +1,6 @@
+##
+## NOTE: This file is generated from
+##       resolv.conf.in
+##
+search @@BASEDNSNAME@@
+nameserver 172.18.96.1

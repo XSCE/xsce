@@ -1,0 +1,30 @@
+#!/bin/bash -x
+# Part of the xs-sync package
+# Author: Martin Langhoff <martin@laptop.org>
+# Copyright: One Laptop per Child
+
+set -e
+
+VERBOSE=no
+
+# Log a string via the syslog facility.
+log()
+{
+    if test $1 != debug || expr "$VERBOSE" : "[yY]" > /dev/null; then
+	logger -p user.$1 -t "xs-usbmount[$$]" -- "$2"
+    fi
+}
+log notice 'XS done installing new software and content...';
+
+### Bells, descending
+hz=15000
+while (($hz > 50)); do 
+    echo -en '\033[10;'$hz']\033[11;60]\007' > /dev/console
+    sleep 0.11
+    hz=$(($hz * 2 / 3))
+done
+
+#reset beep
+echo -en '\033[10]\033[11]' > /dev/console
+
+

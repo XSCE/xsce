@@ -1,0 +1,160 @@
+#!/bin/bash
+# Initial script to convert existing OS installation into an OLPC XS.
+# Configures fundamental XS items.
+# Usage: xs-setup [hostname]
+
+
+DESTDIR=/
+CFGDIR=/usr/share/xs-config/cfg
+MARKER=/.olpcxs-configured
+
+# Parse options
+opt_upgrade_only=
+if ! options=$(getopt -o u -l upgrade-only -- "$@"); then
+	exit 1
+fi
+
+eval set -- $options
+while [ $# -gt 0 ]; do
+	case $1 in
+		-u|--upgrade-only) opt_upgrade_only=1 ;;
+		(--) shift; break;;
+		(-*) echo "$0: error - unrecognized option $1" >&2; exit 1;;
+		(*) break;;
+	esac
+	shift
+done
+
+# The user can request that we only perform setup steps if setup had been
+# previously performed by an admin. This is useful for automated upgrades
+# (e.g. RPM post scripts).
+if [ -n "$opt_upgrade_only" -a ! -e "$MARKER" ]; then
+	echo "$0: doing nothing, XS is not active."
+	exit 0
+fi
+
+# Work would be needed to get the XS components playing nice with SELinux, so
+# disable it.
+if selinuxenabled; then
+	setenforce 0
+	sed -i -e 's/^SELINUX=.*/SELINUX=disabled/' /etc/selinux/config
+fi
+
+## Prepare etckeeper database
+if [ ! -d /etc/.git ];then
+   pushd /etc
+   etckeeper init
+   etckeeper commit -m "Initial checkin"
+   git gc
+   popd
+fi
+
+etckeeper commit -m "Dirty state"
+
+###
+### CLEANUP XS 0.4 to XS 0.5
+###
+# Remove old configs that are unambiguously old
+OLDCONFIGS="/etc/sysconfig/network-scripts/ifcfg-dummy0
+            /etc/sysconfig/network-scripts/ifcfg-br0
+            /etc/sysconfig/network-scripts/ifcfg-br1
+            /etc/sysconfig/network-scripts/ifcfg-br2  "
+for FPATH in $OLDCONFIGS; do
+    if [ -e "$DESTDIR/$FPATH" ];then
+       rm -f "$DESTDIR/$FPATH"
+       etckeeper commit -m 'Remove old conffile'
+    fi
+done
+# Remove ifcfg-ethX files that refer to libertas devices
+# these have been replaced with wmeshX devices
+for FPATH in $DESTDIR/etc/sysconfig/network-scripts/ifcfg-eth*; do
+    # Here the implicit ls has incorporated $DESTDIR
+    if grep -q '^ESSID=\"school-mesh-' "$FPATH" ;then
+        rm -f "$FPATH"
+        etckeeper commit -m 'Remove old libertas conffile'
+    fi
+done
+# remove eth1:1 if it's the 'school server master address'
+FPATH="$DESTDIR/etc/sysconfig/network-scripts/ifcfg-eth1:1"
+if [ -e "$FPATH" ];then
+    if grep -q '^IPADDR=172.18.1.1' "$FPATH" ;then
+        rm -f "$FPATH"
+        etckeeper commit -m 'Remove old conffile'
+    fi
+fi
+
+
+## Update flag for httpd cache
+if [ ! -e /etc/sysconfig/xs_httpcache_on ]; then
+   if chkconfig --level 3 squid ; then
+      touch /etc/sysconfig/xs_httpcache_on
+      etckeeper commit -m 'xs-setup force-create httpcache flag'
+   fi
+fi
+
+## Prepare config files
+CFG_TEMPLATES="rsyslog.conf motd sysctl.conf ssh/sshd_config
+sysconfig/named sysconfig/init sysconfig/squid
+rssh.conf php.ini sysconfig/httpd httpd/conf.d/proxy_ajp.conf
+httpd/conf.d/ssl.conf yum.repos.d/epel.repo"
+
+pushd /etc
+etckeeper commit -m 'Dirty state'
+for i in $CFG_TEMPLATES; do
+	cp -p $i.in $i
+	etckeeper commit -m "Made from $i.in"
+done
+
+# Load new sysctl.conf settings
+sysctl -p
+
+# seed low-level network conf and domain
+xs-domain-config $1
+popd
+
+echo "-y" > $DESTDIR/fsckoptions
+ln -sf $CFGDIR/etc/dhcp/dhclient-exit-hooks $DESTDIR/etc/dhcp
+ln -sf $CFGDIR/etc/httpd/conf.d/*.conf $DESTDIR/etc/httpd/conf.d
+ln -sf $CFGDIR/etc/logrotate.d/* $DESTDIR/etc/logrotate.d
+ln -sf $CFGDIR/etc/usbmount/mount.d/* $DESTDIR/etc/usbmount/mount.d
+
+# sudo doesn't accept symlinks here
+install -m 440 $CFGDIR/etc/sudoers.d/* $DESTDIR/etc/sudoers.d
+
+# run setup scripts belonging to other packages
+shopt -s nullglob
+for i in /etc/sysconfig/olpc-scripts/setup.d/*; do
+	[ -x $i ] && $i
+done
+shopt -u nullglob
+
+# Change the network infra we use
+# note that 'network' now defaults to off
+chkconfig --level 345 network on
+if chkconfig --level 3 NetworkManager ; then
+   chkconfig --del NetworkManager
+fi
+
+# Pg - prime the DB if needed.
+if [ ! -e /library/pgsql-xs/data-8.4/PG_VERSION ];then
+   /etc/init.d/pgsql-xs initdb
+fi
+
+# and set it to autostart
+chkconfig --add pgsql-xs
+chkconfig  postgresql off
+
+# enable no-fsck-questions
+chkconfig --add no-fsck-questions
+
+chkconfig sshd on
+chkconfig ntpd on
+chkconfig httpd on
+chkconfig moodle on
+chkconfig ejabberd-xs on
+chkconfig crond on
+chkconfig incrond on
+
+etckeeper commit -m 'xs-setup'
+touch $MARKER
+echo "XS configured; services will activate upon reboot."

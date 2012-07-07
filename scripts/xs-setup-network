@@ -1,0 +1,119 @@
+#!/bin/bash
+#
+# Install XS custom networking configuration
+#
+# Store default network settings in /etc/sysconfig/network-scripts, but
+# only make changes once (avoiding re-runs destroying network config info).
+
+ETH0_CONF="/etc/sysconfig/network-scripts/ifcfg-eth0"
+ETH1_CONF="/etc/sysconfig/network-scripts/ifcfg-eth1"
+MARKER="/.olpcxs-net-configured"
+
+# Parse options
+opt_upgrade_only=
+if ! options=$(getopt -o u -l upgrade-only -- "$@"); then
+	exit 1
+fi
+
+eval set -- $options
+while [ $# -gt 0 ]; do
+	case $1 in
+		-u|--upgrade-only) opt_upgrade_only=1 ;;
+		(--) shift; break;;
+		(-*) echo "$0: error - unrecognized option $1" >&2; exit 1;;
+		(*) break;;
+	esac
+	shift
+done
+
+# The user can request that we only perform setup steps if setup had been
+# previously performed by an admin. This is useful for automated upgrades
+# (e.g. RPM post scripts).
+if [ -n "$opt_upgrade_only" -a ! -e "$MARKER" ]; then
+	echo "$0: doing nothing, XS standard networking is not active."
+	exit 0
+fi
+
+etckeeper commit -m "Dirty state"
+
+cat <<EOF > $ETH0_CONF
+# XS LAN configuration
+DEVICE=eth0
+IPADDR1=172.18.96.1
+NETMASK1=255.255.224.0
+
+# The actrd initramfs tries to connect to the server on 172.18.0.1 to request
+# activation. Retain this old/deprecated address binding for compatibility.
+IPADDR2=172.18.0.1
+NETMASK2=255.255.255.0
+
+IPV6INIT=yes
+IPV6ADDR_SECONDARIES="fe80::abcd:ef02/64"
+ONBOOT=yes
+TYPE=Ethernet
+HOTPLUG=yes
+EOF
+echo "Wrote $ETH0_CONF"
+
+if [ ! -e $MARKER ]; then
+	cat <<EOF > $ETH1_CONF
+# Configure your WAN connection here.
+# The default is automatic configuration via DHCP.
+
+DEVICE=eth1
+ONBOOT=yes
+BOOTPROTO=dhcp
+DHCP_HOSTNAME=schoolserver
+HOTPLUG=yes
+
+# If you want to set a static address, remove the BOOTPROTO and DHCP_HOSTNAME
+# lines above, and use the example settings below:
+#IPADDR=18.85.46.29
+#IPV6ADDR=2001:4830:2446:ff00::2/64
+#NETMASK=255.255.255.0
+#NETWORK=18.85.46.0
+#BROADCAST=18.85.46.255
+#GATEWAY=18.85.46.1
+EOF
+	echo "Wrote $ETH1_CONF"
+fi
+
+etckeeper commit -m "xs-setup-network configured interfaces"
+
+## Prepare config files
+CFG_TEMPLATES="sysconfig/dhcpd sysconfig/iptables-config sysconfig/ip6tables-config"
+pushd /etc
+for i in $CFG_TEMPLATES; do
+	cp -p $i.in $i
+	etckeeper commit -m "Made from $i.in"
+done
+popd
+
+if [ $SYSTEMD -eq 1 ]; then
+	systemctl enable network.service
+	systemctl disable NetworkManager.service
+	systemctl enable iptables.service
+	systemctl enable ip6tables.service
+	systemctl enable dhcpd.service
+	systemctl enable named.service
+	systemctl enable xinetd.service
+	systemctl enable postgresql.service
+else
+	chkconfig network on
+	chkconfig NetworkManager off &>/dev/null
+	chkconfig iptables on
+	chkconfig ip6tables on
+	chkconfig dhcpd on
+	chkconfig named on
+	chkconfig xinetd on
+fi
+
+etckeeper commit -m "xs-setup-network configured services"
+
+touch $MARKER
+
+# must re-run domain-config as some domain-config parts change behaviour
+# depending on whether we are running the standard XS network config or not
+xs-domain-config
+
+echo "XS standard networking configured; services will activate upon reboot."
