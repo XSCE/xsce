@@ -79,7 +79,6 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/etc/sysconfig
 	install -D -d $(DESTDIR)/etc/sysconfig/modules
 	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/setup.d
-	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/set-env.d
 	install -D -d $(DESTDIR)/etc/yum.repos.d
 	install -D -d $(DESTDIR)/var
 	install -D -d $(DESTDIR)/var/named-xs
@@ -103,8 +102,6 @@ install: $(DESTDIR)
 
 	install -D altfiles/etc/sysconfig/olpc-scripts/iptables-xs.in  $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/ip6tables-xs.in  $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/set-env.d/httpd.in  $(DESTDIR)/etc/sysconfig/olpc-scripts/set-env.d/
-
 	install -D altfiles/var/named-xs/localdomain.zone         $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/localhost.zone           $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/named.broadcast          $(DESTDIR)/var/named-xs/ 
@@ -156,7 +153,7 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/library/pgsql-xs
 	install -D altfiles/etc/pgsql-xs/p*.conf $(DESTDIR)/etc/pgsql-xs
 	install -D altfiles/etc/sysconfig/pgsql/pgsql-xs $(DESTDIR)/etc/sysconfig/pgsql
-	install -D altfiles/etc/sysconfig/httpd_env $(DESTDIR)/etc/sysconfig/httpd_env
+	install -D altfiles/etc/systemd/system/postgresql-xs.service $(DESTDIR)/etc/systemd/system
 
 	#Non-conflicting init.d scripts
 	install -D altfiles/etc/init.d/pgsql-xs $(DESTDIR)/etc/init.d
@@ -174,4 +171,3 @@ install: $(DESTDIR)
 	install -D scripts/xs-httpcache $(DESTDIR)/usr/bin
 	install -D scripts/xs-mkaccount $(DESTDIR)/usr/bin
 	install -D scripts/xs-gen-iptables $(DESTDIR)/usr/bin
-	install -D scripts/xs-set-env $(DESTDIR)/usr/bin

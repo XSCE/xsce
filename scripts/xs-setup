@@ -97,8 +97,8 @@ fi
 ## Prepare config files
 CFG_TEMPLATES="rsyslog.conf motd sysctl.conf ssh/sshd_config
 sysconfig/named sysconfig/init sysconfig/squid
-rssh.conf php.ini sysconfig/olpc-scripts/set-env.d/httpd 
-httpd/conf.d/proxy_ajp.conf httpd/conf.d/ssl.conf yum.repos.d/epel.repo"
+rssh.conf php.ini 
+ httpd/conf.d/proxy_ajp.conf httpd/conf.d/ssl.conf yum.repos.d/epel.repo"
 
 pushd /etc
 etckeeper commit -m 'Dirty state'
@@ -106,6 +106,24 @@ for i in $CFG_TEMPLATES; do
 	cp -p $i.in $i
 	etckeeper commit -m "Made from $i.in"
 done
+
+# Choose a config depending on memory
+MEMSIZE=$(grep '^MemTotal' /proc/meminfo | grep -oP '\d+')
+CONFMEM=256m
+# Note: the sizes are rounded to a lower value
+#       as they are usually reported a tad lower than the
+#       "proper" MB value in bytes (video cards often steal RAM!).
+if [ $MEMSIZE -gt  500000 ]; then
+    CONFMEM=512m
+fi
+if [ $MEMSIZE -gt 1000000 ]; then
+    CONFMEM=1024m
+fi
+if [ $MEMSIZE -gt 2000000 ]; then
+    CONFMEM=2048m
+fi
+#update the httpd.conf file with this information
+sed -i -e 's/@@CONFMEM@@/$CONFMEM/' /etc/httpd/conf/httpd-xs.conf
 
 # Load new sysctl.conf settings
 sysctl -p

@@ -116,11 +116,9 @@ fi
 %config(noreplace) %{_sysconfdir}/rssh.conf.in
 %config(noreplace) %{_sysconfdir}/ssh/sshd_config.in
 %config(noreplace) %{_sysconfdir}/sysconfig/*.in
-%config(noreplace) %{_sysconfdir}/sysconfig/httpd_env
 %config(noreplace) %{_sysconfdir}/sysconfig/ejabberd-xs
 %config %{_sysconfdir}/sysconfig/olpc-scripts/iptables-xs.in
 %config %{_sysconfdir}/sysconfig/olpc-scripts/ip6tables-xs.in
-%config %{_sysconfdir}/sysconfig/olpc-scripts/set-env.d/httpd.in
 
 %attr(750, root , named)   %dir /var/named-xs
 %attr(770, named , named)  %dir /var/named-xs/data
@@ -128,6 +126,8 @@ fi
 
 %config(noreplace) %{_sysconfdir}/init.d/no-fsck-questions
 %config(noreplace) %{_sysconfdir}/init.d/ejabberd-xs
+#systemd replacements
+%config(noreplace) %{_sysconfdir}/systemd/system/postgresql-xs.service
 
 #Pg
 %config(noreplace) %{_sysconfdir}/pgsql-xs/p*.conf
