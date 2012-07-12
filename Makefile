@@ -79,12 +79,9 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/etc/sysconfig
 	install -D -d $(DESTDIR)/etc/sysconfig/modules
 	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/setup.d
-	install -D -d $(DESTDIR)/etc/yum.repos.d
 	install -D -d $(DESTDIR)/var
 	install -D -d $(DESTDIR)/var/named-xs
 	install -D -d $(DESTDIR)/var/named-xs/data
-
-	install -m 0644 altfiles/etc/yum.repos.d/* $(DESTDIR)/etc/yum.repos.d
 
 	install -m 755 altfiles/etc/sysconfig/modules/pcspkr.modules $(DESTDIR)/etc/sysconfig/modules
 
@@ -150,6 +147,8 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/etc/init.d
 	install -D -d  $(DESTDIR)/etc/sysconfig/pgsql
 	install -D -d $(DESTDIR)/etc/pgsql-xs
+	install -D -d $(DESTDIR)/etc/systemd
+	install -D -d $(DESTDIR)/etc/systemd/system
 	install -D -d $(DESTDIR)/library/pgsql-xs
 	install -D altfiles/etc/pgsql-xs/p*.conf $(DESTDIR)/etc/pgsql-xs
 	install -D altfiles/etc/sysconfig/pgsql/pgsql-xs $(DESTDIR)/etc/sysconfig/pgsql
