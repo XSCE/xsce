@@ -99,7 +99,6 @@ fi
 %files
 %{_datadir}/%{name}
 %config(noreplace) %{_sysconfdir}/*.in
-%config(noreplace) %{_sysconfdir}/yum.repos.d/*.in
 %config(noreplace) %{_sysconfdir}/squid/squid-xs.conf.in
 %config(noreplace) %{_sysconfdir}/ejabberd/ejabberd-xs.cfg.in
 %config(noreplace) %{_sysconfdir}/httpd/conf/httpd-xs.conf
@@ -124,15 +123,15 @@ fi
 %attr(770, named , named)  %dir /var/named-xs/data
 
 
-%config(noreplace) %{_sysconfdir}/init.d/no-fsck-questions
-%config(noreplace) %{_sysconfdir}/init.d/ejabberd-xs
+#%config(noreplace) %{_sysconfdir}/init.d/no-fsck-questions
+#%config(noreplace) %{_sysconfdir}/init.d/ejabberd-xs
 #systemd replacements
 %config(noreplace) %{_sysconfdir}/systemd/system/postgresql-xs.service
 
 #Pg
 %config(noreplace) %{_sysconfdir}/pgsql-xs/p*.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/pgsql/pgsql-xs
-%{_sysconfdir}/init.d/pgsql-xs
+#%{_sysconfdir}/init.d/pgsql-xs
 %attr(700, postgres, postgres)   %dir /library/pgsql-xs
 
 %{_bindir}/cat-parts

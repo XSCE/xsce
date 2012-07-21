@@ -97,7 +97,7 @@ if [ $SYSTEMD -eq 1 ]; then
 	systemctl enable dhcpd.service
 	systemctl enable named.service
 	systemctl enable xinetd.service
-	systemctl enable postgresql.service
+	systemctl enable postgresql-xs.service
 else
 	chkconfig network on
 	chkconfig NetworkManager off &>/dev/null

@@ -148,35 +148,29 @@ for i in /etc/sysconfig/olpc-scripts/setup.d/*; do
 done
 shopt -u nullglob
 
-# Change the network infra we use
-# note that 'network' now defaults to off
-chkconfig --level 345 network on
-if chkconfig --level 3 NetworkManager ; then
-   chkconfig --del NetworkManager
-fi
-
 # Pg - prime the DB if needed.
 if [ ! -e /library/pgsql-xs/PG_VERSION ];then
-   #/etc/init.d/pgsql-xs initdb -- this was used before systemd
 	adduser postgres
 	/bin/chown postgres /library/pgsql-xs
 	/bin/su  -c "/bin/initdb -D /library/pgsql-xs -E utf8" postgres
 fi
 
-# and set it to autostart
-systemctl enable postgresql.service
-
+#systemd change
+echo '-y' > /fsckoptions
 # enable no-fsck-questions
-chkconfig --add no-fsck-questions
+#chkconfig --add no-fsck-questions
 
 if [ $SYSTEMD -eq 1 ]; then
 	systemctl enable sshd.service
 	systemctl enable ntpd.service
 	systemctl enable httpd.service
-	chkconfig moodle on
-	systemctl enable ejabberd.service
+	systemctl enable ejabberd-xs.service
+	systemctl enable moddle.service
+	systemctl enable postgresql-xs.service
 	systemctl enable crond.service
 	systemctl enable incrond.service
+	systemctl enable callhome.service
+	systemctl enable idmgr.service
 else
 	chkconfig sshd on
 	chkconfig ntpd on
@@ -187,6 +181,9 @@ else
 	chkconfig incrond on
 fi
 
+#httpd rpm for ARM fc17 has a symbolic link at /etc/httpd/log which points here
+# but fails to start because it's missing -- create it
+mkdir -p /var/log/httpd
 
 etckeeper commit -m 'xs-setup'
 touch $MARKER

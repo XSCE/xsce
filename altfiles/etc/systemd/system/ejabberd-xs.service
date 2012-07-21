@@ -1,0 +1,4 @@
+# --ejabberd_xs.service  # ssystemd start up file modifications
+.include /usr/lib/systemd/system/ejabberd.service
+[Service]
+EnvironmentFile=/etc/sysconfig/ejabberd-xs
