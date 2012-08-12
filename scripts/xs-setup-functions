@@ -23,16 +23,16 @@ function manpages()
 {
 	case "$1" in
 	"yes")
-        set +e
-		sed -s/%_excludedocs 1/%_excludedocs 0/ /etc/rpm/macros.imgcreate
+        set +e;
+        sed -i -c  's/%_excludedocs 1/%_excludedocs 0/' /etc/rpm/macros.imgcreate
         set -e
-		yum -y install man-pages man-db man | tee >> $LOG 2>&1
+		yum -y install man-pages man-db man 2>&1 | tee -a $LOG
         ;;
 	"no")
         set +e
-		sed -s/%_excludedocs 0/%_excludedocs 1/ /etc/rpm/macros.imgcreate
+        sed -i -c  's/%_excludedocs 0/%_excludedocs 1/' /etc/rpm/macros.imgcreate
         set -e
-		yum erase  man-pages man-db man | tee >> $LOG 2>&1
+		yum -y erase  man-pages man-db man 2>&1 | tee -a $LOG
         rm -rf /usr/share/man
         ;;
 	esac
@@ -42,7 +42,7 @@ function postgresql()
 {
 	case "$1" in
 	"yes")
-        yum -y install postgresql | tee >> $LOG 2>&1
+        yum -y install postgresql 2>&1 | tee -a $LOG
 		# Pg - prime the DB if needed.
 		if [ ! -e ${POSTGRESSDIR}/PG_VERSION ];then
 		   #/etc/init.d/pgsql-xs initdb -- this was used before systemd
@@ -53,11 +53,11 @@ function postgresql()
 		fi
 
 		# and set it to autostart
-		systemctl enable postgresql.service | tee >> $LOG 2>&1
+		systemctl enable postgresql.service 2>&1 | tee -a $LOG
 		;;
 	"no")
-		systemctl disable postgresql.service | tee >> $LOG 2>&1
-        yum erase postgresql | tee >> $LOG 2>&1
+		systemctl disable postgresql.service 2>&1 | tee -a $LOG
+        yum -y erase postgresql 2>&1 | tee -a $LOG
 		;;
 	esac
 }
@@ -66,7 +66,7 @@ function httpd()
 {
 	case "$1" in
 	"yes")
-		yum -y install httpd | tee >> $LOG 2>&1
+		yum -y install httpd 2>&1 | tee -a $LOG
         cp -p /etc/httpd/conf/httpd-xs.conf.in /etc/httpd/conf/httpd-xs.conf
 		# Choose a config depending on memory
 		MEMSIZE=$(grep '^MemTotal' /proc/meminfo | grep -oP '\d+')
@@ -87,12 +87,12 @@ function httpd()
 		sed  's/@@CONFMEM@@/$CONFMEM/' /etc/httpd/conf/httpd-xs.conf
 		set +e; etckeeper commit -m "modified /etc/httpd/conf/httpd-xs.conf"
         set -e
-        systemctl start httpd.service | tee >> $LOG 2>&1
-		systemctl enable httpd.service | tee >> $LOG 2>&1
+        systemctl start httpd.service 2>&1 | tee -a $LOG
+		systemctl enable httpd.service 2>&1 | tee -a $LOG
 		;;
 	"no")
-		systemctl disable httpd.service | tee >> $LOG 2>&1
-        yum erase httpd | tee >> $LOG 2>&1
+		systemctl disable httpd.service 2>&1 | tee -a $LOG
+        yum -y erase httpd 2>&1 | tee -a $LOG
 		;;
 	esac
 }
@@ -101,7 +101,7 @@ function squid()
 {
 	case "$1" in
 	"yes")
-        yum -y install squid | tee >> $LOG 2>&1
+        yum -y install squid 2>&1 | tee -a $LOG
         ## Update flag for httpd cache
         if [ ! -e /etc/sysconfig/xs_httpcache_on ]; then
            if chkconfig --level 3 squid ; then
@@ -109,13 +109,13 @@ function squid()
               set +e; etckeeper commit -m 'xs-setup force-create httpcache flag'; set -e
            fi
         fi
-        systemctl enable squid.service | tee >> $LOG 2>&1
+        systemctl enable squid.service 2>&1 | tee -a $LOG
         #need to set up iptables to forward port 80 queries
         
         ;;
     "no")
-        systemctl disable squid.service | tee >> $LOG 2>&1
-        yum erase squid | tee >> $LOG 2>&1
+        systemctl disable squid.service 2>&1 | tee -a $LOG
+        yum -y erase squid 2>&1 | tee -a $LOG
         ;;
     esac
 }
@@ -124,12 +124,12 @@ function moodle()
 {
 	case "$1" in
 	"yes")
-        yum -y install moodle | tee >> $LOG 2>&1
-		systemctl enable moddle.service | tee >> $LOG 2>&1
+        yum -y install moodle 2>&1 | tee -a $LOG
+		systemctl enable moddle.service 2>&1 | tee -a $LOG
         ;;
 	"no")
-		systemctl disable moddle.service | tee >> $LOG 2>&1
-        yum erase moodle | tee >> $LOG 2>&1
+		systemctl disable moddle.service 2>&1 | tee -a $LOG
+        yum -y erase moodle 2>&1 | tee -a $LOG
         ;;
 	esac
 }
@@ -138,12 +138,12 @@ function moodle_xs()
 {
 	case "$1" in
 	"yes")
-        yum -y install moodle-xs | tee >> $LOG 2>&1
-		systemctl enable moddle_xs.service | tee >> $LOG 2>&1
+        yum -y install moodle-xs 2>&1 | tee -a $LOG
+		systemctl enable moddle_xs.service 2>&1 | tee -a $LOG
         ;;
 	"no")
-		systemctl disable moddle_xs.service | tee >> $LOG 2>&1
-        yum erase moodle-xs | tee >> $LOG 2>&1
+		systemctl disable moddle_xs.service 2>&1 | tee -a $LOG
+        yum -y erase moodle-xs 2>&1 | tee -a $LOG
         ;;
 	esac
 }
@@ -152,12 +152,12 @@ function idmgr()
 {
 	case "$1" in
 	"yes")
-        yum -y install idmgr ds-backup xs-rsync  | tee >> $LOG 2>&1
-		systemctl enable idmgr.service | tee >> $LOG 2>&1
+        yum -y install idmgr ds-backup xs-rsync  2>&1 | tee -a $LOG
+		systemctl enable idmgr.service 2>&1 | tee -a $LOG
         ;;
 	"no")
-		systemctl disable idmgr.service | tee >> $LOG 2>&1
-        yum erase idmgr ds-backup xs-rsync  | tee >> $LOG 2>&1
+		systemctl disable idmgr.service 2>&1 | tee -a $LOG
+        yum -y erase idmgr ds-backup xs-rsync  2>&1 | tee -a $LOG
         ;;
 	esac
 }
@@ -166,12 +166,12 @@ function vnc()
 {
 	case "$1" in
 	"yes")
-        yum -y install tigervnc-server | tee >> $LOG 2>&1
-		systemctl enable vncserver\@.service | tee >> $LOG 2>&1
+        yum -y install tigervnc-server 2>&1 | tee -a $LOG
+		systemctl enable vncserver\@.service 2>&1 | tee -a $LOG
         ;;
 	"no")
-		systemctl disable vncserver\@.service | tee >> $LOG 2>&1
-        yum erase tigervnc-server | tee >> $LOG 2>&1
+		systemctl disable vncserver\@.service 2>&1 | tee -a $LOG
+        yum -y erase tigervnc-server 2>&1 | tee -a $LOG
         ;;
 	esac
 }
@@ -179,12 +179,12 @@ function avahi()
 {
 	case "$1" in
 	"yes")
-        yum -y install nss-mdns avahi avahi-tools avahi-ui | tee >> $LOG 2>&1
-		systemctl enable avahi-daemon.service | tee >> $LOG 2>&1
+        yum -y install nss-mdns avahi avahi-tools avahi-ui 2>&1 | tee -a $LOG
+		systemctl enable avahi-daemon.service 2>&1 | tee -a $LOG
         ;;
 	"no")
-		systemctl disable avahi-daemon.service | tee >> $LOG 2>&1
-        #yum erase nss-mdns avahi avahi-tools avahi-ui
+		systemctl disable avahi-daemon.service 2>&1 | tee -a $LOG
+        #yum -y erase nss-mdns avahi avahi-tools avahi-ui
         ;;
 	esac
 }	
@@ -193,12 +193,12 @@ function named()
 {
 	case "$1" in
 	"yes")
-        yum -y install bind | tee >> $LOG 2>&1
-		systemctl enable named.service | tee >> $LOG 2>&1
+        yum -y install bind 2>&1 | tee -a $LOG
+		systemctl enable named.service 2>&1 | tee -a $LOG
         ;;
 	"no")
-		systemctl disable named.service | tee >> $LOG 2>&1
-        yum erase bind | tee >> $LOG 2>&1
+		systemctl disable named.service 2>&1 | tee -a $LOG
+        yum -y erase bind 2>&1 | tee -a $LOG
         ;;
 	esac
 }
@@ -207,12 +207,12 @@ function dhcpd()
 {
 	case "$1" in
 	"yes")
-        yum -y install dhcp | tee >> $LOG 2>&1
-		systemctl enable dhcpd.service | tee >> $LOG 2>&1
+        yum -y install dhcp 2>&1 | tee -a $LOG
+		systemctl enable dhcpd.service 2>&1 | tee -a $LOG
         ;;
 	"no")
-		systemctl disable dhcpd.service | tee >> $LOG 2>&1
-        yum erase dhcp | tee >> $LOG 2>&1
+		systemctl disable dhcpd.service 2>&1 | tee -a $LOG
+        yum -y erase dhcp 2>&1 | tee -a $LOG
         ;;
 	esac
 }
@@ -221,10 +221,10 @@ function xs-security()
 {
 	case "$1" in
     "yes")
-        yum -y install  xs-tools olpc-bios-crypto bitfrost xs-activation | tee >> $LOG 2>&1
+        yum -y install  xs-tools olpc-bios-crypto bitfrost xs-activation 2>&1 | tee -a $LOG
         ;;
     "no")
-        yum erase   xs-tools olpc-bios-crypto bitfrost xs-activation | tee >> $LOG 2>&1
+        yum -y erase   xs-tools olpc-bios-crypto bitfrost xs-activation 2>&1 | tee -a $LOG
         ;;
     esac
 }
@@ -322,11 +322,11 @@ function do_first()
         #following packages are the core set of packages installed on all xs servers
         yum -y install  xs-activity-server \
             syck rssh mtd-utils module-init-tools \
-            acpid xs-release usbmount  | tee >> $LOG 2>&1
+            acpid xs-release usbmount  2>&1 | tee -a $LOG
         
         
         #may remove the following for production, but very useful during debug
-        yum -y install mlocate | tee >> $LOG 2>&1
+        yum -y install mlocate 2>&1 | tee -a $LOG
         updatedb
         
         set +e; etckeeper commit -m "after installing core packages"; set -e
@@ -350,6 +350,6 @@ function do_last()
 for i in $CFGDIR/*.sh ; do
     if [ -r "$i" ]; then
             . "$i" >/dev/null 2>&1
-            echo "shell script $i in $CFGDIR shadowed setup functions" | tee >> $LOG 2>&1
+            echo "shell script $i in $CFGDIR shadowed setup functions" 2>&1 | tee -a $LOG
     fi
 done
