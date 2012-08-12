@@ -101,7 +101,7 @@ fi
 %config(noreplace) %{_sysconfdir}/*.in
 %config(noreplace) %{_sysconfdir}/squid/squid-xs.conf.in
 %config(noreplace) %{_sysconfdir}/ejabberd/ejabberd-xs.cfg.in
-%config(noreplace) %{_sysconfdir}/httpd/conf/httpd-xs.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/httpd-xs.conf.in
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/*.conf.in
 
 %config(noreplace) %{_sysconfdir}/sysconfig/olpc-scripts/
