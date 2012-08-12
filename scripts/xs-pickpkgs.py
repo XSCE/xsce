@@ -12,7 +12,7 @@ import json
 from gettext import gettext as _
 CONFIG_FILE = "/home/olpc/.servicecfg"
 SCRIPT_FILE = "/home/olpc/xs_install_script"
-XS_SETUP_FUNCTIONS =/bin/xs_setup_functions 
+XS_SETUP_FUNCTIONS = "/bin/xs_setup_functions"
 GLADE_FILE = "/bin/xs-pickpkgs.glade"
 
 #declare a global dictionary for config data
@@ -233,7 +233,8 @@ class ServicePicker:
         global cfg
         #create a script to do the XS update
         try:
-            fd = file(SCRIPT_FILE,'w') except Exception,e:
+            fd = file(SCRIPT_FILE,'w')
+        except Exception,e:
             logging.exception("failed to open script file. error:%s"% (e,))
             sys.exit(1)
         
@@ -356,6 +357,9 @@ do_first
 if __name__ == "__main__":
     if len(sys.argv) == 1:
         pi = ServicePicker()
+    else:
+        if sys.argv == "init":
+            
     
     Gtk.main()
     exit(0)

@@ -5,10 +5,10 @@
 """
 #!/bin/bash
 #examble install script
-. <diretory on path>/xs-setup-functions
-do_first
-httpd yes
-do_last
+#. <diretory on path>/xs-setup-functions
+#do_first
+#httpd yes
+#do_last
 """
 
 set -x -e -u
@@ -26,7 +26,7 @@ function manpages()
         set +e
 		sed -s/%_excludedocs 1/%_excludedocs 0/ /etc/rpm/macros.imgcreate
         set -e
-		yum install man-pages man-db man >> $LOG
+		yum -y install man-pages man-db man >> $LOG
         ;;
 	"no")
         set +e
@@ -42,7 +42,7 @@ function postgresql()
 {
 	case "$1" in
 	"yes")
-        yum install postgresql >> $LOG
+        yum -y install postgresql >> $LOG
 		# Pg - prime the DB if needed.
 		if [ ! -e ${POSTGRESSDIR}/PG_VERSION ];then
 		   #/etc/init.d/pgsql-xs initdb -- this was used before systemd
@@ -66,7 +66,7 @@ function httpd()
 {
 	case "$1" in
 	"yes")
-		yum install httpd >> $LOG
+		yum -y install httpd >> $LOG
         cp -p /etc/httpd/conf/httpd-xs.conf.in /etc/httpd/conf/httpd-xs.conf
 		# Choose a config depending on memory
 		MEMSIZE=$(grep '^MemTotal' /proc/meminfo | grep -oP '\d+')
@@ -99,7 +99,7 @@ function squid()
 {
 	case "$1" in
 	"yes")
-        yum install squid >> $LOG
+        yum -y install squid >> $LOG
         ## Update flag for httpd cache
         if [ ! -e /etc/sysconfig/xs_httpcache_on ]; then
            if chkconfig --level 3 squid ; then
@@ -122,7 +122,7 @@ function moodle()
 {
 	case "$1" in
 	"yes")
-        yum install moodle >> $LOG
+        yum -y install moodle >> $LOG
 		systemctl enable moddle.service >> $LOG
         ;;
 	"no")
@@ -136,7 +136,7 @@ function moodle_xs()
 {
 	case "$1" in
 	"yes")
-        yum install moodle-xs >> $LOG
+        yum -y install moodle-xs >> $LOG
 		systemctl enable moddle_xs.service >> $LOG
         ;;
 	"no")
@@ -150,7 +150,7 @@ function idmgr()
 {
 	case "$1" in
 	"yes")
-        yum install idmgr ds-backup xs-rsync  >> $LOG
+        yum -y install idmgr ds-backup xs-rsync  >> $LOG
 		systemctl enable idmgr.service >> $LOG
         ;;
 	"no")
@@ -164,7 +164,7 @@ function vnc()
 {
 	case "$1" in
 	"yes")
-        yum install tigervnc-server >> $LOG
+        yum -y install tigervnc-server >> $LOG
 		systemctl enable vncserver\@.service >> $LOG
         ;;
 	"no")
@@ -177,7 +177,7 @@ function avahi()
 {
 	case "$1" in
 	"yes")
-        yum install nss-mdns avahi avahi-tools avahi-ui >> $LOG
+        yum -y install nss-mdns avahi avahi-tools avahi-ui >> $LOG
 		systemctl enable avahi-daemon.service >> $LOG
         ;;
 	"no")
@@ -191,7 +191,7 @@ function named()
 {
 	case "$1" in
 	"yes")
-        yum install bind >> $LOG
+        yum -y install bind >> $LOG
 		systemctl enable named.service >> $LOG
         ;;
 	"no")
@@ -205,7 +205,7 @@ function dhcpd()
 {
 	case "$1" in
 	"yes")
-        yum install dhcp >> $LOG
+        yum -y install dhcp >> $LOG
 		systemctl enable dhcpd.service >> $LOG
         ;;
 	"no")
@@ -217,20 +217,22 @@ function dhcpd()
 
 function xs-security()
 {
+	case "$1" in
     "yes")
-        yum install  xs-tools olpc-bios-crypto bitfrost xs-activation >> $LOG
+        yum -y install  xs-tools olpc-bios-crypto bitfrost xs-activation >> $LOG
         ;;
     "no")
         yum erase   xs-tools olpc-bios-crypto bitfrost xs-activation >> $LOG
         ;;
 }
+
 function do_first()
 {    
     #things to do the first time -- only once
     ## Prepare etckeeper database
     if [ ! -d /etc/.git ];then
         pushd /etc
-        yum install etckeeper
+        yum -y install etckeeper
         etckeeper init
         etckeeper commit -m "Initial checkin"
         git gc
@@ -312,13 +314,13 @@ function do_first()
         etckeeper commit -m "<xs.conf.in> files copied"
         
         #following packages are the core set of packages installed on all xs servers
-        yum install  xs-activity-server \
+        yum -y install  xs-activity-server \
             syck rssh mtd-utils module-init-tools \
             acpid xs-release usbmount  >> $LOG
         
         
         #may remove the following for production, but very useful during debug
-        yum install mlocate >> $LOG
+        yum -y install mlocate >> $LOG
         updatedb
         
         etckeeper commit -m "after installing core packages"
