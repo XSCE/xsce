@@ -119,7 +119,7 @@ install: $(DESTDIR)
 	install -D altfiles/etc/squid/squid-xs.conf.in  $(DESTDIR)/etc/squid
 
 	install -D -d $(DESTDIR)/etc/httpd/conf
-	install -D altfiles/etc/httpd/conf/httpd-xs.conf  $(DESTDIR)/etc/httpd/conf
+	install -D altfiles/etc/httpd/conf/httpd-xs.conf.in  $(DESTDIR)/etc/httpd/conf
 
 	install -D -d $(DESTDIR)/etc/ejabberd
 	install -D altfiles/etc/ejabberd/ejabberd-xs.cfg.in  $(DESTDIR)/etc/ejabberd
