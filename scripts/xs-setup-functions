@@ -26,13 +26,13 @@ function manpages()
         set +e
 		sed -s/%_excludedocs 1/%_excludedocs 0/ /etc/rpm/macros.imgcreate
         set -e
-		yum -y install man-pages man-db man >> $LOG
+		yum -y install man-pages man-db man | tee >> $LOG 2>&1
         ;;
 	"no")
         set +e
 		sed -s/%_excludedocs 0/%_excludedocs 1/ /etc/rpm/macros.imgcreate
         set -e
-		yum erase  man-pages man-db man >> $LOG
+		yum erase  man-pages man-db man | tee >> $LOG 2>&1
         rm -rf /usr/share/man
         ;;
 	esac
@@ -42,7 +42,7 @@ function postgresql()
 {
 	case "$1" in
 	"yes")
-        yum -y install postgresql >> $LOG
+        yum -y install postgresql | tee >> $LOG 2>&1
 		# Pg - prime the DB if needed.
 		if [ ! -e ${POSTGRESSDIR}/PG_VERSION ];then
 		   #/etc/init.d/pgsql-xs initdb -- this was used before systemd
@@ -53,11 +53,11 @@ function postgresql()
 		fi
 
 		# and set it to autostart
-		systemctl enable postgresql.service >> $LOG
+		systemctl enable postgresql.service | tee >> $LOG 2>&1
 		;;
 	"no")
-		systemctl disable postgresql.service >> $LOG
-        yum erase postgresql >> $LOG
+		systemctl disable postgresql.service | tee >> $LOG 2>&1
+        yum erase postgresql | tee >> $LOG 2>&1
 		;;
 	esac
 }
@@ -66,7 +66,7 @@ function httpd()
 {
 	case "$1" in
 	"yes")
-		yum -y install httpd >> $LOG
+		yum -y install httpd | tee >> $LOG 2>&1
         cp -p /etc/httpd/conf/httpd-xs.conf.in /etc/httpd/conf/httpd-xs.conf
 		# Choose a config depending on memory
 		MEMSIZE=$(grep '^MemTotal' /proc/meminfo | grep -oP '\d+')
@@ -85,12 +85,14 @@ function httpd()
 		fi
 		#update the httpd.conf file with this information
 		sed  's/@@CONFMEM@@/$CONFMEM/' /etc/httpd/conf/httpd-xs.conf
-		etckeeper commit -m "modified /etc/httpd/conf/httpd-xs.conf"
-		systemctl enable httpd.service >> $LOG
+		set +e; etckeeper commit -m "modified /etc/httpd/conf/httpd-xs.conf"
+        set -e
+        systemctl start httpd.service | tee >> $LOG 2>&1
+		systemctl enable httpd.service | tee >> $LOG 2>&1
 		;;
 	"no")
-		systemctl disable httpd.service >> $LOG
-        yum erase httpd >> $LOG
+		systemctl disable httpd.service | tee >> $LOG 2>&1
+        yum erase httpd | tee >> $LOG 2>&1
 		;;
 	esac
 }
@@ -99,21 +101,21 @@ function squid()
 {
 	case "$1" in
 	"yes")
-        yum -y install squid >> $LOG
+        yum -y install squid | tee >> $LOG 2>&1
         ## Update flag for httpd cache
         if [ ! -e /etc/sysconfig/xs_httpcache_on ]; then
            if chkconfig --level 3 squid ; then
               touch /etc/sysconfig/xs_httpcache_on
-              etckeeper commit -m 'xs-setup force-create httpcache flag'
+              set +e; etckeeper commit -m 'xs-setup force-create httpcache flag'; set -e
            fi
         fi
-        systemctl enable squid.service >> $LOG
+        systemctl enable squid.service | tee >> $LOG 2>&1
         #need to set up iptables to forward port 80 queries
         
         ;;
     "no")
-        systemctl disable squid.service >> $LOG
-        yum erase squid >> $LOG
+        systemctl disable squid.service | tee >> $LOG 2>&1
+        yum erase squid | tee >> $LOG 2>&1
         ;;
     esac
 }
@@ -122,12 +124,12 @@ function moodle()
 {
 	case "$1" in
 	"yes")
-        yum -y install moodle >> $LOG
-		systemctl enable moddle.service >> $LOG
+        yum -y install moodle | tee >> $LOG 2>&1
+		systemctl enable moddle.service | tee >> $LOG 2>&1
         ;;
 	"no")
-		systemctl disable moddle.service >> $LOG
-        yum erase moodle >> $LOG
+		systemctl disable moddle.service | tee >> $LOG 2>&1
+        yum erase moodle | tee >> $LOG 2>&1
         ;;
 	esac
 }
@@ -136,12 +138,12 @@ function moodle_xs()
 {
 	case "$1" in
 	"yes")
-        yum -y install moodle-xs >> $LOG
-		systemctl enable moddle_xs.service >> $LOG
+        yum -y install moodle-xs | tee >> $LOG 2>&1
+		systemctl enable moddle_xs.service | tee >> $LOG 2>&1
         ;;
 	"no")
-		systemctl disable moddle_xs.service >> $LOG
-        yum erase moodle-xs >> $LOG
+		systemctl disable moddle_xs.service | tee >> $LOG 2>&1
+        yum erase moodle-xs | tee >> $LOG 2>&1
         ;;
 	esac
 }
@@ -150,12 +152,12 @@ function idmgr()
 {
 	case "$1" in
 	"yes")
-        yum -y install idmgr ds-backup xs-rsync  >> $LOG
-		systemctl enable idmgr.service >> $LOG
+        yum -y install idmgr ds-backup xs-rsync  | tee >> $LOG 2>&1
+		systemctl enable idmgr.service | tee >> $LOG 2>&1
         ;;
 	"no")
-		systemctl disable idmgr.service >> $LOG
-        yum erase idmgr ds-backup xs-rsync  >> $LOG
+		systemctl disable idmgr.service | tee >> $LOG 2>&1
+        yum erase idmgr ds-backup xs-rsync  | tee >> $LOG 2>&1
         ;;
 	esac
 }
@@ -164,12 +166,12 @@ function vnc()
 {
 	case "$1" in
 	"yes")
-        yum -y install tigervnc-server >> $LOG
-		systemctl enable vncserver\@.service >> $LOG
+        yum -y install tigervnc-server | tee >> $LOG 2>&1
+		systemctl enable vncserver\@.service | tee >> $LOG 2>&1
         ;;
 	"no")
-		systemctl disable vncserver\@.service >> $LOG
-        yum erase tigervnc-server >> $LOG
+		systemctl disable vncserver\@.service | tee >> $LOG 2>&1
+        yum erase tigervnc-server | tee >> $LOG 2>&1
         ;;
 	esac
 }
@@ -177,11 +179,11 @@ function avahi()
 {
 	case "$1" in
 	"yes")
-        yum -y install nss-mdns avahi avahi-tools avahi-ui >> $LOG
-		systemctl enable avahi-daemon.service >> $LOG
+        yum -y install nss-mdns avahi avahi-tools avahi-ui | tee >> $LOG 2>&1
+		systemctl enable avahi-daemon.service | tee >> $LOG 2>&1
         ;;
 	"no")
-		systemctl disable avahi-daemon.service >> $LOG
+		systemctl disable avahi-daemon.service | tee >> $LOG 2>&1
         #yum erase nss-mdns avahi avahi-tools avahi-ui
         ;;
 	esac
@@ -191,12 +193,12 @@ function named()
 {
 	case "$1" in
 	"yes")
-        yum -y install bind >> $LOG
-		systemctl enable named.service >> $LOG
+        yum -y install bind | tee >> $LOG 2>&1
+		systemctl enable named.service | tee >> $LOG 2>&1
         ;;
 	"no")
-		systemctl disable named.service >> $LOG
-        yum erase bind >> $LOG
+		systemctl disable named.service | tee >> $LOG 2>&1
+        yum erase bind | tee >> $LOG 2>&1
         ;;
 	esac
 }
@@ -205,12 +207,12 @@ function dhcpd()
 {
 	case "$1" in
 	"yes")
-        yum -y install dhcp >> $LOG
-		systemctl enable dhcpd.service >> $LOG
+        yum -y install dhcp | tee >> $LOG 2>&1
+		systemctl enable dhcpd.service | tee >> $LOG 2>&1
         ;;
 	"no")
-		systemctl disable dhcpd.service >> $LOG
-        yum erase dhcp >> $LOG
+		systemctl disable dhcpd.service | tee >> $LOG 2>&1
+        yum erase dhcp | tee >> $LOG 2>&1
         ;;
 	esac
 }
@@ -219,11 +221,12 @@ function xs-security()
 {
 	case "$1" in
     "yes")
-        yum -y install  xs-tools olpc-bios-crypto bitfrost xs-activation >> $LOG
+        yum -y install  xs-tools olpc-bios-crypto bitfrost xs-activation | tee >> $LOG 2>&1
         ;;
     "no")
-        yum erase   xs-tools olpc-bios-crypto bitfrost xs-activation >> $LOG
+        yum erase   xs-tools olpc-bios-crypto bitfrost xs-activation | tee >> $LOG 2>&1
         ;;
+    esac
 }
 
 function do_first()
@@ -232,6 +235,11 @@ function do_first()
     ## Prepare etckeeper database
     if [ ! -d /etc/.git ];then
         pushd /etc
+        
+        #init the state of the package config memory file -- currently nothing
+        #       is loaded except avahi
+        xs-pickpkgs.py init
+        
         yum -y install etckeeper
         etckeeper init
         etckeeper commit -m "Initial checkin"
@@ -249,7 +257,6 @@ function do_first()
             if [ -e "${DESTDIR}$FPATH" ];then
                rm -f "${DESTDIR}$FPATH"
             fi
-            etckeeper commit -m 'Remove old conffiles'
         done
         # Remove ifcfg-ethX files that refer to libertas devices
         # these have been replaced with wmeshX devices
@@ -258,14 +265,12 @@ function do_first()
             if grep -q '^ESSID=\"school-mesh-' "$FPATH" ;then
                 rm -f "$FPATH"
             fi
-            etckeeper commit -m 'Remove old libertas conffiles'
         done
         # remove eth1:1 if it's the 'school server master address'
         FPATH="${DESTDIR}/etc/sysconfig/network-scripts/ifcfg-eth1:1"
         if [ -e "$FPATH" ];then
             if grep -q '^IPADDR=172.18.1.1' "$FPATH" ;then
                 rm -f "$FPATH"
-                etckeeper commit -m 'Remove old conffile'
             fi
         fi
         
@@ -277,6 +282,9 @@ function do_first()
         for i in $CFG_TEMPLATES; do
             cp -p $i.in $i
         done
+        
+        #record the config file additions
+        etckeeper commit -m 'Config files copied <file.in> to <file>'
 
         # Load new sysctl.conf settings
         sysctl -p
@@ -308,32 +316,28 @@ function do_first()
         manpages yes
         
         #XO release 12.1.0 makes /var/log  a tempfs -- server logs should persist
-        set +e
-        sed -c -i 's:varlog:#varlog:' /etc/fstab
-        set -e    
-        etckeeper commit -m "<xs.conf.in> files copied"
+        sed 's:varlog:#varlog:' /etc/fstab
+        set +e;etckeeper commit -m "disabled selinux, scripts sourced"; set -e
         
         #following packages are the core set of packages installed on all xs servers
         yum -y install  xs-activity-server \
             syck rssh mtd-utils module-init-tools \
-            acpid xs-release usbmount  >> $LOG
+            acpid xs-release usbmount  | tee >> $LOG 2>&1
         
         
         #may remove the following for production, but very useful during debug
-        yum -y install mlocate >> $LOG
+        yum -y install mlocate | tee >> $LOG 2>&1
         updatedb
         
-        etckeeper commit -m "after installing core packages"
+        set +e; etckeeper commit -m "after installing core packages"; set -e
         
         popd
     fi
-
-    #gjh need to add "groupremove_leaf_only=1" to /etc/yum.conf (becomes yum.conf.in)
 }
 
 function do_last()
 {
-    etckeeper commit -m 'School Server setup changed - do_last'
+    set +e; etckeeper commit -m 'School Server setup changed - do_last'; set -e
     if [ ! -e $MARKER ]; then
         #internally we use /etc/.git as marker for first config run --
         #   --$ MARKER  is available externally
@@ -346,6 +350,6 @@ function do_last()
 for i in $CFGDIR/*.sh ; do
     if [ -r "$i" ]; then
             . "$i" >/dev/null 2>&1
-            echo "shell script $i in $CFGDIR shadowed setup functions" >> $LOG
+            echo "shell script $i in $CFGDIR shadowed setup functions" | tee >> $LOG 2>&1
     fi
 done

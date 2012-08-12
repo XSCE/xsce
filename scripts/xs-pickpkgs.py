@@ -11,8 +11,8 @@ import logging
 import json
 from gettext import gettext as _
 CONFIG_FILE = "/home/olpc/.servicecfg"
-SCRIPT_FILE = "/home/olpc/xs_install_script"
-XS_SETUP_FUNCTIONS = "/bin/xs_setup_functions"
+SCRIPT_FILE = "/home/olpc/xs-install-script"
+XS_SETUP_FUNCTIONS = "/usr/bin/xs-setup-functions"
 GLADE_FILE = "/bin/xs-pickpkgs.glade"
 
 #declare a global dictionary for config data
@@ -31,12 +31,12 @@ class ServicePicker:
             try:
                 fd = file(CONFIG_FILE,'w')
                 cfg = {
-                    "ejabberd"      : True,
+                    "ejabberd"      : False,
                     "registration"  : False,
                     "moodle_xs"     : False,
                     "moodle"        : False,
                     "avahi"         : False,
-                    "dhcpd"         : False,
+                    "dhcpd"         : True,
                     "httpd"         : False,
                     "pathagar"      : False,
                     "squid"         : False,
@@ -54,7 +54,8 @@ class ServicePicker:
                 fd = file(CONFIG_FILE,'r')
         cfg_str = fd.read()
         cfg = json.loads(cfg_str)
-                    
+ 
+    def show_ui(self):                   
         #use Glade generated XML description of UI GTK widgets to create window
         builder = Gtk.Builder()
         builder.add_from_file(GLADE_FILE)
@@ -356,10 +357,13 @@ do_first
         
 if __name__ == "__main__":
     if len(sys.argv) == 1:
-        pi = ServicePicker()
+        picker = ServicePicker()
+        picker.show_ui()
+        Gtk.main()
+        exit(0)
     else:
         if sys.argv == "init":
+            #the init will create the current state in config file
+            picker = ServicePicker()
             
     
-    Gtk.main()
-    exit(0)

@@ -4,7 +4,7 @@
 #  Requires a few tools and
 #  a list of packages modified by xs-config
 Requires: python
-Requires: authconfig  
+Requires: authconfig
 #Requires: bind  
 Requires: initscripts  
 Requires: iptables  
@@ -24,7 +24,7 @@ Requires: xml-common
 #Requires: etckeeper
 Requires: make
 Requires: usbmount
-#Requires: dhcp
+Requires: dhcp
 #Requires: squid
 #Requires: postgresql-server
 #Requires: httpd
@@ -111,6 +111,7 @@ fi
 %config(noreplace) %{_sysconfdir}/motd.in
 %config(noreplace) %{_sysconfdir}/hosts.in
 %config(noreplace) %{_sysconfdir}/sysctl.conf.in
+%config(noreplace) %{_sysconfdir}/yum.conf.in
 %config(noreplace) %{_sysconfdir}/rsyslog.conf.in
 %config(noreplace) %{_sysconfdir}/rssh.conf.in
 %config(noreplace) %{_sysconfdir}/ssh/sshd_config.in
