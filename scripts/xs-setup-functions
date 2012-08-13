@@ -49,6 +49,7 @@ function postgresql()
 			adduser postgres
             mkdir -p $POSTGRESSDIR
 			/bin/chown postgres $POSTGRESSDIR
+            #postgresql-setup initdb
 			/bin/su  -c "/bin/initdb -D $POSTGRESSDIR -E utf8" postgres
 		fi
 
@@ -134,12 +135,13 @@ function moodle()
 	esac
 }
 
-function moodle_xs()
+function moodle-xs()
 {
 	case "$1" in
 	"yes")
         yum -y install moodle-xs 2>&1 | tee -a $LOG
 		systemctl enable moddle_xs.service 2>&1 | tee -a $LOG
+		systemctl start moddle_xs.service 2>&1 | tee -a $LOG
         ;;
 	"no")
 		systemctl disable moddle_xs.service 2>&1 | tee -a $LOG
@@ -152,7 +154,8 @@ function idmgr()
 {
 	case "$1" in
 	"yes")
-        yum -y install idmgr ds-backup xs-rsync  2>&1 | tee -a $LOG
+        yum -y install idmgr ds-backup-client ds-backup-server \
+                xs-rsync  2>&1 | tee -a $LOG
 		systemctl enable idmgr.service 2>&1 | tee -a $LOG
         ;;
 	"no")
@@ -193,8 +196,10 @@ function named()
 {
 	case "$1" in
 	"yes")
-        yum -y install bind 2>&1 | tee -a $LOG
-		systemctl enable named.service 2>&1 | tee -a $LOG
+        yum -y install bind bind-utils 2>&1 | tee -a $LOG
+		cp /etc/named-xs.conf.in /etc/named-xs.conf
+        systemctl enable named.service 2>&1 | tee -a $LOG
+        systemctl start named.service 2>&1 | tee -a $LOG
         ;;
 	"no")
 		systemctl disable named.service 2>&1 | tee -a $LOG
@@ -316,7 +321,7 @@ function do_first()
         manpages yes
         
         #XO release 12.1.0 makes /var/log  a tempfs -- server logs should persist
-        sed 's:varlog:#varlog:' /etc/fstab
+        sed -i -c 's:varlog:#varlog:' /etc/fstab
         set +e;etckeeper commit -m "disabled selinux, scripts sourced"; set -e
         
         #following packages are the core set of packages installed on all xs servers

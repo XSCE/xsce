@@ -23,6 +23,11 @@ class ServicePicker:
     def __init__(self):
         global cfg
         global builder
+        
+        #init the Glade ojbect 
+        builder = Gtk.Builder()
+        builder.add_from_file(GLADE_FILE)
+        
         #get the config file with previous selections
         try:
             fd = file(CONFIG_FILE,'r')
@@ -45,7 +50,7 @@ class ServicePicker:
                     "dansguardian"  : False,
                 }
                 cfg_str = json.dumps(cfg)
-                print ("json:%s."%(cfg_str,))
+                #print ("json:%s."%(cfg_str,))
                 fd.write(cfg_str)
                 fd.close()
                 fd = file(CONFIG_FILE,'r')
@@ -57,8 +62,6 @@ class ServicePicker:
  
     def show_ui(self):                   
         #use Glade generated XML description of UI GTK widgets to create window
-        builder = Gtk.Builder()
-        builder.add_from_file(GLADE_FILE)
         window = builder.get_object("window1")
         handlers = {
             "on_window1_destroy"    : self.done,
