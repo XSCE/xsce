@@ -152,7 +152,7 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/library/pgsql-xs
 	install -D altfiles/etc/pgsql-xs/p*.conf $(DESTDIR)/etc/pgsql-xs
 	install -D altfiles/etc/sysconfig/pgsql/pgsql-xs $(DESTDIR)/etc/sysconfig/pgsql
-	install -D altfiles/etc/systemd/system/postgresql-xs.service $(DESTDIR)/etc/systemd/system
+	install -D altfiles/etc/systemd/system/*.service.in $(DESTDIR)/etc/systemd/system
 
 	#Non-conflicting init.d scripts
 #	install -D altfiles/etc/init.d/pgsql-xs $(DESTDIR)/etc/init.d
