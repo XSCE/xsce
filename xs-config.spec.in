@@ -24,7 +24,11 @@ Requires: xml-common
 #Requires: etckeeper
 Requires: make
 Requires: usbmount
-Requires: dhcp
+#Requires: dhcp
+Requires: avahi
+Requires: nss-mdns
+Requires: avahi-tools
+Requires: avahi-ui
 #Requires: squid
 #Requires: postgresql-server
 #Requires: httpd

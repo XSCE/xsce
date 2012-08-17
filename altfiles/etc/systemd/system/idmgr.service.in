@@ -1,0 +1,11 @@
+[Unit]
+Description=Provides the OLPC laptop identity service
+After=syslog.target network.target
+
+[Service]
+Type=forking
+ExecStart=/etc/rc.d/init.d/idmgr  start  $OPTIONS
+ExecStop=/etc/rc.d/init.d/idmgr stop
+
+[Install]
+WantedBy=multi-user.target

@@ -42,7 +42,7 @@ function postgresql()
 {
 	case "$1" in
 	"yes")
-        yum -y install postgresql 2>&1 | tee -a $LOG
+        yum -y install postgresql postgresql-server 2>&1 | tee -a $LOG
 		# Pg - prime the DB if needed.
 		if [ ! -e ${POSTGRESSDIR}/PG_VERSION ];then
 		   #/etc/init.d/pgsql-xs initdb -- this was used before systemd
@@ -50,15 +50,33 @@ function postgresql()
             mkdir -p $POSTGRESSDIR
 			/bin/chown postgres $POSTGRESSDIR
             #postgresql-setup initdb
-			/bin/su  -c "/bin/initdb -D $POSTGRESSDIR -E utf8" postgres
+			/bin/su  -c "/usr/bin/postgresql-setup  postgresql-xs
 		fi
 
 		# and set it to autostart
-		systemctl enable postgresql.service 2>&1 | tee -a $LOG
+		systemctl enable postgresql-xs.service 2>&1 | tee -a $LOG
+		systemctl start postgresql-xs.service 2>&1 | tee -a $LOG
 		;;
 	"no")
-		systemctl disable postgresql.service 2>&1 | tee -a $LOG
-        yum -y erase postgresql 2>&1 | tee -a $LOG
+		systemctl disable postgresql-xs.service 2>&1 | tee -a $LOG
+        yum -y erase postgresql  posstgresql-server 2>&1 | tee -a $LOG
+		;;
+	esac
+}
+
+function ejabberd()
+{
+	case "$1" in
+	"yes")
+        yum -y install ejabberd 2>&1 | tee -a $LOG
+
+		# and set it to autostart
+		systemctl enable ejabberd.service 2>&1 | tee -a $LOG
+		systemctl start ejabberd.service 2>&1 | tee -a $LOG
+		;;
+	"no")
+		systemctl disable ejabberd.service 2>&1 | tee -a $LOG
+        yum -y erase ejabberd 2>&1 | tee -a $LOG
 		;;
 	esac
 }
@@ -140,6 +158,8 @@ function moodle-xs()
 	case "$1" in
 	"yes")
         yum -y install moodle-xs 2>&1 | tee -a $LOG
+        cp -p /etc/systemd/system/moodle-xs.service.in \
+                /etc/systemd/system/moodle.xs.service
 		systemctl enable moddle_xs.service 2>&1 | tee -a $LOG
 		systemctl start moddle_xs.service 2>&1 | tee -a $LOG
         ;;
@@ -156,6 +176,9 @@ function idmgr()
 	"yes")
         yum -y install idmgr ds-backup-client ds-backup-server \
                 xs-rsync  2>&1 | tee -a $LOG
+        #we'll leave the script in place and call it from systemd
+        chkconfig --del idmgr
+        cp /etc/systemd/system/idmgr.service.in /etc/systemd/system/idmgr.service
 		systemctl enable idmgr.service 2>&1 | tee -a $LOG
         ;;
 	"no")
@@ -170,10 +193,12 @@ function vnc()
 	case "$1" in
 	"yes")
         yum -y install tigervnc-server 2>&1 | tee -a $LOG
-		systemctl enable vncserver\@.service 2>&1 | tee -a $LOG
+        cp -p /lib;/systemd/system/vncserver@.service /etc/systemd/system
+        sed -i -c 's/<USER>/admin/' /etc/systemd/system/vncserver@.service
+		systemctl enable vncserver@.service 2>&1 | tee -a $LOG
         ;;
 	"no")
-		systemctl disable vncserver\@.service 2>&1 | tee -a $LOG
+		systemctl disable vncserver@.service 2>&1 | tee -a $LOG
         yum -y erase tigervnc-server 2>&1 | tee -a $LOG
         ;;
 	esac
@@ -322,17 +347,26 @@ function do_first()
         
         #XO release 12.1.0 makes /var/log  a tempfs -- server logs should persist
         sed -i -c 's:varlog:#varlog:' /etc/fstab
+        mkdir -p /var/logtemp
+        cp -rp /var/log/* /var/logtemp
+        umount /var/log
+        mv /var/logtemp /var/log
         set +e;etckeeper commit -m "disabled selinux, scripts sourced"; set -e
         
         #following packages are the core set of packages installed on all xs servers
-        yum -y install  xs-activity-server \
-            syck rssh mtd-utils module-init-tools \
-            acpid xs-release usbmount  2>&1 | tee -a $LOG
-        
-        
+        yum -y install  xs-activity-server syck rssh mtd-utils acpid  2>&1 | tee -a $LOG
+               
         #may remove the following for production, but very useful during debug
         yum -y install mlocate 2>&1 | tee -a $LOG
         updatedb
+        
+        #copy .bashrc to /root
+        cp -p /home/olpc/.bashrc /root
+        
+        #make a non privileged user, and give her remote access
+        adduser admin
+        echo 'admin' | passwd admin --stdin
+        sed -i -c 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
         
         set +e; etckeeper commit -m "after installing core packages"; set -e
         

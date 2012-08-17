@@ -1,4 +1,0 @@
-# --postgress_xs.service  # ssystemd start up file modifications
-.include /usr/lib/systemd/system/postgresql.service
-[Service]
-Environment=PGDATA=/library/pgsql-xs

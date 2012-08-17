@@ -1,0 +1,8 @@
+[Unit]
+Description=Moodle Course Management OLPC edition
+
+[Service]
+ExecStart=/etc/sysconfig/olpc-script/moodle-xs-init
+
+[Install]
+WantedBy=multi-user.target
