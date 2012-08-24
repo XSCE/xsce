@@ -110,7 +110,7 @@ fi
 
 %config(noreplace) %{_sysconfdir}/sysconfig/olpc-scripts/
 %config(noreplace) %{_sysconfdir}/sysconfig/modules/*.modules
-%config(noreplace) /var/named-xs
+#%config(noreplace) /var/named-xs
 
 %config(noreplace) %{_sysconfdir}/motd.in
 %config(noreplace) %{_sysconfdir}/hosts.in

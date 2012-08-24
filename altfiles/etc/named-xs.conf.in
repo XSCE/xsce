@@ -11,7 +11,7 @@ options
 	/* make named use port 53 for the source of all queries, to allow
          * firewalls to block all ports except 53:
          */
-	query-source    port 53;	
+//	query-source    port 53;	
 	query-source-v6 port 53;
 	listen-on { any; };
         /* listen-on-v6 { any; }; */

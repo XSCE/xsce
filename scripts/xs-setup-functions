@@ -43,18 +43,19 @@ function postgresql()
 	case "$1" in
 	"yes")
         yum -y install postgresql postgresql-server 2>&1 | tee -a $LOG
+        cp /etc/systemd/system/postgresql-xs.service.in \
+                /etc/systemd/system/postgresql-xs.service
+		systemctl enable postgresql-xs.service 2>&1 | tee -a $LOG
+        
 		# Pg - prime the DB if needed.
 		if [ ! -e ${POSTGRESSDIR}/PG_VERSION ];then
-		   #/etc/init.d/pgsql-xs initdb -- this was used before systemd
-			adduser postgres
-            mkdir -p $POSTGRESSDIR
-			/bin/chown postgres $POSTGRESSDIR
-            #postgresql-setup initdb
-			/bin/su  -c "/usr/bin/postgresql-setup  postgresql-xs
+            #/etc/init.d/pgsql-xs initdb -- this was used before systemd
+            #postgresql-setup initdb need to move this edit upstream FIXME
+            sed -i -c "s/--auth='ident'/--auth='ident' --encoding='UTF8'/" /usr/bin/postgresql-setup
+			/usr/bin/postgresql-setup  initdb postgresql-xs
 		fi
 
 		# and set it to autostart
-		systemctl enable postgresql-xs.service 2>&1 | tee -a $LOG
 		systemctl start postgresql-xs.service 2>&1 | tee -a $LOG
 		;;
 	"no")
@@ -159,12 +160,14 @@ function moodle-xs()
 	"yes")
         yum -y install moodle-xs 2>&1 | tee -a $LOG
         cp -p /etc/systemd/system/moodle-xs.service.in \
-                /etc/systemd/system/moodle.xs.service
-		systemctl enable moddle_xs.service 2>&1 | tee -a $LOG
-		systemctl start moddle_xs.service 2>&1 | tee -a $LOG
+                /etc/systemd/system/moodle-xs.service
+        cp -p /etc/sysconfig/olpc-scripts/moodle-xs-init.in \
+                /etc/sysconfig/olpc-scripts/moodle-xs-init
+		systemctl enable moddle-xs.service 2>&1 | tee -a $LOG
+		systemctl start moddle-xs.service 2>&1 | tee -a $LOG
         ;;
 	"no")
-		systemctl disable moddle_xs.service 2>&1 | tee -a $LOG
+		systemctl disable moddle-xs.service 2>&1 | tee -a $LOG
         yum -y erase moodle-xs 2>&1 | tee -a $LOG
         ;;
 	esac
@@ -193,7 +196,7 @@ function vnc()
 	case "$1" in
 	"yes")
         yum -y install tigervnc-server 2>&1 | tee -a $LOG
-        cp -p /lib;/systemd/system/vncserver@.service /etc/systemd/system
+        cp -p /lib/systemd/system/vncserver@.service /etc/systemd/system
         sed -i -c 's/<USER>/admin/' /etc/systemd/system/vncserver@.service
 		systemctl enable vncserver@.service 2>&1 | tee -a $LOG
         ;;
@@ -259,9 +262,35 @@ function xs-security()
     esac
 }
 
+function activity-server()
+{
+	case "$1" in
+    "yes")
+        yum -y install  activity-server 2>&1 | tee -a $LOG
+        ;;
+    "no")
+        yum -y erase   activity-server 2>&1 | tee -a $LOG
+        ;;
+    esac
+}
+
 function do_first()
 {    
     #things to do the first time -- only once
+    
+    #there are files open in the tempfs /var/log -- so we cannot just unmount it
+    #  we need to disable tempfs and then start up again on a /var/log directory
+    #  that persists
+    grep -e "#varlog" /etc/fstab
+    if [ ! $? ]; then
+        #XO release 12.1.0 makes /var/log  a tempfs -- server logs should persist
+        sed -i -c 's:varlog:#varlog:' /etc/fstab
+        echo "The setup program must reboot before additional setup can proceed"
+        echo
+        echo "rebooting"
+        sleep 5
+        reboot
+    fi
     ## Prepare etckeeper database
     if [ ! -d /etc/.git ];then
         pushd /etc
@@ -314,7 +343,7 @@ function do_first()
         done
         
         #record the config file additions
-        etckeeper commit -m 'Config files copied <file.in> to <file>'
+        set +x; etckeeper commit -m 'Config files copied <file.in> to <file>'; set -x
 
         # Load new sysctl.conf settings
         sysctl -p
@@ -345,16 +374,10 @@ function do_first()
         #this needs to be turned on first so that later installs save man pages
         manpages yes
         
-        #XO release 12.1.0 makes /var/log  a tempfs -- server logs should persist
-        sed -i -c 's:varlog:#varlog:' /etc/fstab
-        mkdir -p /var/logtemp
-        cp -rp /var/log/* /var/logtemp
-        umount /var/log
-        mv /var/logtemp /var/log
         set +e;etckeeper commit -m "disabled selinux, scripts sourced"; set -e
         
         #following packages are the core set of packages installed on all xs servers
-        yum -y install  xs-activity-server syck rssh mtd-utils acpid  2>&1 | tee -a $LOG
+        yum -y install  syck rssh mtd-utils acpid  2>&1 | tee -a $LOG
                
         #may remove the following for production, but very useful during debug
         yum -y install mlocate 2>&1 | tee -a $LOG
