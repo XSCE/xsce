@@ -112,7 +112,7 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/modules/*.modules
 %config(noreplace) /var/named-xs
 
-%config(noreplace) %{_sysconfdir}/motd.in
+#%config(noreplace) %{_sysconfdir}/motd.in
 %config(noreplace) %{_sysconfdir}/hosts.in
 %config(noreplace) %{_sysconfdir}/sysctl.conf.in
 %config(noreplace) %{_sysconfdir}/yum.conf.in
