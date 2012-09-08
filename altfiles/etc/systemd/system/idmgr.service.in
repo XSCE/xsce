@@ -4,8 +4,9 @@ After=syslog.target network.target
 
 [Service]
 Type=forking
-ExecStart=/etc/rc.d/init.d/idmgr  start  $OPTIONS
-ExecStop=/etc/rc.d/init.d/idmgr stop
+PIDFile=/var/run/idmgr.pid
+ExecStart=/usr/libexec/idmgr.init  start 
+ExecStop=/usr/libexec/idmgr.init stop
 
 [Install]
 WantedBy=multi-user.target

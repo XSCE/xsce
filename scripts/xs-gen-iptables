@@ -40,6 +40,18 @@ if os.path.exists(wanconf_path):
      except IOError:
           logging.warning("Prolem reading " + wanconf_pathconf + " , assuming " + wan)
 
+lanconf_path = os.path.join(sysconfig_path, 'xs_lan_device')
+if os.path.exists(lanconf_path):
+     # if there is no file, use the default silently
+     try:
+          conf = lanconf_path
+          fh = open(conf)
+          fc = fh.readline().strip()
+          if fc != '':
+               lan = fc
+     except IOError:
+          logging.warning("Prolem reading " + lanconf_pathconf + " , assuming " + lan)
+
 proxyison_conf = os.path.join(sysconfig_path, 'xs_httpcache_on')
 if os.path.exists(proxyison_conf):
      proxyison = True

@@ -37,7 +37,7 @@ After=syslog.target network.target
 Type=forking
 # Clean any existing files in /tmp/.X11-unix environment
 ExecStartPre=/bin/sh -c '/usr/bin/vncserver -kill %i > /dev/null 2>&1 || :'
-ExecStart=/sbin/runuser -l admin -c "/usr/bin/vncserver %i -geometry=800x600"
+ExecStart=/sbin/runuser -l admin -c "/var/www/html/xs/vnc/utils/websockify --wraap-mode=ignore -- /usr/bin/vncserver %i -geometry 800x600 :2"
 ExecStop=/sbin/runuser -l olpc -c "/usr/bin/vncserver -kill %i"
 
 [Install]

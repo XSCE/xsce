@@ -1,4 +1,4 @@
-#
+
 # This is the main Apache server configuration file.  It contains the
 # configuration directives that give the server its instructions.
 # See <URL:http://httpd.apache.org/docs/2.2/> for detailed information.
@@ -215,7 +215,7 @@ LoadModule headers_module modules/mod_headers.so
 #LoadModule usertrack_module modules/mod_usertrack.so
 LoadModule setenvif_module modules/mod_setenvif.so
 LoadModule mime_module modules/mod_mime.so
-#LoadModule dav_module modules/mod_dav.so
+LoadModule dav_module modules/mod_dav.so
 LoadModule status_module modules/mod_status.so
 LoadModule autoindex_module modules/mod_autoindex.so
 #LoadModule info_module modules/mod_info.so

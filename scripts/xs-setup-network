@@ -5,8 +5,14 @@
 # Store default network settings in /etc/sysconfig/network-scripts, but
 # only make changes once (avoiding re-runs destroying network config info).
 
-ETH0_CONF="/etc/sysconfig/network-scripts/ifcfg-eth0"
-ETH1_CONF="/etc/sysconfig/network-scripts/ifcfg-eth1"
+XO1_75=1
+if [ XO1_75 -eq 1 ]; then
+    LAN_CONF="/etc/sysconfig/network-scripts/ifcfg-eth1"
+    WAN_CONF="/etc/sysconfig/network-scripts/ifcfg-eth2"
+else
+    LAN_CONF="/etc/sysconfig/network-scripts/ifcfg-eth0"
+    WAN_CONF="/etc/sysconfig/network-scripts/ifcfg-eth1"
+fi
 MARKER="/.olpcxs-net-configured"
 
 # Parse options
@@ -34,9 +40,9 @@ if [ -n "$opt_upgrade_only" -a ! -e "$MARKER" ]; then
 	exit 0
 fi
 
-etckeeper commit -m "Dirty state"
+#etckeeper commit -m "Dirty state"
 
-cat <<EOF > $ETH0_CONF
+cat <<EOF > $LAN_CONF
 # XS LAN configuration
 DEVICE=eth0
 IPADDR1=172.18.96.1
@@ -53,10 +59,10 @@ ONBOOT=yes
 TYPE=Ethernet
 HOTPLUG=yes
 EOF
-echo "Wrote $ETH0_CONF"
+echo "Wrote $LAN_CONF"
 
 if [ ! -e $MARKER ]; then
-	cat <<EOF > $ETH1_CONF
+	cat <<EOF > $WAN_CONF
 # Configure your WAN connection here.
 # The default is automatic configuration via DHCP.
 
@@ -75,29 +81,28 @@ HOTPLUG=yes
 #BROADCAST=18.85.46.255
 #GATEWAY=18.85.46.1
 EOF
-	echo "Wrote $ETH1_CONF"
+	echo "Wrote $WAN_CONF"
 fi
+echo `echo $LAN_CONF | gawk '{FS="-";print $3}'` > /etc/sysconfig/xs_lan_device
+echo `echo $WAN_CONF | gawk '{FS="-";print $3}'` > /etc/sysconfig/xs_wan_device
 
-etckeeper commit -m "xs-setup-network configured interfaces"
+#etckeeper commit -m "xs-setup-network configured interfaces"
 
 ## Prepare config files
 CFG_TEMPLATES="sysconfig/dhcpd sysconfig/iptables-config sysconfig/ip6tables-config"
 pushd /etc
 for i in $CFG_TEMPLATES; do
 	cp -p $i.in $i
-	etckeeper commit -m "Made from $i.in"
+	#etckeeper commit -m "Made from $i.in"
 done
 popd
 
+SYSTEMD=1
 if [ $SYSTEMD -eq 1 ]; then
 	systemctl enable network.service
-	systemctl disable NetworkManager.service
 	systemctl enable iptables.service
 	systemctl enable ip6tables.service
-	systemctl enable dhcpd.service
-	systemctl enable named.service
 	systemctl enable xinetd.service
-	systemctl enable postgresql-xs.service
 else
 	chkconfig network on
 	chkconfig NetworkManager off &>/dev/null
@@ -108,7 +113,7 @@ else
 	chkconfig xinetd on
 fi
 
-etckeeper commit -m "xs-setup-network configured services"
+#etckeeper commit -m "xs-setup-network configured services"
 
 touch $MARKER
 

@@ -1,0 +1,17 @@
+ <IfModule mod_dav.c>
+    LimitXMLRequestBody 131072
+ 
+    Alias /webdav "/library/webdav"
+    <Directory /library/webdav>
+        Dav On
+        Options +Indexes
+        IndexOptions FancyIndexing
+        AddDefaultCharset UTF-8
+        AuthType Basic
+        AuthName "WebDAV Server"
+        AuthUserFile /etc/httpd//webdav.users.pwd
+        Require valid-user
+        Order allow,deny
+        Allow from all
+    </Directory>
+ </IfModule>
