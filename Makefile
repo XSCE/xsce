@@ -73,6 +73,7 @@ publish-stable:
 install: $(DESTDIR)
 
 	install -D -d $(DESTDIR)/usr/share/xs-config
+	install -D -d $(DESTDIR)/usr/share/xs-config/www
 	cp -a cfg $(DESTDIR)/usr/share/xs-config
 
 	install -D -d $(DESTDIR)/etc
@@ -82,6 +83,9 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/var
 	install -D -d $(DESTDIR)/var/named-xs
 	install -D -d $(DESTDIR)/var/named-xs/data
+	install -D -d $(DESTDIR)/var/www
+	install -D -d $(DESTDIR)/var/www/html
+	install -D -d $(DESTDIR)/var/www/html/xs
 
 	install -m 755 altfiles/etc/sysconfig/modules/pcspkr.modules $(DESTDIR)/etc/sysconfig/modules
 
@@ -159,6 +163,9 @@ install: $(DESTDIR)
 #	install -D altfiles/etc/init.d/pgsql-xs $(DESTDIR)/etc/init.d
 	install -D altfiles/etc/init.d/ejabberd-xs $(DESTDIR)/etc/init.d
 #	install -D altfiles/etc/init.d/no-fsck-questions $(DESTDIR)/etc/init.d
+
+	install -D altfiles/var/named-xs/localdomain.zone         $(DESTDIR)/var/named-xs/
+	
 
 	# scripts
 	install -D -d $(DESTDIR)/usr/bin

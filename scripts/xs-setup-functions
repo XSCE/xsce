@@ -74,10 +74,12 @@ function set-etckeeper()
 	case "$1" in
 	"yes")
         if [ ! -d /etc/.git ]; then
+            pushd /etc
             yum -y install etckeeper
             etckeeper init
             etckeeper commit -m "Initial checkin"
             git gc
+            popd
         fi
 
         if [ ! -e $SETUPSTATEDIR/etckeeper ]; then
@@ -147,6 +149,9 @@ function httpd()
 		etckeeper-if-selected "modified /etc/httpd/conf/httpd-xs.conf"
         systemctl start httpd.service 2>&1 | tee -a $LOG
 		systemctl enable httpd.service 2>&1 | tee -a $LOG
+        
+        #now install the xs - client html/php code
+        
 		;;
 	"no")
 		systemctl disable httpd.service 2>&1 | tee -a $LOG
@@ -165,7 +170,7 @@ function idmgr()
         /etc/sysconfig/olpc-scripts/setup.d/idmgr
         #we'll leave the script in place and call it from systemd
         chkconfig --del idmgr
-        if [ ! -f /usr/libexec/idmgr.init]: then
+        if [ ! -f /usr/libexec/idmgr.init]; then
             cp /etc/init.d/idmgr /usr/libexec/idmgr.init
         fi
         cp /etc/systemd/system/idmgr.service.in /etc/systemd/system/idmgr.service
@@ -278,7 +283,7 @@ function postgresql()
 		if [ ! -e ${POSTGRESSDIR}/PG_VERSION ];then
             #/etc/init.d/pgsql-xs initdb -- this was used before systemd
             #postgresql-setup initdb need to move this edit upstream FIXME
-            chown -R postres:postgres /library/pgsql-xs/ 
+            chown -R postgres:postgres /library/pgsql-xs/ 
             sed -i -c "s/--auth='ident'/--auth='ident' --encoding='UTF8'/" /usr/bin/postgresql-setup
 			/usr/bin/postgresql-setup  initdb postgresql-xs
 		fi
@@ -322,6 +327,7 @@ function vnc()
 	case "$1" in
 	"yes")
         yum -y install tigervnc-server novnc 2>&1 | tee -a $LOG
+        yum -y groupinstall XFCE4  2>&1 | tee -a $LOG
         #or yum install x11vnc-javaviewers | tee -a $LOG
         cp -p /lib/systemd/system/vncserver\@.service /etc/systemd/system
         sed -i -c 's/<USER>/admin/' /etc/systemd/system/vncserver\@.service
@@ -341,8 +347,8 @@ function webdav()
         cp /etc/httpd/conf.d/webdav.conf.in /etc/httpd/conf.d/webdav.conf
         mkdir -p /library/webdav
         chown apache:apache /library/webdav
-        htpasswd -b /etc/httpd/webdav.users.pwd admin myadmin
-        chown apache:apache/etc/httpd/devdav.users.pwd
+        htpasswd -cb /etc/httpd/webdav.users.pwd admin myadmin
+        chown apache:apache /etc/httpd/webdav.users.pwd
         ;;
 	"no")
         rm /etc/httpd/conf.d/webdav.conf
@@ -357,10 +363,10 @@ function yum-etckeeper()
         if [ ! -e $SETUPSTATEDIR/etckeeper ]; then
             set-etckeeper yes
         fi
-        sed 's/^enable.*/enable=1' /etc/yum/pluginconf.d/etckeeper.conf
+        sed 's/^enable.*/enable=1/' /etc/yum/pluginconf.d/etckeeper.conf
         ;;
 	"no")
-        sed 's/^enable.*/enable=0' /etc/yum/pluginconf.d/etckeeper.conf
+        sed 's/^enable.*/enable=0/' /etc/yum/pluginconf.d/etckeeper.conf
         ;;
 	esac
 }
@@ -468,7 +474,7 @@ function do_first()
         #this needs to be turned on first so that later installs save man pages
         manpages yes
         
-        setckeeper-if-selected"disabled selinux, scripts sourced"
+        etckeeper-if-selected "disabled selinux, scripts sourced"
         
         #following packages are the core set of packages installed on all xs servers
         yum -y install  syck rssh mtd-utils acpid  2>&1 | tee -a $LOG

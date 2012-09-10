@@ -1,0 +1,14 @@
+# The websockify service unit file
+#
+
+[Unit]
+Description=Proxy between a local socket and a web client for (VNC)
+After=syslog.target network.target
+
+[Service]
+Type=forking
+ExecStart=/sbin/runuser -l admin -c "/usr/bin/websockify -D 6080  localhost:5901 "
+ExecStop=/sbin/kill $MAINPID
+
+[Install]
+WantedBy=multi-user.target

@@ -12,10 +12,10 @@ icp_port 0
 #  Access Control Lists
 #  These are used throughout this file
 #
-acl manager proto cache_object
+#acl manager proto cache_object
 acl school src 172.18.0.0/16
-acl localhost src 127.0.0.1/32
-acl to_localhost dst 127.0.0.0/8
+#acl localhost src 127.0.0.1/32
+#acl to_localhost dst 127.0.0.0/8
 acl to_schoolserver dst 178.16.0.0/16  # to schoolserver or other local hosts.
 acl SSL_ports port 443
 acl Safe_ports port 80          # http
@@ -43,7 +43,7 @@ acl apache rep_header Server ^Apache
 #
 # NOTE: it must start with a dot
 #
-append_domain .@@BASEDNSNAME@@
+append_domain .test
 
 
 ###############################
@@ -102,7 +102,8 @@ fqdncache_size 1024
 #          |         |         |    L1 (directories)
 #          |         |         |    |  L2 (directories)
 #          |         |         |    |  |
-cache_dir aufs /library/cache 20000 32 256
+#cache_dir aufs /library/cache 20000 32 256
+#cache_dir ufs /library/cache 200 16 128
 
 ###############################
 #  Logging
@@ -119,7 +120,7 @@ client_db off
 strip_query_terms on
 
 #  Do NOT use domain names in log, just IP addresses
-log_fqdn off
+#log_fqdn off
 
 #  Some measure of privacy, even in early debug
 #  Mask off the lowest byte of the logged IP addresses
@@ -212,7 +213,7 @@ forwarded_for off
 
 minimum_direct_rtt  200
 
-maximum_single_addr_tries 2
+#maximum_single_addr_tries 2
 
 # offline_mode off
 
