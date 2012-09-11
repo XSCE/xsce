@@ -32,6 +32,11 @@ do
     fi
 done
 
+# Since for the community edition, we don't really expect all modules to be present
+#   Just exit, and expect the user to do a restart
+
+exit 0
+
 
 ## for some strange reason - /sbin/service                                                                                       
 ## shows a reverse heisenbug - works only when                                                                                   

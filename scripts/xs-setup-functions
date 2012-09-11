@@ -482,8 +482,10 @@ function do_first()
         cp -p /home/olpc/.bashrc /root
         
         #make a non privileged user, and give her remote access
-        adduser admin
-        echo 'admin' | passwd admin --stdin
+        if [ ! grep admin /etc/passwd ]: then
+            adduser admin
+            echo 'admin' | passwd admin --stdin
+        fi
         sed -i -c 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
         systemctl enable sshd.service
         systemctl restart sshd.service
@@ -492,6 +494,9 @@ function do_first()
         
         popd
     fi
+    echo "do first routine completed" | tee -a $LOG
+    date  2>&1 | tee -a $LOG
+
 }
 
 function do-first()
@@ -507,6 +512,8 @@ function do-last()
 function do_last()
 {
     etckeeper-if-selected 'School Server setup changed - do_last'
+    echo "do last executed" | tee -a $LOG
+    date | tee -a $LOG
     if [ ! -e $MARKER ]; then
         #internally we use /etc/.git as marker for first config run --
         #   --$ MARKER  is available externally

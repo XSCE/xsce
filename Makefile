@@ -80,6 +80,7 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/etc/sysconfig
 	install -D -d $(DESTDIR)/etc/sysconfig/modules
 	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/setup.d
+	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/setup.d/state
 	install -D -d $(DESTDIR)/var
 	install -D -d $(DESTDIR)/var/named-xs
 	install -D -d $(DESTDIR)/var/named-xs/data
