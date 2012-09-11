@@ -53,6 +53,9 @@ source /usr/bin/xs-setup-functions
 do-first
 set-etckeeper yes
 yum-etckeeper yes
+#turn off the etckeeper to speed things up
+yum-etckeeper no
+set-etckeeper no
 manpages yes
 mlocate yes
 dhcpd yes
@@ -65,6 +68,6 @@ webdav yes
 idmgr yes
 postgresql yes
 moodle-xs yes
-yum-etckeeper yes
 xs-security yes
+yum-etckeeper yes
 do-last

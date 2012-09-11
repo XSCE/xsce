@@ -15,6 +15,7 @@ set -x -e -u
 
 DESTDIR=""
 CFGDIR=/usr/share/xs-config/cfg
+CFGFUNCTIONS=/etc/sysconfig/olpc-scripts/functions
 MARKER=/.olpcxs-configured
 LOG=/var/log/xs-setup.log
 POSTGRESSDIR=/library/pgsql-xs
@@ -482,7 +483,7 @@ function do_first()
         cp -p /home/olpc/.bashrc /root
         
         #make a non privileged user, and give her remote access
-        if [ ! grep admin /etc/passwd ]: then
+        if [ ! `grep admin /etc/passwd` ]; then
             adduser admin
             echo 'admin' | passwd admin --stdin
         fi
@@ -523,9 +524,9 @@ function do_last()
 }
 
 #now source any files ending with .sh in config dir, allow pkgs to shadow these defs
-for i in $CFGDIR/*.sh ; do
+for i in $CFGFUNCTIONS/*.sh ; do
     if [ -r "$i" ]; then
             . "$i" >/dev/null 2>&1
-            echo "shell script $i in $CFGDIR shadowed setup functions" 2>&1 | tee -a $LOG
+            echo "shell script $i in $CFGFUNCTIONS shadowed setup functions" 2>&1 | tee -a $LOG
     fi
 done
