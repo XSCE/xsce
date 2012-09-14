@@ -61,7 +61,11 @@ mlocate yes
 dhcpd yes
 named yes
 ejabberd yes
+
+#for normal use, choose either of the following (gateway turns on masquerade)
 squid yes
+gateway yes
+
 httpd yes
 vnc yes
 webdav yes

@@ -5,13 +5,14 @@
 # Store default network settings in /etc/sysconfig/network-scripts, but
 # only make changes once (avoiding re-runs destroying network config info).
 
+# Preserve the convention that the wifi adapter on XO is eth0
 XO1_75=1
 if [ XO1_75 -eq 1 ]; then
-    LAN_CONF="/etc/sysconfig/network-scripts/ifcfg-eth1"
-    WAN_CONF="/etc/sysconfig/network-scripts/ifcfg-eth2"
+    LAN_CONF="eth1"
+    WAN_CONF="eth2"
 else
-    LAN_CONF="/etc/sysconfig/network-scripts/ifcfg-eth0"
-    WAN_CONF="/etc/sysconfig/network-scripts/ifcfg-eth1"
+    LAN_CONF="eth0"
+    WAN_CONF="eth1"
 fi
 MARKER="/.olpcxs-net-configured"
 
@@ -42,9 +43,9 @@ fi
 
 #etckeeper commit -m "Dirty state"
 
-cat <<EOF > $LAN_CONF
+cat <<EOF > "/etc/sysconfig/network-scripts/ifcfg-$LAN_CONF"
 # XS LAN configuration
-DEVICE=eth0
+DEVICE=$LAN_CONF
 IPADDR1=172.18.96.1
 NETMASK1=255.255.224.0
 
@@ -59,14 +60,15 @@ ONBOOT=yes
 TYPE=Ethernet
 HOTPLUG=yes
 EOF
-echo "Wrote $LAN_CONF"
+echo "wrote /etc/sysconfig/network-scripts/ifcfg-$LAN_CONF"
 
 if [ ! -e $MARKER ]; then
-	cat <<EOF > $WAN_CONF
+cat <<EOF > "/etc/sysconfig/network-scripts/ifcfg-$WAN_CONF"
+    "/etc/sysconfig/network-scripts/ifcfg-eth1"
 # Configure your WAN connection here.
 # The default is automatic configuration via DHCP.
 
-DEVICE=eth1
+DEVICE=$WAN_CONF
 ONBOOT=yes
 BOOTPROTO=dhcp
 DHCP_HOSTNAME=schoolserver
@@ -81,15 +83,16 @@ HOTPLUG=yes
 #BROADCAST=18.85.46.255
 #GATEWAY=18.85.46.1
 EOF
-	echo "Wrote $WAN_CONF"
+echo "wrote /etc/sysconfig/network-scripts/ifcfg-$WAN_CONF"
 fi
-echo `echo $LAN_CONF | gawk '{FS="-";print $3}'` > /etc/sysconfig/xs_lan_device
-echo `echo $WAN_CONF | gawk '{FS="-";print $3}'` > /etc/sysconfig/xs_wan_device
+echo `echo $LAN_CONF  > /etc/sysconfig/xs_lan_device
+echo `echo $WAN_CONF  > /etc/sysconfig/xs_wan_device
 
 #etckeeper commit -m "xs-setup-network configured interfaces"
 
 ## Prepare config files
-CFG_TEMPLATES="sysconfig/dhcpd sysconfig/iptables-config sysconfig/ip6tables-config"
+CFG_TEMPLATES="sysconfig/dhcpd sysconfig/iptables-config \
+              sysconfig/ip6tables-config sysconfig/olpc-scripts/firewall-xs"
 pushd /etc
 for i in $CFG_TEMPLATES; do
 	cp -p $i.in $i
@@ -97,21 +100,10 @@ for i in $CFG_TEMPLATES; do
 done
 popd
 
-SYSTEMD=1
-if [ $SYSTEMD -eq 1 ]; then
-	systemctl enable network.service
-	systemctl enable iptables.service
-	systemctl enable ip6tables.service
-	systemctl enable xinetd.service
-else
-	chkconfig network on
-	chkconfig NetworkManager off &>/dev/null
-	chkconfig iptables on
-	chkconfig ip6tables on
-	chkconfig dhcpd on
-	chkconfig named on
-	chkconfig xinetd on
-fi
+systemctl enable network.service
+systemctl enable iptables.service
+systemctl enable ip6tables.service
+systemctl enable xinetd.service
 
 #etckeeper commit -m "xs-setup-network configured services"
 

@@ -124,7 +124,7 @@ fi
 %config %{_sysconfdir}/sysconfig/olpc-scripts/iptables-xs.in
 %config %{_sysconfdir}/sysconfig/olpc-scripts/ip6tables-xs.in
 
-#%attr(750, root , named)   %dir /var/named-xs
+%attr(750, root , named)   %dir /var/named-xs
 %attr(750, root , named)   /var/named-xs
 %attr(770, named , named)  %dir /var/named-xs/data
 

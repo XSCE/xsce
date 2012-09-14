@@ -19,16 +19,18 @@ CFGFUNCTIONS=/etc/sysconfig/olpc-scripts/functions
 MARKER=/.olpcxs-configured
 LOG=/var/log/xs-setup.log
 POSTGRESSDIR=/library/pgsql-xs
-SETUPSTATEDIR=/etc/sysconfig/olpc-scripts/setup.d/state
+SETUPSTATEDIR=/etc/sysconfig/olpc-scripts/setup.d/installed
 
 function activity-server()
 {
 	case "$1" in
     "yes")
         yum -y install  activity-server 2>&1 | tee -a $LOG
+        touch SETUPSTATEDIR/activity-server
         ;;
     "no")
         yum -y erase   activity-server 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/activity-server
         ;;
     esac
 }
@@ -39,10 +41,12 @@ function avahi()
 	"yes")
         yum -y install nss-mdns avahi avahi-tools avahi-ui 2>&1 | tee -a $LOG
 		systemctl enable avahi-daemon.service 2>&1 | tee -a $LOG
+        touch $SETUPSTATEDIR/avahi
         ;;
 	"no")
 		systemctl disable avahi-daemon.service 2>&1 | tee -a $LOG
         #yum -y erase nss-mdns avahi avahi-tools avahi-ui
+        rm $SETUPSTATEDIR/avahi
         ;;
 	esac
 }	
@@ -53,10 +57,12 @@ function dhcpd()
 	"yes")
         yum -y install dhcp 2>&1 | tee -a $LOG
 		systemctl enable dhcpd.service 2>&1 | tee -a $LOG
+        touch $SETUPSTATEDIR/dhcpd
         ;;
 	"no")
 		systemctl disable dhcpd.service 2>&1 | tee -a $LOG
         yum -y erase dhcp 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/dhcpd
         ;;
 	esac
 }
@@ -104,10 +110,12 @@ function ejabberd()
 		# and set it to autostart
 		systemctl enable ejabberd.service 2>&1 | tee -a $LOG
 		systemctl start ejabberd.service 2>&1 | tee -a $LOG
+        touch $SETUPSTATEDIR/ejabberd
 		;;
 	"no")
 		systemctl disable ejabberd.service 2>&1 | tee -a $LOG
         yum -y erase ejabberd 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/ejabberd
 		;;
 	esac
 }
@@ -153,10 +161,12 @@ function httpd()
         
         #now install the xs - client html/php code
         
+        touch $SETUPSTATEDIR/httpd
 		;;
 	"no")
 		systemctl disable httpd.service 2>&1 | tee -a $LOG
         yum -y erase httpd 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/httpd
 		;;
 	esac
 }
@@ -170,17 +180,16 @@ function idmgr()
         #set up the sqlite database for idmgr
         /etc/sysconfig/olpc-scripts/setup.d/idmgr
         #we'll leave the script in place and call it from systemd
-        chkconfig --del idmgr
-        if [ ! -f /usr/libexec/idmgr.init]; then
-            cp /etc/init.d/idmgr /usr/libexec/idmgr.init
-        fi
+        cp /etc/init.d/idmgr /usr/libexec/idmgr.init
         cp /etc/systemd/system/idmgr.service.in /etc/systemd/system/idmgr.service
 		systemctl enable idmgr.service 2>&1 | tee -a $LOG
 		systemctl start idmgr.service 2>&1 | tee -a $LOG
+        touch $SETUPSTATEDIR/idmgr
         ;;
 	"no")
 		systemctl disable idmgr.service 2>&1 | tee -a $LOG
         yum -y erase idmgr ds-backup xs-rsync  2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/idmgr
         ;;
 	esac
 }
@@ -193,6 +202,7 @@ function manpages()
         sed -i -c  's/%_excludedocs 1/%_excludedocs 0/' /etc/rpm/macros.imgcreate
         set -e
 		yum -y install man-pages man-db man 2>&1 | tee -a $LOG
+        touch $SETUPSTATEDIR/manpages
         ;;
 	"no")
         set +e
@@ -200,6 +210,7 @@ function manpages()
         set -e
 		yum -y erase  man-pages man-db man 2>&1 | tee -a $LOG
         rm -rf /usr/share/man
+        rm $SETUPSTATEDIR/manpages
         ;;
 	esac
 }
@@ -210,9 +221,11 @@ function mlocate()
 	"yes")
         yum -y install mlocate 2>&1 | tee -a $LOG
         updatedb
+        touch $SETUPSTATEDIR/mlocate
         ;;
 	"no")
         yum -y erase mlocate 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/mlocate
         ;;
 	esac
 }
@@ -223,10 +236,12 @@ function moodle()
 	"yes")
         yum -y install moodle 2>&1 | tee -a $LOG
 		systemctl enable moddle.service 2>&1 | tee -a $LOG
+        touch $SETUPSTATEDIR/moodle
         ;;
 	"no")
 		systemctl disable moddle.service 2>&1 | tee -a $LOG
         yum -y erase moodle 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/moodle
         ;;
 	esac
 }
@@ -240,12 +255,15 @@ function moodle-xs()
                 /etc/systemd/system/moodle-xs.service
         cp -p /etc/sysconfig/olpc-scripts/moodle-xs-init.in \
                 /etc/sysconfig/olpc-scripts/moodle-xs-init
+        #execute the moodle startup script
 		systemctl enable moddle-xs.service 2>&1 | tee -a $LOG
 		systemctl start moddle-xs.service 2>&1 | tee -a $LOG
+        touch $SETUPSTATEDIR/moodle-xs
         ;;
 	"no")
 		systemctl disable moddle-xs.service 2>&1 | tee -a $LOG
         yum -y erase moodle-xs 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/moodle-xs
         ;;
 	esac
 }
@@ -257,16 +275,21 @@ function named()
         yum -y install bind bind-utils 2>&1 | tee -a $LOG
         #if xs data files are installed before bind, named user doesn't exist,
         #   and group ownership is set to root, which uer named cannot read
-        if [ -d /var/named-xs]; then
-            chgrp -R named /var/named-xs/
+        if [ -d /var/named-xs ]; then
+            chgrp -R named /var/named-xs
         fi
 		cp /etc/named-xs.conf.in /etc/named-xs.conf
+		cp /etc/sysconfig/olpc-scripts/resolv.conf.in /etc/sysconfig/olpc-scripts/resolv.conf
         systemctl enable named.service 2>&1 | tee -a $LOG
         systemctl start named.service 2>&1 | tee -a $LOG
+        touch $SETUPSTATEDIR/named
         ;;
 	"no")
 		systemctl disable named.service 2>&1 | tee -a $LOG
+        #let the dhclinet control the name resolution normally
+        rm /etc/sysconfig/olpc-scripts/resolv.conf
         yum -y erase bind 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/named
         ;;
 	esac
 }
@@ -291,10 +314,12 @@ function postgresql()
 
 		# and set it to autostart
 		systemctl start postgresql-xs.service 2>&1 | tee -a $LOG
+        touch $SETUPSTATEDIR/postgresql
 		;;
 	"no")
 		systemctl disable postgresql-xs.service 2>&1 | tee -a $LOG
         yum -y erase postgresql  posstgresql-server 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/postgresql
 		;;
 	esac
 }
@@ -315,10 +340,12 @@ function squid()
         systemctl start squid.service 2>&1 | tee -a $LOG
         #need to set up iptables to forward port 80 queries
         
+        touch $SETUPSTATEDIR/squid
         ;;
     "no")
         systemctl disable squid.service 2>&1 | tee -a $LOG
         yum -y erase squid 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/squid
         ;;
     esac
 }
@@ -333,10 +360,12 @@ function vnc()
         cp -p /lib/systemd/system/vncserver\@.service /etc/systemd/system
         sed -i -c 's/<USER>/admin/' /etc/systemd/system/vncserver\@.service
 		systemctl enable vncserver\@.service 2>&1 | tee -a $LOG
+        touch $SETUPSTATEDIR/vnc
         ;;
 	"no")
 		systemctl disable vncserver\@.service 2>&1 | tee -a $LOG
-        yum -y erase tigervnc-server 2>&1 | tee -a $LOG
+        yum -y erase tigervnc-server novnc2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/vnc
         ;;
 	esac
 }
@@ -350,9 +379,11 @@ function webdav()
         chown apache:apache /library/webdav
         htpasswd -cb /etc/httpd/webdav.users.pwd admin myadmin
         chown apache:apache /etc/httpd/webdav.users.pwd
+        touch $SETUPSTATEDIR/webdav
         ;;
 	"no")
         rm /etc/httpd/conf.d/webdav.conf
+        rm $SETUPSTATEDIR/webdav
         ;;
 	esac
 }
@@ -364,10 +395,10 @@ function yum-etckeeper()
         if [ ! -e $SETUPSTATEDIR/etckeeper ]; then
             set-etckeeper yes
         fi
-        sed 's/^enable.*/enable=1/' /etc/yum/pluginconf.d/etckeeper.conf
+        sed -c -i -e 's/^enabled=0/enabled=1/' /etc/yum/pluginconf.d/etckeeper.conf
         ;;
 	"no")
-        sed 's/^enable.*/enable=0/' /etc/yum/pluginconf.d/etckeeper.conf
+        sed -c -i -e 's/^enabled=1/enabled=0/' /etc/yum/pluginconf.d/etckeeper.conf
         ;;
 	esac
 }
@@ -377,9 +408,11 @@ function xs-security()
 	case "$1" in
     "yes")
         yum -y install  xs-tools olpc-bios-crypto bitfrost xs-activation 2>&1 | tee -a $LOG
+        touch $SETUPSTATEDIR/xs-security
         ;;
     "no")
         yum -y erase   xs-tools olpc-bios-crypto bitfrost xs-activation 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/xs-security
         ;;
     esac
 }
@@ -461,6 +494,7 @@ function do_first()
         ln -sf $CFGDIR/etc/httpd/conf.d/*.conf $DESTDIR/etc/httpd/conf.d
         ln -sf $CFGDIR/etc/logrotate.d/* $DESTDIR/etc/logrotate.d
         ln -sf $CFGDIR/etc/usbmount/mount.d/* $DESTDIR/etc/usbmount/mount.d
+        ln -sf $CFGDIR/etc/profile.d/* $DESTDIR/profile.d
 
         # sudo doesn't accept symlinks here
         install -m 440 $CFGDIR/etc/sudoers.d/* $DESTDIR/etc/sudoers.d

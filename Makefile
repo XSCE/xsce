@@ -73,7 +73,6 @@ publish-stable:
 install: $(DESTDIR)
 
 	install -D -d $(DESTDIR)/usr/share/xs-config
-	install -D -d $(DESTDIR)/usr/share/xs-config/html
 	cp -a cfg $(DESTDIR)/usr/share/xs-config
 
 	install -D -d $(DESTDIR)/etc
@@ -82,7 +81,7 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts
 	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/functions
 	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/setup.d
-	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/setup.d/state
+	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/setup.d/installed
 	install -D -d $(DESTDIR)/var
 	install -D -d $(DESTDIR)/var/named-xs
 	install -D -d $(DESTDIR)/var/named-xs/data

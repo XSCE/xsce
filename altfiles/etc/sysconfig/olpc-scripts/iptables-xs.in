@@ -1,3 +1,5 @@
+#this does not appear to work properly when devices are swapped by NetworkManager
+# trying to generate the iptables-save format from scratch via firewall-xs
 *nat
 :PREROUTING ACCEPT [0:0]
 :POSTROUTING ACCEPT [0:0]

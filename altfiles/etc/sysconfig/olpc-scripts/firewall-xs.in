@@ -36,7 +36,9 @@ $IPTABLES -A FORWARD -i $lan -o $wan -j ACCEPT
 
 # Don't forward from the outside to the inside.
 $IPTABLES -A FORWARD -i $wan -o $lan -j DROP
-$IPTABLES -A POSTROUTING -t nat -o $wan -j MASQUERADE
+if [ -f /etc/sysconfig/olpc-scripts/setup.d/installed/gateway ] ; then
+    $IPTABLES -A POSTROUTING -t nat -o $wan -j MASQUERADE
+fi
 if [ -f /etc/sysconfig/xs-httpcache-on ]; then
     $IPTABLES -A PREROUTING -i $lan -p tp --dport 80 -j REDIRECT --to-ports 3128
 fi
