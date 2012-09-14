@@ -7,7 +7,7 @@
 
 # Preserve the convention that the wifi adapter on XO is eth0
 XO1_75=1
-if [ XO1_75 -eq 1 ]; then
+if [ $XO1_75 -eq 1 ]; then
     LAN_CONF="eth1"
     WAN_CONF="eth2"
 else

@@ -101,11 +101,11 @@ install: $(DESTDIR)
 	install -D altfiles/etc/sysconfig/olpc-scripts/domain_config.d/named    $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d
 	install -D altfiles/etc/sysconfig/olpc-scripts/domain_config.d/squid    $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d
 	install -D altfiles/etc/sysconfig/olpc-scripts/domain_config.d/resolvconf    $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d
-	install -D altfiles/etc/sysconfig/olpc-scripts/resolv.conf.in           $(DESTDIR)/etc/sysconfig/olpc-scripts
-
-	install -D altfiles/etc/sysconfig/olpc-scripts/iptables-xs.in  $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/ip6tables-xs.in  $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/moodle-xs-init.in  $(DESTDIR)/etc/sysconfig/olpc-scripts/
+	install -D altfiles/etc/sysconfig/olpc-scripts/resolv.conf.in       $(DESTDIR)/etc/sysconfig/olpc-scripts
+	install -D altfiles/etc/sysconfig/olpc-scripts/iptables-xs.in  		$(DESTDIR)/etc/sysconfig/olpc-scripts/
+	install -D altfiles/etc/sysconfig/olpc-scripts/ip6tables-xs.in  	$(DESTDIR)/etc/sysconfig/olpc-scripts/
+	install -D altfiles/etc/sysconfig/olpc-scripts/moodle-xs-init.in  	$(DESTDIR)/etc/sysconfig/olpc-scripts/
+	install -D altfiles/etc/sysconfig/olpc-scripts/firewall-xs.in  		$(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/var/named-xs/localdomain.zone         $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/localhost.zone           $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/named.broadcast          $(DESTDIR)/var/named-xs/ 
