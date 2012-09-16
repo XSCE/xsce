@@ -20,6 +20,8 @@ MARKER=/.olpcxs-configured
 LOG=/var/log/xs-setup.log
 POSTGRESSDIR=/library/pgsql-xs
 SETUPSTATEDIR=/etc/sysconfig/olpc-scripts/setup.d/installed
+DEFALTUSER='admin'
+DEFALTPASSWORD='12admin'
 
 function activity-server()
 {
@@ -355,11 +357,21 @@ function vnc()
 	case "$1" in
 	"yes")
         yum -y install tigervnc-server novnc 2>&1 | tee -a $LOG
-        yum -y groupinstall XFCE4  2>&1 | tee -a $LOG
+        yum -y groupinstall XFCE  2>&1 | tee -a $LOG
         #or yum install x11vnc-javaviewers | tee -a $LOG
         cp -p /lib/systemd/system/vncserver\@.service /etc/systemd/system
-        sed -i -c 's/<USER>/admin/' /etc/systemd/system/vncserver\@.service
+        sed -i -c 's/<USER>/$DEFAULTUSER/' /etc/systemd/system/vncserver\@.service
+
+        #start the websocket service (part of the novnc package)
+        systemctl enable vncserverweb.service 2>&1 | tee -a $LOG
+        systemctl start vncserverweb.service 2>&1 | tee -a $LOG
+        mkdir -m 644 -p /home/$DEFAULTUSER/.vnc
+        echo "$DEFAULTPASSWORD" | vncpasswd -f > /home/$DEFAULTUSER/.vnc/passwd
+        ln -sf $CFGDIR/etc/usbmount/mount.d/* $DESTDIR/etc/usbmount/mount.d
+        cp $CFGDIR/etc/sysconfig/vnc/xstartup /home/$DEFAULTUSER/.vnc/
+        chown $DEFAULTUSER:$DEFAULTUSER /home/$DEFAULTUSER/.vnc/*
 		systemctl enable vncserver\@.service 2>&1 | tee -a $LOG
+        systemctl start vncserver\@\:1.service 2>&1 | tee -a $LOG
         touch $SETUPSTATEDIR/vnc
         ;;
 	"no")
@@ -377,7 +389,7 @@ function webdav()
         cp /etc/httpd/conf.d/webdav.conf.in /etc/httpd/conf.d/webdav.conf
         mkdir -p /library/webdav
         chown apache:apache /library/webdav
-        htpasswd -cb /etc/httpd/webdav.users.pwd admin myadmin
+        htpasswd -cb /etc/httpd/webdav.users.pwd $DEFAULTUSER $DEFAULTPASSWORD
         chown apache:apache /etc/httpd/webdav.users.pwd
         touch $SETUPSTATEDIR/webdav
         ;;
@@ -494,10 +506,11 @@ function do_first()
         ln -sf $CFGDIR/etc/httpd/conf.d/*.conf $DESTDIR/etc/httpd/conf.d
         ln -sf $CFGDIR/etc/logrotate.d/* $DESTDIR/etc/logrotate.d
         ln -sf $CFGDIR/etc/usbmount/mount.d/* $DESTDIR/etc/usbmount/mount.d
-        ln -sf $CFGDIR/etc/profile.d/* $DESTDIR/profile.d
+        ln -sf $CFGDIR/etc/profile.d/* $DESTDIR/etc/profile.d
 
         # sudo doesn't accept symlinks here
         install -m 440 $CFGDIR/etc/sudoers.d/* $DESTDIR/etc/sudoers.d
+        install -m 440 $CFGDIR/etc/systemd/system/* $DESTDIR/etc/systemd/system
         
         # run setup scripts belonging to other packages
         #shopt -s nullglob
@@ -517,9 +530,9 @@ function do_first()
         cp -p /home/olpc/.bashrc /root
         
         #make a non privileged user, and give her remote access
-        if [ ! `grep admin /etc/passwd` ]; then
-            adduser admin
-            echo 'admin' | passwd admin --stdin
+        if [ ! `grep $DEFAULTUSER /etc/passwd` ]; then
+            adduser $DEFAULTUSER
+            echo "$DEFAULTPASSWORD" | passwd $DEFAULTUSER --stdin
         fi
         sed -i -c 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
         systemctl enable sshd.service

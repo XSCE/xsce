@@ -77,6 +77,7 @@ install: $(DESTDIR)
 
 	install -D -d $(DESTDIR)/etc
 	install -D -d $(DESTDIR)/etc/sysconfig
+	install -D -d $(DESTDIR)/etc/sysconfig/vnc
 	install -D -d $(DESTDIR)/etc/sysconfig/modules
 	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts
 	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/functions
