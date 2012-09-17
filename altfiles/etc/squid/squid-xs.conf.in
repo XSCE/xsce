@@ -43,7 +43,7 @@ acl apache rep_header Server ^Apache
 #
 # NOTE: it must start with a dot
 #
-append_domain .test
+append_domain .@@BASEDNSNAME@@ 
 
 
 ###############################

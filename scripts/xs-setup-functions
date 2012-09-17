@@ -20,8 +20,8 @@ MARKER=/.olpcxs-configured
 LOG=/var/log/xs-setup.log
 POSTGRESSDIR=/library/pgsql-xs
 SETUPSTATEDIR=/etc/sysconfig/olpc-scripts/setup.d/installed
-DEFALTUSER='admin'
-DEFALTPASSWORD='12admin'
+DEFAULTUSER='admin'
+DEFAULTPASSWORD='12admin'
 
 function activity-server()
 {
