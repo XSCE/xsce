@@ -1,8 +1,0 @@
-#!/bin/sh -e
-
-#
-# ejabberd now handles domain changes in the initrd script
-#
-SERVICE_NAME=ejabberd
-
-service $SERVICE_NAME restart

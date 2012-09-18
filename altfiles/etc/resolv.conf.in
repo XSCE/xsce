@@ -1,6 +1,0 @@
-##
-## NOTE: This file is generated from
-##       resolv.conf.in
-##
-search @@BASEDNSNAME@@
-nameserver 127.0.0.1
