@@ -177,12 +177,19 @@ function idmgr()
 {
 	case "$1" in
 	"yes")
-        yum -y install idmgr ds-backup-client ds-backup-server \
+        yum -y install idmgr ds-backup-server \
                 xs-rsync  2>&1 | tee -a $LOG
         #set up the sqlite database for idmgr
         /etc/sysconfig/olpc-scripts/setup.d/idmgr
         #we'll leave the script in place and call it from systemd
         cp /etc/init.d/idmgr /usr/libexec/idmgr.init
+        #setup ds-backup symlinks to config locations
+        ln -sf /usr/share/ds-backup/apache-ds-backup.conf \
+            /etc/httpd/conf.d/050-ds-backup.conf
+        ln -sf /usr/share/ds-backup/cron-ds-backup-server.conf \
+            /etc/cron.d/ds-bakup-server.conf
+        # incrond doesn't accept syslinks
+        cp -f /usr/share/ds-backup/incron-ds-backup.conf /etc/incron.d/ds-backup.conf
         cp /etc/systemd/system/idmgr.service.in /etc/systemd/system/idmgr.service
 		systemctl enable idmgr.service 2>&1 | tee -a $LOG
 		systemctl start idmgr.service 2>&1 | tee -a $LOG
@@ -364,14 +371,16 @@ function vnc()
 
         #start the websocket service (part of the novnc package)
         systemctl enable vncserverweb.service 2>&1 | tee -a $LOG
-        systemctl start vncserverweb.service 2>&1 | tee -a $LOG
         mkdir -m 644 -p /home/$DEFAULTUSER/.vnc
         echo "$DEFAULTPASSWORD" | vncpasswd -f > /home/$DEFAULTUSER/.vnc/passwd
-        ln -sf $CFGDIR/etc/usbmount/mount.d/* $DESTDIR/etc/usbmount/mount.d
+        ln -sf $CFGDIR/etc/systemd/system/* $DESTDIR/etc/systemd/system
+        ln -sf $DESTDIR/systemd/system/vncserver\@.service \
+            $DESTDIR/systemd/system/multi-user.wants.target/vncserver\@\:1.service
         cp $CFGDIR/etc/sysconfig/vnc/xstartup /home/$DEFAULTUSER/.vnc/
         chown $DEFAULTUSER:$DEFAULTUSER /home/$DEFAULTUSER/.vnc/*
 		systemctl enable vncserver\@.service 2>&1 | tee -a $LOG
         systemctl start vncserver\@\:1.service 2>&1 | tee -a $LOG
+        systemctl start vncserverweb.service 2>&1 | tee -a $LOG
         touch $SETUPSTATEDIR/vnc
         ;;
 	"no")

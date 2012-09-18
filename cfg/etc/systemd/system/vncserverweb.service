@@ -2,8 +2,8 @@
 #
 
 [Unit]
-Description=Proxy between a local socket and a web client for (VNC)
-After=syslog.target network.target
+Description=BiDirectional socket to a http vnc client
+After=syslog.target network.target vncserver\@.service
 
 [Service]
 Type=forking
