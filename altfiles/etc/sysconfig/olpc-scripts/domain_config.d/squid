@@ -32,4 +32,8 @@ do
     fi
 done
 
-service $SERVICE_NAME condrestart
+# Since for the community edition, we don't really expect all modules to be present
+#   Just exit, and expect the user to do a restart
+
+exit 0
+

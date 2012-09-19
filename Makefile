@@ -77,14 +77,18 @@ install: $(DESTDIR)
 
 	install -D -d $(DESTDIR)/etc
 	install -D -d $(DESTDIR)/etc/sysconfig
+	install -D -d $(DESTDIR)/etc/sysconfig/vnc
 	install -D -d $(DESTDIR)/etc/sysconfig/modules
+	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts
+	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/functions
 	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/setup.d
-	install -D -d $(DESTDIR)/etc/yum.repos.d
+	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/setup.d/installed
 	install -D -d $(DESTDIR)/var
 	install -D -d $(DESTDIR)/var/named-xs
 	install -D -d $(DESTDIR)/var/named-xs/data
-
-	install -m 0644 altfiles/etc/yum.repos.d/* $(DESTDIR)/etc/yum.repos.d
+	install -D -d $(DESTDIR)/var/www
+	install -D -d $(DESTDIR)/var/www/html
+	install -D -d $(DESTDIR)/var/www/html/xs
 
 	install -m 755 altfiles/etc/sysconfig/modules/pcspkr.modules $(DESTDIR)/etc/sysconfig/modules
 
@@ -98,11 +102,10 @@ install: $(DESTDIR)
 	install -D altfiles/etc/sysconfig/olpc-scripts/domain_config.d/named    $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d
 	install -D altfiles/etc/sysconfig/olpc-scripts/domain_config.d/squid    $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d
 	install -D altfiles/etc/sysconfig/olpc-scripts/domain_config.d/resolvconf    $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d
-	install -D altfiles/etc/sysconfig/olpc-scripts/resolv.conf.in           $(DESTDIR)/etc/sysconfig/olpc-scripts
-
-	install -D altfiles/etc/sysconfig/olpc-scripts/iptables-xs.in  $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/ip6tables-xs.in  $(DESTDIR)/etc/sysconfig/olpc-scripts/
-
+	install -D altfiles/etc/sysconfig/olpc-scripts/resolv.conf.in       $(DESTDIR)/etc/sysconfig/olpc-scripts
+	install -D altfiles/etc/sysconfig/olpc-scripts/iptables-xs.in  		$(DESTDIR)/etc/sysconfig/olpc-scripts/
+	install -D altfiles/etc/sysconfig/olpc-scripts/ip6tables-xs.in  	$(DESTDIR)/etc/sysconfig/olpc-scripts/
+	install -D altfiles/etc/sysconfig/olpc-scripts/moodle-xs-init.in  	$(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/var/named-xs/localdomain.zone         $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/localhost.zone           $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/named.broadcast          $(DESTDIR)/var/named-xs/ 
@@ -123,7 +126,7 @@ install: $(DESTDIR)
 	install -D altfiles/etc/squid/squid-xs.conf.in  $(DESTDIR)/etc/squid
 
 	install -D -d $(DESTDIR)/etc/httpd/conf
-	install -D altfiles/etc/httpd/conf/httpd-xs.conf  $(DESTDIR)/etc/httpd/conf
+	install -D altfiles/etc/httpd/conf/httpd-xs.conf.in  $(DESTDIR)/etc/httpd/conf
 
 	install -D -d $(DESTDIR)/etc/ejabberd
 	install -D altfiles/etc/ejabberd/ejabberd-xs.cfg.in  $(DESTDIR)/etc/ejabberd
@@ -134,7 +137,7 @@ install: $(DESTDIR)
 	install -D -m 644 altfiles/etc/rsyslog.conf.in $(DESTDIR)/etc/
 	install -D altfiles/etc/sysctl.conf.in  $(DESTDIR)/etc/
 	install -D altfiles/etc/rssh.conf.in    $(DESTDIR)/etc/
-	install -D altfiles/etc/motd.in         $(DESTDIR)/etc/
+	#install -D altfiles/etc/motd.in         $(DESTDIR)/etc/
 	install -D altfiles/etc/hosts.in        $(DESTDIR)/etc/
 
 	install -D -d $(DESTDIR)/etc/ssh
@@ -151,19 +154,27 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/etc/init.d
 	install -D -d  $(DESTDIR)/etc/sysconfig/pgsql
 	install -D -d $(DESTDIR)/etc/pgsql-xs
+	install -D -d $(DESTDIR)/etc/systemd
+	install -D -d $(DESTDIR)/etc/systemd/system
 	install -D -d $(DESTDIR)/library/pgsql-xs
 	install -D altfiles/etc/pgsql-xs/p*.conf $(DESTDIR)/etc/pgsql-xs
 	install -D altfiles/etc/sysconfig/pgsql/pgsql-xs $(DESTDIR)/etc/sysconfig/pgsql
+	install -D altfiles/etc/systemd/system/*.service.in $(DESTDIR)/etc/systemd/system
 
 	#Non-conflicting init.d scripts
-	install -D altfiles/etc/init.d/pgsql-xs $(DESTDIR)/etc/init.d
+#	install -D altfiles/etc/init.d/pgsql-xs $(DESTDIR)/etc/init.d
 	install -D altfiles/etc/init.d/ejabberd-xs $(DESTDIR)/etc/init.d
-	install -D altfiles/etc/init.d/no-fsck-questions $(DESTDIR)/etc/init.d
+#	install -D altfiles/etc/init.d/no-fsck-questions $(DESTDIR)/etc/init.d
 
+	install -D altfiles/var/named-xs/localdomain.zone         $(DESTDIR)/var/named-xs/
+	
 	# scripts
 	install -D -d $(DESTDIR)/usr/bin
 	install -D scripts/cat-parts   $(DESTDIR)/usr/bin
 	install -D scripts/xs-swapnics $(DESTDIR)/usr/bin
+	install -D scripts/xs-setup-functions $(DESTDIR)/usr/bin
+	install -D scripts/xs-pickpkgs.py $(DESTDIR)/usr/bin
+	install -D scripts/xs-pickpkgs.glade $(DESTDIR)/usr/bin
 	install -D scripts/xs-setup $(DESTDIR)/usr/bin
 	install -D scripts/xs-setup-network $(DESTDIR)/usr/bin
 	install -D scripts/xs-services-check $(DESTDIR)/usr/bin

@@ -34,7 +34,7 @@ if [ -n "$opt_upgrade_only" -a ! -e "$MARKER" ]; then
 	exit 0
 fi
 
-etckeeper commit -m "Dirty state"
+#etckeeper commit -m "Dirty state"
 
 cat <<EOF > $ETH0_CONF
 # XS LAN configuration
@@ -78,7 +78,7 @@ EOF
 	echo "Wrote $ETH1_CONF"
 fi
 
-etckeeper commit -m "xs-setup-network configured interfaces"
+#etckeeper commit -m "xs-setup-network configured interfaces"
 
 ## Prepare config files
 CFG_TEMPLATES="sysconfig/dhcpd sysconfig/iptables-config sysconfig/ip6tables-config"
@@ -89,14 +89,36 @@ for i in $CFG_TEMPLATES; do
 done
 popd
 
-chkconfig network on
-chkconfig NetworkManager off &>/dev/null
-chkconfig iptables on
-chkconfig ip6tables on
-chkconfig dhcpd on
-chkconfig named on
-chkconfig xinetd on
-etckeeper commit -m "xs-setup-network configured services"
+systemctl enable network.service
+systemctl enable iptables.service
+systemctl enable ip6tables.service
+systemctl enable xinetd.service
+
+#etckeeper commit -m "xs-setup-network configured services"
+=======
+echo "wrote /etc/sysconfig/network-scripts/ifcfg-$WAN_CONF"
+fi
+echo `echo $LAN_CONF  > /etc/sysconfig/xs_lan_device
+echo `echo $WAN_CONF  > /etc/sysconfig/xs_wan_device
+
+#etckeeper commit -m "xs-setup-network configured interfaces"
+
+## Prepare config files
+CFG_TEMPLATES="sysconfig/dhcpd sysconfig/iptables-config \
+              sysconfig/ip6tables-config sysconfig/olpc-scripts/firewall-xs"
+pushd /etc
+for i in $CFG_TEMPLATES; do
+	cp -p $i.in $i
+	#etckeeper commit -m "Made from $i.in"
+done
+popd
+
+systemctl enable network.service
+systemctl enable iptables.service
+systemctl enable ip6tables.service
+systemctl enable xinetd.service
+
+#etckeeper commit -m "xs-setup-network configured services"
 
 touch $MARKER
 

@@ -1,0 +1,4 @@
+#!/bin/bash
+# script to return service information 
+base=`dirname  "$0"`
+ps aux | gawk -f "$base/servicelist.awk"

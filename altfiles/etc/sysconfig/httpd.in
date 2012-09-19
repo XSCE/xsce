@@ -1,40 +1,8 @@
 # Configuration file for the httpd service.
-
+# earlier XS httpd passed memory size as command line variable
+# systemd requires that this be done at setup time in httpd.conf
 #
-# The default processing model (MPM) is the process-based
-# 'prefork' model.  A thread-based model, 'worker', is also
-# available, but does not work with some modules (such as PHP).
-# The service must be stopped before changing this variable.
 #
-#HTTPD=/usr/sbin/httpd.worker
-
-# Choose a config file depending on memory
-MEMSIZE=$(grep '^MemTotal' /proc/meminfo | grep -oP '\d+')
-CONFMEM=256m
-# Note: the sizes are rounded to a lower value
-#       as they are usually reported a tad lower than the
-#       "proper" MB value in bytes (video cards often steal RAM!).
-if [ $MEMSIZE -gt  500000 ]; then
-    CONFMEM=512m
-fi
-if [ $MEMSIZE -gt 1000000 ]; then
-    CONFMEM=1024m
-fi
-if [ $MEMSIZE -gt 2000000 ]; then
-    CONFMEM=2048m
-fi
+OPTIONS=" -f conf/httpd-xs.conf 
 
 
-#
-# To pass additional options (for instance, -D definitions) to the
-# httpd binary at startup, set OPTIONS here.
-#
-OPTIONS=" -f conf/httpd-xs.conf -DMEM$CONFMEM "
-
-
-#
-# By default, the httpd process is started in the C locale; to 
-# change the locale in which the server runs, the HTTPD_LANG
-# variable can be set.
-#
-#HTTPD_LANG=C

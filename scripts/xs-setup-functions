@@ -1,0 +1,588 @@
+#!/bin/bash +x
+# collect here all the separate setup independent changes to stock XO software
+#  -- ordered alphabetically
+# usage: source this file -- for example to install a WWW server:
+#===============================================================================
+#!/bin/bash
+#examble install script
+#source /usr/bin/xs-setup-functions
+#do-first
+#httpd yes
+#do-last
+#===============================================================================
+
+set -x -e -u
+
+DESTDIR=""
+CFGDIR=/usr/share/xs-config/cfg
+CFGFUNCTIONS=/etc/sysconfig/olpc-scripts/functions
+MARKER=/.olpcxs-configured
+LOG=/var/log/xs-setup.log
+POSTGRESSDIR=/library/pgsql-xs
+SETUPSTATEDIR=/etc/sysconfig/olpc-scripts/setup.d/installed
+DEFAULTUSER='admin'
+DEFAULTPASSWORD='12admin'
+
+function activity-server()
+{
+	case "$1" in
+    "yes")
+        yum -y install  activity-server 2>&1 | tee -a $LOG
+        touch SETUPSTATEDIR/activity-server
+        ;;
+    "no")
+        yum -y erase   activity-server 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/activity-server
+        ;;
+    esac
+}
+
+function avahi()
+{
+	case "$1" in
+	"yes")
+        yum -y install nss-mdns avahi avahi-tools avahi-ui 2>&1 | tee -a $LOG
+		systemctl enable avahi-daemon.service 2>&1 | tee -a $LOG
+        touch $SETUPSTATEDIR/avahi
+        ;;
+	"no")
+		systemctl disable avahi-daemon.service 2>&1 | tee -a $LOG
+        #yum -y erase nss-mdns avahi avahi-tools avahi-ui
+        rm $SETUPSTATEDIR/avahi
+        ;;
+	esac
+}	
+
+function dhcpd()
+{
+	case "$1" in
+	"yes")
+        yum -y install dhcp 2>&1 | tee -a $LOG
+		systemctl enable dhcpd.service 2>&1 | tee -a $LOG
+        touch $SETUPSTATEDIR/dhcpd
+        ;;
+	"no")
+		systemctl disable dhcpd.service 2>&1 | tee -a $LOG
+        yum -y erase dhcp 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/dhcpd
+        ;;
+	esac
+}
+
+function etckeeper-if-selected()
+{
+    if [ -e $SETUPSTATEDIR/etckeeper && $# -gt 1]; then
+        set +e
+        etckeeper commit -m $2
+        set -e
+    fi
+}
+
+function set-etckeeper()
+{
+	case "$1" in
+	"yes")
+        if [ ! -d /etc/.git ]; then
+            pushd /etc
+            yum -y install etckeeper
+            etckeeper init
+            etckeeper commit -m "Initial checkin"
+            git gc
+            popd
+        fi
+
+        if [ ! -e $SETUPSTATEDIR/etckeeper ]; then
+            touch $SETUPSTATEDIR/etckeeper
+        fi
+        ;;
+	"no")
+        if [ -e $SETUPSTATEDIR/etckeeper ]; then
+            rm $SETUPSTATEDIR/etckeeper
+        fi
+        ;;
+	esac
+}
+
+function ejabberd()
+{
+	case "$1" in
+	"yes")
+        yum -y install ejabberd 2>&1 | tee -a $LOG
+
+		# and set it to autostart
+		systemctl enable ejabberd.service 2>&1 | tee -a $LOG
+		systemctl start ejabberd.service 2>&1 | tee -a $LOG
+        touch $SETUPSTATEDIR/ejabberd
+		;;
+	"no")
+		systemctl disable ejabberd.service 2>&1 | tee -a $LOG
+        yum -y erase ejabberd 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/ejabberd
+		;;
+	esac
+}
+
+function gateway()
+{
+	case "$1" in
+	"yes")
+        cp /etc/sysconfig/olpc-scripts/iptables-xs.in /etc/sysconfig/olpc-scripts/iptables-xs
+        cp /etc/sysconfig/olpc-scripts/ip6tables-xs.in /etc/sysconfig/olpc-scripts/ip6tables-xs
+        ;;
+	"no")
+        ;;
+	esac
+}
+
+function httpd()
+{
+	case "$1" in
+	"yes")
+		yum -y install httpd php 2>&1 | tee -a $LOG
+        cp -p /etc/httpd/conf/httpd-xs.conf.in /etc/httpd/conf/httpd-xs.conf
+		# Choose a config depending on memory
+		MEMSIZE=$(grep '^MemTotal' /proc/meminfo | grep -oP '\d+')
+		CONFMEM=256m
+		# Note: the sizes are rounded to a lower value
+		#       as they are usually reported a tad lower than the
+		#       "proper" MB value in bytes (video cards often steal RAM!).
+		if [ $MEMSIZE -gt  500000 ]; then
+		    CONFMEM=512m
+		fi
+		if [ $MEMSIZE -gt 1000000 ]; then
+		    CONFMEM=1024m
+		fi
+		if [ $MEMSIZE -gt 2000000 ]; then
+		    CONFMEM=2048m
+		fi
+		#update the httpd.conf file with this information
+		sed  's/@@CONFMEM@@/$CONFMEM/' /etc/httpd/conf/httpd-xs.conf
+		etckeeper-if-selected "modified /etc/httpd/conf/httpd-xs.conf"
+        systemctl start httpd.service 2>&1 | tee -a $LOG
+		systemctl enable httpd.service 2>&1 | tee -a $LOG
+        
+        #now install the xs - client html/php code
+        
+        touch $SETUPSTATEDIR/httpd
+		;;
+	"no")
+		systemctl disable httpd.service 2>&1 | tee -a $LOG
+        yum -y erase httpd 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/httpd
+		;;
+	esac
+}
+
+function idmgr()
+{
+	case "$1" in
+	"yes")
+        yum -y install idmgr ds-backup-server \
+                xs-rsync  2>&1 | tee -a $LOG
+        #set up the sqlite database for idmgr
+        /etc/sysconfig/olpc-scripts/setup.d/idmgr
+        #we'll leave the script in place and call it from systemd
+        cp /etc/init.d/idmgr /usr/libexec/idmgr.init
+        #setup ds-backup symlinks to config locations
+        ln -sf /usr/share/ds-backup/apache-ds-backup.conf \
+            /etc/httpd/conf.d/050-ds-backup.conf
+        ln -sf /usr/share/ds-backup/cron-ds-backup-server.conf \
+            /etc/cron.d/ds-bakup-server.conf
+        # incrond doesn't accept syslinks
+        cp -f /usr/share/ds-backup/incron-ds-backup.conf /etc/incron.d/ds-backup.conf
+        cp /etc/systemd/system/idmgr.service.in /etc/systemd/system/idmgr.service
+		systemctl enable idmgr.service 2>&1 | tee -a $LOG
+		systemctl start idmgr.service 2>&1 | tee -a $LOG
+        touch $SETUPSTATEDIR/idmgr
+        ;;
+	"no")
+		systemctl disable idmgr.service 2>&1 | tee -a $LOG
+        yum -y erase idmgr ds-backup xs-rsync  2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/idmgr
+        ;;
+	esac
+}
+
+function manpages()
+{
+	case "$1" in
+	"yes")
+        set +e;
+        sed -i -c  's/%_excludedocs 1/%_excludedocs 0/' /etc/rpm/macros.imgcreate
+        set -e
+		yum -y install man-pages man-db man 2>&1 | tee -a $LOG
+        touch $SETUPSTATEDIR/manpages
+        ;;
+	"no")
+        set +e
+        sed -i -c  's/%_excludedocs 0/%_excludedocs 1/' /etc/rpm/macros.imgcreate
+        set -e
+		yum -y erase  man-pages man-db man 2>&1 | tee -a $LOG
+        rm -rf /usr/share/man
+        rm $SETUPSTATEDIR/manpages
+        ;;
+	esac
+}
+
+function mlocate()
+{
+	case "$1" in
+	"yes")
+        yum -y install mlocate 2>&1 | tee -a $LOG
+        updatedb
+        touch $SETUPSTATEDIR/mlocate
+        ;;
+	"no")
+        yum -y erase mlocate 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/mlocate
+        ;;
+	esac
+}
+
+function moodle()
+{
+	case "$1" in
+	"yes")
+        yum -y install moodle 2>&1 | tee -a $LOG
+		systemctl enable moddle.service 2>&1 | tee -a $LOG
+        touch $SETUPSTATEDIR/moodle
+        ;;
+	"no")
+		systemctl disable moddle.service 2>&1 | tee -a $LOG
+        yum -y erase moodle 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/moodle
+        ;;
+	esac
+}
+
+function moodle-xs()
+{
+	case "$1" in
+	"yes")
+        yum -y install moodle-xs 2>&1 | tee -a $LOG
+        cp -p /etc/systemd/system/moodle-xs.service.in \
+                /etc/systemd/system/moodle-xs.service
+        cp -p /etc/sysconfig/olpc-scripts/moodle-xs-init.in \
+                /etc/sysconfig/olpc-scripts/moodle-xs-init
+        #execute the moodle startup script
+		systemctl enable moddle-xs.service 2>&1 | tee -a $LOG
+		systemctl start moddle-xs.service 2>&1 | tee -a $LOG
+        touch $SETUPSTATEDIR/moodle-xs
+        ;;
+	"no")
+		systemctl disable moddle-xs.service 2>&1 | tee -a $LOG
+        yum -y erase moodle-xs 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/moodle-xs
+        ;;
+	esac
+}
+
+function named()
+{
+	case "$1" in
+	"yes")
+        yum -y install bind bind-utils 2>&1 | tee -a $LOG
+        #if xs data files are installed before bind, named user doesn't exist,
+        #   and group ownership is set to root, which uer named cannot read
+        if [ -d /var/named-xs ]; then
+            chgrp -R named /var/named-xs
+        fi
+		cp /etc/named-xs.conf.in /etc/named-xs.conf
+		cp /etc/sysconfig/olpc-scripts/resolv.conf.in /etc/sysconfig/olpc-scripts/resolv.conf
+        systemctl enable named.service 2>&1 | tee -a $LOG
+        systemctl start named.service 2>&1 | tee -a $LOG
+        touch $SETUPSTATEDIR/named
+        ;;
+	"no")
+		systemctl disable named.service 2>&1 | tee -a $LOG
+        #let the dhclinet control the name resolution normally
+        rm /etc/sysconfig/olpc-scripts/resolv.conf
+        yum -y erase bind 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/named
+        ;;
+	esac
+}
+ 
+function postgresql()
+{
+	case "$1" in
+	"yes")
+        yum -y install postgresql postgresql-server 2>&1 | tee -a $LOG
+        cp /etc/systemd/system/postgresql-xs.service.in \
+                /etc/systemd/system/postgresql-xs.service
+		systemctl enable postgresql-xs.service 2>&1 | tee -a $LOG
+        
+		# Pg - prime the DB if needed.
+		if [ ! -e ${POSTGRESSDIR}/PG_VERSION ];then
+            #/etc/init.d/pgsql-xs initdb -- this was used before systemd
+            #postgresql-setup initdb need to move this edit upstream FIXME
+            chown -R postgres:postgres /library/pgsql-xs/ 
+            sed -i -c "s/--auth='ident'/--auth='ident' --encoding='UTF8'/" /usr/bin/postgresql-setup
+			/usr/bin/postgresql-setup  initdb postgresql-xs
+		fi
+
+		# and set it to autostart
+		systemctl start postgresql-xs.service 2>&1 | tee -a $LOG
+        touch $SETUPSTATEDIR/postgresql
+		;;
+	"no")
+		systemctl disable postgresql-xs.service 2>&1 | tee -a $LOG
+        yum -y erase postgresql  posstgresql-server 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/postgresql
+		;;
+	esac
+}
+
+function squid()
+{
+	case "$1" in
+	"yes")
+        yum -y install squid 2>&1 | tee -a $LOG
+        #create the cache directories
+        squid -z
+        ## Update flag for httpd cache
+        if [ ! -e /etc/sysconfig/xs_httpcache_on ]; then
+            touch /etc/sysconfig/xs_httpcache_on
+            etckeeper-if-selected 'xs-setup force-create httpcache flag'
+        fi
+        systemctl enable squid.service 2>&1 | tee -a $LOG
+        systemctl start squid.service 2>&1 | tee -a $LOG
+        #need to set up iptables to forward port 80 queries
+        
+        touch $SETUPSTATEDIR/squid
+        ;;
+    "no")
+        systemctl disable squid.service 2>&1 | tee -a $LOG
+        yum -y erase squid 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/squid
+        ;;
+    esac
+}
+
+function vnc()
+{
+	case "$1" in
+	"yes")
+        yum -y install tigervnc-server novnc 2>&1 | tee -a $LOG
+        yum -y groupinstall XFCE  2>&1 | tee -a $LOG
+        #or yum install x11vnc-javaviewers | tee -a $LOG
+        cp -p /lib/systemd/system/vncserver\@.service /etc/systemd/system
+        sed -i -c 's/<USER>/$DEFAULTUSER/' /etc/systemd/system/vncserver\@.service
+
+        #start the websocket service (part of the novnc package)
+        systemctl enable vncserverweb.service 2>&1 | tee -a $LOG
+        mkdir -m 644 -p /home/$DEFAULTUSER/.vnc
+        echo "$DEFAULTPASSWORD" | vncpasswd -f > /home/$DEFAULTUSER/.vnc/passwd
+        ln -sf $CFGDIR/etc/systemd/system/* $DESTDIR/etc/systemd/system
+        ln -sf $DESTDIR/systemd/system/vncserver\@.service \
+            $DESTDIR/systemd/system/multi-user.wants.target/vncserver\@\:1.service
+        cp $CFGDIR/etc/sysconfig/vnc/xstartup /home/$DEFAULTUSER/.vnc/
+        chown $DEFAULTUSER:$DEFAULTUSER /home/$DEFAULTUSER/.vnc/*
+		systemctl enable vncserver\@.service 2>&1 | tee -a $LOG
+        systemctl start vncserver\@\:1.service 2>&1 | tee -a $LOG
+        systemctl start vncserverweb.service 2>&1 | tee -a $LOG
+        touch $SETUPSTATEDIR/vnc
+        ;;
+	"no")
+		systemctl disable vncserver\@.service 2>&1 | tee -a $LOG
+        yum -y erase tigervnc-server novnc2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/vnc
+        ;;
+	esac
+}
+
+function webdav()
+{
+	case "$1" in
+	"yes")
+        cp /etc/httpd/conf.d/webdav.conf.in /etc/httpd/conf.d/webdav.conf
+        mkdir -p /library/webdav
+        chown apache:apache /library/webdav
+        htpasswd -cb /etc/httpd/webdav.users.pwd $DEFAULTUSER $DEFAULTPASSWORD
+        chown apache:apache /etc/httpd/webdav.users.pwd
+        touch $SETUPSTATEDIR/webdav
+        ;;
+	"no")
+        rm /etc/httpd/conf.d/webdav.conf
+        rm $SETUPSTATEDIR/webdav
+        ;;
+	esac
+}
+
+function yum-etckeeper()
+{
+	case "$1" in
+	"yes")
+        if [ ! -e $SETUPSTATEDIR/etckeeper ]; then
+            set-etckeeper yes
+        fi
+        sed -c -i -e 's/^enabled=0/enabled=1/' /etc/yum/pluginconf.d/etckeeper.conf
+        ;;
+	"no")
+        sed -c -i -e 's/^enabled=1/enabled=0/' /etc/yum/pluginconf.d/etckeeper.conf
+        ;;
+	esac
+}
+
+function xs-security()
+{
+	case "$1" in
+    "yes")
+        yum -y install  xs-tools olpc-bios-crypto bitfrost xs-activation 2>&1 | tee -a $LOG
+        touch $SETUPSTATEDIR/xs-security
+        ;;
+    "no")
+        yum -y erase   xs-tools olpc-bios-crypto bitfrost xs-activation 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/xs-security
+        ;;
+    esac
+}
+
+function do_first()
+{    
+    #things to do the first time -- only once
+    
+    #there are files open in the tempfs /var/log -- so we cannot just unmount it
+    #  we need to disable tempfs and then start up again on a /var/log directory
+    #  that persists
+    set +e; err=`grep -e "#varlog" /etc/fstab`; set -e;
+    if [ ! $err ]; then
+        #XO release 12.1.0 makes /var/log  a tempfs -- server logs should persist
+        sed -i -c 's:varlog:#varlog:' /etc/fstab
+        echo "The setup program must reboot before additional setup can proceed"
+        echo
+        echo "rebooting"
+        sleep 5
+        reboot
+    fi
+    ## Prepare etckeeper database
+    if [ ! -e $MARKER ]; then
+        pushd /etc
+        
+        ###
+        ### CLEANUP XS 0.4 to XS 0.5
+        ###
+        # Remove old configs that are unambiguously old
+        OLDCONFIGS="/etc/sysconfig/network-scripts/ifcfg-dummy0
+                    /etc/sysconfig/network-scripts/ifcfg-br0
+                    /etc/sysconfig/network-scripts/ifcfg-br1
+                    /etc/sysconfig/network-scripts/ifcfg-br2  "
+        for FPATH in $OLDCONFIGS; do
+            if [ -e "${DESTDIR}$FPATH" ];then
+               rm -f "${DESTDIR}$FPATH"
+            fi
+        done
+        # Remove ifcfg-ethX files that refer to libertas devices
+        # these have been replaced with wmeshX devices
+        for FPATH in ${DESTDIR}/etc/sysconfig/network-scripts/ifcfg-eth*; do
+            # Here the implicit ls has incorporated $DESTDIR
+            if grep -q '^ESSID=\"school-mesh-' "$FPATH" ;then
+                rm -f "$FPATH"
+            fi
+        done
+        # remove eth1:1 if it's the 'school server master address'
+        FPATH="${DESTDIR}/etc/sysconfig/network-scripts/ifcfg-eth1:1"
+        if [ -e "$FPATH" ];then
+            if grep -q '^IPADDR=172.18.1.1' "$FPATH" ;then
+                rm -f "$FPATH"
+            fi
+        fi
+        
+        ## Prepare config files
+        CFG_TEMPLATES="rsyslog.conf motd.olpc sysctl.conf ssh/sshd_config yum.conf
+        sysconfig/named sysconfig/init sysconfig/squid rssh.conf php.ini
+        httpd/conf.d/proxy_ajp.conf httpd/conf.d/ssl.conf"
+        
+        for i in $CFG_TEMPLATES; do
+            cp -p $i.in $i
+        done
+        
+        # Load new sysctl.conf settings
+        sysctl -p
+
+        #record the config file additions
+        etckeeper-if-selected 'Config files copied <file.in> to <file>'
+
+        # Work would be needed to get the XS components playing nice with SELinux, so
+        # disable it.
+        if selinuxenabled; then
+            setenforce 0
+            sed -i -e 's/^SELINUX=.*/SELINUX=disabled/' /etc/selinux/config
+        fi
+
+        echo "-y" > $DESTDIR/fsckoptions
+        ln -sf $CFGDIR/etc/dhcp/dhclient-exit-hooks $DESTDIR/etc/dhcp
+        ln -sf $CFGDIR/etc/httpd/conf.d/*.conf $DESTDIR/etc/httpd/conf.d
+        ln -sf $CFGDIR/etc/logrotate.d/* $DESTDIR/etc/logrotate.d
+        ln -sf $CFGDIR/etc/usbmount/mount.d/* $DESTDIR/etc/usbmount/mount.d
+        ln -sf $CFGDIR/etc/profile.d/* $DESTDIR/etc/profile.d
+
+        # sudo doesn't accept symlinks here
+        install -m 440 $CFGDIR/etc/sudoers.d/* $DESTDIR/etc/sudoers.d
+        install -m 440 $CFGDIR/etc/systemd/system/* $DESTDIR/etc/systemd/system
+        
+        # run setup scripts belonging to other packages
+        #shopt -s nullglob
+        #for i in /etc/sysconfig/olpc-scripts/setup.d/*; do
+         #   [ -x $i ] && $i
+        #done
+        #shopt -u nullglob
+
+        #this needs to be turned on first so that later installs save man pages
+        manpages yes
+        
+        etckeeper-if-selected "disabled selinux, scripts sourced"
+        
+        #following packages are the core set of packages installed on all xs servers
+        yum -y install  syck rssh mtd-utils acpid  2>&1 | tee -a $LOG
+        #copy .bashrc to /root
+        cp -p /home/olpc/.bashrc /root
+        
+        #make a non privileged user, and give her remote access
+        if [ ! `grep $DEFAULTUSER /etc/passwd` ]; then
+            adduser $DEFAULTUSER
+            echo "$DEFAULTPASSWORD" | passwd $DEFAULTUSER --stdin
+        fi
+        sed -i -c 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+        systemctl enable sshd.service
+        systemctl restart sshd.service
+        
+        etckeeper-if-selected "after installing core packages"
+        
+        popd
+    fi
+    echo "do first routine completed" | tee -a $LOG
+    date  2>&1 | tee -a $LOG
+
+}
+
+function do-first()
+(
+    do_first
+)
+
+function do-last()
+(
+    do_last
+)
+
+function do_last()
+{
+    etckeeper-if-selected 'School Server setup changed - do_last'
+    echo "do last executed" | tee -a $LOG
+    date | tee -a $LOG
+    if [ ! -e $MARKER ]; then
+        #internally we use /etc/.git as marker for first config run --
+        #   --$ MARKER  is available externally
+        touch $MARKER
+        echo "XS configured; services will activate upon reboot."
+    fi
+}
+
+#now source any files ending with .sh in config dir, allow pkgs to shadow these defs
+for i in $CFGFUNCTIONS/*.sh ; do
+    if [ -r "$i" ]; then
+            . "$i" >/dev/null 2>&1
+            echo "shell script $i in $CFGFUNCTIONS shadowed setup functions" 2>&1 | tee -a $LOG
+    fi
+done

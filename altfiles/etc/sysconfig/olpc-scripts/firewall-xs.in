@@ -1,0 +1,47 @@
+#!/bin/bash -x
+IPTABLES=/usr/sbin/iptables
+wan="eth0"
+lan="eth1"
+LANIF=`route -n | grep "172.18.96" | gawk '{ print $8 }'`
+WANIF=`route -n | grep "UG" | gawk '{ print $8 }'`
+if [ ! "x$WANIF" == "x" ]; then
+	wan=$WANIF
+fi
+if [ ! "x$LANIF" == "x" ]; then
+	lan=$LANIF
+fi
+echo "Lan is $lan and WAN i $wan"
+#
+# delete all existing rules.
+#
+$IPTABLES -F
+$IPTABLES -t nat -F
+$IPTABLES -X
+/sbin/modprobe ip_tables
+/sbin/modprobe iptable_filter
+/sbin/modprobe ip_conntrack
+/sbin/modprobe iptable_nat
+# Always accept loopback traffic
+$IPTABLES -A INPUT -i lo -j ACCEPT
+
+
+# Allow established connections, and those not coming from the outside
+$IPTABLES -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A INPUT -m state --state NEW -i  $lan -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport ssh -m state --state NEW -i $wan -j ACCEPT
+$IPTABLES -A FORWARD -i $wan -o $lan -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Allow outgoing connections from the LAN side.
+$IPTABLES -A FORWARD -i $lan -o $wan -j ACCEPT
+
+# Don't forward from the outside to the inside.
+$IPTABLES -A FORWARD -i $wan -o $lan -j DROP
+if [ -f /etc/sysconfig/olpc-scripts/setup.d/installed/gateway ] ; then
+    $IPTABLES -A POSTROUTING -t nat -o $wan -j MASQUERADE
+fi
+if [ -f /etc/sysconfig/xs-httpcache-on ]; then
+    $IPTABLES -A PREROUTING -i $lan -p tp --dport 80 -j REDIRECT --to-ports 3128
+fi
+
+# Enable routing.
+echo 1 > /proc/sys/net/ipv4/ip_forward
