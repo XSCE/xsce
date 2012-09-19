@@ -35,17 +35,30 @@ if [ -n "$opt_upgrade_only" -a ! -e "$MARKER" ]; then
 fi
 
 #etckeeper commit -m "Dirty state"
+hwaddr=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
+/^ *ether / { if (eth == "eth0:") print( $2);}'`
+num_ifaces=`ls /sys/class/net | wd | gawk '{print $1}'`
+#lo is always present, so 2 interfaces is really 1 real interface
+if [ num_ifaces -eq 3 ] ; then
+    hwaddr=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
+    /^ *ether / { if (eth == "eth1:") print( $2);}'`
+fi
 
+#figure out what to write into ifcfg-eth0
+if [ num_ifaces -eq 2 ] ; then
 cat <<EOF > $ETH0_CONF
 # XS LAN configuration
 DEVICE=eth0
 IPADDR1=172.18.96.1
 NETMASK1=255.255.224.0
-
+$nm_control
 # The actrd initramfs tries to connect to the server on 172.18.0.1 to request
 # activation. Retain this old/deprecated address binding for compatibility.
 IPADDR2=172.18.0.1
 NETMASK2=255.255.255.0
+
+NM_CONTROLLED=no
+HWADDR=$hwaddr
 
 IPV6INIT=yes
 IPV6ADDR_SECONDARIES="fe80::abcd:ef02/64"
@@ -54,13 +67,14 @@ TYPE=Ethernet
 HOTPLUG=yes
 EOF
 echo "Wrote $ETH0_CONF"
-
-if [ ! -e $MARKER ]; then
-	cat <<EOF > $ETH1_CONF
-# Configure your WAN connection here.
+fi
+if [ num_ifaces -eq 3 ] ; then
+#there is a ethernet dongle for wan, or a USB modem
+# Configure your eth0 wifi device as a LAN connection here.
+cat <<EOF > $ETH0_CONF
 # The default is automatic configuration via DHCP.
 
-DEVICE=eth1
+DEVICE=eth0
 ONBOOT=yes
 BOOTPROTO=dhcp
 DHCP_HOSTNAME=schoolserver
@@ -75,9 +89,34 @@ HOTPLUG=yes
 #BROADCAST=18.85.46.255
 #GATEWAY=18.85.46.1
 EOF
-	echo "Wrote $ETH1_CONF"
+	echo "Wrote $ETH0_CONF"
 fi
 
+#figure out what to write into ifcfg-eth1
+if [ num_ifaces -gt 2 ] ; then
+cat <<EOF > $ETH1_CONF
+# XS LAN configuration
+DEVICE=eth1
+IPADDR1=172.18.96.1
+NETMASK1=255.255.224.0
+$nm_control
+# The actrd initramfs tries to connect to the server on 172.18.0.1 to request
+# activation. Retain this old/deprecated address binding for compatibility.
+IPADDR2=172.18.0.1
+NETMASK2=255.255.255.0
+
+NM_CONTROLLED=no
+HWADDR=$hwaddr
+
+IPV6INIT=yes
+IPV6ADDR_SECONDARIES="fe80::abcd:ef02/64"
+ONBOOT=yes
+TYPE=Ethernet
+HOTPLUG=yes
+EOF
+echo "Wrote $ETH1_CONF"
+
+fi
 #etckeeper commit -m "xs-setup-network configured interfaces"
 
 ## Prepare config files
