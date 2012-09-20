@@ -39,13 +39,13 @@ hwaddr=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;}
 /^ *ether / { if (eth == "eth0:") print( $2);}'`
 num_ifaces=`ls /sys/class/net | wd | gawk '{print $1}'`
 #lo is always present, so 2 interfaces is really 1 real interface
-if [ num_ifaces -eq 3 ] ; then
+if [[ num_ifaces -eq 3 ]] ; then
     hwaddr=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
     /^ *ether / { if (eth == "eth1:") print( $2);}'`
 fi
 
 #figure out what to write into ifcfg-eth0
-if [ num_ifaces -eq 2 ] ; then
+if [[ num_ifaces -eq 2 ]] ; then
 cat <<EOF > $ETH0_CONF
 # XS LAN configuration
 DEVICE=eth0
@@ -68,7 +68,7 @@ HOTPLUG=yes
 EOF
 echo "Wrote $ETH0_CONF"
 fi
-if [ num_ifaces -eq 3 ] ; then
+if [[ num_ifaces -eq 3 ]] ; then
 #there is a ethernet dongle for wan, or a USB modem
 # Configure your eth0 wifi device as a LAN connection here.
 cat <<EOF > $ETH0_CONF
@@ -93,7 +93,7 @@ EOF
 fi
 
 #figure out what to write into ifcfg-eth1
-if [ num_ifaces -gt 2 ] ; then
+if [[ num_ifaces -gt 2 ]] ; then
 cat <<EOF > $ETH1_CONF
 # XS LAN configuration
 DEVICE=eth1
@@ -117,7 +117,6 @@ EOF
 echo "Wrote $ETH1_CONF"
 
 fi
-#etckeeper commit -m "xs-setup-network configured interfaces"
 
 ## Prepare config files
 CFG_TEMPLATES="sysconfig/dhcpd sysconfig/iptables-config sysconfig/ip6tables-config"
@@ -134,31 +133,6 @@ systemctl enable ip6tables.service
 systemctl enable xinetd.service
 
 #etckeeper commit -m "xs-setup-network configured services"
-=======
-echo "wrote /etc/sysconfig/network-scripts/ifcfg-$WAN_CONF"
-fi
-echo `echo $LAN_CONF  > /etc/sysconfig/xs_lan_device
-echo `echo $WAN_CONF  > /etc/sysconfig/xs_wan_device
-
-#etckeeper commit -m "xs-setup-network configured interfaces"
-
-## Prepare config files
-CFG_TEMPLATES="sysconfig/dhcpd sysconfig/iptables-config \
-              sysconfig/ip6tables-config sysconfig/olpc-scripts/firewall-xs"
-pushd /etc
-for i in $CFG_TEMPLATES; do
-	cp -p $i.in $i
-	#etckeeper commit -m "Made from $i.in"
-done
-popd
-
-systemctl enable network.service
-systemctl enable iptables.service
-systemctl enable ip6tables.service
-systemctl enable xinetd.service
-
-#etckeeper commit -m "xs-setup-network configured services"
-
 touch $MARKER
 
 # must re-run domain-config as some domain-config parts change behaviour
