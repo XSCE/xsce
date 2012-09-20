@@ -37,7 +37,7 @@ fi
 #etckeeper commit -m "Dirty state"
 hwaddr=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
 /^ *ether / { if (eth == "eth0:") print( $2);}'`
-num_ifaces=`ls /sys/class/net | wd | gawk '{print $1}'`
+num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
 #lo is always present, so 2 interfaces is really 1 real interface
 if [[ num_ifaces -eq 3 ]] ; then
     hwaddr=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
