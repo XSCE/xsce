@@ -37,8 +37,9 @@ fi
 #etckeeper commit -m "Dirty state"
 hwaddr=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
 /^ *ether / { if (eth == "eth0:") print( $2);}'`
-num_ifaces=`ls /sys/class/net | wc
-| gawk '{print $1}'`
+
+num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
+
 wan_device=`route -n | gawk ' /UG/ {print $8}'`
 #lo is always present, so 2 interfaces is really 1 real interface
 if [[ num_ifaces -eq 3 ]] ; then
@@ -96,12 +97,12 @@ fi
 
 #figure out what to write into ifcfg-eth1
 if [[ num_ifaces -gt 2 ]] ; then
-    if [[ $wan_device -eq 'wlan0']] ; then
-        target_file=$ETH0_CONF
+    if [[ "$wan_device" -eq "wlan0" ]] ; then
+        target_file="$ETH0_CONF"
         device="eth0"
     else
-        target_file=$ETH1_CONF
-        device="eht1"
+        target_file="$ETH1_CONF"
+        device="eth1"
     fi
     
 hwaddr=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 

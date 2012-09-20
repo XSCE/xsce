@@ -110,8 +110,10 @@ function ejabberd()
         yum -y install ejabberd 2>&1 | tee -a $LOG
 
 		# and set it to autostart
-		systemctl enable ejabberd.service 2>&1 | tee -a $LOG
-		systemctl start ejabberd.service 2>&1 | tee -a $LOG
+        cp /etc/systemd/system/ejabberd-xs.service.in \
+                    /etc/systemd/system/ejabberd-xs.service
+		systemctl enable ejabberd-xs.service 2>&1 | tee -a $LOG
+		systemctl start ejabberd-xs.service 2>&1 | tee -a $LOG
         touch $SETUPSTATEDIR/ejabberd
 		;;
 	"no")
