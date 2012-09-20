@@ -35,9 +35,9 @@ fi
 function write_nm_connection(){
     # receives connection_filename, hwaddr,  device_name as parameters
     cp "/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/$1" \
-        /etc/NetworkManager/system-connections/
-    sed -i-c "s/@@MAC@@/$2/ /etc/NetworkManager/system-connections/$1"
-    sed -i-c "s/@@DEVICE@@/$3/ /etc/NetworkManager/system-connections/$1"
+        "/etc/NetworkManager/system-connections/$1"
+    sed -i -c "s/\@\@MAC\@\@/$2/" "/etc/NetworkManager/system-connections/$1"
+    sed -i -c "s/\@\@DEVICE\@\@/$3/" "/etc/NetworkManager/system-connections/$1"
     chmod 600 "/etc/NetworkManager/system-connections/$1" 
 }
 
@@ -48,8 +48,8 @@ num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
 is_xo=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
 echo $is_xo
 # all xo's have a wifi and a lo interface
-if [[ $is_xo]]; then
-    num_ifaces= $num_ifaces - 1
+if [[ $is_xo = "1" ]]; then
+    num_ifaces=$(( $num_ifaces - 1 ))
 fi
 # if we have 2 ethernet dongles, lo, )
 if [[ $num_ifaces = 3 ]] ; then
@@ -84,7 +84,7 @@ for i in $CFG_TEMPLATES; do
 	cp -p $i.in $i
 	#etckeeper commit -m "Made from $i.in"
 done
-etckeeper commit -m "Made from $i.in"
+#etckeeper commit -m "Made from $i.in"
 popd
 
 systemctl enable network.service

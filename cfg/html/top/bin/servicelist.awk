@@ -7,7 +7,7 @@ BEGIN {
 	services["named"] = "named"
 	services["epmd"] = "ejabberd"
 	services["beam"] = "ejabberd"
-	services["vncserver"] = "vnc"
+	services["vnc"] = "vnc"
 	services["websockify"] = "vnc_web"
 	services["sshd"] = "sshd"
 	services["dhcpd"] = "dhcpd"
@@ -25,10 +25,14 @@ BEGIN {
 		if (index($11,serv)>0){
 			#accumulate processes related to each service
 			servid = services[serv]
+			id = ""
 			if (serv == "python"){
 				if (index($12,"registration")>0) 
-					servid = "registration"
-				else continue
+					id = "registration"
+				if (index($12,"websockify")>0) 
+					id = "websockify"
+				if (id == "") continue
+				servid = id
 			}
 			if (!(servid SUBSEP "pid" in data)) data[servid,"pid"] = $2
 			if (servid SUBSEP "mem" in data){

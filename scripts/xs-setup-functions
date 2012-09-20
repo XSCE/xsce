@@ -380,7 +380,7 @@ function vnc()
             $DESTDIR/etc/systemd/system/multi-user.target.wants/vncserver\@\:1.service
         cp $CFGDIR/etc/sysconfig/vnc/xstartup /home/$DEFAULTUSER/.vnc/
         chown $DEFAULTUSER:$DEFAULTUSER /home/$DEFAULTUSER/.vnc/*
-		systemctl enable vncserver\@.service 2>&1 | tee -a $LOG
+		systemctl enable vncserver\@\:1.service 2>&1 | tee -a $LOG
         systemctl start vncserver\@\:1.service 2>&1 | tee -a $LOG
         systemctl start vncserverweb.service 2>&1 | tee -a $LOG
         touch $SETUPSTATEDIR/vnc
