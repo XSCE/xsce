@@ -42,13 +42,13 @@ num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
 
 wan_device=`route -n | gawk ' /UG/ {print $8}'`
 #lo is always present, so 2 interfaces is really 1 real interface
-if [[ num_ifaces -eq 3 ]] ; then
+if [[ num_ifaces = 3 ]] ; then
     hwaddr=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
     /^ *ether / { if (eth == "eth1:") print( $2);}'`
 fi
 
 #figure out what to write into ifcfg-eth0
-if [[ num_ifaces -eq 2 ]] ; then
+if [[ num_ifaces = 2 ]] ; then
 cat <<EOF > $ETH0_CONF
 # XS LAN configuration
 DEVICE=eth0
@@ -71,7 +71,7 @@ HOTPLUG=yes
 EOF
 echo "Wrote $ETH0_CONF"
 fi
-if [[ num_ifaces -eq 3 ]] ; then
+if [[ num_ifaces = 3 ]] ; then
 #there is a ethernet dongle for wan, or a USB modem
 # Configure your eth0 wifi device as a LAN connection here.
 cat <<EOF > $ETH0_CONF
@@ -97,7 +97,7 @@ fi
 
 #figure out what to write into ifcfg-eth1
 if [[ num_ifaces -gt 2 ]] ; then
-    if [[ "$wan_device" -eq "wlan0" ]] ; then
+    if [[ "$wan_device" = "wlan0" ]] ; then
         target_file="$ETH0_CONF"
         device="eth0"
     else
