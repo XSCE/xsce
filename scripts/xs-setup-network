@@ -36,8 +36,8 @@ function write_nm_connection(){
     # receives connection_filename, hwaddr,  device_name as parameters
     cp "/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/$1" \
         /etc/NetworkManager/system-connections/
-    sed -i-c 's/@@MAC@@/"$2/ "/etc/NetworkManager/system-connections/$1"'
-    sed -i-c 's/@@DEVICE@@/"$3/ "/etc/NetworkManager/system-connections/$1"'
+    sed -i-c "s/@@MAC@@/$2/ /etc/NetworkManager/system-connections/$1"
+    sed -i-c "s/@@DEVICE@@/$3/ /etc/NetworkManager/system-connections/$1"
     chmod 600 "/etc/NetworkManager/system-connections/$1" 
 }
 
@@ -45,18 +45,20 @@ function write_nm_connection(){
 num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
 
 # Is this an XO
-is_xo=`[[ -f /proc/device-tree/mfg-data/MN]] && echo 1 || echo 0`
+is_xo=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
+echo $is_xo
 # all xo's have a wifi and a lo interface
-num_ifaces= "$num_ifaces" - is_xo - 1
-
+if [[ $is_xo]]; then
+    num_ifaces= $num_ifaces - 1
+fi
 # if we have 2 ethernet dongles, lo, )
-if [[ $num_ifaces = 2 ]] ; then
+if [[ $num_ifaces = 3 ]] ; then
     mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
         /^ *ether / { if (eth == "eth2:") print( $2);}'`
     write_nm_connection "eth2-dhcp" "$mac" "eth2"
 fi
 
-if [[ $num_ifaces  > 0 ]]; then
+if [[ $num_ifaces  > 1 ]]; then
     mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
         /^ *ether / { if (eth == "eth1:") print( $2);}'`
     write_nm_connection "eth1-static" "$mac" "eth1"
@@ -66,14 +68,14 @@ if [[ $num_ifaces  > 0 ]]; then
             /^ *ether / { if (eth == "eth0:") print( $2);}'`
         write_nm_connection "eth0-wireless" "$mac" "eth0"
     fi
-
-if [[ $is_xo = 1 ]]; then
-    #make the wireless static ip with school server address
-    mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
-        /^ *ether / { if (eth == "eth0:") print( $2);}'`
-    write_nm_connection "eth0-wireless-lan" "$mac" "eth0"
+else
+    if [[ $is_xo = 1 ]]; then
+        #make the wireless static ip with school server address
+        mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
+            /^ *ether / { if (eth == "eth0:") print( $2);}'`
+        write_nm_connection "eth0-wireless-lan" "$mac" "eth0"
+    fi
 fi
-
 
 ## Prepare config files
 CFG_TEMPLATES="sysconfig/dhcpd sysconfig/iptables-config sysconfig/ip6tables-config"
