@@ -1,14 +1,7 @@
-#!/bin/bash
+#!/bin/bash -x
 #
 # Install XS custom networking configuration
 #
-# Store default network settings in /etc/sysconfig/network-scripts, but
-# only make changes once (avoiding re-runs destroying network config info).
-
-ETH0_CONF="/etc/sysconfig/network-scripts/ifcfg-eth0"
-ETH1_CONF="/etc/sysconfig/network-scripts/ifcfg-eth1"
-MARKER="/.olpcxs-net-configured"
-
 # Parse options
 opt_upgrade_only=
 if ! options=$(getopt -o u -l upgrade-only -- "$@"); then
@@ -35,110 +28,61 @@ if [ -n "$opt_upgrade_only" -a ! -e "$MARKER" ]; then
 fi
 
 #etckeeper commit -m "Dirty state"
-hwaddr=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
-/^ *ether / { if (eth == "eth0:") print( $2);}'`
 
+#========================================================
+#new code to use NetworkManager to set up devices
+
+function write_nm_connection(){
+    # receives connection_filename, hwaddr,  device_name as parameters
+    cp "/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/$1" \
+        /etc/NetworkManager/system-connections/
+    sed -i-c 's/@@MAC@@/"$2/ "/etc/NetworkManager/system-connections/$1"'
+    sed -i-c 's/@@DEVICE@@/"$3/ "/etc/NetworkManager/system-connections/$1"'
+    chmod 600 "/etc/NetworkManager/system-connections/$1" 
+}
+
+# Determine the number of interfaces
 num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
 
-wan_device=`route -n | gawk ' /UG/ {print $8}'`
-#lo is always present, so 2 interfaces is really 1 real interface
-if [[ num_ifaces = 3 ]] ; then
-    hwaddr=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
-    /^ *ether / { if (eth == "eth1:") print( $2);}'`
+# Is this an XO
+is_xo=`[[ -f /proc/device-tree/mfg-data/MN]] && echo 1 || echo 0`
+# all xo's have a wifi and a lo interface
+num_ifaces= "$num_ifaces" - is_xo - 1
+
+# if we have 2 ethernet dongles, lo, )
+if [[ $num_ifaces = 2 ]] ; then
+    mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
+        /^ *ether / { if (eth == "eth2:") print( $2);}'`
+    write_nm_connection "eth2-dhcp" "$mac" "eth2"
 fi
 
-#figure out what to write into ifcfg-eth0
-if [[ num_ifaces = 2 ]] ; then
-cat <<EOF > $ETH0_CONF
-# XS LAN configuration
-DEVICE=eth0
-IPADDR1=172.18.96.1
-NETMASK1=255.255.224.0
-$nm_control
-# The actrd initramfs tries to connect to the server on 172.18.0.1 to request
-# activation. Retain this old/deprecated address binding for compatibility.
-IPADDR2=172.18.0.1
-NETMASK2=255.255.255.0
-
-NM_CONTROLLED=no
-HWADDR=$hwaddr
-
-IPV6INIT=yes
-IPV6ADDR_SECONDARIES="fe80::abcd:ef02/64"
-ONBOOT=yes
-TYPE=Ethernet
-HOTPLUG=yes
-EOF
-echo "Wrote $ETH0_CONF"
-fi
-if [[ num_ifaces = 3 ]] ; then
-#there is a ethernet dongle for wan, or a USB modem
-# Configure your eth0 wifi device as a LAN connection here.
-cat <<EOF > $ETH0_CONF
-# The default is automatic configuration via DHCP.
-
-DEVICE=eth0
-ONBOOT=yes
-BOOTPROTO=dhcp
-DHCP_HOSTNAME=schoolserver
-HOTPLUG=yes
-
-# If you want to set a static address, remove the BOOTPROTO and DHCP_HOSTNAME
-# lines above, and use the example settings below:
-#IPADDR=18.85.46.29
-#IPV6ADDR=2001:4830:2446:ff00::2/64
-#NETMASK=255.255.255.0
-#NETWORK=18.85.46.0
-#BROADCAST=18.85.46.255
-#GATEWAY=18.85.46.1
-EOF
-	echo "Wrote $ETH0_CONF"
-fi
-
-#figure out what to write into ifcfg-eth1
-if [[ num_ifaces -gt 2 ]] ; then
-    if [[ "$wan_device" = "wlan0" ]] ; then
-        target_file="$ETH0_CONF"
-        device="eth0"
-    else
-        target_file="$ETH1_CONF"
-        device="eth1"
+if [[ $num_ifaces  > 0 ]]; then
+    mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
+        /^ *ether / { if (eth == "eth1:") print( $2);}'`
+    write_nm_connection "eth1-static" "$mac" "eth1"
+    if [[ $is_xo = 1 ]]; then
+        #the wireless will be the gateway
+        mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
+            /^ *ether / { if (eth == "eth0:") print( $2);}'`
+        write_nm_connection "eth0-wireless" "$mac" "eth0"
     fi
-    
-hwaddr=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
-        /^ *ether / { if (eth == "$device:") print( $2);}'`
 
-cat <<EOF > $target_file
-# XS LAN configuration
-DEVICE=$device
-IPADDR1=172.18.96.1
-NETMASK1=255.255.224.0
-$nm_control
-# The actrd initramfs tries to connect to the server on 172.18.0.1 to request
-# activation. Retain this old/deprecated address binding for compatibility.
-IPADDR2=172.18.0.1
-NETMASK2=255.255.255.0
-
-NM_CONTROLLED=no
-HWADDR=$hwaddr
-
-IPV6INIT=yes
-IPV6ADDR_SECONDARIES="fe80::abcd:ef02/64"
-ONBOOT=yes
-TYPE=Ethernet
-HOTPLUG=yes
-EOF
-echo "Wrote $target_file"
-
+if [[ $is_xo = 1 ]]; then
+    #make the wireless static ip with school server address
+    mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
+        /^ *ether / { if (eth == "eth0:") print( $2);}'`
+    write_nm_connection "eth0-wireless-lan" "$mac" "eth0"
 fi
+
 
 ## Prepare config files
 CFG_TEMPLATES="sysconfig/dhcpd sysconfig/iptables-config sysconfig/ip6tables-config"
 pushd /etc
 for i in $CFG_TEMPLATES; do
 	cp -p $i.in $i
-	etckeeper commit -m "Made from $i.in"
+	#etckeeper commit -m "Made from $i.in"
 done
+etckeeper commit -m "Made from $i.in"
 popd
 
 systemctl enable network.service
