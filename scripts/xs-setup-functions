@@ -71,7 +71,7 @@ function dhcpd()
 
 function etckeeper-if-selected()
 {
-    if [ -e $SETUPSTATEDIR/etckeeper ] && [ $# -gt 1 ]; then
+    if [ -e $SETUPSTATEDIR/etckeeper && $# -gt 1]; then
         set +e
         etckeeper commit -m $2
         set -e
@@ -448,9 +448,12 @@ function do_first()
     #  we need to disable tempfs and then start up again on a /var/log directory
     #  that persists
     set +e; err=`grep -e "#varlog" /etc/fstab`; set -e;
-    if [ "x$err" != "x" ]; then
+    if [ ! $err ]; then
+        # we need to replace the initrd so that USB network dongles are discovered
+        #  after the wifi adapter -- so that eth0=wifi, eth1,eth2 = dongles
+        yum -y install rdfixed
         #XO release 12.1.0 makes /var/log  a tempfs -- server logs should persist
-        sed -i -c '/varlog/d' /etc/fstab
+        sed -i -c 's:varlog:#varlog:' /etc/fstab
         echo "The setup program must reboot before additional setup can proceed"
         echo
         echo "rebooting"
