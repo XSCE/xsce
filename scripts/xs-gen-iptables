@@ -54,7 +54,7 @@ template = open(output_path + ".in")
 for line in template:
      if (re.match('@@SQUID@@', line)):
           if proxyison:
-               os.write(destfh, '-A PREROUTING -i %s -p tcp --dport 80 -j REDIRECT --to-ports 3128\n' % lan)
+               os.write(destfh, '-A PREROUTING ! -i %s -p tcp --dport 80 -j REDIRECT --to-ports 3128\n' % wan)
      else:
           # line = line.rstrip()
           line = re.sub(r'\@\@WAN\@\@', wan, line)

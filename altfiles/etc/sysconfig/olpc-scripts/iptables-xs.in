@@ -17,7 +17,7 @@ COMMIT
 -A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
 
 # Allow all LAN services
--A INPUT -i @@LAN@@ -m state --state NEW -j ACCEPT
+-A INPUT ! -i @@WAN@@ -m state --state NEW -j ACCEPT
 
 # NAT is allowed
 -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
