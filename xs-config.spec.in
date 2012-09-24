@@ -23,7 +23,7 @@ Requires: logrotate
 Requires: xml-common  
 Requires: etckeeper
 Requires: make
-#Requires: usbmount
+Requires: usbmount
 #Requires: dhcp
 Requires: avahi
 Requires: nss-mdns
