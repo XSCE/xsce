@@ -417,11 +417,11 @@ function vnc()
         #start the websocket service (part of the novnc package)
         systemctl enable vncserverweb.service 2>&1 | tee -a $LOG
         mkdir -m 755 -p /home/$DEFAULTUSER/.vnc
-        echo "$DEFAULTPASSWORD" | vncpasswd -f > /home/$DEFAULTUSER/.vnc/passwd
         ln -sf $CFGDIR/etc/systemd/system/* $DESTDIR/etc/systemd/system
         ln -sf $DESTDIR/etc/systemd/system/vncserver\@.service \
             $DESTDIR/etc/systemd/system/multi-user.target.wants/vncserver\@\:1.service
         cp $CFGDIR/etc/sysconfig/vnc/xstartup /home/$DEFAULTUSER/.vnc/
+        echo "$DEFAULTPASSWORD" | vncpasswd -f > /home/$DEFAULTUSER/.vnc/passwd
         chown -R $DEFAULTUSER:$DEFAULTUSER /home/$DEFAULTUSER/.vnc
 		systemctl enable vncserver\@\:1.service 2>&1 | tee -a $LOG
         systemctl start vncserver\@\:1.service 2>&1 | tee -a $LOG

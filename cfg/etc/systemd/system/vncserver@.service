@@ -32,7 +32,7 @@
 [Unit]
 Description=Remote desktop service (VNC)
 After=syslog.target network.target
-wants=vncserverweb.service
+Wants=vncserverweb.service
 
 [Service]
 Type=forking
