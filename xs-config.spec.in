@@ -142,5 +142,6 @@ fi
 
 %{_bindir}/cat-parts
 %{_bindir}/xs-*
+%{_libdir}/udev/rules.d/10-olpc-net.rules
 %doc README README.networking
 %doc README.no-fsck-questions
