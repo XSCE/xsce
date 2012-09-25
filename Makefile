@@ -188,4 +188,4 @@ install: $(DESTDIR)
 	install -D scripts/xs-httpcache $(DESTDIR)/usr/bin
 	install -D scripts/xs-mkaccount $(DESTDIR)/usr/bin
 	install -D scripts/xs-gen-iptables $(DESTDIR)/usr/bin
-	install -D scripts/70-olpc-net.rules $(DESTDIR)//usr/lib/udev/rules.d
+	install -D scripts/10-olpc-net.rules $(DESTDIR)//usr/lib/udev/rules.d
