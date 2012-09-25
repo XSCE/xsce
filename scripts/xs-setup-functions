@@ -499,31 +499,7 @@ function do_first()
         #  after the wifi adapter -- so that eth0=wifi, eth1,eth2 = dongles
         #yum -y install rdfixed
         
-        #next effort to fix this problem -- change the udef rules
-        cat EOF > /usr/lib/udev/rules.d/10-olpc-net.rules
-# Attempt to pin the internal wifi device with name eth0
-# Some components expect the internal device to have name 'eth0', but this
-# can sometimes change when external networking devices are connected.
-#
-# Note that this file needs to present in both olpc-utils and the initramfs.
-# These rules can also be executed twice, both times as if the interface
-# is new: in the activation initramfs, then in regular boot.
-
-SUBSYSTEM!="net", GOTO="olpc_net_end"
-ACTION!="add", GOTO="olpc_net_end"
-
-# Internal Wifi hardware: fix to eth0
-DRIVERS=="libertas_sdio", NAME="eth0", GOTO="olpc_net_end"
-DRIVERS=="usb8xxx", NAME="eth0", GOTO="olpc_net_end"
-
-# other adapters named eth0: find a new name
-DRIVERS!="libertas_sdio", KERNEL=="eth0", PROGRAM="olpc_eth_namer", RESULT=="?*", ENV{INTERFACE_NAME}="$result"
-DRIVERS!="usb8xxx", KERNEL=="eth0", PROGRAM="olpc_eth_namer", RESULT=="?*", ENV{INTERFACE_NAME}="$result"
-
-LABEL="olpc_net_end"
-RUN+="/etc/sysconfig/network-scripts/net.hotplug"
-EOF
-        # and remove the similar rules at 70
+        # the xs-config.rpm changes the 70-olpc* to 10-olpc*, remove the old one
         rm /usr/lib/udev/rules.d/70-olpc-net.rules
     
         #servers should not sleep

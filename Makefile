@@ -89,6 +89,11 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/var/www
 	install -D -d $(DESTDIR)/var/www/html
 	install -D -d $(DESTDIR)/var/www/html/xs
+	install -D -d $(DESTDIR)/usr
+	install -D -d $(DESTDIR)/usr/lib
+	install -D -d $(DESTDIR)/usr/lib/udev
+	install -D -d $(DESTDIR)/usr/lib/udev/rules.d
+	
 
 	install -m 755 altfiles/etc/sysconfig/modules/pcspkr.modules $(DESTDIR)/etc/sysconfig/modules
 
@@ -183,3 +188,4 @@ install: $(DESTDIR)
 	install -D scripts/xs-httpcache $(DESTDIR)/usr/bin
 	install -D scripts/xs-mkaccount $(DESTDIR)/usr/bin
 	install -D scripts/xs-gen-iptables $(DESTDIR)/usr/bin
+	install -D scripts/70-olpc-net.rules $(DESTDIR)//usr/lib/udev/rules.d
