@@ -189,7 +189,7 @@ function idmgr()
 	case "$1" in
 	"yes")
         yum -y install idmgr ds-backup-server \
-                xs-rsync  2>&1 | tee -a $LOG
+                xs-rsync xinetd 2>&1 | tee -a $LOG
         #set up the sqlite database for idmgr
         /etc/sysconfig/olpc-scripts/setup.d/idmgr
         #we'll leave the script in place and call it from systemd
@@ -209,6 +209,8 @@ function idmgr()
         /etc/sysconfig/olpc-scripts/setup.d/xs-rsync
 		systemctl enable idmgr.service 2>&1 | tee -a $LOG
 		systemctl start idmgr.service 2>&1 | tee -a $LOG
+		systemctl enable xinetd.service 2>&1 | tee -a $LOG
+		systemctl start xinetd.service 2>&1 | tee -a $LOG
         touch $SETUPSTATEDIR/idmgr
         ;;
 	"no")
