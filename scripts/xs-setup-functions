@@ -22,6 +22,7 @@ POSTGRESSDIR=/library/pgsql-xs
 SETUPSTATEDIR=/etc/sysconfig/olpc-scripts/setup.d/installed
 DEFAULTUSER='admin'
 DEFAULTPASSWORD='12admin'
+ISXO=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
 
 function activity-server()
 {
@@ -195,18 +196,14 @@ function idmgr()
         #we'll leave the script in place and call it from systemd
         cp /etc/init.d/idmgr /usr/libexec/idmgr.init
         
-        #setup ds-backup symlinks to config locations
-        ln -sf /usr/share/ds-backup/apache-ds-backup.conf \
-            /etc/httpd/conf.d/050-ds-backup.conf
-        ln -sf /usr/share/ds-backup/cron-ds-backup-server.conf \
-            /etc/cron.d/ds-bakup-server.conf
+        #execute the xs-rsync setup script
+        /etc/sysconfig/olpc-scripts/setud.d/xs-rsync
         
-        # incrond doesn't accept syslinks
-        cp -f /usr/share/ds-backup/incron-ds-backup.conf /etc/incron.d/ds-backup.conf
+        #setup ds-backup symlinks to config locations
+        /etc/sysconfig/olpc-scripts/setud.d/ds-backup
+        
         cp /etc/systemd/system/idmgr.service.in /etc/systemd/system/idmgr.service
         
-        #execute the file which creates links to enable xs-rsync
-        /etc/sysconfig/olpc-scripts/setup.d/xs-rsync
 		systemctl enable idmgr.service 2>&1 | tee -a $LOG
 		systemctl start idmgr.service 2>&1 | tee -a $LOG
 		systemctl enable xinetd.service 2>&1 | tee -a $LOG
@@ -362,8 +359,9 @@ function postgresql()
 		if [ ! -e ${POSTGRESSDIR}/PG_VERSION ];then
             #/etc/init.d/pgsql-xs initdb -- this was used before systemd
             #postgresql-setup initdb need to move this edit upstream FIXME
+            mkdir -p /library/pgsql-xs
             chown -R postgres:postgres /library/pgsql-xs/ 
-            sed -i -c "s/--auth='ident'/--auth='ident' --encoding='UTF8'/" \
+            sed -i -c "s/--auth='ident\"'/--auth='ident' --encoding='UTF8'\"/" \
                                     /usr/bin/postgresql-setup
 			/usr/bin/postgresql-setup  initdb postgresql-xs
 		fi
@@ -426,6 +424,7 @@ function vnc()
         chown -R $DEFAULTUSER:$DEFAULTUSER /home/$DEFAULTUSER/.vnc
         echo "$DEFAULTPASSWORD" | vncpasswd -f > \
                     /home/$DEFAULTUSER/.vnc/passwd
+        chmod 600 /home/$DEFAULTUSER/.vnc/passwd
 		systemctl enable vncserver\@\:1.service 2>&1 | tee -a $LOG
         systemctl start vncserver\@\:1.service 2>&1 | tee -a $LOG
         systemctl start vncserverweb.service 2>&1 | tee -a $LOG
@@ -580,6 +579,11 @@ function do_first()
         install -m 440 $CFGDIR/etc/sudoers.d/* $DESTDIR/etc/sudoers.d
         install -m 440 $CFGDIR/etc/systemd/system/* $DESTDIR/etc/systemd/system
         
+        #disable "su" without password on the XO
+        if [ $ISXO = '1']; then
+            sed -i -e '1,6s/^auth/#auth/' /etc/pam.d/su
+            sed -i -e "/^\%wheel ALL=\(ALL\) NOPASSWD\: ALL/d" /etc/sudoers
+        fi
         # run setup scripts belonging to other packages
         #shopt -s nullglob
         #for i in /etc/sysconfig/olpc-scripts/setup.d/*; do

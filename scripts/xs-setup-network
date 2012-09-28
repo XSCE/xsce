@@ -36,8 +36,9 @@ function write_nm_connection(){
     # receives connection_filename, hwaddr,  device_name as parameters
     cp "/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/$1" \
         "/etc/NetworkManager/system-connections/$1"
-    sed -i -c "s/\@\@MAC\@\@/$2/" "/etc/NetworkManager/system-connections/$1"
-    sed -i -c "s/\@\@DEVICE\@\@/$3/" "/etc/NetworkManager/system-connections/$1"
+    #removed -i to try to get rid of sed intermediate files 9/24/2012
+    sed  -c "s/\@\@MAC\@\@/$2/" "/etc/NetworkManager/system-connections/$1"
+    sed  -c "s/\@\@DEVICE\@\@/$3/" "/etc/NetworkManager/system-connections/$1"
     chmod 600 "/etc/NetworkManager/system-connections/$1" 
 }
 

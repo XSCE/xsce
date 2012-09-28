@@ -93,6 +93,7 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/usr/lib
 	install -D -d $(DESTDIR)/usr/lib/udev
 	install -D -d $(DESTDIR)/usr/lib/udev/rules.d
+	install -D -d $(DESTDIR)/usr/libexec
 	
 
 	install -m 755 altfiles/etc/sysconfig/modules/pcspkr.modules $(DESTDIR)/etc/sysconfig/modules
@@ -110,7 +111,6 @@ install: $(DESTDIR)
 	install -D altfiles/etc/sysconfig/olpc-scripts/resolv.conf.in       $(DESTDIR)/etc/sysconfig/olpc-scripts
 	install -D altfiles/etc/sysconfig/olpc-scripts/iptables-xs.in  		$(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/ip6tables-xs.in  	$(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D altfiles/etc/sysconfig/olpc-scripts/moodle-xs-init.in  	$(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/firewall-xs.in  		$(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/var/named-xs/localdomain.zone         $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/localhost.zone           $(DESTDIR)/var/named-xs/
@@ -188,4 +188,5 @@ install: $(DESTDIR)
 	install -D scripts/xs-httpcache $(DESTDIR)/usr/bin
 	install -D scripts/xs-mkaccount $(DESTDIR)/usr/bin
 	install -D scripts/xs-gen-iptables $(DESTDIR)/usr/bin
-	install -D scripts/10-olpc-net.rules $(DESTDIR)//usr/lib/udev/rules.d
+	install -D scripts/10-olpc-net.rules $(DESTDIR)/usr/lib/udev/rules.d
+	install -D scripts/moodle-xs-init $(DESTDIR)/usr/libexec
