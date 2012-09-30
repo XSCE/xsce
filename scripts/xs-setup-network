@@ -63,19 +63,6 @@ if [[ $num_ifaces  > 1 ]]; then
     mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
         /^ *ether / { if (eth == "eth1:") print( $2);}'`
     write_nm_connection "eth1-static" "$mac" "eth1"
-    if [[ $is_xo = 1 ]]; then
-        #the wireless will be the gateway
-        mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
-            /^ *ether / { if (eth == "eth0:") print( $2);}'`
-        write_nm_connection "eth0-wireless" "$mac" "eth0"
-    fi
-else
-    if [[ $is_xo = 1 ]]; then
-        #make the wireless static ip with school server address
-        mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
-            /^ *ether / { if (eth == "eth0:") print( $2);}'`
-        write_nm_connection "eth0-wireless-lan" "$mac" "eth0"
-    fi
 fi
 
 ## Prepare config files
