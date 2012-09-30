@@ -13,7 +13,7 @@ BUILDDIR = $(PWD)/build
 
 # symbols
 PKGNAME = xs-config
-VERSION = 50
+VERSION = $(shell git describe | sed 's/^v//' | sed 's/-/./g')
 RELEASE = 1
 ARCH = noarch
 BRANCH = $(shell git branch | grep '*' | sed 's/* //')
@@ -190,3 +190,4 @@ install: $(DESTDIR)
 	install -D scripts/xs-gen-iptables $(DESTDIR)/usr/bin
 	install -D scripts/10-olpc-net.rules $(DESTDIR)/usr/lib/udev/rules.d
 	install -D scripts/moodle-xs-init $(DESTDIR)/usr/libexec
+	install -D scripts/bootstrap-xo $(DESTDIR)/usr/bin
