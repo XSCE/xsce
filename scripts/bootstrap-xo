@@ -33,6 +33,10 @@ then
 	# install xs-config
 	yum -y install xs-config
 
+	# Rename the XO to be schoolserver.local
+	sed -i -e '/HOSTNAME=xo/d' /etc/sysconfig/network
+        echo "HOSTNAME=schoolserver.local" >> /etc/sysconfig/network
+
 	# XO release 12.1.0 makes /var/log  a tempfs -- server logs should persist
 	sed -i -c 's:vartmp:#vartmp:' /etc/fstab
 	sed -i -c 's:varlog:#varlog:' /etc/fstab
