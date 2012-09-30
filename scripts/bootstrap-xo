@@ -1,0 +1,48 @@
+#!/bin/bash
+# undo some XO specific changes done by OOB while creating the image
+
+ISXO=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
+FIX_RPMS="sed libidn grep which util-linux wget gnupg2 groff gnash"
+
+if [ $ISXO = "1" ]
+then 
+    # there are files open in the tempfs /var/log -- so we cannot just unmount it
+    # we need to disable tempfs and then start up again on a /var/log directory
+    # that persists
+    set +e; err=`grep -e "#varlog" /etc/fstab`; set -e;
+    if [ ! $err ]; then
+	# use the supplied 10-olpc-net.rules remove the 70-olpc-net.rules
+	rm /usr/lib/udev/rules.d/70-olpc-net.rules
+
+	# servers should not sleep
+	touch /etc/powerd/flags/inhibit-suspend
+
+	# disable "su" without password on the XO
+	sed -i -e '1,6s/^auth/#auth/' /etc/pam.d/su
+	sed -i -e "/^\%wheel ALL=\(ALL\) NOPASSWD\: ALL/d" /etc/sudoers
+
+	# copy .bashrc to /root
+	cp -p /home/olpc/.bashrc /root
+
+	# Keep docs when installing packages
+	sed -i -c  's/%_excludedocs 1/%_excludedocs 0/' /etc/rpm/macros.imgcreate
+
+	# re-install these packages to pickup missing docs
+	yum -y reinstall $FIX_RPMS
+
+	# install xs-config
+	yum -y install xs-config
+
+	# XO release 12.1.0 makes /var/log  a tempfs -- server logs should persist
+	sed -i -c 's:vartmp:#vartmp:' /etc/fstab
+	sed -i -c 's:varlog:#varlog:' /etc/fstab
+	echo "The setup program must reboot before additional setup can proceed"
+	echo "Next step is to run 'xs-config' when rebooted"
+	read -p "Press [Enter] key to reboot"
+	echo "rebooting in 5 seconds"
+	sleep 5
+	reboot
+    fi
+else
+    echo "Not an XO please run 'xs-config'"
+fi

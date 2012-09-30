@@ -147,7 +147,7 @@ function gateway()
         cp /etc/sysconfig/olpc-scripts/firewall-xs.in /etc/sysconfig/olpc-scripts/firewall-xs
         systemctl enable iptables.service
         systemctl start iptables.service
-        #systemd has a check for exist /etc/sysconfig/iptables - so ensure that it exists
+        # systemd has a check for exist /etc/sysconfig/iptables - so ensure that it exists
         /etc/sysconfig/iptables-config
         touch $SETUPSTATEDIR/gateway
         ;;
@@ -190,7 +190,7 @@ function httpd()
         systemctl start httpd.service 2>&1 | tee -a $LOG
 		systemctl enable httpd.service 2>&1 | tee -a $LOG
         
-        #now install the xs - client html/php code
+        # now install the xs - client html/php code
         
         touch $SETUPSTATEDIR/httpd
 		;;
@@ -212,16 +212,16 @@ function idmgr()
             exit $YUMERROR
         fi
 
-        #set up the sqlite database for idmgr
+        # set up the sqlite database for idmgr
         /etc/sysconfig/olpc-scripts/setup.d/idmgr
         
-        #long term, change the idmgr package
+        # long term, change the idmgr package
         cp /etc/init.d/idmgr /usr/libexec/idmgr.init
         
-        #execute the xs-rsync setup script
+        # execute the xs-rsync setup script
         /etc/sysconfig/olpc-scripts/setud.d/xs-rsync
         
-        #setup ds-backup symlinks to config locations
+        # setup ds-backup symlinks to config locations
         /etc/sysconfig/olpc-scripts/setud.d/ds-backup
         
         cp /etc/systemd/system/idmgr.service.in /etc/systemd/system/idmgr.service
@@ -313,7 +313,7 @@ function moodle-xs()
                 /etc/systemd/system/moodle-xs.service
         cp -p /etc/sysconfig/olpc-scripts/moodle-xs-init.in \
                 /etc/sysconfig/olpc-scripts/moodle-xs-init
-        #execute the moodle startup script
+        # execute the moodle startup script
 		systemctl enable moddle-xs.service 2>&1 | tee -a $LOG
 		systemctl start moddle-xs.service 2>&1 | tee -a $LOG
         touch $SETUPSTATEDIR/moodle-xs
@@ -334,8 +334,8 @@ function named()
             echo "\n\nYum returned an error\n\n" | tee -a $LOG
             exit $YUMERROR
         fi
-        #if xs data files are installed before bind, named user doesn't exist,
-        #   and group ownership is set to root, which uer named cannot read
+        # if xs data files are installed before bind, named user doesn't exist,
+        # and group ownership is set to root, which user named cannot read
         if [ -d /var/named-xs ]; then
             chgrp -R named /var/named-xs
         fi
@@ -347,7 +347,7 @@ function named()
         ;;
 	"no")
 		systemctl disable named.service 2>&1 | tee -a $LOG
-        #let the dhclinet control the name resolution normally
+        # let the dhclinet control the name resolution normally
         rm /etc/sysconfig/olpc-scripts/resolv.conf
         rm $SETUPSTATEDIR/named
         ;;
@@ -401,8 +401,8 @@ function postgresql()
         
 		# Pg - prime the DB if needed.
 		if [ ! -e ${POSTGRESSDIR}/PG_VERSION ];then
-            #/etc/init.d/pgsql-xs initdb -- this was used before systemd
-            #postgresql-setup initdb need to move this edit upstream FIXME
+            # /etc/init.d/pgsql-xs initdb -- this was used before systemd
+            # postgresql-setup initdb need to move this edit upstream FIXME
             mkdir -p /library/pgsql-xs
             chown -R postgres:postgres /library/pgsql-xs/ 
             sed -i -c "s/--auth='ident\"'/--auth='ident' --encoding='UTF8'\"/" \
@@ -430,7 +430,7 @@ function squid()
             echo "\n\nYum returned an error\n\n" | tee -a $LOG
             exit $YUMERROR
         fi
-        #create the cache directories
+        # create the cache directories
         squid -z
         ## Update flag for httpd cache
         if [ ! -e /etc/sysconfig/xs_httpcache_on ]; then
@@ -439,7 +439,7 @@ function squid()
         fi
         systemctl enable squid.service 2>&1 | tee -a $LOG
         systemctl start squid.service 2>&1 | tee -a $LOG
-        #need to set up iptables to forward port 80 queries
+        # need to set up iptables to forward port 80 queries
         
         touch $SETUPSTATEDIR/squid
         ;;
@@ -464,11 +464,11 @@ function vnc()
             echo "\n\nYum returned an error\n\n" | tee -a $LOG
             exit $YUMERROR
         fi
-        #or yum install x11vnc-javaviewers | tee -a $LOG
+        # or yum install x11vnc-javaviewers | tee -a $LOG
         cp -p /lib/systemd/system/vncserver\@.service /etc/systemd/system
         sed -i -c 's/<USER>/$DEFAULTUSER/' /etc/systemd/system/vncserver\@.service
 
-        #start the websocket service (part of the novnc package)
+        # start the websocket service (part of the novnc package)
         systemctl enable vncserverweb.service 2>&1 | tee -a $LOG
         mkdir -m 755 -p /home/$DEFAULTUSER/.vnc
         ln -sf $CFGDIR/etc/systemd/system/* $DESTDIR/etc/systemd/system
@@ -550,29 +550,6 @@ function do_first()
 {    
     #things to do the first time -- only once
     
-    #there are files open in the tempfs /var/log -- so we cannot just unmount it
-    #  we need to disable tempfs and then start up again on a /var/log directory
-    #  that persists
-    set +e; err=`grep -e "#varlog" /etc/fstab`; set -e;
-    if [ ! $err ]; then
-    
-        # we need to replace the initrd so that USB network dongles are discovered
-        #  after the wifi adapter -- so that eth0=wifi, eth1,eth2 = dongles
-        #yum -y install rdfixed
-        
-        # the xs-config.rpm changes the 70-olpc* to 10-olpc*, remove the old one
-        rm /usr/lib/udev/rules.d/70-olpc-net.rules
-    
-        #servers should not sleep
-        touch /etc/powerd/flags/inhibit-suspend
-        #XO release 12.1.0 makes /var/log  a tempfs -- server logs should persist
-        sed -i -c 's:varlog:#varlog:' /etc/fstab
-        echo "The setup program must reboot before additional setup can proceed"
-        echo
-        echo "rebooting"
-        sleep 5
-        reboot
-    fi
     ## Prepare etckeeper database
     if [ ! -e $MARKER ]; then
         pushd /etc
@@ -639,11 +616,6 @@ function do_first()
         install -m 440 $CFGDIR/etc/sudoers.d/* $DESTDIR/etc/sudoers.d
         install -m 440 $CFGDIR/etc/systemd/system/* $DESTDIR/etc/systemd/system
         
-        #disable "su" without password on the XO
-        if [ $ISXO = '1']; then
-            sed -i -e '1,6s/^auth/#auth/' /etc/pam.d/su
-            sed -i -e "/^\%wheel ALL=\(ALL\) NOPASSWD\: ALL/d" /etc/sudoers
-        fi
         # run setup scripts belonging to other packages
         #shopt -s nullglob
         #for i in /etc/sysconfig/olpc-scripts/setup.d/*; do
@@ -651,21 +623,19 @@ function do_first()
         #done
         #shopt -u nullglob
 
-        #this needs to be turned on first so that later installs save man pages
+        # this needs to be turned on first so that later installs save man pages
         manpages yes
         
         etckeeper-if-selected "disabled selinux, scripts sourced"
         
-        #following packages are the core set of packages installed on all xs servers
+        # following packages are the core set of packages installed on all xs servers
         yum -y install  syck rssh mtd-utils acpid  2>&1 | tee -a $LOG
         if [ $? -ne 0 ] ; then
             echo "\n\nYum returned an error\n\n" | tee -a $LOG
             exit $YUMERROR
         fi
-        #copy .bashrc to /root
-        cp -p /home/olpc/.bashrc /root
-        
-        #make a non privileged user, and give her remote access
+
+        # make a non privileged user, and give her remote access
         if [ ! `grep $DEFAULTUSER /etc/passwd` ]; then
             adduser $DEFAULTUSER
             echo "$DEFAULTPASSWORD" | passwd $DEFAULTUSER --stdin
@@ -700,14 +670,14 @@ function do_last()
     echo "do last executed" | tee -a $LOG
     date | tee -a $LOG
     if [ ! -e $MARKER ]; then
-        #internally we use /etc/.git as marker for first config run --
+        # internally we use /etc/.git as marker for first config run --
         #   --$ MARKER  is available externally
         touch $MARKER
         echo "XS configured; services will activate upon reboot."
     fi
 }
 
-#now source any files ending with .sh in config dir, allow pkgs to shadow these defs
+# now source any files ending with .sh in config dir, allow pkgs to shadow these defs
 for i in $CFGFUNCTIONS/*.sh ; do
     if [ -r "$i" ]; then
             . "$i" >/dev/null 2>&1

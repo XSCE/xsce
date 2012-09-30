@@ -1,6 +1,8 @@
 # install root
 %define DESTDIR  /
 
+BuildArch: noarch
+
 #  Requires a few tools and
 #  a list of packages modified by xs-config
 Requires: python
@@ -49,13 +51,16 @@ BuildRoot: %{_builddir}/%{name}-root
 Distribution: OLPC XS/XSX School Server
 Group: Base System/Administration Tools
 License: GPLv2
-Packager: Martin Langhoff <martin@laptop.org>
+Packager: Jerry Vonau <jerry@laptop.org.au>
 Source: %{name}-%{version}.tar.gz
-URL: http://dev.laptop.org/git.do?p=projects/xs-config;a=summary
+URL: http://sugardextrose.org/projects/xs-config/repository/show?rev=ghunt
 Vendor: OLPC
 %description
-
 The default configuration of an OLPC XS School server.
+
+%package xo
+%description xo
+Bootstraper for running OLPC XS School server on an XO.
 
 %prep
 %setup
@@ -76,7 +81,6 @@ fi
 # Regenerate files, some templates could have changed in this update
 xs-setup --upgrade-only
 xs-setup-network --upgrade-only
-
 
 %pre
 
@@ -128,7 +132,6 @@ fi
 %attr(750, root , named)   %dir /var/named-xs
 %attr(770, named , named)  %dir /var/named-xs/data
 
-
 #%config(noreplace) %{_sysconfdir}/init.d/no-fsck-questions
 %config(noreplace) %{_sysconfdir}/init.d/ejabberd-xs
 #systemd replacements
@@ -142,7 +145,10 @@ fi
 
 %{_bindir}/cat-parts
 %{_bindir}/xs-*
-%{_libdir}/udev/rules.d/10-olpc-net.rules
 %{_libexecdir}/moodle-xs-init
 %doc README README.networking
 %doc README.no-fsck-questions
+
+%files xo
+%{_bindir}/bootstrap-xo
+%{_libdir}/udev/rules.d/10-olpc-net.rules
