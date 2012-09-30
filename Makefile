@@ -13,7 +13,7 @@ BUILDDIR = $(PWD)/build
 
 # symbols
 PKGNAME = xs-config
-VERSION = $(shell git describe | sed 's/^v//' | sed 's/-/./g')
+VERSION = 50
 RELEASE = 1
 ARCH = noarch
 BRANCH = $(shell git branch | grep '*' | sed 's/* //')

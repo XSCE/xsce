@@ -59,6 +59,8 @@ Vendor: OLPC
 The default configuration of an OLPC XS School server.
 
 %package xo
+Summary: Bootstraper for running OLPC XS School server on an XO.
+
 %description xo
 Bootstraper for running OLPC XS School server on an XO.
 
