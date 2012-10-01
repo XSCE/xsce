@@ -18,8 +18,9 @@ then
 	touch /etc/powerd/flags/inhibit-suspend
 
 	# disable "su" without password on the XO
-	sed -i -e '1,6s/^auth/#auth/' /etc/pam.d/su
-	sed -i -e "/^\%wheel ALL=\(ALL\) NOPASSWD\: ALL/d" /etc/sudoers
+	# breaks moodle-xs install can't su to apache user 
+	#sed -i -e '1,6s/^auth/#auth/' /etc/pam.d/su
+	#sed -i -e "/^\%wheel ALL=\(ALL\) NOPASSWD\: ALL/d" /etc/sudoers
 
 	# copy .bashrc to /root
 	cp -p /home/olpc/.bashrc /root
