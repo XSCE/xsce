@@ -309,19 +309,16 @@ function moodle-xs()
             echo "\n\nYum returned an error\n\n" | tee -a $LOG
             exit $YUMERROR
         fi
-        cp -p /etc/systemd/system/moodle-xs.service.in \
-                /etc/systemd/system/moodle-xs.service
-        cp -p /etc/sysconfig/olpc-scripts/moodle-xs-init.in \
-                /etc/sysconfig/olpc-scripts/moodle-xs-init
-        # execute the moodle startup script
-		systemctl enable moddle-xs.service 2>&1 | tee -a $LOG
-		systemctl start moddle-xs.service 2>&1 | tee -a $LOG
-        touch $SETUPSTATEDIR/moodle-xs
-        ;;
+
+	# execute the moodle startup script
+	/usr/libexec/moodle-xs-init start 2>&1 | tee -a $LOG
+	touch $SETUPSTATEDIR/moodle-xs
+	;;
+
 	"no")
-		systemctl disable moddle-xs.service 2>&1 | tee -a $LOG
-        rm $SETUPSTATEDIR/moodle-xs
-        ;;
+	/usr/libexec/moodle-xs-init stop 2>&1 | tee -a $LOG
+	rm $SETUPSTATEDIR/moodle-xs
+	;;
 	esac
 }
 
