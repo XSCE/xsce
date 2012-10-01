@@ -219,10 +219,10 @@ function idmgr()
         cp /etc/init.d/idmgr /usr/libexec/idmgr.init
         
         # execute the xs-rsync setup script
-        /etc/sysconfig/olpc-scripts/setud.d/xs-rsync
+        /etc/sysconfig/olpc-scripts/setup.d/xs-rsync
         
         # setup ds-backup symlinks to config locations
-        /etc/sysconfig/olpc-scripts/setud.d/ds-backup
+        /etc/sysconfig/olpc-scripts/setup.d/ds-backup
         
         cp /etc/systemd/system/idmgr.service.in /etc/systemd/system/idmgr.service
         
