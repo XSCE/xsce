@@ -12,7 +12,8 @@ Requires: initscripts
 Requires: iptables  
 Requires: module-init-tools  
 Requires: nscd  
-Requires: nss  
+Requires: nss
+Requires: ntp
 Requires: openssh-server  
 Requires: radvd  
 Requires: rpm  

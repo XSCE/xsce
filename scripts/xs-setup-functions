@@ -29,8 +29,10 @@ function activity-server()
 {
 	case "$1" in
     "yes")
-        yum -y install  activity-server 2>&1 | tee -a $LOG
+        yum -y install  xs-activity-server 2>&1 | tee -a $LOG
         touch SETUPSTATEDIR/activity-server
+        #execute the setup script
+        /etc/sysconfig/olpc-scripts/setup.d/xs-activity-server
         ;;
     "no")
         rm $SETUPSTATEDIR/activity-server
@@ -145,6 +147,7 @@ function gateway()
         cp /etc/sysconfig/olpc-scripts/iptables-xs.in /etc/sysconfig/olpc-scripts/iptables-xs
         cp /etc/sysconfig/olpc-scripts/ip6tables-xs.in /etc/sysconfig/olpc-scripts/ip6tables-xs
         cp /etc/sysconfig/olpc-scripts/firewall-xs.in /etc/sysconfig/olpc-scripts/firewall-xs
+        ln -sf $CFGDIR/etc/systemd/system/iptables.service $DESTDIR/etc/systemd/system
         systemctl enable iptables.service
         systemctl start iptables.service
         # systemd has a check for exist /etc/sysconfig/iptables - so ensure that it exists
@@ -392,6 +395,8 @@ function postgresql()
             echo "\n\nYum returned an error\n\n" | tee -a $LOG
             exit $YUMERROR
         fi
+        ln -sf $CFGDIR/etc/systemd/system/postgresql-xs.service \
+            $DESTDIR/etc/systemd/system
         cp /etc/systemd/system/postgresql-xs.service.in \
                 /etc/systemd/system/postgresql-xs.service
 		systemctl enable postgresql-xs.service 2>&1 | tee -a $LOG

@@ -1,0 +1,5 @@
+# --iptables.service  # systemd start up file modifications
+.include /usr/lib/systemd/system/iptables.service
+[Unit]
+# for OLPC XS, the masguerading is set up after eth devices are assigned
+After=NetworkManager.service
