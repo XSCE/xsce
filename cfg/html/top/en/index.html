@@ -6,10 +6,41 @@
 <meta http-equiv="content-type" content="text/html;charset=ISO-8859-1">
 <title>School Server Remote Access</title>
 <link href="../schsrv.css" rel="stylesheet" type="text/css" />
+<script language="JavaScript" type="text/javascript">
+function setup_click() {
+	var nav=document.getElementById("formframe");
+	nav.src="pick_services.html";
+}
+function classroom_click() {
+	window.frames['formframe'].src="cnt_service_summary.php";
+}
+function tools_click() {
+	window.frames['formframe'].src="cnt_service_summary.php"
+}
+function status_click() {
+	var nav=document.getElementById("formframe");
+	nav.src="cnt_service_summary.php";
+}
+</script>
 </head>
-	<iframe src="SS_banner.html" name="topframe" height="190px" width="*"  marginwidth="0"  frameborder="1"></iframe>
-    <iframe src="SS_menu.html" name="contents" class="nav" width="17%" noresize frameborder="1" marginwidth="0" marginheight="0" scrolling="auto"></iframe>
-    <iframe src="cnt_service_summary.php" name="formframe" width="56" frameborder="1" marginwidth="0" marginheight="0" scrolling="auto"></iframe>
-    <iframe src="SS_blank.html" name="helpframe" class="help" width="23%" frameborder="1" marginwidth="0" marginheight="0" scrolling="auto"></iframe>                
+	<iframe src="SS_banner.html" name="topframe" height="190px" width="100%"  marginwidth="0"  frameborder="0"></iframe>
+    <div class="nav" height="40px" width="100%">
+    <table width="100%" align="center" border="0">
+  <tr>
+    <td width="10%">&nbsp;</td>
+    <td width="10%">&nbsp;</td>
+    <td width="10%">&nbsp;</td>
+    <td width="10%"><a class="nav" href="setup_nav.html"target="navigation" onClick="setup_click()">Setup</a></td>
+    <td width="10%"><a class="nav" href="classroom_nav.html" target="navigation" onClick="classroom_click()">Classroom</a></td>
+    <td width="10%"><a class="nav" href="tools_nav.html" target="navigation" onClick="tools_click()">Tools</a></td>
+    <td width="10%"><a class="nav" href="status_nav.html"target="navigation" onClick="status_click()">Status</a></td>
+    <td width="10%">&nbsp;</td>
+    <td width="10%">&nbsp;</td>
+    <td width="10%">&nbsp;</td>
+  </tr>
+</table></div>
+    <iframe src="SS_menu.html" name="navigation" id="navigation" class="nav" width="17%" height="100%" noresize frameborder="1" marginwidth="0" marginheight="0" scrolling="auto"></iframe>
+    <iframe src="cnt_service_summary.php" name="formframe" id="formframe" width="56%" height="100%" frameborder="1" marginwidth="0" marginheight="0" scrolling="auto"></iframe>
+    <iframe src="SS_blank.html" name="helpframe" class="help" width="24%" height="100%" frameborder="1" marginwidth="0" marginheight="0" scrolling="auto"></iframe>                
 </html>
 
