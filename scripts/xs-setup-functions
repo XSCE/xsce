@@ -147,8 +147,11 @@ function gateway()
         cp /etc/sysconfig/olpc-scripts/iptables-xs.in /etc/sysconfig/olpc-scripts/iptables-xs
         cp /etc/sysconfig/olpc-scripts/ip6tables-xs.in /etc/sysconfig/olpc-scripts/ip6tables-xs
         cp /etc/sysconfig/olpc-scripts/firewall-xs.in /etc/sysconfig/olpc-scripts/firewall-xs
+
+        # either enable the service or create the file not both
         ln -sf $CFGDIR/etc/systemd/system/iptables.service $DESTDIR/etc/systemd/system
-        systemctl enable iptables.service
+        #systemctl enable iptables.service
+
         systemctl start iptables.service
         # systemd has a check for exist /etc/sysconfig/iptables - so ensure that it exists
         /etc/sysconfig/iptables-config
