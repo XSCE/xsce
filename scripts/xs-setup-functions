@@ -397,8 +397,8 @@ function postgresql()
         fi
         ln -sf $CFGDIR/etc/systemd/system/postgresql-xs.service \
             $DESTDIR/etc/systemd/system
-        cp /etc/systemd/system/postgresql-xs.service.in \
-                /etc/systemd/system/postgresql-xs.service
+        #cp /etc/systemd/system/postgresql-xs.service.in \
+        #        /etc/systemd/system/postgresql-xs.service
 		systemctl enable postgresql-xs.service 2>&1 | tee -a $LOG
         
 		# Pg - prime the DB if needed.
