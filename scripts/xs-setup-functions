@@ -57,7 +57,7 @@ function avahi()
         rm $SETUPSTATEDIR/avahi
         ;;
 	esac
-}	
+}
 
 function dhcpd()
 {
@@ -73,6 +73,7 @@ function dhcpd()
         ;;
 	"no")
 		systemctl disable dhcpd.service 2>&1 | tee -a $LOG
+        systemctl stop dhcpd.service 2>&1 | tee -a $LOG
         rm $SETUPSTATEDIR/dhcpd
         ;;
 	esac
@@ -192,9 +193,9 @@ function httpd()
 		etckeeper-if-selected "modified /etc/httpd/conf/httpd-xs.conf"
         systemctl start httpd.service 2>&1 | tee -a $LOG
 		systemctl enable httpd.service 2>&1 | tee -a $LOG
-        
+
         # now install the xs - client html/php code
-        
+
         touch $SETUPSTATEDIR/httpd
 		;;
 	"no")
@@ -217,18 +218,18 @@ function idmgr()
 
         # set up the sqlite database for idmgr
         /etc/sysconfig/olpc-scripts/setup.d/idmgr
-        
+
         # long term, change the idmgr package
         cp /etc/init.d/idmgr /usr/libexec/idmgr.init
-        
+
         # execute the xs-rsync setup script
         /etc/sysconfig/olpc-scripts/setup.d/xs-rsync
-        
+
         # setup ds-backup symlinks to config locations
         /etc/sysconfig/olpc-scripts/setup.d/ds-backup
-        
+
         cp /etc/systemd/system/idmgr.service.in /etc/systemd/system/idmgr.service
-        
+
 		systemctl enable idmgr.service 2>&1 | tee -a $LOG
 		systemctl start idmgr.service 2>&1 | tee -a $LOG
 		systemctl enable xinetd.service 2>&1 | tee -a $LOG
@@ -353,7 +354,7 @@ function named()
         ;;
 	esac
 }
- 
+
 function pathagar()
 {
 	case "$1" in
@@ -395,18 +396,17 @@ function postgresql()
             echo "\n\nYum returned an error\n\n" | tee -a $LOG
             exit $YUMERROR
         fi
-        ln -sf $CFGDIR/etc/systemd/system/postgresql-xs.service \
-            $DESTDIR/etc/systemd/system
-        #cp /etc/systemd/system/postgresql-xs.service.in \
-        #        /etc/systemd/system/postgresql-xs.service
+        cp -f $CFGDIR/etc/systemd/system/postgresql-xs.service \
+            $DESTDIR/etc/systemd/system/
+        # systemctl does not enable by linking a link, hence above cp
 		systemctl enable postgresql-xs.service 2>&1 | tee -a $LOG
-        
+
 		# Pg - prime the DB if needed.
 		if [ ! -e ${POSTGRESSDIR}/PG_VERSION ];then
             # /etc/init.d/pgsql-xs initdb -- this was used before systemd
             # postgresql-setup initdb need to move this edit upstream FIXME
             mkdir -p /library/pgsql-xs
-            chown -R postgres:postgres /library/pgsql-xs/ 
+            chown -R postgres:postgres /library/pgsql-xs/
             sed -i -c "s/--auth='ident\"'/--auth='ident' --encoding='UTF8'\"/" \
                                     /usr/bin/postgresql-setup
 			/usr/bin/postgresql-setup  initdb postgresql-xs
@@ -442,7 +442,7 @@ function squid()
         systemctl enable squid.service 2>&1 | tee -a $LOG
         systemctl start squid.service 2>&1 | tee -a $LOG
         # need to set up iptables to forward port 80 queries
-        
+
         touch $SETUPSTATEDIR/squid
         ;;
     "no")
@@ -549,13 +549,13 @@ function xs-security()
 }
 
 function do_first()
-{    
+{
     #things to do the first time -- only once
-    
+
     ## Prepare etckeeper database
     if [ ! -e $MARKER ]; then
         pushd /etc
-        
+
         ###
         ### CLEANUP XS 0.4 to XS 0.5
         ###
@@ -584,16 +584,16 @@ function do_first()
                 rm -f "$FPATH"
             fi
         fi
-        
+
         ## Prepare config files
-        CFG_TEMPLATES="rsyslog.conf motd.olpc sysctl.conf ssh/sshd_config 
+        CFG_TEMPLATES="rsyslog.conf motd.olpc sysctl.conf ssh/sshd_config
         sysconfig/named sysconfig/init sysconfig/squid rssh.conf php.ini
         httpd/conf.d/proxy_ajp.conf httpd/conf.d/ssl.conf"
-        
+
         for i in $CFG_TEMPLATES; do
             cp -p $i.in $i
         done
-        
+
         # Load new sysctl.conf settings
         sysctl -p
 
@@ -617,7 +617,7 @@ function do_first()
         # sudo doesn't accept symlinks here
         install -m 440 $CFGDIR/etc/sudoers.d/* $DESTDIR/etc/sudoers.d
         install -m 440 $CFGDIR/etc/systemd/system/* $DESTDIR/etc/systemd/system
-        
+
         # run setup scripts belonging to other packages
         #shopt -s nullglob
         #for i in /etc/sysconfig/olpc-scripts/setup.d/*; do
@@ -627,9 +627,9 @@ function do_first()
 
         # this needs to be turned on first so that later installs save man pages
         manpages yes
-        
+
         etckeeper-if-selected "disabled selinux, scripts sourced"
-        
+
         # following packages are the core set of packages installed on all xs servers
         yum -y install  syck rssh mtd-utils acpid  2>&1 | tee -a $LOG
         if [ $? -ne 0 ] ; then
@@ -645,9 +645,9 @@ function do_first()
         sed -i -c 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
         systemctl enable sshd.service
         systemctl restart sshd.service
-        
+
         etckeeper-if-selected "after installing core packages"
-        
+
         popd
         xs-setup-network
     fi

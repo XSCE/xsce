@@ -6,15 +6,18 @@
 <META http-equiv=Cache-Control content=no-cache>    
 <title>Untitled Document</title>
 <link href="../schsrv.css" rel="stylesheet" type="text/css" />
+<script language="JavaScript" type="text/JavaScript" src="../vnc.js"></script>
+
 </head>
 
-<body class="nav">
-<h2>Internet</h2>
+<body class="nav" onload="vncinit()">
+<h2>Server</h2>
 <ul>
-<a class="nav" href="cnt_service_summary.php" target="formframe">Details</a><br />
+<a class="nav" href="cnt_service_summary.php" target="formframe">XS Services</a><br />
 <a class="nav" href="cnt_process_tree.php" target="formframe">Processes</a><br />
 <a class="nav" href="cnt_test.php" target="formframe">PHP Setup</a><br />
-<a class="nav" href="/novnc/vnc_auto.html?HOST=172.18.96.1&port=6080" target="_blank">Screen</a><br />
+<!--<a class="nav" href="/novnc/vnc_auto.html?HOST=172.18.96.1&port=6080" target="_blank">Screen</a><br />-->
+<a  class="nav" href="#" onclick="popvnc();">MyScreen </a>
 </ul>
 <h2>Network</h2>
 <ul>
