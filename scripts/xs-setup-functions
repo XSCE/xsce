@@ -120,24 +120,21 @@ function ejabberd()
 {
 	case "$1" in
 	"yes")
-        yum -y install ejabberd 2>&1 | tee -a $LOG
-        if [ $? -ne 0 ] ; then
-            echo "\n\nYum returned an error\n\n" | tee -a $LOG
-            exit $YUMERROR
-        fi
-
+		yum -y install ejabberd 2>&1 | tee -a $LOG
+		if [ $? -ne 0 ] ; then
+		    echo "\n\nYum returned an error\n\n" | tee -a $LOG
+		    exit $YUMERROR
+		fi
 		# and set it to autostart
-        cp /etc/systemd/system/ejabberd-xs.service.in \
-                    /etc/systemd/system/ejabberd-xs.service
 		systemctl enable ejabberd-xs.service 2>&1 | tee -a $LOG
 		systemctl start ejabberd-xs.service 2>&1 | tee -a $LOG
-        touch $SETUPSTATEDIR/ejabberd
+		touch $SETUPSTATEDIR/ejabberd
 		;;
 	"no")
 		systemctl disable ejabberd.service 2>&1 | tee -a $LOG
-        rm $SETUPSTATEDIR/ejabberd
+		rm $SETUPSTATEDIR/ejabberd
 		;;
-	esac
+		esac
 }
 
 function gateway()
