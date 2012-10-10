@@ -85,7 +85,7 @@ update_domain() {
 
     # Mark as done -
     # cp "$SYS_DOMAIN_FILE" "$OUR_DOMAIN_FILE"
-    echo "$new_name" > "$OUR_DOMAIN_FILE"
+    echo "$domain" > "$OUR_DOMAIN_FILE"
 }
 
 setup_online_srg() {
@@ -97,6 +97,7 @@ setup_online_srg() {
     # give ejabberd a bit of time to startup on XO-1 HW :-)
     sleep 10;
 
+    short_host=`hostname -s`
     domain=`cat "$SYS_DOMAIN_FILE"`
 
     # Note: grep -q exits as soon as the match is found, which ejabberdctl
@@ -106,17 +107,17 @@ setup_online_srg() {
     # ejabberdctl should handle SIGPIPE without messing up, but that's
     # a minor problem anyway.
     #
-    if ! ejabberdctl srg_list "schoolserver.$domain" | grep '^Online$' > /dev/null ; then
+    if ! ejabberdctl srg_list "$short_host.$domain" | grep '^Online$' > /dev/null ; then
 	# ejabberdctl doesn't like spaces in the description field.
 	# backslashes work - but escaping is better left alone for now :-)
-	ejabberdctl srg_create Online "schoolserver.$domain" \
+	ejabberdctl srg_create Online "$short_host.$domain" \
 	    Online "Created_by_ejabberd_init" Online
 	[ $? -eq 0 ] || return 1
     fi
 
-    if ! ejabberdctl srg_get_info Online "schoolserver.$domain" | grep '^online_users: true$' > /dev/null ; then
-	ejabberdctl srg_user_add '@online@' "schoolserver.$domain" \
-	    Online "schoolserver.$domain"
+    if ! ejabberdctl srg_get_info Online "$short_host.$domain" | grep '^online_users: true$' > /dev/null ; then
+	ejabberdctl srg_user_add '@online@' "$short_host.$domain" \
+	    Online "$short_host.$domain"
 	[ $? -eq 0 ] || return 1
     fi
 
