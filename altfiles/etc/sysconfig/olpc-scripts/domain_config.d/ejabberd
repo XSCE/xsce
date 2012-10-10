@@ -5,6 +5,25 @@
 #
 SERVICE_NAME=ejabberd-xs
 
+CONFIG_LIST="/etc/ejabberd/ejabberd-xs.conf"
+
+#  This is the suffix which original versions of modified files will have
+BACKUP_SUFFIX=old
+
+new_name=$1
+
+for config in $CONFIG_LIST;
+do
+    if [ -e $config.in ]; then
+	if [ -e $config ]; then
+	    mv $config $config.$BACKUP_SUFFIX
+	fi
+	sed -e s/@@BASEDNSNAME@@/$new_name/ $config.in > $config ;
+    else
+	echo WARNING: Skipped $config - template file is missing!
+    fi
+done
+
 # Since for the community edition, we don't really expect all modules to be present
 #   Just exit, and expect the user to do a restart
 
