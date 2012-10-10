@@ -50,11 +50,15 @@ check_domain_configured() {
          echo "Domain not configured yet" > /dev/stderr
     fi
 
-    if [ "$hostname" != "schoolserver.$domain" ]; then
-         echo "Domain changed -- restart to enable ejabberd" > /dev/stderr
-    fi
+#    if [ "$hostname" != "schoolserver.$domain" ]; then
+#         echo "Domain changed -- restart to enable ejabberd" > /dev/stderr
+#    fi
 
-    if [ ! -e "$OUR_DOMAIN_FILE" ] || ! cmp "$SYS_DOMAIN_FILE" "$OUR_DOMAIN_FILE" ; then
+    short_host=`hostname -f`
+    node_name-`cat $OUR_DOMAIN_FILE`
+
+#    if [ ! -e "$OUR_DOMAIN_FILE" ] || ! cmp "$SYS_DOMAIN_FILE" "$OUR_DOMAIN_FILE" ; then
+    if [ ! -e "$OUR_DOMAIN_FILE" ] ; then
 	update_domain
     fi
 }
@@ -67,7 +71,8 @@ update_domain() {
 	cp $CONFIG_FILE $CONFIG_FILE.$BACKUP_SUFFIX || exit 1
     fi
 
-    new_name=`cat "$SYS_DOMAIN_FILE"`
+    new_name=$short_host.$domain
+
     (sed -e s/@@BASEDNSNAME@@/$new_name/ $CONFIG_FILE.in > $CONFIG_FILE.tmp ) && mv $CONFIG_FILE.tmp $CONFIG_FILE || exit 1
 
     # If we are changing the domain, we must clear the DB.
@@ -79,7 +84,8 @@ update_domain() {
     fi
 
     # Mark as done -
-    cp "$SYS_DOMAIN_FILE" "$OUR_DOMAIN_FILE"
+    # cp "$SYS_DOMAIN_FILE" "$OUR_DOMAIN_FILE"
+    echo "$new_name" > "$OUR_DOMAIN_FILE"
 }
 
 setup_online_srg() {
