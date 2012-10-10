@@ -5,7 +5,7 @@
 #
 SERVICE_NAME=ejabberd-xs
 
-CONFIG_LIST="/etc/ejabberd/ejabberd-xs.conf"
+CONFIG_LIST="/etc/ejabberd/ejabberd-xs.cfg"
 
 #  This is the suffix which original versions of modified files will have
 BACKUP_SUFFIX=old
