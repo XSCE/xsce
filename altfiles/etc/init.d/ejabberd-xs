@@ -55,7 +55,7 @@ check_domain_configured() {
 #    fi
 
     short_host=`hostname -s`
-    node_name-`cat $OUR_DOMAIN_FILE`
+    node_name=`cat $OUR_DOMAIN_FILE`
 
 #    if [ ! -e "$OUR_DOMAIN_FILE" ] || ! cmp "$SYS_DOMAIN_FILE" "$OUR_DOMAIN_FILE" ; then
     if [ ! -e "$OUR_DOMAIN_FILE" ] ; then
