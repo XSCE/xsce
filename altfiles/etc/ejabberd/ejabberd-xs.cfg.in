@@ -86,7 +86,7 @@ override_acls.
 %% You can define one or several, for example:
 %% {hosts, ["example.net", "example.com", "example.org"]}.
 %%
-{hosts, ["@@BASEDNSNAME@@"]}.
+{hosts, ["@@BASEDNSNAME2@@"]}.
 
 %%
 %% route_subdomains: Delegate subdomains to other Jabber server.
@@ -312,7 +312,7 @@ override_acls.
 %%
 %%{acl, admin, {user, "aleksey", "localhost"}}.
 %%{acl, admin, {user, "ermine", "example.org"}}.
-{acl, admin, {user, "admin", "@@BASEDNSNAME@@"}}.
+{acl, admin, {user, "admin", "@@BASEDNSNAME2@@"}}.
 
 %%
 %% Blocked users

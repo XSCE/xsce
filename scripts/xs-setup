@@ -8,7 +8,6 @@ set -x -e -u
 DESTDIR=/
 CFGDIR=/usr/share/xs-config/cfg
 MARKER=/.olpcxs-configured
-DOMAIN="local"
 
 # Parse options
 opt_upgrade_only=
@@ -36,7 +35,7 @@ if [ -n "$opt_upgrade_only" -a ! -e "$MARKER" ]; then
 fi
 
 # seed low-level network conf and domain
-xs-domain-config $DOMAIN
+xs-domain-config $1
 
 #systemd change
 echo '-y' > /fsckoptions
@@ -79,4 +78,6 @@ named yes
 # Finalize install
 yum-etckeeper yes
 do-last
-echo "XS configured; services will activate upon reboot."
+echo "XS configured; services are ready to use."
+echo "please check the configured services below"
+xs-service-check

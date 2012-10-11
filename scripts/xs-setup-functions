@@ -68,7 +68,8 @@ function dhcpd()
             echo "\n\nYum returned an error\n\n" | tee -a $LOG
             exit $YUMERROR
         fi
-		systemctl enable dhcpd.service 2>&1 | tee -a $LOG
+	systemctl enable dhcpd.service 2>&1 | tee -a $LOG
+	systemctl start dhcpd.service 2>&1 | tee -a $LOG
         touch $SETUPSTATEDIR/dhcpd
         ;;
 	"no")
@@ -340,11 +341,10 @@ function named()
         if [ -d /var/named-xs ]; then
             chgrp -R named /var/named-xs
         fi
-		cp /etc/named-xs.conf.in /etc/named-xs.conf
-		cp /etc/sysconfig/olpc-scripts/resolv.conf.in /etc/sysconfig/olpc-scripts/resolv.conf
-        systemctl enable named.service 2>&1 | tee -a $LOG
+	systemctl enable named.service 2>&1 | tee -a $LOG
         systemctl start named.service 2>&1 | tee -a $LOG
-        touch $SETUPSTATEDIR/named
+	touch $SETUPSTATEDIR/named
+	touch $SETUPSTATEDIR/resolvconf
         ;;
 	"no")
 		systemctl disable named.service 2>&1 | tee -a $LOG
@@ -593,6 +593,9 @@ function do_first()
 	sed -i '&gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch& a\ \
 	exclude=ejabberd' /etc/yum.repos.d/fedora-updates.repo
 
+	# set the network up
+	xs-setup-network
+
         ## Prepare config files
         CFG_TEMPLATES="rsyslog.conf motd.olpc sysctl.conf ssh/sshd_config
         sysconfig/named sysconfig/init sysconfig/squid rssh.conf php.ini
@@ -657,7 +660,7 @@ function do_first()
         etckeeper-if-selected "after installing core packages"
 
         popd
-        xs-setup-network
+        
     fi
     echo "do first routine completed" | tee -a $LOG
     date  2>&1 | tee -a $LOG

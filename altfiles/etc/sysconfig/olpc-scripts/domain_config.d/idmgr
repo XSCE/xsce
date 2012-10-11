@@ -18,7 +18,8 @@ CONFIG_LIST="/etc/idmgr.conf"
 #  This is the suffix which original versions of modified files will have
 BACKUP_SUFFIX=old
 
-new_name=$1
+short_host=`hostname -s`
+new_name=$short_host.$1
 
 for config in $CONFIG_LIST;
 do
@@ -26,7 +27,7 @@ do
 	if [ -e $config ]; then
 	    mv $config $config.$BACKUP_SUFFIX
 	fi
-	sed -e s/@@BASEDNSNAME@@/$new_name/ $config.in > $config ;
+	sed -e s/@@BASEDNSNAME2@@/$new_name/ $config.in > $config ;
     else
 	echo WARNING: Skipped $config - template file is missing!
     fi

@@ -18,7 +18,8 @@ CONFIG_LIST="/etc/named-xs.conf /var/named-xs/school.internal.zone.in-addr.db /v
 #  This is the suffix which original versions of modified files will have
 BACKUP_SUFFIX=old
 
-new_name=$1
+short_host=`hostname -s`
+new_name=$short_host.$1
 
 for config in $CONFIG_LIST;
 do
