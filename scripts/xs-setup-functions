@@ -686,7 +686,7 @@ function do_last()
         # internally we use /etc/.git as marker for first config run --
         #   --$ MARKER  is available externally
         touch $MARKER
-        echo "XS configured; services will activate upon reboot."
+        echo "XS configured; services should be active."
     fi
 }
 
