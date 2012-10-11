@@ -17,6 +17,9 @@ then
 	# servers should not sleep
 	touch /etc/powerd/flags/inhibit-suspend
 
+	# keep yum cache
+	sed -i -c  's/keepcache=0/keepcache=1/' /etc/yum.conf
+
 	# disable "su" without password on the XO
 	# breaks moodle-xs install can't su to apache user 
 	#sed -i -e '1,6s/^auth/#auth/' /etc/pam.d/su

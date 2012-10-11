@@ -585,6 +585,14 @@ function do_first()
             fi
         fi
 
+	# keep yum cache
+	sed -i -c 's/keepcache=0/keepcache=1/' /etc/yum.conf
+	sed -i -c 's/metadata_expire=7d/metadata_expire=never/' /etc/yum.repos.d/fedora.repo
+        sed -i '&gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch& a\ \
+	exclude=ejabberd' /etc/yum.repos.d/fedora.repo
+	sed -i '&gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch& a\ \
+	exclude=ejabberd' /etc/yum.repos.d/fedora-updates.repo
+
         ## Prepare config files
         CFG_TEMPLATES="rsyslog.conf motd.olpc sysctl.conf ssh/sshd_config
         sysconfig/named sysconfig/init sysconfig/squid rssh.conf php.ini
