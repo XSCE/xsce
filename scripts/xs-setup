@@ -80,4 +80,4 @@ yum-etckeeper yes
 do-last
 echo "XS configured; services are ready to use."
 echo "please check the configured services below"
-xs-service-check
+xs-services-check
