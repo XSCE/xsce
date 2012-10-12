@@ -65,8 +65,7 @@ if [[ $is_xo = "1" ]]; then
         ipaddr=172.18.96.1
     fi
     if [[ $num_ifaces  = 1 ]]; then
-        ipaddr=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
-            /^ *inet / { if (eth == "eth0:") print( $2);}'`
+        ipaddr=ifconfig eth0| awk -F ' *|:' '/inet addr/{print $4}'
     fi
 else
     mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
