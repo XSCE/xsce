@@ -80,5 +80,5 @@ named yes
 yum-etckeeper yes
 do-last
 echo "XS configured; services are ready to use."
-echo "please check the configured services below"
-xs-services-check
+#echo "please check the configured services below"
+#xs-services-check
