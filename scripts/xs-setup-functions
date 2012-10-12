@@ -588,10 +588,8 @@ function do_first()
 	# keep yum cache
 	sed -i -c 's/keepcache=0/keepcache=1/' /etc/yum.conf
 	sed -i -c 's/metadata_expire=7d/metadata_expire=never/' /etc/yum.repos.d/fedora.repo
-        sed -i '&gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch& a\ \
-	exclude=ejabberd' /etc/yum.repos.d/fedora.repo
-	sed -i '&gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch& a\ \
-	exclude=ejabberd' /etc/yum.repos.d/fedora-updates.repo
+        sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora.repo
+	sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora-updates.repo
 
 	# set the network up
 	xs-setup-network
