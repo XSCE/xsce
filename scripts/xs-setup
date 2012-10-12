@@ -8,6 +8,7 @@ set -x -e -u
 DESTDIR=/
 CFGDIR=/usr/share/xs-config/cfg
 MARKER=/.olpcxs-configured
+DOMAIN=local
 
 # Parse options
 opt_upgrade_only=
@@ -35,7 +36,7 @@ if [ -n "$opt_upgrade_only" -a ! -e "$MARKER" ]; then
 fi
 
 # seed low-level network conf and domain
-xs-domain-config $1
+xs-domain-config $DOMAIN
 
 #systemd change
 echo '-y' > /fsckoptions
