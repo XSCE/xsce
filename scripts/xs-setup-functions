@@ -244,30 +244,6 @@ function idmgr()
 	esac
 }
 
-function manpages()
-{
-	case "$1" in
-	"yes")
-        set +e;
-        sed -i -c  's/%_excludedocs 1/%_excludedocs 0/' /etc/rpm/macros.imgcreate
-        set -e
-		yum -y install man-pages man-db man 2>&1 | tee -a $LOG
-        if [ $? -ne 0 ] ; then
-            echo "\n\nYum returned an error\n\n" | tee -a $LOG
-            exit $YUMERROR
-        fi
-        touch $SETUPSTATEDIR/manpages
-        ;;
-	"no")
-        set +e
-        sed -i -c  's/%_excludedocs 0/%_excludedocs 1/' /etc/rpm/macros.imgcreate
-        set -e
-        rm -rf /usr/share/man
-        rm $SETUPSTATEDIR/manpages
-        ;;
-	esac
-}
-
 function mlocate()
 {
 	case "$1" in
@@ -551,6 +527,9 @@ function xs-security()
 function do_first()
 {
     #things to do the first time -- only once
+    if [ -e /home/olpc/xs-setup.log ]
+	mv /home/olpc/xs-setup.log /var/log
+    fi
 
     ## Prepare etckeeper database
     if [ ! -e $MARKER ]; then
@@ -633,9 +612,6 @@ function do_first()
          #   [ -x $i ] && $i
         #done
         #shopt -u nullglob
-
-        # this needs to be turned on first so that later installs save man pages
-        manpages yes
 
         etckeeper-if-selected "disabled selinux, scripts sourced"
 

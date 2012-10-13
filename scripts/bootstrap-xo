@@ -3,6 +3,7 @@
 
 ISXO=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
 FIX_RPMS="sed libidn grep which util-linux wget gnupg2 groff gnash"
+LOG=/home/olpc/xs-setup.log
 
 if [ $ISXO = "1" ]
 then 
@@ -12,7 +13,9 @@ then
     set +e; err=`grep -e "#varlog" /etc/fstab`; set -e;
     if [ ! $err ]; then
 	# use the supplied 10-olpc-net.rules remove the 70-olpc-net.rules
-	rm /usr/lib/udev/rules.d/70-olpc-net.rules
+	if [ -e /usr/lib/udev/rules.d/70-olpc-net.rules ]; then
+	    rm /usr/lib/udev/rules.d/70-olpc-net.rules
+	fi
 
 	# servers should not sleep
 	touch /etc/powerd/flags/inhibit-suspend
@@ -31,11 +34,13 @@ then
 	# Keep docs when installing packages
 	sed -i -c  's/%_excludedocs 1/%_excludedocs 0/' /etc/rpm/macros.imgcreate
 
+	yum -y install man-pages man-db man 2>&1 | tee -a $LOG
+
 	# re-install these packages to pickup missing docs
-	yum -y reinstall $FIX_RPMS
+	yum -y reinstall $FIX_RPMS 2>&1 | tee -a $LOG
 
 	# install xs-config
-	yum -y install xs-config
+	yum -y install xs-config 2>&1 | tee -a $LOG
 
 	# Rename the XO to be schoolserver.local
 	sed -i -e '/HOSTNAME=xo/d' /etc/sysconfig/network
@@ -44,6 +49,8 @@ then
 	# XO release 12.1.0 makes /var/log  a tempfs -- server logs should persist
 	sed -i -c 's:vartmp:#vartmp:' /etc/fstab
 	sed -i -c 's:varlog:#varlog:' /etc/fstab
+        echo "bootstrap-xo routine completed" | tee -a $LOG
+        date  2>&1 | tee -a $LOG
 	echo "The setup program must reboot before additional setup can proceed"
 	echo "Next step is to run 'xs-config' when rebooted"
 	read -p "Press [Enter] key to reboot"
