@@ -109,10 +109,12 @@ do
 	if [ -e $config ]; then
 	    cp $config $config.$BACKUP_SUFFIX
 	fi
-	sed -e s/@@BASEDNSNAME2@@/$new_name/ $config.in > $config.tmp ;
+	cp $config.in $config.tmp
+	sed -i -e s/@@BASEDNSNAME2@@/$new_name/ $config.tmp ;
 	sed -i -e s/@@BASEDNSNAME3@@/$short_host/ $config.tmp ;
 	sed -i -e s/@@IPADDR@@/$ipaddr/ $config.tmp ;
-	cat $config.tmp > $config
+	cat $config.tmp > $config ;
+	rm $config.tmp ;
     else
 	echo WARNING: Skipped $config - template file is missing!
     fi
