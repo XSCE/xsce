@@ -5,7 +5,7 @@ ISXO=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
 FIX_RPMS="sed libidn grep which util-linux wget gnupg2 groff gnash"
 
 if [ $ISXO = "1" ]
-then 
+then
     # there are files open in the tempfs /var/log -- so we cannot just unmount it
     # we need to disable tempfs and then start up again on a /var/log directory
     # that persists
@@ -21,7 +21,7 @@ then
 	sed -i -c  's/keepcache=0/keepcache=1/' /etc/yum.conf
 
 	# disable "su" without password on the XO
-	# breaks moodle-xs install can't su to apache user 
+	# breaks moodle-xs install can't su to apache user
 	#sed -i -e '1,6s/^auth/#auth/' /etc/pam.d/su
 	#sed -i -e "/^\%wheel ALL=\(ALL\) NOPASSWD\: ALL/d" /etc/sudoers
 
@@ -45,7 +45,7 @@ then
 	sed -i -c 's:vartmp:#vartmp:' /etc/fstab
 	sed -i -c 's:varlog:#varlog:' /etc/fstab
 	echo "The setup program must reboot before additional setup can proceed"
-	echo "Next step is to run 'xs-config' when rebooted"
+	echo "Next step is to run 'xs-setup' when rebooted"
 	read -p "Press [Enter] key to reboot"
 	echo "rebooting in 5 seconds"
 	sleep 5

@@ -65,20 +65,20 @@ if (isset($_POST['token'])) {
 	$outstr .= "source /usr/bin/xs-setup-functions\n";
 	$outstr .= "do-first\n";
 
-	if ( $selected['register'] == 'on' and !in_array("idmgr", $installed)) 	$outstr .= "idmgr on\n";
-	if ( $selected['register'] == 'off' and in_array("idmgr", $installed)) 	$outstr .= "idmgr off\n";
+	if ( $selected['register'] == 'on' and !in_array("idmgr", $installed)) 	$outstr .= "idmgr yes\n";
+	if ( $selected['register'] == 'off' and in_array("idmgr", $installed)) 	$outstr .= "idmgr no\n";
 	
-	if ( $selected['ejabberd'] == 'on' and !in_array("ejabberd", $installed)) $outstr .= "ejabberd on\n";
-	if ( $selected['ejabberd'] == 'off' and in_array("ejabberd", $installed)) $outstr .= "ejabberd off\n";
+	if ( $selected['ejabberd'] == 'on' and !in_array("ejabberd", $installed)) $outstr .= "ejabberd yes\n";
+	if ( $selected['ejabberd'] == 'off' and in_array("ejabberd", $installed)) $outstr .= "ejabberd no\n";
 	
-	if ( $selected['activity_server'] == 'on' and !in_array("activity-server", $installed)) $outstr .= "activity_server on\n";
-	if ( $selected['activity_server'] == 'off' and in_array("activity-server", $installed)) $outstr .= "activity_server off\n";
+	if ( $selected['activity_server'] == 'on' and !in_array("activity-server", $installed)) $outstr .= "activity_server yes\n";
+	if ( $selected['activity_server'] == 'off' and in_array("activity-server", $installed)) $outstr .= "activity_server no\n";
 	
-	if ( $selected['moodle'] == 'on' and !in_array("moodle-xs", $installed)) $outstr .= "moodle on\n";
-	if ( $selected['moodle'] == 'off' and in_array("moodle-xs", $installed)) $outstr .= "moodle off\n";
+	if ( $selected['moodle'] == 'on' and !in_array("moodle-xs", $installed)) $outstr .= "moodle yes\n";
+	if ( $selected['moodle'] == 'off' and in_array("moodle-xs", $installed)) $outstr .= "moodle no\n";
 	
-	if ( $selected['security_tools'] == 'on' and !in_array("security-tools", $installed) ) $outstr .= "security_tools on\n";
-	if ( $selected['security_tools'] == 'off' and in_array("security-tools", $installed) ) $outstr .= "security_tools off\n";
+	if ( $selected['security_tools'] == 'on' and !in_array("security-tools", $installed) ) $outstr .= "security_tools yes\n";
+	if ( $selected['security_tools'] == 'off' and in_array("security-tools", $installed) ) $outstr .= "security_tools no\n";
 
 	$outstr .= "do-last\n";
 	fwrite($fh,$outstr);

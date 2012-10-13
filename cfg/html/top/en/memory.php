@@ -1,5 +1,5 @@
 <?php 
-	$SUMMARIZE_SERVICES = "ls /library/users";
+	$SUMMARIZE_SERVICES = "free -m";
 	$results = shell_exec($SUMMARIZE_SERVICES);
 	$lines = explode("\n",$results);
 ?>
@@ -12,13 +12,18 @@
 
 <body>
 <div align="center">
-<h1>Journal Backups</h1>
+<h1>Memory Usage</h1>
+<div align="left">
+<pre>
     <?php 
 	foreach($lines as $line){
 		echo($line);
 		echo("<br />");
 	}
 	?>
+</pre>
+</div>
+
 </div>
 
 </body>

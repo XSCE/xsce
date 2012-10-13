@@ -1,5 +1,5 @@
 <?php 
-	$SUMMARIZE_SERVICES = "ls /library/users";
+	$SUMMARIZE_SERVICES = "dig yahoo.com";
 	$results = shell_exec($SUMMARIZE_SERVICES);
 	$lines = explode("\n",$results);
 ?>
@@ -12,13 +12,15 @@
 
 <body>
 <div align="center">
-<h1>Journal Backups</h1>
+<h1>Name Server Response</h1></div>
+<div align="left" class="bash_script">
+<pre>
     <?php 
 	foreach($lines as $line){
-		echo($line);
-		echo("<br />");
+		echo($line . "<br />");
 	}
 	?>
+</pre>
 </div>
 
 </body>
