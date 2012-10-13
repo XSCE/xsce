@@ -36,7 +36,11 @@ if [ -n "$opt_upgrade_only" -a ! -e "$MARKER" ]; then
 fi
 
 # seed low-level network conf and domain
-xs-domain-config $DOMAIN
+if [ x$1 = x ]; then
+    xs-domain-config $DOMAIN
+else
+    xs-domain-config $1
+fi
 
 #systemd change
 echo '-y' > /fsckoptions
@@ -55,7 +59,6 @@ yum-etckeeper yes
 #turn off the etckeeper to speed things up
 yum-etckeeper no
 set-etckeeper no
-manpages yes
 mlocate yes
 
 # Remote admin services 
