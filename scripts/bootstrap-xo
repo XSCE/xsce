@@ -26,9 +26,6 @@ then
 	sed -i -c  's/keepcache=0/keepcache=1/' /etc/yum.conf
 
 	# disable "su" without password on the XO
-	# breaks moodle-xs install can't su to apache user
-	#sed -i -e '1,6s/^auth/#auth/' /etc/pam.d/su
-	#sed -i -e "/^\%wheel ALL=\(ALL\) NOPASSWD\: ALL/d" /etc/sudoers
 	sed -i -e '6s/^auth/#auth/' /etc/pam.d/su
 
 	# copy .bashrc to /root
@@ -47,13 +44,14 @@ then
 
 	# Rename the XO to be schoolserver.local
 	sed -i -e '/HOSTNAME=xo/d' /etc/sysconfig/network
-        echo "HOSTNAME=schoolserver.local" >> /etc/sysconfig/network
+	echo "HOSTNAME=schoolserver.local" >> /etc/sysconfig/network
 
 	# XO release 12.1.0 makes /var/log  a tempfs -- server logs should persist
 	sed -i -c 's:vartmp:#vartmp:' /etc/fstab
 	sed -i -c 's:varlog:#varlog:' /etc/fstab
-        echo "bootstrap-xo routine completed" | tee -a $LOG
-        date  2>&1 | tee -a $LOG
+	echo "bootstrap-xo routine completed" | tee -a $LOG
+	date  2>&1 | tee -a $LOG
+	cp /var/log/yum.log /home/olpc/
 	echo "The setup program must reboot before additional setup can proceed"
 	echo "Next step is to run 'xs-setup' when rebooted"
 	read -p "Press [Enter] key to reboot"
