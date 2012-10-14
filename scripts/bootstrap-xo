@@ -12,6 +12,8 @@ then
     # that persists
     set +e; err=`grep -e "#varlog" /etc/fstab`; set -e;
     if [ ! $err ]; then
+	echo "bootstrap-xo routine started" | tee -a $LOG
+	date  2>&1 | tee -a $LOG
 	# use the supplied 10-olpc-net.rules remove the 70-olpc-net.rules
 	if [ -e /usr/lib/udev/rules.d/70-olpc-net.rules ]; then
 	    rm /usr/lib/udev/rules.d/70-olpc-net.rules
