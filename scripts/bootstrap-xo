@@ -27,6 +27,7 @@ then
 	# breaks moodle-xs install can't su to apache user
 	#sed -i -e '1,6s/^auth/#auth/' /etc/pam.d/su
 	#sed -i -e "/^\%wheel ALL=\(ALL\) NOPASSWD\: ALL/d" /etc/sudoers
+	sed -i -e '6s/^auth/#auth/' /etc/pam.d/su
 
 	# copy .bashrc to /root
 	cp -p /home/olpc/.bashrc /root

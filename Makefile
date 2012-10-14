@@ -94,7 +94,7 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/usr/lib/udev
 	install -D -d $(DESTDIR)/usr/lib/udev/rules.d
 	install -D -d $(DESTDIR)/usr/libexec
-	
+
 
 	install -m 755 altfiles/etc/sysconfig/modules/pcspkr.modules $(DESTDIR)/etc/sysconfig/modules
 
@@ -114,7 +114,7 @@ install: $(DESTDIR)
 	install -D altfiles/etc/sysconfig/olpc-scripts/firewall-xs.in  		$(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/var/named-xs/localdomain.zone         $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/localhost.zone           $(DESTDIR)/var/named-xs/
-	install -D altfiles/var/named-xs/named.broadcast          $(DESTDIR)/var/named-xs/ 
+	install -D altfiles/var/named-xs/named.broadcast          $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/named.ip6.local          $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/named.local              $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/named.rfc1912.zones      $(DESTDIR)/var/named-xs/
@@ -163,9 +163,11 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/etc/systemd
 	install -D -d $(DESTDIR)/etc/systemd/system
 	install -D -d $(DESTDIR)/library/pgsql-xs
+	install -D -d $(DESTDIR)/etc/pki/CA/newcerts/admin
 	install -D altfiles/etc/pgsql-xs/p*.conf $(DESTDIR)/etc/pgsql-xs
 	install -D altfiles/etc/sysconfig/pgsql/pgsql-xs $(DESTDIR)/etc/sysconfig/pgsql
 	install -D altfiles/etc/systemd/system/*.service.in $(DESTDIR)/etc/systemd/system
+	install -D altfiles/etc/pki/CA/newcerts/admin/self.pem $(DESTDIR)/etc/pki/CA/newcerts/admin
 
 	#Non-conflicting init.d scripts
 #	install -D altfiles/etc/init.d/pgsql-xs $(DESTDIR)/etc/init.d
@@ -173,7 +175,7 @@ install: $(DESTDIR)
 #	install -D altfiles/etc/init.d/no-fsck-questions $(DESTDIR)/etc/init.d
 
 	install -D altfiles/var/named-xs/localdomain.zone         $(DESTDIR)/var/named-xs/
-	
+
 	# scripts
 	install -D -d $(DESTDIR)/usr/bin
 	install -D scripts/cat-parts   $(DESTDIR)/usr/bin
