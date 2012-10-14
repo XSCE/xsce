@@ -95,14 +95,15 @@ function set-etckeeper()
 	"yes")
         if [ ! -d /etc/.git ]; then
             pushd /etc
-            yum -y install etckeeper
-            if [ $? -ne 0 ] ; then
-                echo "\n\nYum returned an error\n\n" | tee -a $LOG
-                exit $YUMERROR
-            fi
+# already installed	     
+#            yum -y install etckeeper
+#            if [ $? -ne 0 ] ; then
+#                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+#                exit $YUMERROR
+#            fi
             etckeeper init
-            etckeeper commit -m "Initial checkin"
-            git gc
+#            etckeeper commit -m "Initial checkin"
+#            git gc
             popd
         fi
 
