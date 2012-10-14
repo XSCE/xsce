@@ -10,11 +10,13 @@
 */
 	$filename = "./bin/lang";
 	$result = shell_exec($filename);
+	if (strlen($result)<2) $result = 'en';
 	$goto = substr($result,1,2);
 	$locationstring = "Location: ./" . $goto;
 	$workingdir = getcwd();
 	$lang_dir = $workingdir . "/" . $goto;
 	if (is_dir($lang_dir)) {
+		//die($locationstring);
 		header($locationstring);
 		exit(0);
 	}

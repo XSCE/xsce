@@ -453,10 +453,12 @@ function vnc()
         ln -sf $DESTDIR/etc/systemd/system/vncserver\@.service \
             $DESTDIR/etc/systemd/system/multi-user.target.wants/vncserver\@\:1.service
         cp $CFGDIR/etc/sysconfig/vnc/xstartup /home/$DEFAULTUSER/.vnc/
-        chown -R $DEFAULTUSER:$DEFAULTUSER /home/$DEFAULTUSER/.vnc
         echo "$DEFAULTPASSWORD" | vncpasswd -f > \
                     /home/$DEFAULTUSER/.vnc/passwd
+        chown -R $DEFAULTUSER:$DEFAULTUSER /home/$DEFAULTUSER/.vnc
         chmod 600 /home/$DEFAULTUSER/.vnc/passwd
+        cp /etc/pki/CA/newcerts/admin/self.pem /home/admin
+        chown $DEFAULTUSER:$DEFAULTUSER /home/admin/self.pem
 		systemctl enable vncserver\@\:1.service 2>&1 | tee -a $LOG
         systemctl start vncserver\@\:1.service 2>&1 | tee -a $LOG
         systemctl start vncserverweb.service 2>&1 | tee -a $LOG
@@ -634,7 +636,7 @@ function do_first()
         etckeeper-if-selected "after installing core packages"
 
         popd
-        
+
     fi
     echo "do first routine completed" | tee -a $LOG
     date  2>&1 | tee -a $LOG

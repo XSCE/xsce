@@ -6,7 +6,7 @@ FIX_RPMS="sed libidn grep which util-linux wget gnupg2 groff gnash"
 LOG=/home/olpc/xs-setup.log
 
 if [ $ISXO = "1" ]
-then 
+then
     # there are files open in the tempfs /var/log -- so we cannot just unmount it
     # we need to disable tempfs and then start up again on a /var/log directory
     # that persists
@@ -26,9 +26,10 @@ then
 	sed -i -c  's/keepcache=0/keepcache=1/' /etc/yum.conf
 
 	# disable "su" without password on the XO
-	# breaks moodle-xs install can't su to apache user 
+	# breaks moodle-xs install can't su to apache user
 	#sed -i -e '1,6s/^auth/#auth/' /etc/pam.d/su
 	#sed -i -e "/^\%wheel ALL=\(ALL\) NOPASSWD\: ALL/d" /etc/sudoers
+	sed -i -e '6s/^auth/#auth/' /etc/pam.d/su
 
 	# copy .bashrc to /root
 	cp -p /home/olpc/.bashrc /root
@@ -54,7 +55,7 @@ then
         echo "bootstrap-xo routine completed" | tee -a $LOG
         date  2>&1 | tee -a $LOG
 	echo "The setup program must reboot before additional setup can proceed"
-	echo "Next step is to run 'xs-config' when rebooted"
+	echo "Next step is to run 'xs-setup' when rebooted"
 	read -p "Press [Enter] key to reboot"
 	echo "rebooting in 5 seconds"
 	sleep 5

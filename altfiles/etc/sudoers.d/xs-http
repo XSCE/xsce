@@ -1,0 +1,1 @@
+apache ALL=NOPASSWD: /usr/sbin/iptables-save,/usr/sbin/fdisk,/usr/fin/xs-flashbench

@@ -1,5 +1,5 @@
 <?php 
-	$SUMMARIZE_SERVICES = "ls /library/users";
+	$SUMMARIZE_SERVICES = "/usr/bin/sudo /usr/sbin/fdisk -l /dev/mmcblk0";
 	$results = shell_exec($SUMMARIZE_SERVICES);
 	$lines = explode("\n",$results);
 ?>
@@ -12,14 +12,38 @@
 
 <body>
 <div align="center">
-<h1>Journal Backups</h1>
+<h1>SD Information</h1>
+</div>
+
+<div align="left">
+	<pre>
     <?php 
 	foreach($lines as $line){
 		echo($line);
 		echo("<br />");
 	}
+	$SUMMARIZE_SERVICES = "/usr/bin/sudo /usr/bin/xs-flashbench -a /dev/mmcblk0";
+	$results = shell_exec($SUMMARIZE_SERVICES);
+	$lines = explode("\n",$results);
 	?>
+	</pre>
 </div>
+
+<div align="center">
+<h3>Flash Speed Across Erase Possible Block Boundries</h3>
+</div>
+
+<div align="left">
+	<pre>
+	<?php 
+	foreach($lines as $line){
+		echo($line);
+		echo("<br />");
+	}
+	?>
+	</pre>
+</div>
+
 
 </body>
 </html>

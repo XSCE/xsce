@@ -18,7 +18,7 @@ function popvnc(){
 			y = window.screenTop + 100;
 		}
 		var param='dialog, modal, toolbar=no, status=no, scrollbars=no, resizable=no, width=800, height=600 , left='+x+', top='+y+', location=no';
-		parent.vncwin = window.open('/novnc/vnc_auto.html?HOST=172.18.96.1&port=6080','School Server',param);
+		parent.vncwin = window.open('/novnc/vnc_auto.html?HOST=172.18.96.1&port=6080&encrypt=1&true_color=1','School Server',param);
 		parent.vncwin.focus();
 		return false;
 	} else {

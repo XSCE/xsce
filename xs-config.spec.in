@@ -7,23 +7,23 @@ BuildArch: noarch
 #  a list of packages modified by xs-config
 Requires: python
 Requires: authconfig
-#Requires: bind  
-Requires: initscripts  
-Requires: iptables  
-Requires: module-init-tools  
-Requires: nscd  
+#Requires: bind
+Requires: initscripts
+Requires: iptables
+Requires: module-init-tools
+Requires: nscd
 Requires: nss
 Requires: ntp
-Requires: openssh-server  
-Requires: radvd  
-Requires: rpm  
+Requires: openssh-server
+Requires: radvd
+Requires: rpm
 Requires: selinux-policy
-Requires: setup  
-Requires: smartmontools  
-Requires: sudo  
-Requires: syslog 
+Requires: setup
+Requires: smartmontools
+Requires: sudo
+Requires: syslog
 Requires: logrotate
-Requires: xml-common  
+Requires: xml-common
 Requires: etckeeper
 Requires: make
 Requires: usbmount
@@ -151,6 +151,7 @@ fi
 %{_libexecdir}/moodle-xs-init
 %doc README README.networking
 %doc README.no-fsck-questions
+%{_sysconfdir}/pki/CA/newcerts/admin/self.pem
 
 %files xo
 %{_bindir}/bootstrap-xo
