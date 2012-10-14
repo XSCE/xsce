@@ -529,7 +529,7 @@ function xs-security()
 function do_first()
 {
     #things to do the first time -- only once
-    if [ -e /home/olpc/xs-setup.log ]
+    if [ -e /home/olpc/xs-setup.log ]; then
 	mv /home/olpc/xs-setup.log /var/log
     fi
 

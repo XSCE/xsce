@@ -3,7 +3,7 @@
 # Configures fundamental XS items.
 # Usage: xs-setup [hostname]
 
-set -x -e -u
+set -x -e
 
 DESTDIR=/
 CFGDIR=/usr/share/xs-config/cfg
