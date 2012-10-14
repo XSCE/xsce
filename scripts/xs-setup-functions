@@ -82,7 +82,7 @@ function dhcpd()
 
 function etckeeper-if-selected()
 {
-    if [ -e $SETUPSTATEDIR/etckeeper && $# -gt 1]; then
+    if [ -e $SETUPSTATEDIR/etckeeper && $# -gt 1 ]; then
         set +e
         etckeeper commit -m $2
         set -e
@@ -535,6 +535,11 @@ function do_first()
 	mv /home/olpc/yum.log /var/log/
     fi
 
+    # init etckeeper and turn it off
+    set-etckeeper yes
+    yum-etckeeper no
+    set-etckeeper no
+
     ## Prepare etckeeper database
     if [ ! -e $MARKER ]; then
         pushd /etc
@@ -571,11 +576,8 @@ function do_first()
 	# keep yum cache
 	sed -i -c 's/keepcache=0/keepcache=1/' /etc/yum.conf
 	sed -i -c 's/metadata_expire=7d/metadata_expire=never/' /etc/yum.repos.d/fedora.repo
-        sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora.repo
-	sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora-updates.repo
-
-	# set the network up
-	xs-setup-network
+#	sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora.repo
+#	sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora-updates.repo
 
         ## Prepare config files
         CFG_TEMPLATES="rsyslog.conf motd.olpc sysctl.conf ssh/sshd_config
@@ -618,6 +620,9 @@ function do_first()
         #shopt -u nullglob
 
         etckeeper-if-selected "disabled selinux, scripts sourced"
+
+	# set the network up
+	xs-setup-network
 
         # following packages are the core set of packages installed on all xs servers
         yum -y install  syck rssh mtd-utils acpid  2>&1 | tee -a $LOG
