@@ -27,8 +27,14 @@ if [ -n "$opt_upgrade_only" ]; then
 	exit 0
 fi
 
-#etckeeper commit -m "Dirty state"
+# Determine the number of interfaces
+num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
 
+# Is this an XO
+is_xo=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
+echo $is_xo
+CFG_TEMPLATES="sysconfig/dhcpd sysconfig/iptables-config sysconfig/ip6tables-config"
+## Prepare config files
 #========================================================
 #new code to use NetworkManager to set up devices
 
@@ -42,12 +48,6 @@ function write_nm_connection(){
     chmod 600 "/etc/NetworkManager/system-connections/$1" 
 }
 
-# Determine the number of interfaces
-num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
-
-# Is this an XO
-is_xo=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
-echo $is_xo
 # all xo's have a wifi and a lo interface
 if [[ $is_xo = "1" ]]; then
     num_ifaces=$(( $num_ifaces - 1 ))
@@ -77,8 +77,6 @@ else
     write_nm_connection "dhcp" "$mac" "eth1"   
 fi
 
-## Prepare config files
-CFG_TEMPLATES="sysconfig/dhcpd sysconfig/iptables-config sysconfig/ip6tables-config"
 pushd /etc
 for i in $CFG_TEMPLATES; do
 	cp -p $i.in $i
@@ -88,8 +86,6 @@ done
 popd
 
 #etckeeper commit -m "xs-setup-network configured services"
-
-systemctl stop NetworkManager.service
 
 # must re-run domain-config as some domain-config parts change behaviour
 # depending on whether we are running the standard XS network config or not
@@ -102,6 +98,8 @@ BACKUP_SUFFIX=old
 
 short_host=`hostname -s`
 new_name=`hostname -f`
+
+systemctl stop NetworkManager.service
 
 for config in $CONFIG_LIST;
 do
