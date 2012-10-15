@@ -1,0 +1,99 @@
+#!/usr/bin/env python
+from time import localtime, strftime, sleep, localtime
+import time
+import datetime
+from subprocess import Popen, PIPE
+import datetime
+import os, sys
+import gconf
+import logging
+import json
+from gettext import gettext as _
+DATA_FILE = "/home/olpc/.mains_power"
+VERSION = "0.1"
+
+SYS_AC = "  /sys/class/power_supply/olpc-ac/online"
+WORK_DIR = "/home/olpc"
+
+logger = logging.getLogger('serversleep')
+hdlr = logging.FileHandler(os.path.join(WORK_DIR,'getsource.log'))
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(messages)s')
+hdlr.setFormatter(formatter)
+logger.addHandler(hdlr)
+logger.setLevel(logging.WARNING)
+
+class tools:
+    def cli(self, cmd):
+        """send cmd line to shell, rtn (text,error code)"""
+        logger.debug('command_line cmd:%s'%cmd)
+        p1 = Popen(cmd,stdout=PIPE, shell=True)
+        output = p1.communicate()
+        if p1.returncode != 0 :
+            logger.debug('error returned from shell command: %s was %s'%(cmd,output[0]))
+        return output[0],p1.returncode
+
+    def tstamp(self, dtime):
+        '''return a UNIX style timestamp for datetime input'''
+        epoch = datetime.datetime(1970, 1, 1)
+        since_epoch_delta = dtime - epoch
+        return since_epoch_delta.total_seconds()
+
+class ShowPowerHistory(tools):
+    def __init__(self):
+        global cfg, first_time, last_time
+        first_time = None
+        first_time = None
+        #get the config file with previous selections
+        try:
+            fd = file(DATA_FILE,'r')
+        except IOError:
+            #this is first run of program, set up defaults
+            try:
+                fd = file(DATA_FILE,'w')
+                cfg = "START UP OF AC POWER MONITOR VERSION %s\n" % VERSION
+                fd.write(cfg)
+                fd.close()
+                fd = file(DATA_FILE,'r')
+            except IOError,e:
+                logging.exception("failed to write config str. error:%s"% (e,))
+                fd = file(DATA_FILE,'r')
+        for line in fd:
+            print line
+            nibbles = line.split('|')
+            if len(nibbles) > 1:
+                current = nibbles[1]
+                last_time = datetime.datetime.strptime(current.strip(),"%a %b %d %H:%M:%S %Y")
+                if not first_time: first_time = last_time
+        diff = last_time - first_time
+        hours = diff.total_seconds() / 3600
+        days = hours // 24
+        minutes = hours
+        hours = hours % 24
+        print(str(diff))
+
+
+class CollectData(tools):
+    def __init__(self):
+        #get the config file with previous selections
+        try:
+            fd = file(DATA_FILE,'a')
+        except Exception,e:
+            logger.exception("cron invocation failed to read cfg. e=%s"%e)
+            return
+        # the /sys file syste has the info on status of ac input
+        line,err = self.cli('cat %s' % (SYS_AC,))
+        fd.write("%s|%s\n" % (line.strip(), time.ctime(),))
+
+
+if __name__ == "__main__":
+    # if interactive from command line, do gui
+    if len(sys.argv) == 1:
+        pi = ShowPowerHistory()
+    elif (len(sys.argv )== 2):
+        # if coming from cron, the check for an action to do
+        if sys.argv[1] == '--timeout':
+            pa = CollectData()
+        sys.exit(0)
+    # pop up the GUI
+    #Gtk.main()
+    exit(0)

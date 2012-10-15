@@ -83,6 +83,7 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/functions
 	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/setup.d
 	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/setup.d/installed
+	install -D -d $(DESTDIR)/etc/sudoers.d
 	install -D -d $(DESTDIR)/var
 	install -D -d $(DESTDIR)/var/named-xs
 	install -D -d $(DESTDIR)/var/named-xs/data
@@ -112,6 +113,7 @@ install: $(DESTDIR)
 	install -D altfiles/etc/sysconfig/olpc-scripts/iptables-xs.in  		$(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/ip6tables-xs.in  	$(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/firewall-xs.in  		$(DESTDIR)/etc/sysconfig/olpc-scripts/
+	install -D altfiles/etc/sudoers.d/xs-http				  $(DESTDIR)/etc/sudoers.d
 	install -D altfiles/var/named-xs/localdomain.zone         $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/localhost.zone           $(DESTDIR)/var/named-xs/
 	install -D altfiles/var/named-xs/named.broadcast          $(DESTDIR)/var/named-xs/

@@ -1,5 +1,5 @@
 <?php 
-	$SUMMARIZE_SERVICES = "free -m";
+	$SUMMARIZE_SERVICES = "../bin/mem";
 	$results = shell_exec($SUMMARIZE_SERVICES);
 	$lines = explode("\n",$results);
 ?>

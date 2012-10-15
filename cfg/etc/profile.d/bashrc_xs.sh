@@ -130,7 +130,7 @@ function fastprompt()
     case $TERM in
         *term | rxvt )
             #PS1="${HILIT}[\h]$NC \W > \[\033]0;\${TERM} [\u@\h] \w\007\]" ;;
-            PS1="${HILIT}[\h]$NC \W >"  ;;
+            PS1="${HILIT}[\u@\h]$NC \W >"  ;;
         linux )
             PS1="${HILIT}[\h]$NC \W > " ;;
         *)
@@ -159,7 +159,8 @@ function powerprompt()
     esac
 }
 
-powerprompt     # This is the default prompt -- might be slow.
+fastprompt
+#powerprompt     # This is the default prompt -- might be slow.
                 # If too slow, use fastprompt instead. ...
 
 #===============================================================
