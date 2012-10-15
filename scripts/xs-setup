@@ -54,11 +54,6 @@ source /usr/bin/xs-setup-functions
 
 # prep the XO
 do-first
-set-etckeeper yes
-yum-etckeeper yes
-#turn off the etckeeper to speed things up
-yum-etckeeper no
-set-etckeeper no
 mlocate yes
 
 # Remote admin services 

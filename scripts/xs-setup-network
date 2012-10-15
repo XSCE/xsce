@@ -27,11 +27,16 @@ if [ -n "$opt_upgrade_only" ]; then
 	exit 0
 fi
 
-#etckeeper commit -m "Dirty state"
+# Determine the number of interfaces
+num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
 
-#========================================================
+# Is this an XO
+is_xo=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
+echo $is_xo
+CFG_TEMPLATES="sysconfig/dhcpd sysconfig/iptables-config sysconfig/ip6tables-config"
+CONFIG_LIST="/etc/hosts"
+
 #new code to use NetworkManager to set up devices
-
 function write_nm_connection(){
     # receives connection_filename, hwaddr,  device_name as parameters
     cp "/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/$1" \
@@ -42,30 +47,27 @@ function write_nm_connection(){
     chmod 600 "/etc/NetworkManager/system-connections/$1" 
 }
 
-# Determine the number of interfaces
-num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
-
-# Is this an XO
-is_xo=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
-echo $is_xo
+#========================================================
 # all xo's have a wifi and a lo interface
 if [[ $is_xo = "1" ]]; then
     num_ifaces=$(( $num_ifaces - 1 ))
-    # if we have 2 ethernet dongles, lo, )
-    if [[ $num_ifaces = 3 ]] ; then
-        mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
-            /^ *ether / { if (eth == "eth2:") print( $2);}'`
-        write_nm_connection "dhcp" "$mac" "eth2"
+    if [[ $num_ifaces  = 1 ]]; then
+        ipaddr=ifconfig eth0| awk -F ' *|:' '/inet addr/{print $4}'
     fi
-
     if [[ $num_ifaces  > 1 ]]; then
         mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
             /^ *ether / { if (eth == "eth1:") print( $2);}'`
         write_nm_connection "static" "$mac" "eth1"
         ipaddr=172.18.96.1
     fi
-    if [[ $num_ifaces  = 1 ]]; then
-        ipaddr=ifconfig eth0| awk -F ' *|:' '/inet addr/{print $4}'
+    # if we have 2 ethernet dongles, lo, )
+    if [[ $num_ifaces = 3 ]] ; then
+        mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
+            /^ *ether / { if (eth == "eth2:") print( $2);}'`
+        write_nm_connection "dhcp" "$mac" "eth2"
+        echo "eth2" > /etc/sysconfig/xs_wan_device
+    else
+        echo "eth0" > /etc/sysconfig/xs_wan_device
     fi
 else
     mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
@@ -74,11 +76,10 @@ else
     ipaddr=172.18.96.1
     mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
         /^ *ether / { if (eth == "eth1:") print( $2);}'`
-    write_nm_connection "dhcp" "$mac" "eth1"   
+    write_nm_connection "dhcp" "$mac" "eth1"
+    echo "eth1" > /etc/sysconfig/xs_wan_device
 fi
 
-## Prepare config files
-CFG_TEMPLATES="sysconfig/dhcpd sysconfig/iptables-config sysconfig/ip6tables-config"
 pushd /etc
 for i in $CFG_TEMPLATES; do
 	cp -p $i.in $i
@@ -89,27 +90,21 @@ popd
 
 #etckeeper commit -m "xs-setup-network configured services"
 
+short_host=`hostname -s`
+new_name=`hostname -f`
+
 systemctl stop NetworkManager.service
-
-# must re-run domain-config as some domain-config parts change behaviour
-# depending on whether we are running the standard XS network config or not
-xs-domain-config
-
-CONFIG_LIST="/etc/hosts"
 
 #  This is the suffix which original versions of modified files will have
 BACKUP_SUFFIX=old
-
-short_host=`hostname -s`
-new_name=`hostname -f`
 
 for config in $CONFIG_LIST;
 do
     if [ -e $config.in ]; then
 	if [ -e $config ]; then
-	    cp $config $config.$BACKUP_SUFFIX
+	    cp $config $config.$BACKUP_SUFFIX ;
 	fi
-	cp $config.in $config.tmp
+	cp $config.in $config.tmp ;
 	sed -i -e s/@@BASEDNSNAME2@@/$new_name/ $config.tmp ;
 	sed -i -e s/@@BASEDNSNAME3@@/$short_host/ $config.tmp ;
 	sed -i -e s/@@IPADDR@@/$ipaddr/ $config.tmp ;
