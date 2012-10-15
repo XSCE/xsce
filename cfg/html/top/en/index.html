@@ -17,10 +17,12 @@ function setup_click() {
 	nav.src="pick_services.php";
 }
 function classroom_click() {
-	window.frames['formframe'].src="cnt_service_summary.php";
+	var nav=document.getElementById("formframe");
+	nav.src="registrations.php";
 }
 function tools_click() {
-	window.frames['formframe'].src="cnt_service_summary.php"
+	var nav=document.getElementById("formframe");
+	nav.src="dig.php";
 }
 function status_click() {
 	var nav=document.getElementById("formframe");
@@ -32,7 +34,7 @@ function status_click() {
     <div class="nav" height="40px" width="100%">
     <table width="100%" align="center" border="0">
   <tr>
-    <td width="10%"><a  class="nav" href="" onclick="popvnc();">XS Remotely </a>
+    <td width="10%"><a  class="nav" href="" onClick="popvnc();">XS Remotely </a>
 </td>
     <td width="10%">&nbsp;</td>
     <td width="10%">&nbsp;</td>
