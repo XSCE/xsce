@@ -93,9 +93,6 @@ popd
 short_host=`hostname -s`
 new_name=`hostname -f`
 
-# must re-run domain-config as some domain-config parts change behaviour
-# depending on whether we are running the standard XS network config or not
-xs-domain-config
 systemctl stop NetworkManager.service
 
 #  This is the suffix which original versions of modified files will have
