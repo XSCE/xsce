@@ -35,6 +35,7 @@ is_xo=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
 echo $is_xo
 CFG_TEMPLATES="sysconfig/dhcpd sysconfig/iptables-config sysconfig/ip6tables-config"
 CONFIG_LIST="/etc/hosts"
+UPLINK=`find /etc/NetworkManager/system-connections -maxdepth 1 -type f -name "*" -not -name static -not -name "Sugar *"`
 
 #new code to use NetworkManager to set up devices
 function write_nm_connection(){
@@ -68,7 +69,12 @@ if [[ $is_xo = "1" ]]; then
         echo "eth2" > /etc/sysconfig/xs_wan_device
     else
         echo "eth0" > /etc/sysconfig/xs_wan_device
+	# based on observed created files
+        echo "ignore-auto-dns=true" >> $UPLINK
     fi
+    cp /usr/share/xs-config/cfg/etc/NetworkManager/system-connections/"Sugar Modem Connection" \
+        /etc/NetworkManager/system-connections/
+    chmod 600 /etc/NetworkManager/system-connections/"Sugar Modem Connection"
 else
     mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
         /^ *ether / { if (eth == "eth0:") print( $2);}'`

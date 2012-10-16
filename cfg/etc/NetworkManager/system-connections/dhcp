@@ -7,6 +7,7 @@ timestamp=1348017380
 
 [ipv4]
 method=auto
+ignore-auto-dns=true
 
 [802-3-ethernet]
 duplex=full
