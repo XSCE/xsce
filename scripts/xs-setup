@@ -30,8 +30,8 @@ done
 # The user can request that we only perform setup steps if setup had been
 # previously performed by an admin. This is useful for automated upgrades
 # (e.g. RPM post scripts).
-if [ -n "$opt_upgrade_only" -a ! -e "$MARKER" ]; then
-	echo "$0: doing nothing, XS is not active."
+if [ -n "$opt_upgrade_only" ]; then
+	echo "$0: doing nothing, upgrade-only on cmdline."
 	exit 0
 fi
 
