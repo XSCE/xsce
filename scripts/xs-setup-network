@@ -122,15 +122,4 @@ echo "XS standard networking configured"
 systemctl start NetworkManager.service
 
 sleep 5
-if [[ $num_ifaces = 1 ]]; then 
-    exit 0
-fi
 
-source /usr/bin/xs-setup-functions
-dhcpd yes
-named yes
-squid yes
-gateway yes
-
-xs-resolvconf
-touch /.olpcxs-net-configured

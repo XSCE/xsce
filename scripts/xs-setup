@@ -9,6 +9,8 @@ DESTDIR=/
 CFGDIR=/usr/share/xs-config/cfg
 MARKER=/.olpcxs-configured
 DOMAIN=local
+# Determine the number of interfaces
+num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
 
 # Parse options
 opt_upgrade_only=
@@ -54,6 +56,14 @@ source /usr/bin/xs-setup-functions
 
 # prep the XO
 do-first
+if [[ $num_ifaces > 1 ]]; then
+    dhcpd yes
+    named yes
+    squid yes
+    gateway yes 
+    xs-resolvconf
+    touch /.olpcxs-net-configured
+fi
 
 # Remote admin services 
 httpd yes

@@ -28,9 +28,9 @@ YUM_CMD="yum -y install"
 
 function check_installed()
 {
-    installed=`ls $SETUPSTATEDIR | grep $0`
+    installed=`ls $SETUPSTATEDIR | grep $1`
     if [ -f $installed ]; then
-	echo "$0 Already installed" | tee -a $LOG
+	echo "$1 Already installed" | tee -a $LOG
 	exit 2
     fi	
 }
@@ -765,9 +765,9 @@ function do_last()
 }
 
 # now source any files ending with .sh in config dir, allow pkgs to shadow these defs
-for i in $CFGFUNCTIONS/*.sh ; do
-    if [ -r "$i" ]; then
-            . "$i" >/dev/null 2>&1
-            echo "shell script $i in $CFGFUNCTIONS shadowed setup functions" 2>&1 | tee -a $LOG
-    fi
-done
+#for i in $CFGFUNCTIONS/*.sh ; do
+#    if [ -r "$i" ]; then
+#            . "$i" >/dev/null 2>&1
+#            echo "shell script $i in $CFGFUNCTIONS shadowed setup functions" 2>&1 | tee -a $LOG
+#    fi
+#done
