@@ -425,6 +425,10 @@ function postgresql()
             sed -i -c "s/--auth='ident'\"/--auth='ident' --encoding='UTF8'\"/" \
                                     /usr/bin/postgresql-setup
 			/usr/bin/postgresql-setup  initdb postgresql-xs
+            sed -i -c 's/^#standard_conforming_string/standard_conformiong_strings = off/' \
+                        /library/pgsql-xs/postgresql.conf
+            sed -i -c 's/^#backslash_quote/backslash_quote = allow/' \
+                        /library/pgsql-xs/postgresql.conf
 		fi
 
 		# and set it to autostart
@@ -445,11 +449,14 @@ function sdcard()
         mountpoint = `df | gawk '/^\/dev\/mmcblk0p1 {print $7;}'`
         echo "Contents of $mountpoint"
         ls -l $mountpoint
-        echo "you are about to delete all this data"
-        response = read -p "is this ok? (y/N)"
-        if [[ $response not in "[yY]" ]]; then
-            exit(1)
-        fi
+        echo -n "you are about to delete all this data. Is this ok? (y/N)"
+        read response
+        case $response in
+        #fall through
+        [yY] ) ;;
+        * ) exit 1
+            ;;
+        esac
         umount /dev/mmcblk0p1
         #delete all partitions on the drive
         echo "d
@@ -476,8 +483,8 @@ function sdcard()
             erase_blocks = int(end / start);
             swap_begin = int(erase_blocks - swap_num_erase_blocks) * 8192;
         } else {}
-            exit(1);
-        }
+            exit(1)
+        }'
 
         touch SETUPSTATEDIR/sdcard
         ;;
