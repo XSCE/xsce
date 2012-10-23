@@ -573,6 +573,9 @@ function do_first()
 #	sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora.repo
 #	sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora-updates.repo
 
+	# use NM keyfile in place of ifcfg-rh XOs have this set already via OOB
+	sed -i -e 's/ifcfg-rh/keyfile/' /etc/NetworkManager/NetworkManager.conf
+
         ## Prepare config files
         CFG_TEMPLATES="rsyslog.conf motd.olpc sysctl.conf ssh/sshd_config
         sysconfig/named sysconfig/init sysconfig/squid rssh.conf php.ini
