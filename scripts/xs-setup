@@ -54,7 +54,6 @@ source /usr/bin/xs-setup-functions
 
 # prep the XO
 do-first
-mlocate yes
 
 # Remote admin services 
 httpd yes
@@ -62,11 +61,11 @@ vnc yes
 
 # Core services offered
 ejabberd yes
+webdav yes
+xs-security yes
 idmgr yes
 postgresql yes
 moodle-xs yes
-xs-security yes
-webdav yes
 
 # for normal use, choose either of the following (gateway turns on masquerade)
 squid yes
@@ -77,6 +76,7 @@ named yes
 # Finalize install
 yum-etckeeper yes
 do-last
+
 echo "XS configured; services are ready to use."
 #echo "please check the configured services below"
 #xs-services-check

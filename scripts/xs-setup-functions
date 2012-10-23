@@ -619,13 +619,11 @@ function do_first()
 	xs-setup-network
 
         # following packages are the core set of packages installed on all xs servers
-	if [ "$(check_installed)" -ne "2" ]; then
-	    $YUM_CMD syck rssh mtd-utils acpid mlocate 2>&1 | tee -a $LOG
-            if [ $? -ne 0 ] ; then
-                echo "\n\nYum returned an error\n\n" | tee -a $LOG
-                exit $YUMERROR
-            fi
-	fi
+	$YUM_CMD syck rssh mtd-utils acpid mlocate 2>&1 | tee -a $LOG
+        if [ $? -ne 0 ] ; then
+            echo "\n\nYum returned an error\n\n" | tee -a $LOG
+            exit $YUMERROR
+        fi
 
         # make a non privileged user, and give her remote access
         if [ ! `grep $DEFAULTUSER /etc/passwd` ]; then
