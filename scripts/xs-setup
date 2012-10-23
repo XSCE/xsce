@@ -67,12 +67,6 @@ idmgr yes
 postgresql yes
 moodle-xs yes
 
-# for normal use, choose either of the following (gateway turns on masquerade)
-squid yes
-gateway yes
-dhcpd yes
-named yes
-
 # Finalize install
 yum-etckeeper yes
 do-last

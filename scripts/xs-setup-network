@@ -91,10 +91,6 @@ for i in $CFG_TEMPLATES; do
 	cp -p $i.in $i
 	#etckeeper commit -m "Made from $i.in"
 done
-#etckeeper commit -m "Made from $i.in"
-popd
-
-#etckeeper commit -m "xs-setup-network configured services"
 
 short_host=`hostname -s`
 new_name=`hostname -f`
@@ -116,15 +112,25 @@ do
 	sed -i -e s/@@IPADDR@@/$ipaddr/ $config.tmp ;
 	cat $config.tmp > $config ;
 	rm $config.tmp ;
+	#etckeeper commit -m "set /etc/hosts to $ipaddr $new_name $short_host"
     else
 	echo WARNING: Skipped $config - template file is missing!
     fi
 done
-
-systemctl start NetworkManager.service
-sleep 5
-systemctl enable iptables.service
-systemctl enable ip6tables.service
-systemctl start iptables.service
-systemctl start ip6tables.service
+popd
 echo "XS standard networking configured"
+systemctl start NetworkManager.service
+
+sleep 5
+if [[ $num_ifaces = 1 ]]; then 
+    exit 0
+fi
+
+source /usr/bin/xs-setup-functions
+dhcpd yes
+named yes
+squid yes
+gateway yes
+
+xs-resolvconf
+touch /.olpcxs-net-configured
