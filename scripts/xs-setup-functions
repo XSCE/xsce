@@ -25,11 +25,49 @@ DEFAULTPASSWORD='12admin'
 ISXO=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
 YUMERROR=10
 
+function template()
+{
+	case "$1" in
+    "yes")
+        yum -y install  xs-release 2>&1 | tee -a $LOG
+        if [ $? -ne 0 ] ; then
+            echo "\n\nYum returned an error\n\n" | tee -a $LOG
+            exit $YUMERROR
+        fi
+        touch SETUPSTATEDIR/xs-release
+        #execute the setup script
+        ;;
+    "no")
+        rm $SETUPSTATEDIR/xs-release
+        ;;
+    esac
+}
+
+function xs-acpowergaps()
+{
+	case "$1" in
+    "yes")
+        cat > /etc/sysconfig/olpc-scripts/acpowergaps.txt < EOF
+        */6 * * * * root /usr/bin/xs-acpowergaps-cron
+        EOF
+        crontab /etc/sysconfig/olpc-scripts/acpowergaps.txt
+        touch SETUPSTATEDIR/xs-acpowergaps
+        ;;
+    "no")
+        rm $SETUPSTATEDIR/xs-acpowergaps
+        ;;
+    esac
+}
+
 function activity-server()
 {
 	case "$1" in
     "yes")
         yum -y install  xs-activity-server 2>&1 | tee -a $LOG
+        if [ $? -ne 0 ] ; then
+            echo "\n\nYum returned an error\n\n" | tee -a $LOG
+            exit $YUMERROR
+        fi
         touch SETUPSTATEDIR/activity-server
         #execute the setup script
         /etc/sysconfig/olpc-scripts/setup.d/xs-activity-server
@@ -95,7 +133,7 @@ function set-etckeeper()
 	"yes")
         if [ ! -d /etc/.git ]; then
             pushd /etc
-# already installed	     
+# already installed
 #            yum -y install etckeeper
 #            if [ $? -ne 0 ] ; then
 #                echo "\n\nYum returned an error\n\n" | tee -a $LOG
@@ -384,7 +422,7 @@ function postgresql()
             # postgresql-setup initdb need to move this edit upstream FIXME
             mkdir -p /library/pgsql-xs
             chown -R postgres:postgres /library/pgsql-xs/
-            sed -i -c "s/--auth='ident\"'/--auth='ident' --encoding='UTF8'\"/" \
+            sed -i -c "s/--auth='ident'\"/--auth='ident' --encoding='UTF8'\"/" \
                                     /usr/bin/postgresql-setup
 			/usr/bin/postgresql-setup  initdb postgresql-xs
 		fi
@@ -398,6 +436,55 @@ function postgresql()
         rm $SETUPSTATEDIR/postgresql
 		;;
 	esac
+}
+
+function sdcard()
+{
+	case "$1" in
+    "yes")
+        mountpoint = `df | gawk '/^\/dev\/mmcblk0p1 {print $7;}'`
+        echo "Contents of $mountpoint"
+        ls -l $mountpoint
+        echo "you are about to delete all this data"
+        response = read -p "is this ok? (y/N)"
+        if [[ $response not in "[yY]" ]]; then
+            exit(1)
+        fi
+        umount /dev/mmcblk0p1
+        #delete all partitions on the drive
+        echo "d
+        1
+        d
+        2
+        d
+        3
+        d
+        4
+        w" | fdisk /dev/mmcblk0
+        fdisk -l /dev/mmcblk0 | gawk '
+        /^\/dev\/mmcblk0/ {start = $2; end = $3; blocks =  $4;}
+        /^Units/ {unit = $9;}
+        /^Disk \/dev/ { total_bytes = $5;}
+        # assume that the start is the errase block size
+        END {
+        if (start != 0) {
+            #assume that start is equal to erase block size
+            erase_block_size = start;
+            SWAP_MB = 512;
+            swap_size = SWAP_MB * 1024 * 1024;
+            swap_num_erase_blocks = int(swap_size / (erase_block_size * 512));
+            erase_blocks = int(end / start);
+            swap_begin = int(erase_blocks - swap_num_erase_blocks) * 8192;
+        } else {}
+            exit(1);
+        }
+
+        touch SETUPSTATEDIR/sdcard
+        ;;
+    "no")
+        rm $SETUPSTATEDIR/sdcard
+        ;;
+    esac
 }
 
 function squid()

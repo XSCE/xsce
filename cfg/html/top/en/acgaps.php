@@ -1,5 +1,5 @@
 <?php 
-	$SUMMARIZE_SERVICES = "../bin/sdinfo";
+	$SUMMARIZE_SERVICES = "/usr/bin/xs-acpowergaps";
 	$results = shell_exec($SUMMARIZE_SERVICES);
 	$lines = explode("\n",$results);
 ?>
@@ -12,24 +12,19 @@
 
 <body>
 <div align="center">
-<h1>SD Information</h1>
-</div>
-
+<h1>Memory Usage</h1>
 <div align="left">
-	<pre>
+<pre>
     <?php 
 	foreach($lines as $line){
 		echo($line);
 		echo("<br />");
 	}
-/*	$SUMMARIZE_SERVICES = "/usr/bin/sudo /usr/bin/xs-flashbench -a /dev/mmcblk0";
-	$results = shell_exec($SUMMARIZE_SERVICES);
-	$lines = explode("\n",$results); */
 	?>
-	</pre>
+</pre>
 </div>
 
-
+</div>
 
 </body>
 </html>

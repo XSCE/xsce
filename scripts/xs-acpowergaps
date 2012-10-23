@@ -42,7 +42,10 @@ class ShowPowerHistory(tools):
     def __init__(self):
         global cfg, first_time, last_time
         first_time = None
-        first_time = None
+        last_time = None
+        power_on = True
+        power_gaps = 0
+        gaps = {}
         #get the config file with previous selections
         try:
             fd = file(DATA_FILE,'r')
@@ -58,18 +61,29 @@ class ShowPowerHistory(tools):
                 logging.exception("failed to write config str. error:%s"% (e,))
                 fd = file(DATA_FILE,'r')
         for line in fd:
-            print line
+            #print line.strip()
             nibbles = line.split('|')
-            if len(nibbles) > 1:
+            if (len(nibbles) > 1):
                 current = nibbles[1]
-                last_time = datetime.datetime.strptime(current.strip(),"%a %b %d %H:%M:%S %Y")
+                current_time = datetime.datetime.strptime(current.strip(),"%a %b %d %H:%M:%S %Y")
+                last_time = time.mktime(current_time.timetuple())
                 if not first_time: first_time = last_time
+                if (nibbles[0] == '0'):
+                    power_on = False
+                    power_gaps += 1
+                    start_gap = last_time
+                else:
+                    if power_on == False:
+                        power_on = True
+                        gaps[start_gap] = last_time - start_gap
+
         diff = last_time - first_time
-        hours = diff.total_seconds() / 3600
-        days = hours // 24
-        minutes = hours
-        hours = hours % 24
-        print(str(diff))
+        print("total length of record: %s minutes"%(diff//60, ))
+        print ("Number of power interruptions: %s"%(len(gaps)))
+        print "List of power gaps and length in munutes"
+        for key in gaps.keys():
+            print ("  gap occured on %s for %s minutes" %(time.ctime(key), gaps[key]//60))
+
 
 
 class CollectData(tools):

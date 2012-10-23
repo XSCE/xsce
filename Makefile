@@ -195,3 +195,6 @@ install: $(DESTDIR)
 	install -D scripts/10-olpc-net.rules $(DESTDIR)/usr/lib/udev/rules.d
 	install -D scripts/moodle-xs-init $(DESTDIR)/usr/libexec
 	install -D scripts/bootstrap-xo $(DESTDIR)/usr/bin
+	install -D scripts/xs-acpowergaps $(DESTDIR)/usr/bin
+	install -D scripts/xs-sleep $(DESTDIR)/usr/bin
+	install -D scripts/xs-sleep.glade $(DESTDIR)/usr/bin
