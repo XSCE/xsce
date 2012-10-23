@@ -198,11 +198,12 @@ function gateway()
 
         # either enable the service or create the file not both
         ln -sf $CFGDIR/etc/systemd/system/iptables.service $DESTDIR/etc/systemd/system
-        #systemctl enable iptables.service
-
-        systemctl start iptables.service
         # systemd has a check for exist /etc/sysconfig/iptables - so ensure that it exists
         /etc/sysconfig/iptables-config
+	systemctl enable iptables.service
+	systemctl enable ip6tables.service
+	systemctl start iptables.service
+	systemctl start ip6tables.service
         touch $SETUPSTATEDIR/gateway
         ;;
 	"no")
@@ -341,7 +342,6 @@ function named()
 	systemctl enable named.service 2>&1 | tee -a $LOG
         systemctl start named.service 2>&1 | tee -a $LOG
 	touch $SETUPSTATEDIR/named
-	touch $SETUPSTATEDIR/resolvconf
         ;;
 	"no")
 		systemctl disable named.service 2>&1 | tee -a $LOG
