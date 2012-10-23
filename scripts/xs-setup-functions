@@ -24,13 +24,25 @@ DEFAULTUSER='admin'
 DEFAULTPASSWORD='12admin'
 ISXO=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
 YUMERROR=10
+YUM_CMD="yum -y install"
+
+function check_installed()
+{
+    installed=`ls $SETUPSTATEDIR | grep $0`
+    if [ -f $installed ]; then
+	echo "$0 Already installed" | tee -a $LOG
+	exit 2
+    fi	
+}
 
 function activity-server()
 {
 	case "$1" in
     "yes")
-        yum -y install  xs-activity-server 2>&1 | tee -a $LOG
-        touch SETUPSTATEDIR/activity-server
+	if [ "$(check_installed)" -ne "2" ]; then
+	    $YUM_CMD xs-activity-server 2>&1 | tee -a $LOG
+            touch SETUPSTATEDIR/activity-server
+        fi  
         #execute the setup script
         /etc/sysconfig/olpc-scripts/setup.d/xs-activity-server
         ;;
@@ -44,16 +56,18 @@ function avahi()
 {
 	case "$1" in
 	"yes")
-        yum -y install nss-mdns avahi avahi-tools avahi-ui 2>&1 | tee -a $LOG
-        if [ $? -ne 0 ] ; then
-            echo "\n\nYum returned an error\n\n" | tee -a $LOG
-            exit $YUMERROR
+	if [ "$(check_installed)" -ne "2" ]; then
+	    $YUM_CMD nss-mdns avahi avahi-tools avahi-ui 2>&1 | tee -a $LOG
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+	    fi
         fi
-		systemctl enable avahi-daemon.service 2>&1 | tee -a $LOG
+	systemctl enable avahi-daemon.service 2>&1 | tee -a $LOG
         touch $SETUPSTATEDIR/avahi
         ;;
 	"no")
-		systemctl disable avahi-daemon.service 2>&1 | tee -a $LOG
+	systemctl disable avahi-daemon.service 2>&1 | tee -a $LOG
         rm $SETUPSTATEDIR/avahi
         ;;
 	esac
@@ -63,10 +77,12 @@ function dhcpd()
 {
 	case "$1" in
 	"yes")
-        yum -y install dhcp 2>&1 | tee -a $LOG
-        if [ $? -ne 0 ] ; then
-            echo "\n\nYum returned an error\n\n" | tee -a $LOG
-            exit $YUMERROR
+	if [ "$(check_installed)" -ne "2" ]; then
+	    $YUM_CMD dhcp 2>&1 | tee -a $LOG
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
         fi
 	systemctl enable dhcpd.service 2>&1 | tee -a $LOG
 	systemctl start dhcpd.service 2>&1 | tee -a $LOG
@@ -95,15 +111,7 @@ function set-etckeeper()
 	"yes")
         if [ ! -d /etc/.git ]; then
             pushd /etc
-# already installed	     
-#            yum -y install etckeeper
-#            if [ $? -ne 0 ] ; then
-#                echo "\n\nYum returned an error\n\n" | tee -a $LOG
-#                exit $YUMERROR
-#            fi
             etckeeper init
-#            etckeeper commit -m "Initial checkin"
-#            git gc
             popd
         fi
 
@@ -123,15 +131,17 @@ function ejabberd()
 {
 	case "$1" in
 	"yes")
-		yum -y install ejabberd 2>&1 | tee -a $LOG
-		if [ $? -ne 0 ] ; then
-		    echo "\n\nYum returned an error\n\n" | tee -a $LOG
-		    exit $YUMERROR
-		fi
+	        if [ "$(check_installed)" -ne "2" ]; then
+	            $YUM_CMD ejabberd 2>&1 | tee -a $LOG
+		    if [ $? -ne 0 ] ; then
+		        echo "\n\nYum returned an error\n\n" | tee -a $LOG
+		        exit $YUMERROR
+		    fi
 		# and set it to autostart
 		systemctl enable ejabberd-xs.service 2>&1 | tee -a $LOG
 		systemctl start ejabberd-xs.service 2>&1 | tee -a $LOG
 		touch $SETUPSTATEDIR/ejabberd
+                fi 
 		;;
 	"no")
 		systemctl disable ejabberd.service 2>&1 | tee -a $LOG
@@ -169,11 +179,13 @@ function httpd()
 {
 	case "$1" in
 	"yes")
-		yum -y install httpd php  2>&1 | tee -a $LOG
-        if [ $? -ne 0 ] ; then
-            echo "\n\nYum returned an error\n\n" | tee -a $LOG
-            exit $YUMERROR
-        fi
+	if [ "$(check_installed)" -ne "2" ]; then
+	    $YUM_CMD httpd php  2>&1 | tee -a $LOG
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
+	fi
         cp -p /etc/httpd/conf/httpd-xs.conf.in /etc/httpd/conf/httpd-xs.conf
 		# Choose a config depending on memory
 		MEMSIZE=$(grep '^MemTotal' /proc/meminfo | grep -oP '\d+')
@@ -211,12 +223,15 @@ function idmgr()
 {
 	case "$1" in
 	"yes")
-        yum -y install idmgr ds-backup-server \
+	if [ "$(check_installed)" -ne "2" ]; then
+	    $YUM_CMD idmgr ds-backup-server \
                 xs-rsync xinetd 2>&1 | tee -a $LOG
-        if [ $? -ne 0 ] ; then
-            echo "\n\nYum returned an error\n\n" | tee -a $LOG
-            exit $YUMERROR
-        fi
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
+	fi
+
 
         # set up the sqlite database for idmgr
         /etc/sysconfig/olpc-scripts/setup.d/idmgr
@@ -245,51 +260,16 @@ function idmgr()
 	esac
 }
 
-function mlocate()
-{
-	case "$1" in
-	"yes")
-        yum -y install mlocate 2>&1 | tee -a $LOG
-        if [ $? -ne 0 ] ; then
-            echo "\n\nYum returned an error\n\n" | tee -a $LOG
-            exit $YUMERROR
-        fi
-        updatedb
-        touch $SETUPSTATEDIR/mlocate
-        ;;
-	"no")
-        rm $SETUPSTATEDIR/mlocate
-        ;;
-	esac
-}
-
-function moodle()
-{
-	case "$1" in
-	"yes")
-        yum -y install moodle 2>&1 | tee -a $LOG
-        if [ $? -ne 0 ] ; then
-            echo "\n\nYum returned an error\n\n" | tee -a $LOG
-            exit $YUMERROR
-        fi
-		systemctl enable moddle.service 2>&1 | tee -a $LOG
-        touch $SETUPSTATEDIR/moodle
-        ;;
-	"no")
-		systemctl disable moddle.service 2>&1 | tee -a $LOG
-        rm $SETUPSTATEDIR/moodle
-        ;;
-	esac
-}
-
 function moodle-xs()
 {
 	case "$1" in
 	"yes")
-        yum -y install moodle-xs 2>&1 | tee -a $LOG
-        if [ $? -ne 0 ] ; then
-            echo "\n\nYum returned an error\n\n" | tee -a $LOG
-            exit $YUMERROR
+	if [ "$(check_installed)" -ne "2" ]; then
+	    $YUM_CMD moodle-xs 2>&1 | tee -a $LOG
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
         fi
 
 	# execute the moodle startup script
@@ -308,10 +288,12 @@ function named()
 {
 	case "$1" in
 	"yes")
-        yum -y install bind bind-utils 2>&1 | tee -a $LOG
-        if [ $? -ne 0 ] ; then
-            echo "\n\nYum returned an error\n\n" | tee -a $LOG
-            exit $YUMERROR
+	if [ "$(check_installed)" -ne "2" ]; then
+	    $YUM_CMD bind bind-utils 2>&1 | tee -a $LOG
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
         fi
         # if xs data files are installed before bind, named user doesn't exist,
         # and group ownership is set to root, which user named cannot read
@@ -326,7 +308,7 @@ function named()
 	"no")
 		systemctl disable named.service 2>&1 | tee -a $LOG
         # let the dhclinet control the name resolution normally
-        rm /etc/sysconfig/olpc-scripts/resolv.conf
+	rm /etc/sysconfig/olpc-scripts/resolv.conf
         rm $SETUPSTATEDIR/named
         ;;
 	esac
@@ -337,11 +319,13 @@ function pathagar()
 	case "$1" in
 	"yes")
         httpd yes
-        yum -y mod_python mod_wsgi  python-django Django \
+	if [ "$(check_installed)" -ne "2" ]; then
+	    $YUM_CMD mod_python mod_wsgi  python-django Django \
                 python-setuptools sqlite django-tagging
-        if [ $? -ne 0 ] ; then
-            echo "\n\nYum returned an error\n\n" | tee -a $LOG
-            exit $YUMERROR
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
         fi
         adduser bookserver
         cd /home/bookserver
@@ -368,11 +352,13 @@ function postgresql()
 {
 	case "$1" in
 	"yes")
-        yum -y install postgresql postgresql-server 2>&1 | tee -a $LOG
-        if [ $? -ne 0 ] ; then
-            echo "\n\nYum returned an error\n\n" | tee -a $LOG
-            exit $YUMERROR
-        fi
+	if [ "$(check_installed)" -ne "2" ]; then
+	    $YUM_CMD postgresql postgresql-server 2>&1 | tee -a $LOG
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
+       	fi
         cp -f $CFGDIR/etc/systemd/system/postgresql-xs.service \
             $DESTDIR/lib/systemd/system/
         # systemctl does not enable by linking a link, hence above cp
@@ -404,11 +390,13 @@ function squid()
 {
 	case "$1" in
 	"yes")
-        yum -y install squid 2>&1 | tee -a $LOG
-        if [ $? -ne 0 ] ; then
-            echo "\n\nYum returned an error\n\n" | tee -a $LOG
-            exit $YUMERROR
-        fi
+	if [ "$(check_installed)" -ne "2" ]; then
+	    $YUM_CMD squid 2>&1 | tee -a $LOG
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
+	fi
         # create the cache directories
         squid -z
         ## Update flag for httpd cache
@@ -433,11 +421,13 @@ function vnc()
 {
 	case "$1" in
 	"yes")
-        yum -y install tigervnc-server novnc 2>&1 | tee -a $LOG
-        if [ $? -ne 0 ] ; then
-            echo "\n\nYum returned an error\n\n" | tee -a $LOG
-            exit $YUMERROR
-        fi
+	if [ "$(check_installed)" -ne "2" ]; then
+	    $YUM_CMD tigervnc-server novnc 2>&1 | tee -a $LOG
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
+	fi
         yum -y groupinstall XFCE  2>&1 | tee -a $LOG
         if [ $? -ne 0 ] ; then
             echo "\n\nYum returned an error\n\n" | tee -a $LOG
@@ -477,11 +467,13 @@ function webdav()
 	case "$1" in
 	"yes")
         cp /etc/httpd/conf.d/webdav.conf.in /etc/httpd/conf.d/webdav.conf
-        yum -y install cadaver
-        if [ $? -ne 0 ] ; then
-            echo "\n\nYum returned an error\n\n" | tee -a $LOG
-            exit $YUMERROR
-        fi
+	if [ "$(check_installed)" -ne "2" ]; then
+	    $YUM_CMD cadaver
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
+	fi
         mkdir -p /library/webdav
         chown apache:apache /library/webdav
         htpasswd -cb /etc/httpd/webdav.users.pwd $DEFAULTUSER $DEFAULTPASSWORD
@@ -514,11 +506,13 @@ function xs-security()
 {
 	case "$1" in
     "yes")
-        yum -y install  xs-tools olpc-bios-crypto bitfrost xs-activation 2>&1 | tee -a $LOG
-        if [ $? -ne 0 ] ; then
-            echo "\n\nYum returned an error\n\n" | tee -a $LOG
-            exit $YUMERROR
-        fi
+	if [ "$(check_installed)" -ne "2" ]; then
+	    $YUM_CMD xs-tools olpc-bios-crypto bitfrost xs-activation 2>&1 | tee -a $LOG
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
+	fi
         touch $SETUPSTATEDIR/xs-security
         ;;
     "no")
@@ -625,11 +619,13 @@ function do_first()
 	xs-setup-network
 
         # following packages are the core set of packages installed on all xs servers
-        yum -y install  syck rssh mtd-utils acpid  2>&1 | tee -a $LOG
-        if [ $? -ne 0 ] ; then
-            echo "\n\nYum returned an error\n\n" | tee -a $LOG
-            exit $YUMERROR
-        fi
+	if [ "$(check_installed)" -ne "2" ]; then
+	    $YUM_CMD syck rssh mtd-utils acpid mlocate 2>&1 | tee -a $LOG
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
+	fi
 
         # make a non privileged user, and give her remote access
         if [ ! `grep $DEFAULTUSER /etc/passwd` ]; then
