@@ -95,7 +95,7 @@ done
 short_host=`hostname -s`
 new_name=`hostname -f`
 
-systemctl stop NetworkManager.service
+#systemctl stop NetworkManager.service
 
 #  This is the suffix which original versions of modified files will have
 BACKUP_SUFFIX=old
@@ -119,7 +119,7 @@ do
 done
 popd
 echo "XS standard networking configured"
-systemctl start NetworkManager.service
+# systemctl start NetworkManager.service
 
 sleep 5
 
