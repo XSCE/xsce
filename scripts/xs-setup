@@ -60,7 +60,8 @@ if [[ $num_ifaces > 1 ]]; then
     dhcpd yes
     named yes
     squid yes
-    gateway yes 
+    gateway yes
+    xs-setup-network
     xs-resolvconf
     touch /.olpcxs-net-configured
 fi
