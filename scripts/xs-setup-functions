@@ -79,7 +79,7 @@ function activity-server()
         rm $SETUPSTATEDIR/activity-server
         ;;
     esac
-}moodle-xs
+}
 
 function avahi()
 {
