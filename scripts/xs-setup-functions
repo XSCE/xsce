@@ -26,15 +26,6 @@ ISXO=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
 YUMERROR=10
 YUM_CMD="yum -y install"
 
-function check_installed()
-{
-    installed=`ls $SETUPSTATEDIR | grep $1`
-    if [ -f $installed ]; then
-	echo "$1 Already installed" | tee -a $LOG
-	exit 2
-    fi	
-}
-
 function template()
 {
 	case "$1" in
@@ -73,7 +64,7 @@ function activity-server()
 {
 	case "$1" in
     "yes")
-	if [ "$(check_installed)" -ne "2" ]; then
+	if [ ! -f $SETUPSTATEDIR/xs-activity-server ]; then
 	    $YUM_CMD xs-activity-server 2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
@@ -88,13 +79,13 @@ function activity-server()
         rm $SETUPSTATEDIR/activity-server
         ;;
     esac
-}
+}moodle-xs
 
 function avahi()
 {
 	case "$1" in
 	"yes")
-	if [ "$(check_installed)" -ne "2" ]; then
+	if [ ! -f $SETUPSTATEDIR/avahi ]; then
 	    $YUM_CMD nss-mdns avahi avahi-tools avahi-ui 2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
@@ -115,7 +106,7 @@ function dhcpd()
 {
 	case "$1" in
 	"yes")
-	if [ "$(check_installed)" -ne "2" ]; then
+	if [ ! -f $SETUPSTATEDIR/dhcpd ]; then
 	    $YUM_CMD dhcp 2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
@@ -169,7 +160,7 @@ function ejabberd()
 {
 	case "$1" in
 	"yes")
-	        if [ "$(check_installed)" -ne "2" ]; then
+	        if [ ! -f $SETUPSTATEDIR/ejabberd ]; then
 	            $YUM_CMD ejabberd 2>&1 | tee -a $LOG
 		    if [ $? -ne 0 ] ; then
 		        echo "\n\nYum returned an error\n\n" | tee -a $LOG
@@ -218,7 +209,7 @@ function httpd()
 {
 	case "$1" in
 	"yes")
-	if [ "$(check_installed)" -ne "2" ]; then
+	if [ ! -f $SETUPSTATEDIR/httpd ]; then
 	    $YUM_CMD httpd php  2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
@@ -262,7 +253,7 @@ function idmgr()
 {
 	case "$1" in
 	"yes")
-	if [ "$(check_installed)" -ne "2" ]; then
+	if [ ! -f $SETUPSTATEDIR/idmgr ]; then
 	    $YUM_CMD idmgr ds-backup-server \
                 xs-rsync xinetd 2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
@@ -303,7 +294,7 @@ function moodle-xs()
 {
 	case "$1" in
 	"yes")
-	if [ "$(check_installed)" -ne "2" ]; then
+	if [ ! -f $SETUPSTATEDIR/moodle-xs ]; then
 	    $YUM_CMD moodle-xs 2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
@@ -327,7 +318,7 @@ function named()
 {
 	case "$1" in
 	"yes")
-	if [ "$(check_installed)" -ne "2" ]; then
+	if [ ! -f $SETUPSTATEDIR/named ]; then
 	    $YUM_CMD bind bind-utils 2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
@@ -357,7 +348,7 @@ function pathagar()
 	case "$1" in
 	"yes")
         httpd yes
-	if [ "$(check_installed)" -ne "2" ]; then
+	if [ ! -f $SETUPSTATEDIR/pathagar ]; then
 	    $YUM_CMD mod_python mod_wsgi  python-django Django \
                 python-setuptools sqlite django-tagging
             if [ $? -ne 0 ] ; then
@@ -390,7 +381,7 @@ function postgresql()
 {
 	case "$1" in
 	"yes")
-	if [ "$(check_installed)" -ne "2" ]; then
+	if [ ! -f $SETUPSTATEDIR/postgresql ]; then
 	    $YUM_CMD postgresql postgresql-server 2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
@@ -484,7 +475,7 @@ function squid()
 {
 	case "$1" in
 	"yes")
-	if [ "$(check_installed)" -ne "2" ]; then
+	if [ ! -f $SETUPSTATEDIR/squid ]; then
 	    $YUM_CMD squid 2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
@@ -515,7 +506,7 @@ function vnc()
 {
 	case "$1" in
 	"yes")
-	if [ "$(check_installed)" -ne "2" ]; then
+	if [ ! -f $SETUPSTATEDIR/vnc ]; then
 	    $YUM_CMD tigervnc-server novnc 2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
@@ -561,7 +552,7 @@ function webdav()
 	case "$1" in
 	"yes")
         cp /etc/httpd/conf.d/webdav.conf.in /etc/httpd/conf.d/webdav.conf
-	if [ "$(check_installed)" -ne "2" ]; then
+	if [ ! -f $SETUPSTATEDIR/webdav ]; then
 	    $YUM_CMD cadaver
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
@@ -600,7 +591,7 @@ function xs-security()
 {
 	case "$1" in
     "yes")
-	if [ "$(check_installed)" -ne "2" ]; then
+	if [ ! -f $SETUPSTATEDIR/xs-security ]; then
 	    $YUM_CMD xs-tools olpc-bios-crypto bitfrost xs-activation 2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
@@ -711,9 +702,6 @@ function do_first()
         #shopt -u nullglob
 
         etckeeper-if-selected "disabled selinux, scripts sourced"
-
-	# set the network up
-	xs-setup-network
 
         # following packages are the core set of packages installed on all xs servers
 	$YUM_CMD syck rssh mtd-utils acpid mlocate 2>&1 | tee -a $LOG
