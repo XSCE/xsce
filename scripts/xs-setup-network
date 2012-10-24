@@ -72,9 +72,6 @@ if [[ $is_xo = "1" ]]; then
 	# based on observed created files
         echo "ignore-auto-dns=true" >> $UPLINK
     fi
-    cp /usr/share/xs-config/cfg/etc/NetworkManager/system-connections/"Sugar Modem Connection" \
-        /etc/NetworkManager/system-connections/
-    chmod 600 /etc/NetworkManager/system-connections/"Sugar Modem Connection"
 else
     mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
         /^ *ether / { if (eth == "eth0:") print( $2);}'`
