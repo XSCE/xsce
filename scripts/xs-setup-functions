@@ -190,7 +190,7 @@ function gateway()
         # either enable the service or create the file not both
         ln -sf $CFGDIR/etc/systemd/system/iptables.service $DESTDIR/etc/systemd/system
         # systemd has a check for exist /etc/sysconfig/iptables - so ensure that it exists
-        /etc/sysconfig/iptables-config
+        # /etc/sysconfig/iptables-config
 	systemctl enable iptables.service
 	systemctl enable ip6tables.service
 	systemctl start iptables.service
