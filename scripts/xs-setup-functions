@@ -425,10 +425,14 @@ function postgresql()
             sed -i -c "s/--auth='ident'\"/--auth='ident' --encoding='UTF8'\"/" \
                                     /usr/bin/postgresql-setup
 			/usr/bin/postgresql-setup  initdb postgresql-xs
-            sed -i -c 's/^#standard_conforming_string/standard_conformiong_strings = off/' \
-                        /library/pgsql-xs/postgresql.conf
-            sed -i -c 's/^#backslash_quote/backslash_quote = allow/' \
-                        /library/pgsql-xs/postgresql.conf
+            sed '
+            /^#standard_conforming_strings/ c\
+standard_conformiong_strings = off
+            ' /library/pgsql-xs/postgresql.conf
+            sed '
+            /^#backslash_quote/ c\
+backslash_quote = allow
+            ' /library/pgsql-xs/postgresql.conf
 		fi
 
 		# and set it to autostart
