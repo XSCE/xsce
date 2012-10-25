@@ -103,10 +103,10 @@ if chkconfig --level 3 olpc-network-config ; then
 fi
 
 %preun
-if [ $1 = 0 ]; then
-   /sbin/service pgsql-xs stop  > /dev/null 2>&1
-   chkconfig --del pgsql-xs
-fi
+#if [ $1 = 0 ]; then
+#   /sbin/service pgsql-xs stop  > /dev/null 2>&1
+#   chkconfig --del pgsql-xs
+#fi
 
 %files
 %{_datadir}/%{name}

@@ -9,6 +9,8 @@ DESTDIR=/
 CFGDIR=/usr/share/xs-config/cfg
 MARKER=/.olpcxs-configured
 DOMAIN=local
+# Determine the number of interfaces
+num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
 
 # Parse options
 opt_upgrade_only=
@@ -30,8 +32,8 @@ done
 # The user can request that we only perform setup steps if setup had been
 # previously performed by an admin. This is useful for automated upgrades
 # (e.g. RPM post scripts).
-if [ -n "$opt_upgrade_only" -a ! -e "$MARKER" ]; then
-	echo "$0: doing nothing, XS is not active."
+if [ -n "$opt_upgrade_only" ]; then
+	echo "$0: doing nothing, upgrade-only on cmdline."
 	exit 0
 fi
 
@@ -54,7 +56,15 @@ source /usr/bin/xs-setup-functions
 
 # prep the XO
 do-first
-mlocate yes
+if [[ $num_ifaces > 1 ]]; then
+    dhcpd yes
+    named yes
+    squid yes
+    gateway yes
+    xs-setup-network
+    xs-resolvconf
+    touch /.olpcxs-net-configured
+fi
 
 # Remote admin services 
 httpd yes
@@ -62,21 +72,16 @@ vnc yes
 
 # Core services offered
 ejabberd yes
+webdav yes
+xs-security yes
 idmgr yes
 postgresql yes
 moodle-xs yes
-xs-security yes
-webdav yes
-
-# for normal use, choose either of the following (gateway turns on masquerade)
-squid yes
-gateway yes
-dhcpd yes
-named yes
 
 # Finalize install
 yum-etckeeper yes
 do-last
+
 echo "XS configured; services are ready to use."
 #echo "please check the configured services below"
 #xs-services-check

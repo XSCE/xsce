@@ -18,6 +18,29 @@ then
 	if [ -e /usr/lib/udev/rules.d/70-olpc-net.rules ]; then
 	    rm /usr/lib/udev/rules.d/70-olpc-net.rules
 	fi
+    
+        echo << EOF > /etc/NetworkManager/system-connections/"Sugar Modem Connection"
+
+[connection]
+id=Sugar Modem Connection
+uuid=62be9bcb7a3d3929fc01d82e038c42f93b339334
+type=gsm
+autoconnect=false
+
+[ppp]
+lcp-echo-failure=5
+lcp-echo-interval=30
+
+[ipv4]
+method=auto
+ignore-auto-dns=true
+
+[serial]
+baud=115200
+
+[gsm]
+number=*99#
+EOF
 
 	# servers should not sleep
 	touch /etc/powerd/flags/inhibit-suspend
