@@ -168,9 +168,10 @@ function ejabberd()
 		    fi
 		# and set it to autostart
 		systemctl enable ejabberd-xs.service 2>&1 | tee -a $LOG
+        echo "the following start command executes for a long time. Have a cup of coffee!"
 		systemctl start ejabberd-xs.service 2>&1 | tee -a $LOG
 		touch $SETUPSTATEDIR/ejabberd
-                fi 
+                fi
 		;;
 	"no")
 		systemctl disable ejabberd.service 2>&1 | tee -a $LOG
@@ -301,9 +302,13 @@ function moodle-xs()
                 exit $YUMERROR
             fi
         fi
-
+    # we've dropped a file in /etc/httpd/conf.d, pick up the change
+    systemctl restart httpd.service 2>&1 | tee -a $LOG
 	# execute the moodle startup script
 	/usr/libexec/moodle-xs-init start 2>&1 | tee -a $LOG
+    # mimic the exec of above at every startup by createing a systemd oneshot
+    cp /etc/systemd/system/moodle-xs.service.in /etc/systemd/system/moodle-xs.service
+    systemctl enable moodle-xs.service
 	touch $SETUPSTATEDIR/moodle-xs
 	;;
 
@@ -402,13 +407,13 @@ function postgresql()
             sed -i -c "s/--auth='ident'\"/--auth='ident' --encoding='UTF8'\"/" \
                                     /usr/bin/postgresql-setup
 			/usr/bin/postgresql-setup  initdb postgresql-xs
-            sed '
+            sed -i -c '
             /^#standard_conforming_strings/ c\
-standard_conformiong_strings = off
+standard_conforming_strings = off
             ' /library/pgsql-xs/postgresql.conf
-            sed '
+            sed -i -c '
             /^#backslash_quote/ c\
-backslash_quote = allow
+backslash_quote = on
             ' /library/pgsql-xs/postgresql.conf
 		fi
 
@@ -440,15 +445,7 @@ function sdcard()
         esac
         umount /dev/mmcblk0p1
         #delete all partitions on the drive
-        echo "d
-        1
-        d
-        2
-        d
-        3
-        d
-        4
-        w" | fdisk /dev/mmcblk0
+        echo "d\n1\nd\n2\nd\n3\nd\n4\nw" | fdisk /dev/mmcblk0
         fdisk -l /dev/mmcblk0 | gawk '
         /^\/dev\/mmcblk0/ {start = $2; end = $3; blocks =  $4;}
         /^Units/ {unit = $9;}
