@@ -164,11 +164,9 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/etc/systemd
 	install -D -d $(DESTDIR)/etc/systemd/system
 	install -D -d $(DESTDIR)/library/pgsql-xs
-	install -D -d $(DESTDIR)/etc/pki/CA/newcerts/admin
 	install -D altfiles/etc/pgsql-xs/p*.conf $(DESTDIR)/etc/pgsql-xs
 	install -D altfiles/etc/sysconfig/pgsql/pgsql-xs $(DESTDIR)/etc/sysconfig/pgsql
 	install -D altfiles/etc/systemd/system/*.service.in $(DESTDIR)/etc/systemd/system
-	install -D altfiles/etc/pki/CA/newcerts/admin/self.pem $(DESTDIR)/etc/pki/CA/newcerts/admin
 
 	#Non-conflicting init.d scripts
 #	install -D altfiles/etc/init.d/pgsql-xs $(DESTDIR)/etc/init.d
@@ -195,6 +193,7 @@ install: $(DESTDIR)
 	install -D scripts/moodle-xs-init $(DESTDIR)/usr/libexec
 	install -D scripts/bootstrap-xo $(DESTDIR)/usr/bin
 	install -D scripts/xs-acpowergaps $(DESTDIR)/usr/bin
+	install -D scripts/xs-acpowergaps-cron $(DESTDIR)/usr/bin
 	install -D scripts/xs-sleep $(DESTDIR)/usr/bin
 	install -D scripts/xs-sleep.glade $(DESTDIR)/usr/bin
 	install -D scripts/xs-resolvconf    $(DESTDIR)/usr/bin

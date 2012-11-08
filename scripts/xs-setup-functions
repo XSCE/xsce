@@ -22,6 +22,9 @@ POSTGRESSDIR=/library/pgsql-xs
 SETUPSTATEDIR=/etc/sysconfig/olpc-scripts/setup.d/installed
 DEFAULTUSER='admin'
 DEFAULTPASSWORD='12admin'
+VNCUSER='vnc'
+VNCPASSWORD='*vnc4u*'
+NCATPORT=29753
 ISXO=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
 YUMERROR=10
 YUM_CMD="yum -y install"
@@ -40,22 +43,6 @@ function template()
         ;;
     "no")
         rm $SETUPSTATEDIR/xs-release
-        ;;
-    esac
-}
-
-function xs-acpowergaps()
-{
-	case "$1" in
-    "yes")
-        cat > /etc/sysconfig/olpc-scripts/acpowergaps.txt < EOF
-        */6 * * * * root /usr/bin/xs-acpowergaps-cron
-        EOF
-        crontab /etc/sysconfig/olpc-scripts/acpowergaps.txt
-        touch SETUPSTATEDIR/xs-acpowergaps
-        ;;
-    "no")
-        rm $SETUPSTATEDIR/xs-acpowergaps
         ;;
     esac
 }
@@ -100,6 +87,24 @@ function avahi()
         rm $SETUPSTATEDIR/avahi
         ;;
 	esac
+}
+
+function dansguardian()
+{
+	case "$1" in
+    "yes")
+        yum -y install  dansguardian 2>&1 | tee -a $LOG
+        if [ $? -ne 0 ] ; then
+            echo "\n\nYum returned an error\n\n" | tee -a $LOG
+            exit $YUMERROR
+        fi
+        touch SETUPSTATEDIR/dansguardian
+        #execute the setup script
+        ;;
+    "no")
+        rm $SETUPSTATEDIR/dansguardian
+        ;;
+    esac
 }
 
 function dhcpd()
@@ -348,6 +353,19 @@ function named()
 	esac
 }
 
+function opendns()
+{
+	case "$1" in
+    "yes")
+        touch SETUPSTATEDIR/opendns
+        #execute the setup script
+        ;;
+    "no")
+        rm $SETUPSTATEDIR/opendns
+        ;;
+    esac
+}
+
 function pathagar()
 {
 	case "$1" in
@@ -508,7 +526,7 @@ function vnc()
 	case "$1" in
 	"yes")
 	if [ ! -f $SETUPSTATEDIR/vnc ]; then
-	    $YUM_CMD tigervnc-server novnc 2>&1 | tee -a $LOG
+	    $YUM_CMD tigervnc-server novnc mod_ssl 2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
                 exit $YUMERROR
@@ -529,16 +547,27 @@ function vnc()
         ln -sf $CFGDIR/etc/systemd/system/* $DESTDIR/etc/systemd/system
         ln -sf $DESTDIR/etc/systemd/system/vncserver\@.service \
             $DESTDIR/etc/systemd/system/multi-user.target.wants/vncserver\@\:1.service
-        cp $CFGDIR/etc/sysconfig/vnc/xstartup /home/$DEFAULTUSER/.vnc/
-        echo "$DEFAULTPASSWORD" | vncpasswd -f > \
-                    /home/$DEFAULTUSER/.vnc/passwd
-        chown -R $DEFAULTUSER:$DEFAULTUSER /home/$DEFAULTUSER/.vnc
-        chmod 600 /home/$DEFAULTUSER/.vnc/passwd
-        cp /etc/pki/CA/newcerts/admin/self.pem /home/admin
-        chown $DEFAULTUSER:$DEFAULTUSER /home/admin/self.pem
+        cp $CFGDIR/etc/sysconfig/vnc/xstartup /home/$VNCUSER/.vnc/
+        echo "$VNCPASSWORD" | vncpasswd -f > /home/$VNCUSER/.vnc/passwd
+        sed "/rfb.sendPassword/ c\
+        rfb.sendPassword('$VNCPASSWORD')" /usr/share/novnc/vnc_auto.html
+        chown -R $VNCUSER:$VNCUSER /home/$VNCUSER/.vnc
+        chmod 600 /home/$VNCUSER/.vnc/passwd
+        cp /usr/share/xs-config/cfg/vnc/self.pem /home/$VNCUSER
+        chown $VNCUSER:$VNCUSER /home/$VNCUSER/self.pem
+        cp /etc/httpd/conf.d/ssl.conf.in /etc/httpd/conf.d/ssl.conf
+        sed -i -c 's/^<ifDefine BOGUS/#<ifDfefine BOGUS/' /etc/httpd/conf.d/ssl.conf
+        sed -i -c 's/^<\/ifDefine/#<\/ifDfefine/' /etc/httpd/conf.d/ssl.conf
 		systemctl enable vncserver\@\:1.service 2>&1 | tee -a $LOG
         systemctl start vncserver\@\:1.service 2>&1 | tee -a $LOG
         systemctl start vncserverweb.service 2>&1 | tee -a $LOG
+
+        # explore using ncat to pass install info to vnc client
+        # at XS -- "xs-setup 2>&1 | tee > (ncat -p 20000 localhost)"
+        # and at VNC -- "ncat -l -k p 20000 --ssl-key /home/admin/self.pem
+        #    --ssl-cert /home/admin/self.pem localhost"
+        #  -l = listen
+        #   -k = keep open
         touch $SETUPSTATEDIR/vnc
         ;;
 	"no")
@@ -586,6 +615,25 @@ function yum-etckeeper()
         sed -c -i -e 's/^enabled=1/enabled=0/' /etc/yum/pluginconf.d/etckeeper.conf
         ;;
 	esac
+}
+
+function xs-acpowergaps()
+# This function is only available on the XS which is running on an XO
+{
+	case "$1" in
+    "yes")
+        grep -e xs-acpowergaps-cron /etc/crontab |
+                    > /dev/null
+        if [ $? ]; then
+           echo "*/6 * * * * root /usr/bin/xs-acpowergaps-cron" >> /etc/crontab
+        fi
+        touch $SETUPSTATEDIR/xs-acpowergaps
+        ;;
+    "no")
+        sed -i -c /xs-acpowergaps-cron/d /etc/crontab
+        rm $SETUPSTATEDIR/xs-acpowergaps
+        ;;
+    esac
 }
 
 function xs-security()
@@ -715,6 +763,11 @@ function do_first()
         if [ ! `grep $DEFAULTUSER /etc/passwd` ]; then
             adduser $DEFAULTUSER
             echo "$DEFAULTPASSWORD" | passwd $DEFAULTUSER --stdin
+        fi
+        # we need a login for vnc with password that is not user changeable
+        if [ ! `grep $VNCUSER /etc/passwd` ]; then
+            adduser $VNCUSER -s /usr/sbin/nologin
+            echo "$VNCPASSWORD" | passwd $VNCUSER --stdin
         fi
         sed -i -c 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
         systemctl enable sshd.service

@@ -1,3 +1,11 @@
+<?php 
+function is_xo() {
+	if (file_exists("/proc/device-tree/mfg-data/MN")) return true; else return false;
+}
+$browser = get_browser(null, true);
+//die(print_r($browser));
+?>
+
 <html>
 <head>
 <meta name="description" content="SchoolServer">
@@ -34,12 +42,16 @@ function status_click() {
     <div class="nav" height="40px" width="100%">
     <table width="100%" align="center" border="0">
   <tr>
-    <td width="10%"><a  class="nav" href="" onClick="popvnc();">XS Remotely </a>
+    <td width="20%">
+    <?php if (is_xo()) { ?>
+<a class="nav" href="/novnc/vnc_auto.html?HOST=localhost&port=6080&true_color=1" target="_blank">Desktop</a>
+	<?php } else {?>
+	    <a class="nav" href="" onClick="popvnc();">Desktop</a>
+<?php } ?>
 </td>
-    <td width="10%">&nbsp;</td>
-    <td width="10%">&nbsp;</td>
     <td width="10%"><a class="nav" href="setup_nav.html" target="navigation" onClick="setup_click()">Setup</a></td>
     <td width="10%"><a class="nav" href="classroom_nav.html" target="navigation" onClick="classroom_click()">Classroom</a></td>
+    <td width="10%">&nbsp;</td>
     <td width="10%"><a class="nav" href="tools_nav.html" target="navigation" onClick="tools_click()">Tools</a></td>
     <td width="10%"><a class="nav" href="status_nav.html"target="navigation" onClick="status_click()">Status</a></td>
     <td width="10%">&nbsp;</td>

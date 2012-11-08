@@ -1,5 +1,5 @@
 <?php 
-	$SUMMARIZE_SERVICES = "/usr/bin/xs-acpowergaps";
+	$SUMMARIZE_SERVICES = "sudo /usr/bin/xs-acpowergaps";
 	$results = shell_exec($SUMMARIZE_SERVICES);
 	$lines = explode("\n",$results);
 ?>
@@ -12,7 +12,7 @@
 
 <body>
 <div align="center">
-<h1>Memory Usage</h1>
+<h1>AC Power Log</h1>
 <div align="left">
 <pre>
     <?php 

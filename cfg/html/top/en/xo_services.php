@@ -22,6 +22,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<META http-equiv=Pragma content=no-cache>
+<META http-equiv=Cache-Control content=no-cache>    
 <title>Untitled Document</title>
 <link href="../schsrv.css" rel="stylesheet" type="text/css" />
 
@@ -40,27 +42,27 @@ function toggleMenu(objID) {
 <h2>Services to the XO Laptops</h2>
 <form action="<?php echo($_SERVER['self']);?>" method="post" >
 <div class="centerpick">
-<?php if ($selected['ejabberd'] == 'on') $checked = "CHECKED";  else $checked = "";?>
-  <input name="ejabberd" type="checkbox"  value="" <?php echo $checked ?>/>
-Facilitate collaboration by centralizing identity information (ejabber server)<br />
 <?php if ($selected['register'] == 'on') $checked = "CHECKED";  else $checked = "";?>
-  <input name="register" type="checkbox" value="" <?php echo $checked ?> />
-Register XO's and accumulate backup copies of student Journals.<br />
+  <input name="register" type="checkbox" value=""<?php echo $checked ?> />
+Register XO's and backup student Journals.<br />
 <?php if ($selected['activity_server'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="activity_server" type="checkbox"  value="" <?php echo $checked ?>/>
-Store and serve new or updated Activities to XO's, input from a USB stick.<br />
+Serve Activities, input to server with USB stick.<br />
 <?php if ($selected['moodle'] == 'on') $checked = "CHECKED";  else $checked = "";?>
 <input name="moodle" type="checkbox" value="" <?php echo $checked ?>/>
-Use the Moodle content and classroom management system<br />
+Moodle content and classroom management system.<br />
 <?php if ($selected['security_tools'] == 'on') $checked = "CHECKED";  else $checked = "";?>
-  <input name="security_tools" type="checkbox" value="" <?php echo $checked ?>/>
+  <input name="security_tools" type="checkbox" value=""<?php echo $checked ?>/>
 Manage activation of XO leases, and security.<br  />
 <?php if ($selected['webdav'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="webdav" type="checkbox" value="" <?php echo $checked ?>/>
-Enable the storage and retrieval of files on the server using WebDav.<br  />
+WebDav Storage and retrieval of files on the server.<br  />
+<?php if ($selected['ejabberd'] == 'on') $checked = "CHECKED";  else $checked = "";?>
+  <input name="ejabberd" type="checkbox"  value="" <?php echo $checked ?>/>
+Make collaboration faster (ejabber server)<br />
 </div>
   <input name="token" type="hidden" />
-<div align="center"> <input name="Apply" type="submit"/></div>
+<div  align="center"> <input class="centerpick" name="Apply" value ="Apply Changes" type="submit"/></div>
 </form>
 <?php 
 if (isset($_POST['token'])) {

@@ -24,7 +24,7 @@ if (start != 0) {
 	print "fdisk with partition 1 starting at " start " ending at " swap_begin -1 ;
 	print "  and swap partition starting at " swap_begin " and ending at " end ;
 	print ""
-	print "Then format with mke2fs.ext4 -b 4096 -O ^has_journal --stride=2 /dev/mmcblk0p1"
+	print "Then format with mkfs.ext4 -b 4096 -O ^has_journal -E stride=2 /dev/mmcblk0p1"
 	print "  And format the swap partition with 'mkswap /dev/mmcblk0p2'"
 }
 }	

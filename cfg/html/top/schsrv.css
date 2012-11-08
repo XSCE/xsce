@@ -9,7 +9,7 @@
 }
 .centerpick{
 	font-family: "Arial Black", Gadget, sans-serif;
-	font-size: 16px;
+	font-size: 22px;
 }
 .nav {
 	background-color: #58B948;
@@ -19,10 +19,13 @@
 	color: #000;
 	margin:0;
 pp}
+.navhead {
+	background-color: #ACF486;
+}
 a.nav {
 	background-color: #58B948;
 	font-family: "Arial Black", Gadget, sans-serif;
-	font-size: 14px;
+	font-size: 22px;
 	font-style: normal;
 	color: #000;
 }
@@ -44,6 +47,7 @@ a.nav {
 	margin-left:2%;
 }
 .mH {color:#60c; cursor:pointer;  font-weight:bold; border-top:1px solid #300;}
-.mL {display:none; margin-bottom:10px;}
+.mL {display:none;}
 .mO {display:block;}
+.mS {padding-left:20px;}
                     
