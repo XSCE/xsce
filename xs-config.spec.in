@@ -152,8 +152,8 @@ fi
 %{_libexecdir}/moodle-xs-init
 %doc README README.networking
 %doc README.no-fsck-questions
-%{_sysconfdir}/sysconfig/vnc/self.pem
-%{_sysconfdir}/sysconfig/vnc/xstartup
+#%{_sysconfdir}/sysconfig/vnc/self.pem
+#%{_sysconfdir}/sysconfig/vnc/xstartup
 
 %files xo
 %{_bindir}/bootstrap-xo
