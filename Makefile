@@ -77,7 +77,6 @@ install: $(DESTDIR)
 
 	install -D -d $(DESTDIR)/etc
 	install -D -d $(DESTDIR)/etc/sysconfig
-	install -D -d $(DESTDIR)/etc/sysconfig/vnc
 	install -D -d $(DESTDIR)/etc/sysconfig/modules
 	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts
 	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/functions
@@ -160,6 +159,7 @@ install: $(DESTDIR)
 	# Pg - nonconflicting
 	install -D -d $(DESTDIR)/etc/init.d
 	install -D -d  $(DESTDIR)/etc/sysconfig/pgsql
+	install -D -d  $(DESTDIR)/etc/sysconfig/vnc
 	install -D -d $(DESTDIR)/etc/pgsql-xs
 	install -D -d $(DESTDIR)/etc/systemd
 	install -D -d $(DESTDIR)/etc/systemd/system
