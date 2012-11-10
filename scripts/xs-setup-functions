@@ -539,11 +539,11 @@ function vnc()
         fi
         # or yum install x11vnc-javaviewers | tee -a $LOG
         cp -p /lib/systemd/system/vncserver\@.service /etc/systemd/system
-        sed -i -c 's/<USER>/$DEFAULTUSER/' /etc/systemd/system/vncserver\@.service
+        sed -i -c 's/<USER>/$VNCUSER/' /etc/systemd/system/vncserver\@.service
 
         # start the websocket service (part of the novnc package)
-        systemctl enable vncserverweb.service 2>&1 | tee -a $LOG
-        mkdir -m 755 -p /home/$DEFAULTUSER/.vnc
+       systemctl enable vncserverweb.service 2>&1 | tee -a $LOG
+        mkdir -m 755 -p /home/$VNCUSER/.vnc
         ln -sf $CFGDIR/etc/systemd/system/* $DESTDIR/etc/systemd/system
         ln -sf $DESTDIR/etc/systemd/system/vncserver\@.service \
             $DESTDIR/etc/systemd/system/multi-user.target.wants/vncserver\@\:1.service
@@ -553,11 +553,11 @@ function vnc()
         rfb.sendPassword('$VNCPASSWORD')" /usr/share/novnc/vnc_auto.html
         chown -R $VNCUSER:$VNCUSER /home/$VNCUSER/.vnc
         chmod 600 /home/$VNCUSER/.vnc/passwd
-        cp /usr/share/xs-config/cfg/vnc/self.pem /home/$VNCUSER
+        cp $CFGDIR/etc/sysconfig/vnc/self.pem /home/$VNCUSER
         chown $VNCUSER:$VNCUSER /home/$VNCUSER/self.pem
         cp /etc/httpd/conf.d/ssl.conf.in /etc/httpd/conf.d/ssl.conf
-        sed -i -c 's/^<ifDefine BOGUS/#<ifDfefine BOGUS/' /etc/httpd/conf.d/ssl.conf
-        sed -i -c 's/^<\/ifDefine/#<\/ifDfefine/' /etc/httpd/conf.d/ssl.conf
+        sed -i -c 's/^<ifDefine BOGUS/#<ifDefine BOGUS/' /etc/httpd/conf.d/ssl.conf
+        sed -i -c 's/^<\/ifDefine/#<\/ifDefine/' /etc/httpd/conf.d/ssl.conf
 		systemctl enable vncserver\@\:1.service 2>&1 | tee -a $LOG
         systemctl start vncserver\@\:1.service 2>&1 | tee -a $LOG
         systemctl start vncserverweb.service 2>&1 | tee -a $LOG
