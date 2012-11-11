@@ -58,7 +58,7 @@ function activity-server()
                 exit $YUMERROR
             fi
 	fi
-        touch SETUPSTATEDIR/activity-server
+        touch $SETUPSTATEDIR/activity-server
         #execute the setup script
         /etc/sysconfig/olpc-scripts/setup.d/xs-activity-server
         ;;
@@ -577,27 +577,27 @@ function vnc()
 	esac
 }
 
-function webdav()
+function upload()
 {
 	case "$1" in
 	"yes")
-        cp /etc/httpd/conf.d/webdav.conf.in /etc/httpd/conf.d/webdav.conf
-	if [ ! -f $SETUPSTATEDIR/webdav ]; then
+        cp /etc/httpd/conf.d/upload.conf.in /etc/httpd/conf.d/upload.conf
+	if [ ! -f $SETUPSTATEDIR/upload ]; then
 	    $YUM_CMD cadaver
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
                 exit $YUMERROR
             fi
 	fi
-        mkdir -p /library/webdav
-        chown apache:apache /library/webdav
+        mkdir -p /library/upload
+        chown apache:apache /library/upload
         htpasswd -cb /etc/httpd/webdav.users.pwd $DEFAULTUSER $DEFAULTPASSWORD
-        chown apache:apache /etc/httpd/webdav.users.pwd
-        touch $SETUPSTATEDIR/webdav
+        chown apache:apache /etc/httpd/upload.users.pwd
+        touch $SETUPSTATEDIR/upload
         ;;
 	"no")
-        rm /etc/httpd/conf.d/webdav.conf
-        rm $SETUPSTATEDIR/webdav
+        rm /etc/httpd/conf.d/upload.conf
+        rm $SETUPSTATEDIR/upload
         ;;
 	esac
 }
@@ -660,7 +660,7 @@ function do_first()
     #things to do the first time -- only once
     if [ -e /home/olpc/xs-setup.log ]; then
 	mv /home/olpc/xs-setup.log /var/log/
-	mv /home/olpc/yum.log /var/log/
+	mv /home/olpc/yum.log /var/log/FA
     fi
 
     # init etckeeper and turn it off

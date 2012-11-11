@@ -1,9 +1,5 @@
 // JavaScript Document
 //<script language="JavaScript" type="text/JavaScript">	
-function vncinit(){
-	vncwin = null
-}
-
 function popvnc(){
 	var x = 0, y = 0; // default values
 	if (! parent.vncwin) {
@@ -27,4 +23,19 @@ function popvnc(){
 		return false;
 	}
 }
+function peervnc(){
+	if (! vncwin) {
+		var param='dialog, modal, toolbar=no, status=no, scrollbars=no, resizable=no, width=800, height=600 ,  location=no';
+		vncwin = window.open('/novnc/vnc_auto.html?HOST=172.18.96.1&port=6080&true_color=1','Desktop',param); 
+		alert (test);
+		vncwin.focus();
+		test = "initialized";
+		return false;
+	} else {
+		alert("focus");
+		vncwin.focus();
+		return false;
+	}
+}
+
 //</script>

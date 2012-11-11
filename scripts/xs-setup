@@ -8,6 +8,7 @@ set -x -e
 DESTDIR=/
 CFGDIR=/usr/share/xs-config/cfg
 MARKER=/.olpcxs-configured
+ISXO=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
 DOMAIN=local
 # Determine the number of interfaces
 num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
@@ -56,7 +57,23 @@ source /usr/bin/xs-setup-functions
 
 # prep the XO
 do-first
-if [[ $num_ifaces > 1 ]]; then
+if [[ $num_ifaces < 3 -a $ISXO = "1" ]]; then
+    echo -n ""
+    echo -n "No lan adapter was found. If you want the XS to act as a content filter"
+    echo -n "   and a gateway to the internet, you need to stop now and add a second"
+    echo -n "   network adapter. If you add another adapter, at a later time, you must"
+    echo -n "   rerun xs-setup. Do you want to continue now? (Y/n):"
+    read resp
+    case $resp in
+    [Yy] | [Yy][Ee][Ss] )
+    ;;
+    *)
+        exit(1)
+    ;;
+    esac
+fi
+
+if [[ $num_ifaces > 2 ]]; then
     dhcpd yes
     named yes
     squid yes
@@ -66,17 +83,18 @@ if [[ $num_ifaces > 1 ]]; then
     touch /.olpcxs-net-configured
 fi
 
-# Remote admin services 
+# Remote admin services
 httpd yes
 vnc yes
 
 # Core services offered
 ejabberd yes
-webdav yes
+upload yes
 xs-security yes
 idmgr yes
 postgresql yes
 moodle-xs yes
+activity-server yes
 
 # Finalize install
 yum-etckeeper yes

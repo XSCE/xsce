@@ -14,11 +14,11 @@ $browser = get_browser(null, true);
 <meta http-equiv="content-type" content="text/html;charset=ISO-8859-1">
 <title>School Server Remote Access</title>
 <link href="../schsrv.css" rel="stylesheet" type="text/css" />
-<script language="JavaScript" type="text/JavaScript" src="../vnc.js"></script>
 <script language="JavaScript" type="text/javascript">
 
 //a variable to keep track of the vnc window
 var vncwin = null;
+var test = "";
 
 function setup_click() {
 	var nav=document.getElementById("formframe");
@@ -37,6 +37,7 @@ function status_click() {
 	nav.src="cnt_service_summary.php";
 }
 </script>
+<script language="JavaScript" type="text/JavaScript" src="../vnc.js"></script>
 </head>
 	<iframe src="SS_banner.html" name="topframe" height="190px" width="100%"  marginwidth="0"  frameborder="0"></iframe>
     <div class="nav" height="40px" width="100%">
@@ -44,7 +45,7 @@ function status_click() {
   <tr>
     <td width="20%">
     <?php if (is_xo()) { ?>
-<a class="nav" href="/novnc/vnc_auto.html?HOST=localhost&port=6080&true_color=1" target="_blank">Desktop</a>
+<a class="nav" href="" onClick="peervnc()">Desktop</a>
 	<?php } else {?>
 	    <a class="nav" href="" onClick="popvnc();">Desktop</a>
 <?php } ?>
