@@ -591,7 +591,7 @@ function upload()
 	fi
         mkdir -p /library/upload
         chown apache:apache /library/upload
-        htpasswd -cb /etc/httpd/webdav.users.pwd $DEFAULTUSER $DEFAULTPASSWORD
+        htpasswd -cb /etc/httpd/upload.users.pwd $DEFAULTUSER $DEFAULTPASSWORD
         chown apache:apache /etc/httpd/upload.users.pwd
         touch $SETUPSTATEDIR/upload
         ;;
