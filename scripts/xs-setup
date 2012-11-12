@@ -57,7 +57,7 @@ source /usr/bin/xs-setup-functions
 
 # prep the XO
 do-first
-if [[ $num_ifaces < 3 -a $ISXO = "1" ]]; then
+if [[ $num_ifaces < 3 && $ISXO = 1 ]]; then
     echo -n ""
     echo -n "No lan adapter was found. If you want the XS to act as a content filter"
     echo -n "   and a gateway to the internet, you need to stop now and add a second"
@@ -68,7 +68,7 @@ if [[ $num_ifaces < 3 -a $ISXO = "1" ]]; then
     [Yy] | [Yy][Ee][Ss] )
     ;;
     *)
-        exit(1)
+        exit 1
     ;;
     esac
 fi
