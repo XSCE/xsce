@@ -550,7 +550,7 @@ function vnc()
         cp $CFGDIR/etc/sysconfig/vnc/xstartup /home/$VNCUSER/.vnc/
         echo "$VNCPASSWORD" | vncpasswd -f > /home/$VNCUSER/.vnc/passwd
         sed "/rfb.sendPassword/ c\
-        rfb.sendPassword('$VNCPASSWORD')" /usr/share/novnc/vnc_auto.html
+        rfb.sendPassword(\'$VNCPASSWORD\');" /usr/share/novnc/vnc_auto.html
         chown -R $VNCUSER:$VNCUSER /home/$VNCUSER/.vnc
         chmod 600 /home/$VNCUSER/.vnc/passwd
         cp $CFGDIR/etc/sysconfig/vnc/self.pem /home/$VNCUSER
@@ -766,7 +766,7 @@ function do_first()
         fi
         # we need a login for vnc with password that is not user changeable
         if [ ! `grep $VNCUSER /etc/passwd` ]; then
-            adduser $VNCUSER -s /usr/sbin/nologin
+            adduser $VNCUSER
             echo "$VNCPASSWORD" | passwd $VNCUSER --stdin
         fi
         sed -i -c 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
