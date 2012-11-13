@@ -145,7 +145,7 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/pgsql/pgsql-xs
 #%{_sysconfdir}/init.d/pgsql-xs
 %attr(700, postgres, postgres)   %dir /library/pgsql-xs
-%attr(700, root, root)   %dir /root
+%attr(700, root, root)   %dir /root/*
 
 %{_bindir}/cat-parts
 %{_bindir}/xs-*
