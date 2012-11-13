@@ -115,7 +115,6 @@ fi
 %config(noreplace) %{_sysconfdir}/ejabberd/ejabberd-xs.cfg.in
 %config(noreplace) %{_sysconfdir}/httpd/conf/httpd-xs.conf.in
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/*.conf.in
-%config(noreplace) %{_sysconfdir}/sudoers.d/xs-http
 
 %config(noreplace) %{_sysconfdir}/sysconfig/olpc-scripts/
 %config(noreplace) %{_sysconfdir}/sysconfig/modules/*.modules
