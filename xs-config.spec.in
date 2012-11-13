@@ -145,7 +145,7 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/pgsql/pgsql-xs
 #%{_sysconfdir}/init.d/pgsql-xs
 %attr(700, postgres, postgres)   %dir /library/pgsql-xs
-%attr(700, root, root)   %dir /root/*
+%config(noreplace) /root/xs-apply-changes
 
 %{_bindir}/cat-parts
 %{_bindir}/xs-*
@@ -158,3 +158,4 @@ fi
 %files xo
 %{_bindir}/bootstrap-xo
 %{_libdir}/udev/rules.d/10-olpc-net.rules
+set;exit 1
