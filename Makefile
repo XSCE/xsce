@@ -163,6 +163,7 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/etc/systemd
 	install -D -d $(DESTDIR)/etc/systemd/system
 	install -D -d $(DESTDIR)/library/pgsql-xs
+	install -D -d $(DESTDIR)/root
 	install -D altfiles/etc/pgsql-xs/p*.conf $(DESTDIR)/etc/pgsql-xs
 	install -D altfiles/etc/sysconfig/pgsql/pgsql-xs $(DESTDIR)/etc/sysconfig/pgsql
 	install -D altfiles/etc/systemd/system/*.service.in $(DESTDIR)/etc/systemd/system
