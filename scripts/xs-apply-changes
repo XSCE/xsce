@@ -1,0 +1,8 @@
+#!/bin/bash -x
+# this script is used by apache to apply changes selected by browser client to XS config
+/home/admin/apply_changes 2>&1 | ncat -p 29753 localhost
+date| ncat -p 29753 localhost
+
+echo "Your changes have been applied to the School Server"| ncat -p 29753 localhost
+
+

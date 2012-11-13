@@ -197,3 +197,4 @@ install: $(DESTDIR)
 	install -D scripts/xs-sleep $(DESTDIR)/usr/bin
 	install -D scripts/xs-sleep.glade $(DESTDIR)/usr/bin
 	install -D scripts/xs-resolvconf    $(DESTDIR)/usr/bin
+	install -D scripts/xs-apply-changes   $(DESTDIR)/root

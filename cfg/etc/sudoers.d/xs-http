@@ -1,1 +1,1 @@
-apache ALL=NOPASSWD: /usr/sbin/iptables-save,/usr/sbin/fdisk,/usr/bin/xs-flashbench,/usr/bin/xs-acpowergaps
+apache ALL=NOPASSWD: /usr/sbin/iptables-save,/usr/sbin/fdisk,/usr/bin/xs-flashbench,/usr/bin/xs-acpowergaps,/root/xs-apply-changes

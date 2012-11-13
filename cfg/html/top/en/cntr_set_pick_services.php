@@ -31,6 +31,7 @@
 <META http-equiv=Cache-Control content=no-cache>    
 <title>Untitled Document</title>
 <link href="../schsrv.css" rel="stylesheet" type="text/css" />
+<script language="JavaScript" type="text/JavaScript" src="../vnc.js"></script>
 
 <script language="JavaScript" type="text/JavaScript">
 
@@ -55,9 +56,9 @@ var internet = '<?php echo $selected['gateway'] ?>';
 </head>
 
 <body onload="setvisible()">
-<div class="centerpick">
 <h2>Internet:</h2>
-<form action="<?php echo($_SERVER['self']);?>" method="post" >
+<div class="centerframe">
+<form action="" method="post" >
 <table><tr><td>
 <?php if ($selected['gateway'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="gateway" class="mH" onclick="toggleMenu('menu1')" type="checkbox" value=""<?php echo $checked ?> /></td><td class="mS">
@@ -69,17 +70,21 @@ Check here if you have internet service and want the School Server to provide in
 <?php if ($selected['opendns'] == 'on') $checked = "CHECKED";  else $checked = "";	?>
 
   <input name="opendns" class="mO" type="checkbox"  value=""<?php echo $checked ?>  /></td><td class="mS">
-Enable Domain Name Service content controls using OPENDNS (is mainteined for schools worldwide by specialists)</td></tr><tr><td>
+Enable Domain Name Service content controls using OPENDNS (is mainteined for schools worldwide by specialists)</td></tr>
+<tr><td></td><td><div align="center" >Ip address of OPENDNS service: <input name="opendsnip" type="text"  /></div></td></tr>
+<tr><td>
 <?php if ($selected['dansguardian'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="dansguardian" class="mO" type="checkbox"  value=""<?php echo $checked ?>  /></td><td class="mS">
 Install Dan's Guardian content filter (permits local control, requires setup, continued maintenance)
-</td></tr><tr><td colspan="2"> 
+</td></tr>
+
+<tr><td colspan="2"> 
 <h3>Internet Speedups</h3></td></tr><tr ><td></td><td class="mS">
  Is your internet speed faster than 1Megabit for 5 students, 5 Megabits for 30 students, or 15Mebagits for 75 students? If not:</td></tr><tr><br /></tr> </tr><td>
   
 <?php if ($selected['squid'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="squid" class="mO" type="checkbox" value=""<?php echo $checked ?>  /></td><td class="mS">
-squidEnable local web page storage for later fast access<br /></td></tr><tr><td>
+Enable local web page storage for later fast access<br /></td></tr><tr><td>
 <?php if ($selected['named'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="named" class="mO" type="checkbox" value=""<?php echo $checked ?>  /></td><td class="mS">
 Enable local Domain Name storage for faster access
@@ -88,11 +93,11 @@ Enable local Domain Name storage for faster access
 </div>
   <input name="token" type="hidden" />
   <input name="lastgateway" type="hidden" />
-<div  align="center"> <input class="centerpick" name="Apply" value ="Apply Changes" type="submit"/></div>
+<div  align="center"> <input class="centerpick" onclick="peervnc()" name="Apply" value ="Apply Changes" type="submit"/></div>
 </form>
 <?php 
 if (isset($_POST['token'])) {
-	$outfile = '/library/webdav/apply_changes';
+	$outfile = '/home/admin/apply_changes';
 	$fh = fopen($outfile,"w") or die("failed to open ". $outfile);
 	$outstr = "#!/bin/bash\n";
 	$outstr .= "# small apply script to change selected configuration of School server\n";

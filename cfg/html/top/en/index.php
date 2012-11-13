@@ -1,3 +1,8 @@
+<!-- the naming of small files to create a GUI for XS has gotten completely out of  hand. 
+The following nameing convention will be adopted:
+ 	Four regions of the screen -- top, left, center, right -> top, nav, cntr, help
+    Four categories of function -- setup, reports, upload, server, miscellaneous -> set, rpt, upl, srv, misc
+-->
 <?php 
 function is_xo() {
 	if (file_exists("/proc/device-tree/mfg-data/MN")) return true; else return false;
@@ -43,25 +48,21 @@ function status_click() {
     <div class="nav" height="40px" width="100%">
     <table width="100%" align="center" border="0">
   <tr>
+    <td width="10%">&nbsp;</td>
+    <td width="10%">&nbsp;</td>
+    <td width="10%"><a class="nav" href="nav_set.html" target="navigation" onClick="setup_click()">Setup</a></td>
+    <td width="10%"><a class="nav" href="nav_rpt_classroom.html" target="navigation" onClick="classroom_click()">Classroom</a></td>
+    <td width="10%">&nbsp;</td>
+    <td width="10%"><a class="nav" href="nav_upl.html" target="navigation" onClick="tools_click()">Upload</a></td>
+    <td width="10%"><a class="nav" href="nav_srv.html"target="navigation" onClick="status_click()">Server</a></td>
+    <td width="10%">&nbsp;</td>
     <td width="20%">
-    <?php if (is_xo()) { ?>
-<a class="nav" href="" onClick="peervnc()">Desktop</a>
-	<?php } else {?>
-	    <a class="nav" href="" onClick="popvnc();">Desktop</a>
-<?php } ?>
+    <a class="nav" href="/novnc/vnc_auto.html?HOST=172.18.96.1&port=6080&true_color=1" target="_blank">Desktop</a><br />
 </td>
-    <td width="10%"><a class="nav" href="setup_nav.html" target="navigation" onClick="setup_click()">Setup</a></td>
-    <td width="10%"><a class="nav" href="classroom_nav.html" target="navigation" onClick="classroom_click()">Classroom</a></td>
-    <td width="10%">&nbsp;</td>
-    <td width="10%"><a class="nav" href="tools_nav.html" target="navigation" onClick="tools_click()">Tools</a></td>
-    <td width="10%"><a class="nav" href="status_nav.html"target="navigation" onClick="status_click()">Status</a></td>
-    <td width="10%">&nbsp;</td>
-    <td width="10%">&nbsp;</td>
-    <td width="10%">&nbsp;</td>
   </tr>
 </table></div>
-    <iframe src="setup_nav.html" name="navigation" id="navigation" class="nav" width="17%" height="100%" noresize frameborder="1" marginwidth="0" marginheight="0" scrolling="auto"></iframe>
-    <iframe src="pick_services.php" name="formframe" id="formframe" width="56%" height="100%" frameborder="1" marginwidth="0" marginheight="0" scrolling="auto"></iframe>
+    <iframe src="nav_set.html" name="navigation" id="navigation" class="nav" width="17%" height="100%" noresize frameborder="1" marginwidth="0" marginheight="0" scrolling="auto"></iframe>
+    <iframe src="cntr_set_pick_services.php" name="formframe" id="formframe" width="56%" height="100%" frameborder="1" marginwidth="0" marginheight="0" scrolling="auto"></iframe>
     <iframe src="SS_blank.html" name="helpframe" class="help" width="24%" height="100%" frameborder="1" marginwidth="0" marginheight="0" scrolling="auto"></iframe>                
 </html>
 

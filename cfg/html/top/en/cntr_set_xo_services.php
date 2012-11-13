@@ -62,11 +62,11 @@ WebDav Storage and retrieval of files on the server.<br  />
 Make collaboration faster (ejabber server)<br />
 </div>
   <input name="token" type="hidden" />
-<div  align="center"> <input class="centerpick" name="Apply" value ="Apply Changes" type="submit"/></div>
+<div  align="center"> <input class="centerpick" onclick="peervnc()" name="Apply" value ="Apply Changes" type="submit"/></div>
 </form>
 <?php 
 if (isset($_POST['token'])) {
-	$outfile = '/library/webdav/apply_changes';
+	$outfile = '/home/admin/apply_changes';
 	$fh = fopen($outfile,"w") or die("failed to open ". $outfile);
 	$outstr = "#!/bin/bash\n";
 	$outstr .= "# small apply script to change selected configuration of School server\n";
@@ -92,6 +92,12 @@ if (isset($_POST['token'])) {
 	if ( $selected['webdav'] == 'off' and in_array("webdav", $installed) ) $outstr .= "webdav no\n";
 
 	$outstr .= "do-last\n";
+	// see if there are no changes in the output string
+	$matchloc = strpos($outstr, "do-first\ndo-last");
+	if ($matchloc > 0) {
+		$outstr = substr($outstr, 0, $matchloc);
+		$outstr .= "# There are no changes to apply";
+	} 
 	fwrite($fh,$outstr);
 	fclose($fh);
 	//make it executable
@@ -99,6 +105,12 @@ if (isset($_POST['token'])) {
 	echo "<pre>";
 	echo $outstr;
 	echo "</pre>";
+	
+	$APPLY= "sudo /root/xs-apply-changes";
+	$results = shell_exec($APPLY);
+	$lines = explode("\n",$results);
+
+	
 }
 ?>
 

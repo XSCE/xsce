@@ -38,8 +38,8 @@ Wants=vncserverweb.service
 Type=forking
 # Clean any existing files in /tmp/.X11-unix environment
 ExecStartPre=/bin/sh -c '/usr/bin/vncserver -kill %i > /dev/null 2>&1 || :'
-ExecStart=/sbin/runuser -l admin -c "/usr/bin/vncserver %i"
-ExecStop=/sbin/runuser -l admin -c "/usr/bin/vncserver -kill %i"
+ExecStart=/sbin/runuser -l vnc -c "/usr/bin/vncserver %i"
+ExecStop=/sbin/runuser -l vnc -c "/usr/bin/vncserver -kill %i"
 
 [Install]
 WantedBy=multi-user.target

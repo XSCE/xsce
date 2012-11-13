@@ -98,7 +98,7 @@ function dansguardian()
             echo "\n\nYum returned an error\n\n" | tee -a $LOG
             exit $YUMERROR
         fi
-        touch SETUPSTATEDIR/dansguardian
+        touch $SETUPSTATEDIR/dansguardian
         #execute the setup script
         ;;
     "no")
@@ -319,7 +319,7 @@ function moodle-xs()
 
 	"no")
 	/usr/libexec/moodle-xs-init stop 2>&1 | tee -a $LOG
-	rm $SETUPSTATEDIR/moodle-xs
+	set +x; rm $SETUPSTATEDIR/moodle-xs; set -x
 	;;
 	esac
 }
@@ -340,15 +340,17 @@ function named()
         if [ -d /var/named-xs ]; then
             chgrp -R named /var/named-xs
         fi
-	systemctl enable named.service 2>&1 | tee -a $LOG
+        systemctl enable named.service 2>&1 | tee -a $LOG
         systemctl start named.service 2>&1 | tee -a $LOG
-	touch $SETUPSTATEDIR/named
+        touch $SETUPSTATEDIR/named
         ;;
 	"no")
 		systemctl disable named.service 2>&1 | tee -a $LOG
         # let the dhclinet control the name resolution normally
-	rm /etc/sysconfig/olpc-scripts/resolv.conf
+        set +x
+        rm /etc/sysconfig/olpc-scripts/resolv.conf
         rm $SETUPSTATEDIR/named
+        set -x
         ;;
 	esac
 }
@@ -395,7 +397,7 @@ function pathagar()
         touch $SETUPSTATEDIR/pathagar
         ;;
 	"no")
-        rm $SETUPSTATEDIR/pathagar
+        set -x;rm $SETUPSTATEDIR/pathagar; set +x
         ;;
 	esac
 }
@@ -526,7 +528,8 @@ function vnc()
 	case "$1" in
 	"yes")
 	if [ ! -f $SETUPSTATEDIR/vnc ]; then
-	    $YUM_CMD tigervnc-server novnc mod_ssl 2>&1 | tee -a $LOG
+        # mod_ssl permits vnc to be encrypted, nmap provides ncat
+	    $YUM_CMD tigervnc-server novnc mod_ssl nmap 2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
                 exit $YUMERROR
@@ -539,18 +542,18 @@ function vnc()
         fi
         # or yum install x11vnc-javaviewers | tee -a $LOG
         cp -p /lib/systemd/system/vncserver\@.service /etc/systemd/system
-        sed -i -c 's/<USER>/$VNCUSER/' /etc/systemd/system/vncserver\@.service
+        sed -i -c "s/<USER>/$VNCUSER/" /etc/systemd/system/vncserver\@.service
 
         # start the websocket service (part of the novnc package)
        systemctl enable vncserverweb.service 2>&1 | tee -a $LOG
         mkdir -m 755 -p /home/$VNCUSER/.vnc
-        ln -sf $CFGDIR/etc/systemd/system/* $DESTDIR/etc/systemd/system
+        #ln -sf $CFGDIR/etc/systemd/system/* $DESTDIR/etc/systemd/system
         ln -sf $DESTDIR/etc/systemd/system/vncserver\@.service \
             $DESTDIR/etc/systemd/system/multi-user.target.wants/vncserver\@\:1.service
         cp $CFGDIR/etc/sysconfig/vnc/xstartup /home/$VNCUSER/.vnc/
         echo "$VNCPASSWORD" | vncpasswd -f > /home/$VNCUSER/.vnc/passwd
-        sed "/rfb.sendPassword/ c\
-        rfb.sendPassword(\'$VNCPASSWORD\');" /usr/share/novnc/vnc_auto.html
+        sed -i -c "/password = WebUtil/ c\
+        password = WebUtil.getQueryVar(\'password\', \'$VNCPASSWORD\');" /usr/share/novnc/vnc_auto.html
         chown -R $VNCUSER:$VNCUSER /home/$VNCUSER/.vnc
         chmod 600 /home/$VNCUSER/.vnc/passwd
         cp $CFGDIR/etc/sysconfig/vnc/self.pem /home/$VNCUSER
@@ -763,6 +766,10 @@ function do_first()
         if [ ! `grep $DEFAULTUSER /etc/passwd` ]; then
             adduser $DEFAULTUSER
             echo "$DEFAULTPASSWORD" | passwd $DEFAULTUSER --stdin
+            #we've added apache to the admin group, so permit group access
+            #then to let apache config system, we'll add apache to sudoers on
+            #  the apply_changes script which will be written in /home/admin
+            chmod 770 /home/$DEFAULTUSER
         fi
         # we need a login for vnc with password that is not user changeable
         if [ ! `grep $VNCUSER /etc/passwd` ]; then

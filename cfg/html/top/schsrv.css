@@ -5,7 +5,7 @@
 }
 .centerframe{
 	font-family: "Arial Black", Gadget, sans-serif;
-	font-size: 14px;
+	font-size: 18px;
 }
 .centerpick{
 	font-family: "Arial Black", Gadget, sans-serif;
@@ -50,4 +50,6 @@ a.nav {
 .mL {display:none;}
 .mO {display:block;}
 .mS {padding-left:20px;}
-                    
+                    .centerpick form table tr td {
+	font-size: 36px;
+}
