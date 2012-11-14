@@ -57,22 +57,30 @@ source /usr/bin/xs-setup-functions
 
 # prep the XO
 do-first
+
 if [[ $num_ifaces < 3 && $ISXO = 1 ]]; then
+    set +x
     echo -n ""
-    echo -n "No lan adapter was found. If you want the XS to act as a content filter"
-    echo -n "   and a gateway to the internet, you need to stop now and add a second"
-    echo -n "   network adapter. If you add another adapter, at a later time, you must"
-    echo -n "   rerun xs-setup. Do you want to continue now? (Y/n):"
+    echo -n "No lan adapter was found. If you want the XS to act as a content filter\n"
+    echo -n "   and a gateway to the internet, you need to stop now and add a second\n"
+    echo -n "   network adapter. If you add another adapter, at a later time, you must\n"
+    echo -n "   rerun xs-setup.\n"
+    echo -n "   INSERT ETHERNET DONGLE NOW. (this is for local XO connections).\n"
+    echo -n " Do you want to continue now? (y/N):"
     read resp
     case $resp in
     [Yy] | [Yy][Ee][Ss] )
     ;;
     *)
+        # anythin else
         exit 1
     ;;
     esac
 fi
+set -x
 
+# Determine the number of interfaces again since it may have changed
+num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
 if [[ $num_ifaces > 2 ]]; then
     dhcpd yes
     named yes
