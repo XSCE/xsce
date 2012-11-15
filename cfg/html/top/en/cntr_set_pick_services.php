@@ -93,7 +93,7 @@ Enable local Domain Name storage for faster access
 </div>
   <input name="token" type="hidden" />
   <input name="lastgateway" type="hidden" />
-<div  align="center"> <input class="centerpick" onclick="peervnc()" name="Apply" value ="Apply Changes" type="submit"/></div>
+<div  align="center"> <input class="centerpick" onClick="peervnc()" name="Apply" value ="Apply Changes" type="submit"/></div>
 </form>
 <?php 
 if (isset($_POST['token'])) {
@@ -129,10 +129,15 @@ if (isset($_POST['token'])) {
 	fwrite($fh,$outstr);
 	fclose($fh);
 	//make it executable
-	system("chmod 755 $outfile");
+	system("chmod 750 $outfile");
 	echo "<pre>";
 	echo $outstr;
 	echo "</pre>";
+	
+	// apply the changes
+	$APPLY= "sudo /root/xs-apply-changes";
+	$results = shell_exec($APPLY);
+
 }
 ?>
 

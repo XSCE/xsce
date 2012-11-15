@@ -6,16 +6,16 @@
 		if (isset($_POST['register'])) $selected['register'] = 'on'; else $selected['register'] = 'off';
 		if (isset($_POST['ejabberd'])) $selected['ejabberd'] = 'on'; else $selected['ejabberd'] = 'off';
 		if (isset($_POST['activity_server'])) $selected['activity_server'] = 'on'; else $selected['activity_server'] = 'off';
-		if (isset($_POST['moodle'])) $selected['moodle'] = 'on'; else $selected['moodle'] = 'off';
-		if (isset($_POST['security_tools'])) $selected['security_tools'] = 'on'; else $selected['security_tools'] = 'off';
-		if (isset($_POST['webdav'])) $selected['webdav'] = 'on'; else $selected['webdav'] = 'off';
+		if (isset($_POST['moodle-xs'])) $selected['moodle-xs'] = 'on'; else $selected['moodle-xs'] = 'off';
+		if (isset($_POST['xs-security'])) $selected['xs-security'] = 'on'; else $selected['xs-security'] = 'off';
+		if (isset($_POST['upload'])) $selected['upload'] = 'on'; else $selected['upload'] = 'off';
 	} else {
 		$selected['register'] = (in_array("idmgr", $installed) ? 'on' : 'off');
 		$selected['ejabberd'] = (in_array("ejabberd", $installed) ? 'on' : 'off');
 		$selected['activity_server'] = (in_array("activity-server", $installed) ? 'on' : 'off');
-		$selected['moodle'] = (in_array("moodle-xs", $installed) ? 'on' : 'off');
-		$selected['security_tools'] = (in_array("security_tools", $installed) ? 'on' : 'off');
-		$selected['webdav'] = (in_array("webdav", $installed) ? 'on' : 'off');
+		$selected['moodle-xs'] = (in_array("moodle-xs", $installed) ? 'on' : 'off');
+		$selected['xs-security'] = (in_array("xs-security", $installed) ? 'on' : 'off');
+		$selected['upload'] = (in_array("upload", $installed) ? 'on' : 'off');
 	}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -40,7 +40,7 @@ function toggleMenu(objID) {
 
 <body>
 <h2>Services to the XO Laptops</h2>
-<form action="<?php echo($_SERVER['self']);?>" method="post" >
+<form action="" method="post" >
 <div class="centerpick">
 <?php if ($selected['register'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="register" type="checkbox" value=""<?php echo $checked ?> />
@@ -48,21 +48,21 @@ Register XO's and backup student Journals.<br />
 <?php if ($selected['activity_server'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="activity_server" type="checkbox"  value="" <?php echo $checked ?>/>
 Serve Activities, input to server with USB stick.<br />
-<?php if ($selected['moodle'] == 'on') $checked = "CHECKED";  else $checked = "";?>
-<input name="moodle" type="checkbox" value="" <?php echo $checked ?>/>
+<?php if ($selected['moodle-xs'] == 'on') $checked = "CHECKED";  else $checked = "";?>
+<input name="moodle-xs" type="checkbox" value="" <?php echo $checked ?>/>
 Moodle content and classroom management system.<br />
-<?php if ($selected['security_tools'] == 'on') $checked = "CHECKED";  else $checked = "";?>
-  <input name="security_tools" type="checkbox" value=""<?php echo $checked ?>/>
+<?php if ($selected['xs-security'] == 'on') $checked = "CHECKED";  else $checked = "";?>
+  <input name="xs-security" type="checkbox" value=""<?php echo $checked ?>/>
 Manage activation of XO leases, and security.<br  />
-<?php if ($selected['webdav'] == 'on') $checked = "CHECKED";  else $checked = "";?>
-  <input name="webdav" type="checkbox" value="" <?php echo $checked ?>/>
+<?php if ($selected['upload'] == 'on') $checked = "CHECKED";  else $checked = "";?>
+  <input name="upload" type="checkbox" value="" <?php echo $checked ?>/>
 WebDav Storage and retrieval of files on the server.<br  />
 <?php if ($selected['ejabberd'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="ejabberd" type="checkbox"  value="" <?php echo $checked ?>/>
 Make collaboration faster (ejabber server)<br />
 </div>
   <input name="token" type="hidden" />
-<div  align="center"> <input class="centerpick" onclick="peervnc()" name="Apply" value ="Apply Changes" type="submit"/></div>
+<div  align="center"> <input class="centerpick" onClick="peervnc()" name="Apply" value ="Apply Changes" type="submit"/></div>
 </form>
 <?php 
 if (isset($_POST['token'])) {
@@ -79,17 +79,17 @@ if (isset($_POST['token'])) {
 	if ( $selected['ejabberd'] == 'on' and !in_array("ejabberd", $installed)) $outstr .= "ejabberd yes\n";
 	if ( $selected['ejabberd'] == 'off' and in_array("ejabberd", $installed)) $outstr .= "ejabberd no\n";
 	
-	if ( $selected['activity_server'] == 'on' and !in_array("activity-server", $installed)) $outstr .= "activity_server yes\n";
-	if ( $selected['activity_server'] == 'off' and in_array("activity-server", $installed)) $outstr .= "activity_server no\n";
+	if ( $selected['activity_server'] == 'on' and !in_array("activity-server", $installed)) $outstr .= "activity-server yes\n";
+	if ( $selected['activity_server'] == 'off' and in_array("activity-server", $installed)) $outstr .= "activity-server no\n";
 	
-	if ( $selected['moodle'] == 'on' and !in_array("moodle-xs", $installed)) $outstr .= "moodle yes\n";
-	if ( $selected['moodle'] == 'off' and in_array("moodle-xs", $installed)) $outstr .= "moodle no\n";
+	if ( $selected['moodle-xs'] == 'on' and !in_array("moodle-xs", $installed)) $outstr .= "moodle-xs yes\n";
+	if ( $selected['moodle-xs'] == 'off' and in_array("moodle-xs", $installed)) $outstr .= "moodle-xs no\n";
 	
-	if ( $selected['security_tools'] == 'on' and !in_array("security-tools", $installed) ) $outstr .= "security_tools yes\n";
-	if ( $selected['security_tools'] == 'off' and in_array("security-tools", $installed) ) $outstr .= "security_tools no\n";
+	if ( $selected['xs-security'] == 'on' and !in_array("xs-security", $installed) ) $outstr .= "xs-security yes\n";
+	if ( $selected['xs-security'] == 'off' and in_array("xs-security", $installed) ) $outstr .= "xs-security no\n";
 
-	if ( $selected['webdav'] == 'on' and !in_array("webdav", $installed) ) $outstr .= "webdav yes\n";
-	if ( $selected['webdav'] == 'off' and in_array("webdav", $installed) ) $outstr .= "webdav no\n";
+	if ( $selected['upload'] == 'on' and !in_array("upload", $installed) ) $outstr .= "upload yes\n";
+	if ( $selected['upload'] == 'off' and in_array("upload", $installed) ) $outstr .= "upload no\n";
 
 	$outstr .= "do-last\n";
 	// see if there are no changes in the output string
@@ -101,16 +101,15 @@ if (isset($_POST['token'])) {
 	fwrite($fh,$outstr);
 	fclose($fh);
 	//make it executable
-	system("chmod 755 $outfile");
+	system("chmod 750 $outfile");
 	echo "<pre>";
 	echo $outstr;
 	echo "</pre>";
 	
+	// apply the changes
 	$APPLY= "sudo /root/xs-apply-changes";
 	$results = shell_exec($APPLY);
-	$lines = explode("\n",$results);
 
-	
 }
 ?>
 

@@ -164,11 +164,11 @@ function ejabberd()
 		        echo "\n\nYum returned an error\n\n" | tee -a $LOG
 		        exit $YUMERROR
 		    fi
+            touch $SETUPSTATEDIR/ejabberd
             # and set it to autostart
             systemctl enable ejabberd-xs.service 2>&1 | tee -a $LOG
             echo "the following start command executes for a long time. Have a cup of coffee!"
             systemctl start ejabberd-xs.service 2>&1 | tee -a $LOG
-            touch $SETUPSTATEDIR/ejabberd
 		;;
 	"no")
             systemctl disable ejabberd.service 2>&1 | tee -a $LOG
@@ -188,7 +188,7 @@ function gateway()
         # either enable the service or create the file not both
         ln -sf $CFGDIR/etc/systemd/system/iptables.service $DESTDIR/etc/systemd/system
         # systemd has a check for exist /etc/sysconfig/iptables - so ensure that it exists
-        # /etc/sysconfig/iptables-config
+        /etc/sysconfig/iptables-config
         systemctl enable iptables.service
         systemctl enable ip6tables.service
         systemctl start iptables.service
@@ -230,13 +230,17 @@ function httpd()
 		    CONFMEM=2048m
 		fi
 		#update the httpd.conf file with this information
-		sed  's/@@CONFMEM@@/$CONFMEM/' /etc/httpd/conf/httpd-xs.conf
+		sed -i -c "s/\@\@CONFMEM\@\@/MEM$CONFMEM/" /etc/httpd/conf/httpd-xs.conf
 		etckeeper-if-selected "modified /etc/httpd/conf/httpd-xs.conf"
         systemctl start httpd.service 2>&1 | tee -a $LOG
 		systemctl enable httpd.service 2>&1 | tee -a $LOG
-
-        # now install the xs - client html/php code
-
+        # add apache user to the admin group, so she can write to admin
+        usermod -G admin,apache apoache
+        # for some reason, http does not make the needed directories
+        mkdir /var/log/httpd
+        mkdir /var/run/httpd
+        chown apache:apache /var/log/httpd
+        chown apache:apache /var/run/httpd
 		;;
 	"no")
 		systemctl disable httpd.service 2>&1 | tee -a $LOG
@@ -341,11 +345,23 @@ function opendns()
 {
 	case "$1" in
     "yes")
-        touch SETUPSTATEDIR/opendns
-        #execute the setup script
+        if [ "$#" -lt 2 ]; then
+            echo "You must enter an IP address in the form 123.456.789.123"
+            exit 1
+        fi
+        sed -i -e "
+        /\@\@forwarders\@\@/ c\
+        forwarders      {$2;}; ////@@forwarders@@" \
+        /etc/named-xs.conf
+
+        touch $SETUPSTATEDIR/opendns
         ;;
     "no")
         rm $SETUPSTATEDIR/opendns
+        sed -i -e "
+        /\@\@forwarders\@\@/ c\
+        \\ @@forwarders@@ disabled ; ////@@forwarders@@" \
+        /etc/named-xs.conf
         ;;
     esac
 }
@@ -539,7 +555,8 @@ function vnc()
 		systemctl enable vncserver\@\:1.service 2>&1 | tee -a $LOG
         systemctl start vncserver\@\:1.service 2>&1 | tee -a $LOG
         systemctl start vncserverweb.service 2>&1 | tee -a $LOG
-
+        # turn off the xfce4 screen saver
+        /usr/bin/xfconf-query -c xfce4-session -n -t bool -p /startup/screensaver/enabled -s false
         # explore using ncat to pass install info to vnc client
         # at XS -- "xs-setup 2>&1 | tee > (ncat -p 20000 localhost)"
         # and at VNC -- "ncat -l -k p 20000 --ssl-key /home/admin/self.pem
@@ -626,7 +643,7 @@ function xs-security()
     esac
 }
 
-function do_first()G
+function do_first()
 {
     #things to do the first time -- only once
     if [ -e /home/olpc/xs-setup.log ]; then
@@ -743,6 +760,7 @@ function do_first()G
         if [ ! `grep $VNCUSER /etc/passwd` ]; then
             adduser $VNCUSER
             echo "$VNCPASSWORD" | passwd $VNCUSER --stdin
+            echo "alias passwd=\'echo \"NOT ALLOWED!. It will bread VNC remote access\"\' " >> /home/$VNCUSER/.bashrc
         fi
         sed -i -c 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
         systemctl enable sshd.service
@@ -774,11 +792,14 @@ function do_last()
     echo "do last executed" | tee -a $LOG
     date | tee -a $LOG
     if [ ! -e $MARKER ]; then
+        # require that olpc user enter a password to become root
+        sed -i -e '4s/^auth/#auth/' /etc/pam.d/su
         # internally we use /etc/.git as marker for first config run --
         #   --$ MARKER  is available externally
         touch $MARKER
         echo "XS configured; services should be active."
     fi
+
 }
 
 # now source any files ending with .sh in config dir, allow pkgs to shadow these defs

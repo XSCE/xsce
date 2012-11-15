@@ -27,19 +27,19 @@ var test = "";
 
 function setup_click() {
 	var nav=document.getElementById("formframe");
-	nav.src="pick_services.php";
+	nav.src="cntr_set_pick_services.php";
 }
 function classroom_click() {
 	var nav=document.getElementById("formframe");
-	nav.src="registrations.php";
+	nav.src="cntr_rpt_registrations.php";
 }
-function tools_click() {
+function upload_click() {
 	var nav=document.getElementById("formframe");
-	nav.src="dig.php";
+	nav.src="cntr_upl_activity.php";
 }
 function status_click() {
 	var nav=document.getElementById("formframe");
-	nav.src="cnt_service_summary.php";
+	nav.src="cntr_rpt_services.php";
 }
 </script>
 <script language="JavaScript" type="text/JavaScript" src="../vnc.js"></script>
@@ -53,9 +53,9 @@ function status_click() {
     <td width="10%"><a class="nav" href="nav_set.html" target="navigation" onClick="setup_click()">Setup</a></td>
     <td width="10%"><a class="nav" href="nav_rpt_classroom.html" target="navigation" onClick="classroom_click()">Classroom</a></td>
     <td width="10%">&nbsp;</td>
-    <td width="10%"><a class="nav" href="nav_upl.html" target="navigation" onClick="tools_click()">Upload</a></td>
+    <td width="10%"><a class="nav" href="nav_upl.html" target="navigation" onClick="upload_click()">Upload</a></td>
     <td width="10%"><a class="nav" href="nav_srv.html"target="navigation" onClick="status_click()">Server</a></td>
-    <td width="10%">&nbsp;</td>
+    <td width="10%"><a href="" onClick="peervnc()">test</a></td>
     <td width="20%">
     <a class="nav" href="/novnc/vnc_auto.html?HOST=172.18.96.1&port=6080&true_color=1" target="_blank">Desktop</a><br />
 </td>

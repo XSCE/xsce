@@ -25,12 +25,11 @@ function popvnc(){
 }
 function peervnc(){
 	if (! vncwin) {
-		var param='dialog, modal, toolbar=no, status=no, scrollbars=no, resizable=no, width=800, height=600 ,  location=no';
-		vncwin = window.open('/novnc/vnc_auto.html?HOST=172.18.96.1&port=6080&true_color=1','Desktop',param); 
-		alert ("open new window");
+		var param='dialog,modal,target=_tab,toolbar=no,status=no,scrollbars=no,resizable=no,width=800,height=600,location=no';
+		vncwin = window.open('/novnc/vnc_auto.html?HOST=172.18.96.1&port=6080&true_color=1','_blank',param); 
 		vncwin.focus();
 		test = "initialized";
-		return false;
+		return true;
 	} else {
 		alert("focus");
 		vncwin.focus();
