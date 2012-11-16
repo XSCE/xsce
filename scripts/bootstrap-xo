@@ -19,8 +19,11 @@ then
 	if [ -e /usr/lib/udev/rules.d/70-olpc-net.rules ]; then
 	    rm /usr/lib/udev/rules.d/70-olpc-net.rules
 	fi
+    
+    # NM plugin need to be specified for it to manage deveces
+    echo "plugins=keyfile" >> /etc/NetworkManager/NetworkManager.conf
 
-        cat << EOF > /etc/NetworkManager/system-connections/"Sugar Modem Connection"
+    cat << EOF > /etc/NetworkManager/system-connections/"Sugar Modem Connection"
 
 [connection]
 id=Sugar Modem Connection

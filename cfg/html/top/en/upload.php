@@ -1,7 +1,10 @@
 <?php
-$allowedExts = array("xo", "jpeg", "gif", "png");
+$allowedExts = array("xo", "odt", "gif", "png","html","pdf");
 $extension = end(explode(".", $_FILES["file"]["name"]));
 if ((($_FILES["file"]["type"] == "application/octet-stream")
+|| ($_FILES["file"]["type"] == "application/pdf")
+|| ($_FILES["file"]["type"] == "application/odt")
+|| ($_FILES["file"]["type"] == "image/pjpeg")
 || ($_FILES["file"]["type"] == "image/jpeg")
 || ($_FILES["file"]["type"] == "image/png")
 || ($_FILES["file"]["type"] == "image/pjpeg"))
@@ -18,20 +21,24 @@ if ((($_FILES["file"]["type"] == "application/octet-stream")
     echo "Type: " . $_FILES["file"]["type"] . "<br />";
     echo "Size: " . ($_FILES["file"]["size"] / 1024) . " Kb<br />";
     echo "Temp file: " . $_FILES["file"]["tmp_name"] . "<br />";
+	if( isset($_SERVER['REMOTE_ADDR']) ){
+		echo "Host: ";
+		echo $_SERVER['REMOTE_ADDR'] . "<br />";
+	}
 
-    if (file_exists("/library/xs-activity-server/activities/" . $_FILES["file"]["name"]))
+    if (file_exists("/library/xs-activity-server/upload/" . $_FILES["file"]["name"]))
       {
       echo $_FILES["file"]["name"] . " already exists. ";
       }
     else
       {
       move_uploaded_file($_FILES["file"]["tmp_name"],
-      "/library/xs-activity-server/activities/" . $_FILES["file"]["name"]);
-      echo "Stored in: " . "/library/xs-activity-server/activities/" . $_FILES["file"]["name"];
+      "/library/upload/" . $_FILES["file"]["name"]);
+      echo "Stored in: " . "/library/upload/" . $_FILES["file"]["name"];
 	  // apply the changes
       }
-	$APPLY= "sudo /usr/bin/xs-regenerate-activities /library/xs-activity-server/activities";
-	$results = shell_exec($APPLY);
+	//$APPLY= "sudo /usr/bin/xs-regenerate-activities /library/xs-activity-server/activities";
+	//$results = shell_exec($APPLY);
     }
   }
 else

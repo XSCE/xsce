@@ -26,6 +26,7 @@
 	}
 	?>
 </table></div>
+<h4> Total Services: <?php echo(coount($lines)); ?></h4>
 
 </body>
 </html>

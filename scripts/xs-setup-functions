@@ -530,7 +530,8 @@ function vnc()
 {
 	case "$1" in
 	"yes")
-        # mod_ssl permits vnc to be encrypted, nmap provides ncat
+        # mod_ssl permits vnc to be encrypted, nmap provides ncat which listens
+        #       to a port and provides feedback across network to a remote client
 	    $YUM_CMD tigervnc-server novnc mod_ssl nmap 2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG

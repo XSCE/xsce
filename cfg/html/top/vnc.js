@@ -1,5 +1,6 @@
 // JavaScript Document
 //<script language="JavaScript" type="text/JavaScript">	
+var vncwin = object;
 function popvnc(){
 	var x = 0, y = 0; // default values
 	if (! parent.vncwin) {
