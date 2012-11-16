@@ -1,9 +1,12 @@
 <?php 
-if ($db = sqlite_open('/home/idmgr/identity.db', 0666, $sqliteerror)) { 
-    $result = sqlite_query($db, 'select nickname,serial from laptops;');
-    var_dump(sqlite_fetch_array($result)); 
-} else {
-    die($sqliteerror);
+$error='';
+try
+{
+$db = new SQLite3('/home/idmgr/identity.db',0666);
+}
+catch (exception $e)
+{ 
+    die($e);
 }	
 $SUMMARIZE_SERVICES = "ls /library/users";
 	$results = shell_exec($SUMMARIZE_SERVICES);
@@ -17,14 +20,24 @@ $SUMMARIZE_SERVICES = "ls /library/users";
 </head>
 
 <body>
-<div align="center">
+<div align="center" >
 <h1>Journal Backups</h1>
+<table> 
     <?php 
 	foreach($lines as $line){
-		echo($line);
-		echo("<br />");
+		$sql = "select nickname, serial from laptops where serial='" . $line . "';";
+		$result = $db->query($sql);
+		if ($result) {
+			echo('<tr> <td style="width:60%;">');
+			$single = $result->fetchArray();
+			echo($line );
+			echo("</td><td>");
+			echo( $single['nickname']);
+			echo ("</td></tr>");
+		} else { die("failed to get result from " . $sql);}
 	}
 	?>
+    </table>
 </div>
 
 </body>

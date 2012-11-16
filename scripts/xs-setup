@@ -82,11 +82,11 @@ set -x
 # Determine the number of interfaces again since it may have changed
 num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
 if [[ $num_ifaces > 2 ]]; then
+    xs-setup-network
     dhcpd yes
     named yes
     squid yes
     gateway yes
-    xs-setup-network
     xs-resolvconf
     touch /.olpcxs-net-configured
 fi

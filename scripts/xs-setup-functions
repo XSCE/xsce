@@ -184,6 +184,7 @@ function gateway()
         cp /etc/sysconfig/olpc-scripts/iptables-xs.in /etc/sysconfig/olpc-scripts/iptables-xs
         cp /etc/sysconfig/olpc-scripts/ip6tables-xs.in /etc/sysconfig/olpc-scripts/ip6tables-xs
         cp /etc/sysconfig/olpc-scripts/firewall-xs.in /etc/sysconfig/olpc-scripts/firewall-xs
+        cp /etc/sysconfig/iptables-config.in /etc/sysconfig/iptables-config
 
         # either enable the service or create the file not both
         ln -sf $CFGDIR/etc/systemd/system/iptables.service $DESTDIR/etc/systemd/system
@@ -235,10 +236,10 @@ function httpd()
         systemctl start httpd.service 2>&1 | tee -a $LOG
 		systemctl enable httpd.service 2>&1 | tee -a $LOG
         # add apache user to the admin group, so she can write to admin
-        usermod -G admin,apache apoache
+        usermod -G admin,apache apache
         # for some reason, http does not make the needed directories
-        mkdir /var/log/httpd
-        mkdir /var/run/httpd
+        mkdir -p /var/log/httpd
+        mkdir -p /var/run/httpd
         chown apache:apache /var/log/httpd
         chown apache:apache /var/run/httpd
 		;;
@@ -556,7 +557,7 @@ function vnc()
         systemctl start vncserver\@\:1.service 2>&1 | tee -a $LOG
         systemctl start vncserverweb.service 2>&1 | tee -a $LOG
         # turn off the xfce4 screen saver
-        /usr/bin/xfconf-query -c xfce4-session -n -t bool -p /startup/screensaver/enabled -s false
+        #/usr/bin/xfconf-query -c xfce4-session -n -t bool -p /startup/screensaver/enabled -s false
         # explore using ncat to pass install info to vnc client
         # at XS -- "xs-setup 2>&1 | tee > (ncat -p 20000 localhost)"
         # and at VNC -- "ncat -l -k p 20000 --ssl-key /home/admin/self.pem
@@ -760,7 +761,7 @@ function do_first()
         if [ ! `grep $VNCUSER /etc/passwd` ]; then
             adduser $VNCUSER
             echo "$VNCPASSWORD" | passwd $VNCUSER --stdin
-            echo "alias passwd=\'echo \"NOT ALLOWED!. It will bread VNC remote access\"\' " >> /home/$VNCUSER/.bashrc
+            echo "alias passwd='echo \"NOT ALLOWED!. It will break VNC remote access\"' " >> /home/$VNCUSER/.bashrc
         fi
         sed -i -c 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
         systemctl enable sshd.service
