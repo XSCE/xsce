@@ -19,7 +19,7 @@ then
 	if [ -e /usr/lib/udev/rules.d/70-olpc-net.rules ]; then
 	    rm /usr/lib/udev/rules.d/70-olpc-net.rules
 	fi
-    
+
         cat << EOF > /etc/NetworkManager/system-connections/"Sugar Modem Connection"
 
 [connection]
@@ -60,13 +60,13 @@ EOF
 	# Keep docs when installing packages
 	sed -i -e  's/%_excludedocs 1/%_excludedocs 0/' /etc/rpm/macros.imgcreate
 
-#	yum -y install man-pages man-db man 2>&1 | tee -a $LOG
+	yum -y install man-pages man-db man 2>&1 | tee -a $LOG
 
 	# re-install these packages to pickup missing docs
-#	yum -y reinstall $FIX_RPMS 2>&1 | tee -a $LOG
+	yum -y reinstall $FIX_RPMS 2>&1 | tee -a $LOG
 
 	# install xs-config
-#	yum -y install xs-config 2>&1 | tee -a $LOG
+	yum -y install xs-config 2>&1 | tee -a $LOG
 
 	# Rename the XO to be schoolserver.local
 	sed -i -e '/HOSTNAME=xo/d' /etc/sysconfig/network
