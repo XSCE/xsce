@@ -49,7 +49,7 @@ else
 <body>
 <div class="centerpick" align="center"><form action="" method="post"
 enctype="multipart/form-data">
-<h1>Upload Activity (suffix=.xo)</h1>
+<h3>Upload Activity (suffix=.xo)</h3>
 <label for="file">Filename:</label>
 <input type="file" name="file" id="file" /> 
 <br />

@@ -235,7 +235,7 @@ function httpd()
 		    CONFMEM=2048m
 		fi
 		#update the httpd.conf file with this information
-		sed -i -c "s/\@\@CONFMEM\@\@/MEM$CONFMEM/" /etc/httpd/conf/httpd-xs.conf
+		sed -i -e "s/\@\@CONFMEM\@\@/MEM$CONFMEM/" /etc/httpd/conf/httpd-xs.conf
 		etckeeper-if-selected "modified /etc/httpd/conf/httpd-xs.conf"
         systemctl start httpd.service 2>&1 | tee -a $LOG
 		systemctl enable httpd.service 2>&1 | tee -a $LOG
@@ -358,17 +358,19 @@ function opendns()
         fi
         sed -i -e "
         /\@\@forwarders\@\@/ c\
-        forwarders      {$2;}; ////@@forwarders@@" \
+        forwarders      {$2;}; //@@forwarders@@" \
+        systemctl restart named.service
         /etc/named-xs.conf
 
         touch $SETUPSTATEDIR/opendns
         ;;
     "no")
         rm $SETUPSTATEDIR/opendns
-        sed -i -e "
+        sed -i -e '
         /\@\@forwarders\@\@/ c\
-        \\ @@forwarders@@ disabled ; ////@@forwarders@@" \
+        // @@forwarders@@ disabled ; //@@forwarders@@' \
         /etc/named-xs.conf
+        systemctl restart named.service
         ;;
     esac
 }
@@ -426,14 +428,14 @@ function postgresql()
             # postgresql-setup initdb need to move this edit upstream FIXME
             mkdir -p /library/pgsql-xs
             chown -R postgres:postgres /library/pgsql-xs/
-            sed -i -c "s/--auth='ident'\"/--auth='ident' --encoding='UTF8'\"/" \
+            sed -i -e "s/--auth='ident'\"/--auth='ident' --encoding='UTF8'\"/" \
                                     /usr/bin/postgresql-setup
 			/usr/bin/postgresql-setup  initdb postgresql-xs
-            sed -i -c '
+            sed -i -e '
             /^#standard_conforming_strings/ c\
 standard_conforming_strings = off
             ' /library/pgsql-xs/postgresql.conf
-            sed -i -c '
+            sed -i -e '
             /^#backslash_quote/ c\
 backslash_quote = on
             ' /library/pgsql-xs/postgresql.conf
@@ -547,7 +549,7 @@ function vnc()
         yum uni
         # or yum install x11vnc-javaviewers | tee -a $LOG
         cp -p /lib/systemd/system/vncserver\@.service /etc/systemd/system
-        sed -i -c "s/<USER>/$VNCUSER/" /etc/systemd/system/vncserver\@.service
+        sed -i -e "s/<USER>/$VNCUSER/" /etc/systemd/system/vncserver\@.service
 
         # start the websocket service (part of the novnc package)
        systemctl enable vncserverweb.service 2>&1 | tee -a $LOG
@@ -557,15 +559,15 @@ function vnc()
             $DESTDIR/etc/systemd/system/multi-user.target.wants/vncserver\@\:1.service
         cp $CFGDIR/etc/sysconfig/vnc/xstartup /home/$VNCUSER/.vnc/
         echo "$VNCPASSWORD" | vncpasswd -f > /home/$VNCUSER/.vnc/passwd
-        sed -i -c "/password = WebUtil/ c\
+        sed -i -e "/password = WebUtil/ c\
         password = WebUtil.getQueryVar(\'password\', \'$VNCPASSWORD\');" /usr/share/novnc/vnc_auto.html
         chown -R $VNCUSER:$VNCUSER /home/$VNCUSER/.vnc
         chmod 600 /home/$VNCUSER/.vnc/passwd
         cp $CFGDIR/etc/sysconfig/vnc/self.pem /home/$VNCUSER
         chown $VNCUSER:$VNCUSER /home/$VNCUSER/self.pem
         cp /etc/httpd/conf.d/ssl.conf.in /etc/httpd/conf.d/ssl.conf
-        sed -i -c 's/^<ifDefine BOGUS/#<ifDefine BOGUS/' /etc/httpd/conf.d/ssl.conf
-        sed -i -c 's/^<\/ifDefine/#<\/ifDefine/' /etc/httpd/conf.d/ssl.conf
+        sed -i -e 's/^<ifDefine BOGUS/#<ifDefine BOGUS/' /etc/httpd/conf.d/ssl.conf
+        sed -i -e 's/^<\/ifDefine/#<\/ifDefine/' /etc/httpd/conf.d/ssl.conf
 		systemctl enable vncserver\@\:1.service 2>&1 | tee -a $LOG
         systemctl start vncserver\@\:1.service 2>&1 | tee -a $LOG
         systemctl start vncserverweb.service 2>&1 | tee -a $LOG
@@ -613,10 +615,10 @@ function yum-etckeeper()
 	case "$1" in
 	"yes")
         set-etckeeper yes
-        sed -c -i -e 's/^enabled=0/enabled=1/' /etc/yum/pluginconf.d/etckeeper.conf
+        sed -e -i -e 's/^enabled=0/enabled=1/' /etc/yum/pluginconf.d/etckeeper.conf
         ;;
 	"no")
-        sed -c -i -e 's/^enabled=1/enabled=0/' /etc/yum/pluginconf.d/etckeeper.conf
+        sed -e -i -e 's/^enabled=1/enabled=0/' /etc/yum/pluginconf.d/etckeeper.conf
         ;;
 	esac
 }
@@ -634,7 +636,7 @@ function xs-acpowergaps()
         touch $SETUPSTATEDIR/xs-acpowergaps
         ;;
     "no")
-        sed -i -c /xs-acpowergaps-cron/d /etc/crontab
+        sed -i -e /xs-acpowergaps-cron/d /etc/crontab
         rm $SETUPSTATEDIR/xs-acpowergaps
         ;;
     esac
@@ -704,8 +706,8 @@ function do_first()
         fi
 
 	# keep yum cache
-	sed -i -c 's/keepcache=0/keepcache=1/' /etc/yum.conf
-	sed -i -c 's/metadata_expire=7d/metadata_expire=never/' /etc/yum.repos.d/fedora.repo
+	sed -i -e 's/keepcache=0/keepcache=1/' /etc/yum.conf
+	sed -i -e 's/metadata_expire=7d/metadata_expire=never/' /etc/yum.repos.d/fedora.repo
 #	sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora.repo
 #	sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora-updates.repo
 
@@ -776,7 +778,7 @@ function do_first()
             echo "$VNCPASSWORD" | passwd $VNCUSER --stdin
             echo "alias passwd='echo \"NOT ALLOWED!. It will break VNC remote access\"' " >> /home/$VNCUSER/.bashrc
         fi
-        sed -i -c 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+        sed -i -e 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
         systemctl enable sshd.service
         systemctl restart sshd.service
 
