@@ -60,16 +60,20 @@ do-first
 
 if [[ $num_ifaces < 3 && $ISXO = 1 ]]; then
     set +x
-    echo -n ""
-    echo -n "No lan adapter was found. If you want the XS to act as a content filter\n"
-    echo -n "   and a gateway to the internet, you need to stop now and add a second\n"
-    echo -n "   network adapter. If you add another adapter, at a later time, you must\n"
-    echo -n "   rerun xs-setup.\n"
-    echo -n "   INSERT ETHERNET DONGLE NOW. (this is for local XO connections).\n"
-    echo -n " Do you want to continue now? (y/N):"
+    echo
+    echo  "====================================================================="
+    echo  "No lan adapter was found. If you want the XS to act as a content filter"
+    echo  "   and a gateway to the internet, you need to stop now and add a second"
+    echo  "   network adapter. If you add another adapter, at a later time, you must  "
+    echo  "   rerun xs-setup."
+    echo  "====================================================================="
+    echo
+    echo  "   INSERT ETHERNET DONGLE NOW. (this is for local XO connections)."
+    echo  " Do you want to continue with setup? (y/N):"
     read resp
     case $resp in
     [Yy] | [Yy][Ee][Ss] )
+        sleep 5
     ;;
     *)
         # anythin else

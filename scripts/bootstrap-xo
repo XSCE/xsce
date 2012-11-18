@@ -19,7 +19,7 @@ then
 	if [ -e /usr/lib/udev/rules.d/70-olpc-net.rules ]; then
 	    rm /usr/lib/udev/rules.d/70-olpc-net.rules
 	fi
-    
+
     # NM plugin need to be specified for it to manage deveces
     echo "plugins=keyfile" >> /etc/NetworkManager/NetworkManager.conf
 
@@ -81,8 +81,14 @@ EOF
 	echo "bootstrap-xo routine completed" | tee -a $LOG
 	date  2>&1 | tee -a $LOG
 	cp /var/log/yum.log /home/olpc/
+    set +x
+    echo
+    echo "================================================================="
 	echo "The setup program must reboot before additional setup can proceed"
+    echo
 	echo "Next step is to run 'xs-setup' when rebooted"
+    echo "================================================================="
+    echo
 	read -p "Press [Enter] key to reboot"
 	echo "rebooting in 5 seconds"
 	sleep 5

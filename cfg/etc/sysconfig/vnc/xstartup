@@ -14,5 +14,6 @@ if [ $OS = 'Linux' ]; then
       ;;
   esac
 fi
-xterm -e 'ncat -l -k -p 29753 localhost' &
+terminal -e 'ncat -l -k -p 29753 localhost' &
+#xterm -e 'ncat -l -k -p 29753 localhost' &
 startxfce4 &

@@ -22,6 +22,37 @@
 		$selected['squid'] = (in_array("squid", $installed) ? 'on' : 'off');
 		$selected['named'] = (in_array("named", $installed) ? 'on' : 'off');
 	}
+	$forwarders = "";
+	if (isset($_POST['token'])) {
+		if (strlen($_POST['opendnsip']) > 0) {
+			// use php to sanity check the ip address -- an error will kill named
+			$dnsip = $_REQUEST['opendnsip'];
+			$ip_list = explode(";",$dnsip);
+			// ok flag indicates valid ip format
+			foreach($ip_list as $ip) {
+				if (strlen(parse_ip($ip)) > 0) {
+					$forwarders .= parse_ip($ip) . ";";
+				}
+			}
+		}
+	}
+
+	function parse_ip($ip_in){
+		$ok = true;
+		$outstr = "";
+		$nibbles = explode(".",$ip_in);
+		if (count($nibbles) <> 4) $ok = false; 
+		foreach($nibbles as $nibble) {
+			$num = (int)$nibble;
+			if (($num < 0 ) or ($num > 254)) $ok = false;
+			if ($ok) $outstr .= (string)$num . ".";
+		}
+		if ($ok) {
+			return substr($outstr,0,strlen($outstr) - 1);
+		}
+		return "";
+	}
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -71,7 +102,7 @@ Check here if you have internet service and want the School Server to provide in
 
   <input name="opendns" class="mO" type="checkbox"  value=""<?php echo $checked ?>  /></td><td class="mS">
 Enable Domain Name Service content controls using OPENDNS (is mainteined for schools worldwide by specialists)</td></tr>
-<tr><td></td><td><div align="center" >Ip address of OPENDNS service: <input name="opendsnip" type="text"  /></div></td></tr>
+<tr><td></td><td><div align="center" >Ip address of OPENDNS service: <input name="opendnsip" type="text"  /></div></td></tr>
 <tr><td>
 <?php if ($selected['dansguardian'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="dansguardian" class="mO" type="checkbox"  value=""<?php echo $checked ?>  /></td><td class="mS">
@@ -92,7 +123,6 @@ Enable local Domain Name storage for faster access
 </table>
 </div>
   <input name="token" type="hidden" />
-  <input name="lastgateway" type="hidden" />
 <div  align="center"> <input class="centerpick" onClick="peervnc()" name="Apply" value ="Apply Changes" type="submit"/></div>
 </form>
 <?php 
@@ -110,7 +140,8 @@ if (isset($_POST['token'])) {
 	if ( $selected['dansguardian'] == 'on' and !in_array("dansguardian", $installed)) $outstr .= "dansguardian yes\n";
 	if ( ($selected['dansguardian'] == 'off' ) and in_array("dansguardian", $installed)) $outstr .= "dansguardian no\n";
 	
-	if ( $selected['opendns'] == 'on' and !in_array("opendns", $installed)) $outstr .= "opendns yes\n";
+	if ( $selected['opendns'] == 'on' and !in_array("opendns", $installed or strlen($forwarders > 0))) 
+		  $outstr .= "opendns yes " . $forwarders . "\n";
 	if ( ($selected['opendns'] == 'off' ) and in_array("opendns", $installed)) $outstr .= "opendns no\n";
 	
 	if ( $selected['squid'] == 'on' and !in_array("squid", $installed)) $outstr .= "squid yes\n";
