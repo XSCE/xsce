@@ -615,10 +615,10 @@ function yum-etckeeper()
 	case "$1" in
 	"yes")
         set-etckeeper yes
-        sed -e -i -e 's/^enabled=0/enabled=1/' /etc/yum/pluginconf.d/etckeeper.conf
+        sed  -i -e 's/^enabled=0/enabled=1/' /etc/yum/pluginconf.d/etckeeper.conf
         ;;
 	"no")
-        sed -e -i -e 's/^enabled=1/enabled=0/' /etc/yum/pluginconf.d/etckeeper.conf
+        sed  -i -e 's/^enabled=1/enabled=0/' /etc/yum/pluginconf.d/etckeeper.conf
         ;;
 	esac
 }
