@@ -553,13 +553,18 @@ function vnc()
         # start the websocket service (part of the novnc package)
        systemctl enable vncserverweb.service 2>&1 | tee -a $LOG
         mkdir -m 755 -p /home/$VNCUSER/.vnc
+        mkdir -m 755 -p /home/$VNCUSER/.config/xfce4/xfce-perchannel-xml
+        cp $DESTDIR/etc/sysconfig/vnc/xfce4-panel.xml \
+                    /home/$VNCUSER/.config/xfce4/xfce-perchannel-xml
         #ln -sf $CFGDIR/etc/systemd/system/* $DESTDIR/etc/systemd/system
         ln -sf $DESTDIR/etc/systemd/system/vncserver\@.service \
             $DESTDIR/etc/systemd/system/multi-user.target.wants/vncserver\@\:1.service
         cp $CFGDIR/etc/sysconfig/vnc/xstartup /home/$VNCUSER/.vnc/
         echo "$VNCPASSWORD" | vncpasswd -f > /home/$VNCUSER/.vnc/passwd
+
         sed -i -e "/password = WebUtil/ c\
-        password = WebUtil.getQueryVar(\'password\', \'$VNCPASSWORD\');" /usr/share/novnc/vnc_auto.html
+password = WebUtil.getQueryVar(\'password\', \'$VNCPASSWORD\');" /usr/share/novnc/vnc_auto.html
+
         chown -R $VNCUSER:$VNCUSER /home/$VNCUSER/.vnc
         chmod 600 /home/$VNCUSER/.vnc/passwd
         cp $CFGDIR/etc/sysconfig/vnc/self.pem /home/$VNCUSER
