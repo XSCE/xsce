@@ -44,6 +44,7 @@ function status_click() {
 </script>
 <script language="JavaScript" type="text/JavaScript" src="../vnc.js"></script>
 </head>
+<body onLoad="define_var()">
 	<iframe src="SS_banner.html" name="topframe" height="190px" width="100%"  marginwidth="0"  frameborder="0"></iframe>
     <div class="nav" height="40px" width="100%">
     <table width="100%" align="center" border="0">
@@ -63,6 +64,7 @@ function status_click() {
 </table></div>
     <iframe src="nav_set.html" name="navigation" id="navigation" class="nav" width="17%" height="100%" noresize frameborder="1" marginwidth="0" marginheight="0" scrolling="auto"></iframe>
     <iframe src="cntr_set_pick_services.php" name="formframe" id="formframe" width="56%" height="100%" frameborder="1" marginwidth="0" marginheight="0" scrolling="auto"></iframe>
-    <iframe src="SS_blank.html" name="helpframe" class="help" width="24%" height="100%" frameborder="1" marginwidth="0" marginheight="0" scrolling="auto"></iframe>                
+    <iframe src="SS_blank.html" name="helpframe" class="help" width="24%" height="100%" frameborder="1" marginwidth="0" marginheight="0" scrolling="auto"></iframe> 
+</body>               
 </html>
 

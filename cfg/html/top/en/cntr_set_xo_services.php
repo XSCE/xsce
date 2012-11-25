@@ -39,15 +39,15 @@ function toggleMenu(objID) {
 </head>
 
 <body>
+<div class="centerpick">
 <h2>Services to the XO Laptops</h2>
 <form action="" method="post" >
-<div class="centerpick">
 <?php if ($selected['register'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="register" type="checkbox" value=""<?php echo $checked ?> />
 Register XO's and backup student Journals.<br />
 <?php if ($selected['activity_server'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="activity_server" type="checkbox"  value="" <?php echo $checked ?>/>
-Serve Activities, input to server with USB stick.<br />
+Serve Activities, input to server VIA Upload.<br />
 <?php if ($selected['moodle-xs'] == 'on') $checked = "CHECKED";  else $checked = "";?>
 <input name="moodle-xs" type="checkbox" value="" <?php echo $checked ?>/>
 Moodle content and classroom management system.<br />
@@ -60,10 +60,10 @@ WebDav Storage and retrieval of files on the server.<br  />
 <?php if ($selected['ejabberd'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="ejabberd" type="checkbox"  value="" <?php echo $checked ?>/>
 Make collaboration faster (ejabber server)<br />
-</div>
   <input name="token" type="hidden" />
 <div  align="center"> <input class="centerpick" onClick="peervnc()" name="Apply" value ="Apply Changes" type="submit"/></div>
 </form>
+</div>
 <?php 
 if (isset($_POST['token'])) {
 	$outfile = '/home/admin/apply_changes';

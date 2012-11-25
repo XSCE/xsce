@@ -13,6 +13,8 @@
  			$selected['squid'] = 'on'; }else{ $selected['squid'] = 'off';}
 		if (isset($_POST['named']) ) {
  			$selected['named'] = 'on';} else {$selected['named'] = 'off';}
+		if (isset($_POST['dhcpd']) ) {
+ 			$selected['dhcpd'] = 'on';} else {$selected['dhcpd'] = 'off';}
 		//die(print_r($_POST));
 	} else {
 		//die(print_r($installed));
@@ -21,6 +23,7 @@
 		$selected['opendns'] = (in_array("opendns", $installed) ? 'on' : 'off');
 		$selected['squid'] = (in_array("squid", $installed) ? 'on' : 'off');
 		$selected['named'] = (in_array("named", $installed) ? 'on' : 'off');
+		$selected['dhcpd'] = (in_array("dhcpd", $installed) ? 'on' : 'off');
 	}
 	$forwarders = "";
 	if (isset($_POST['token'])) {
@@ -90,7 +93,12 @@ var internet = '<?php echo $selected['gateway'] ?>';
 <h2>Internet:</h2>
 <div class="centerframe">
 <form action="" method="post" >
-<table><tr><td>
+<table>
+<tr><td>
+<?php if ($selected['dhcpd'] == 'on') $checked = "CHECKED";  else $checked = "";?>
+  <input name="dhcpd" class="mO" type="checkbox" value=""<?php echo $checked ?>  /></td><td class="mS">
+Uncheck to disable ip address assignments (dhcpd) if XS is joining an established network</td></tr>
+<tr><td>
 <?php if ($selected['gateway'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="gateway" class="mH" onclick="toggleMenu('menu1')" type="checkbox" value=""<?php echo $checked ?> /></td><td class="mS">
 Check here if you have internet service and want the School Server to provide internet services to XO laptops.</td></tr>
@@ -149,6 +157,9 @@ if (isset($_POST['token'])) {
 	
 	if ( $selected['named'] == 'on' and !in_array("named", $installed) ) $outstr .= "named yes\n";
 	if ( ($selected['named'] == 'off') and in_array("named", $installed) ) $outstr .= "named no\n";
+	
+	if ( $selected['dhcpd'] == 'on' and !in_array("dhcpd", $installed) ) $outstr .= "dhcpd yes\n";
+	if ( ($selected['dhcpd'] == 'off') and in_array("dhcpd", $installed) ) $outstr .= "dhcpd no\n";
 
 	$outstr .= "do-last\n";
 	// see if there are no changes in the output string
