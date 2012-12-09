@@ -11,7 +11,7 @@
 	// Examine WAN
 	if (file_exists($outwan)){
 		$wanip = shell_exec("cat " . $outwan);
-		$wanlist = explode(";",$wanip);
+		$wanlist = explode(":",$wanip);
 	} else {$wanlist = array();}
 	$WanConfigDhcp = zeros_ip($wanlist[0]);
 	if (! isset($_POST["token"])) {
@@ -21,7 +21,7 @@
 	// Examine LAN
 	if (file_exists($outlan)){
 		$lanip = shell_exec("cat " . $outlan);
-		$lanlist = explode(";",$lanip);
+		$lanlist = explode(":",$lanip);
 	} else $lanlist = array();
 	$LanConfigDhcp = zeros_ip($lanlist[0]);
 	$LanConfigStd = ( $lanlist[0] == $DEFAULTLAN) ? "true" : "false";
@@ -55,9 +55,9 @@
 			if ($ok) $outstr .= (string)$num . ".";
 		}
 		if ($ok) {
-			return substr($outstr,0,strlen($outstr) - 1) . ";";
+			return substr($outstr,0,strlen($outstr) - 1) . ":";
 		}
-		return ";";
+		return ":";
 	}
 
 	function zeros_ip($ip_in){
@@ -69,6 +69,24 @@
 			if ((int)$nibble != 0) $ok = "false";
 		}
 		return $ok;
+	}
+	
+	function count_ones($mask){
+		$ones = 0;
+		$nibbles = explode(".",$mask);
+		foreach($nibbles as $nibble) {
+			if ((int)$nibble == 255) $ones += 8;
+			elseif ((int)$nibble == 254) $ones += 7;
+			elseif ((int)$nibble == 252) $ones += 6;
+			elseif ((int)$nibble == 248) $ones += 5;
+			elseif ((int)$nibble == 240) $ones += 4;
+			elseif ((int)$nibble == 224) $ones += 3;
+			elseif ((int)$nibble == 192) $ones += 2;
+			elseif ((int)$nibble == 128) $ones += 1;
+		}
+ 		if ($ones < 33 && $ones > -1) return $ones;
+		// default to class C local network
+		return 24;
 	}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -258,7 +276,8 @@ if (isset($_POST['token'])) {
 		$outstr .= parse_ip($_POST['lanip']);
 		$lanstr .= parse_ip($_POST['lanip']);
 		$outstr .= " ";
-		$outstr .= parse_ip($_POST['lanmask']);
+		$temp = parse_ip($_POST['lanmask']);
+		$outstr .= (string)count_ones(parse_ip($_POST['lanmask'])) . ":";
 		$lanstr .= parse_ip($_POST['lanmask']);
 		$outstr .= " ";
 		$outstr .= parse_ip($_POST['langateway']);

@@ -127,7 +127,10 @@ Enable local Domain Name storage for faster access
 </table>
 </div>
   <input name="token" type="hidden" />
-<div  align="center"> <input class="centerpick" onClick="peervnc()" name="Apply" value ="Apply Changes" type="submit"/></div>
+<div  align="center">
+<?php if ( ! isset($_POST['token'])) { ?>
+ <input class="centerpick" onClick="peervnc()" name="Apply" value ="Apply Changes" type="submit"/></div>
+<?php } ?>
 </form>
 <?php 
 if (isset($_POST['token'])) {
