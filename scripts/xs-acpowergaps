@@ -20,6 +20,7 @@
 # minimize the writes to a SD card or flash. Notice if the tmpfs file is missing, in the
 # presence of the summary file, if the power was last seen as out, it will be
 # recorded as the end of the power outage
+# This implimentation requires that DATA_FILE be a temporary file system -- check fstab
 
 import time
 import datetime
@@ -29,15 +30,23 @@ import os, sys
 import gconf
 import logging
 import json
+import glob
 from gettext import gettext as _
+
 DATA_FILE = "/tmp/mains_power"
+# data_dict is global config file initialized in is_exist_data_file - used throughout
 data_dict = {}
-SUMMARY_FILE = "/home/olpc/.mains_summary"
+
+SUMMARY_PREFIX = "/home/admin"
+SUMMARY_SUFFIX = "_ac_power_summary"
+SUMMARY_CURRENT = "current_ac_summary"
 summary_dict = {}
+
 VERSION = "0.1"
+ENABLED = 'ENABLED'
 
 SYS_AC = "  /sys/class/power_supply/olpc-ac/online"
-WORK_DIR = "/home/olpc"
+WORK_DIR = "/home/admin"
 
 logger = logging.getLogger('serversleep')
 hdlr = logging.FileHandler(os.path.join(WORK_DIR,'getsource.log'))
@@ -48,9 +57,12 @@ logger.setLevel(logging.WARNING)
 class AcException():
     def __init__(self, msg):
         print(msg)
-        exit(1)
+        sys.exit(1)
 
-class tools:
+class Tools:
+    def __init__(self):
+        pass
+
     def cli(self, cmd):
         """send cmd line to shell, rtn (text,error code)"""
         logger.debug('command_line cmd:%s'%cmd)
@@ -86,39 +98,22 @@ class tools:
 
     def is_exist_data_file(self):
         #get the tmp data file
-        try:
-            fd = file(DATA_FILE,'r')
-            fd.close()
-            return True
-        except IOError:
-            return False
-
-    def is_exist_summary_file(self):
-        """does the permanent  record exist? """
-        try:
-            fd = file(SUMMARY_FILE,'r')
-            fd.close()
-            return True
-        except IOError:
-            return False
-
-    def write_current_ac_status(self):
-        """ write ac status to tmp file (catches reboot or loss of battery) """
         global data_dict
+        if (len(data_dict)> 0):
+            return True
         try:
             fd = file(DATA_FILE,'r')
             data_str = fd.read()
             data_dict = json.loads(data_str)
-        except:
-            pass
-        # if the status of power has changed, record the new state
-        last_summary_ac = self.last_summary_ac_state()
-        if last_summary_ac != self.get_ac_status():
-            self.write_summary()
+            fd.close()
+            return True
+        except IOError:
+            return False
+
+    def put_data_file(self):
+        """ writes the data_dict to tmp file system """
         try:
             fd = file(DATA_FILE,'w')
-            data_dict[self.format_datetime(datetime.datetime.now())] = \
-                                        self.get_ac_status()
             data_str = json.dumps(data_dict)
             fd.write(data_str)
             fd.close()
@@ -126,26 +121,100 @@ class tools:
             logging.exception("failed to write data file. error:%s"% (e,))
             raise AcException("Datafile write error")
 
-    def write_summary(self):
-        """ record the change in ac power to permanent record """
-        global summary_dict
+    def get_summary_filename(self):
+        """ returns the filename of current summary file or "" if it doesn't exist """
+        fn = os.path.join(SUMMARY_PREFIX,SUMMARY_CURRENT)
+        if (os.path.isfile(fn)):
+            try:
+                fd = open(fn,"r")
+                fname = fd.read()
+            except :
+                cmd = "rm -f %s"%fn
+                result,status = self.cli(cmd)
+                return ""
+            return fname
+        return ""
+
+    def put_summary_filename(self, fname):
+        """ returns the filename of current summary file or "" if it doesn't exist """
+        fn = os.path.join(SUMMARY_PREFIX,SUMMARY_CURRENT)
         try:
-            fsummary = file(SUMMARY_FILE,'r')
-            data_str = fsummary.read()
-            summary_dict = json.loads(data_str)
+            fd = open(fn,"w")
+            fd.write(fname)
+            fd.close()
+        except IOError,e:
+            logging.exception("failed to write summary file name. error:%s"% (e,))
+            raise AcException("Summary file write name error. path:%s"%fname)
+
+    def is_exist_summary_file(self):
+        """does the permanent  record exist? """
+        fn = self.get_summary_filename()
+        if (fn  == ""):
+            return False
+        try:
+            fd = file(fn,'r')
+            fd.close()
+            return True
+        except IOError,e:
+            logging.exception("failed to read summary file. error:%s"% (e,))
+            raise AcException("Summary file write key value error")
+
+    def write_current_ac_status(self):
+        """ write ac status to tmp file (catches reboot or loss of battery) """
+        global data_dict
+        """
+        try:
+            fd = file(DATA_FILE,'r')
+            data_str = fd.read()
+            data_dict = json.loads(data_str)
         except:
             pass
-        summary_dict[self.format_datetime(datetime.datetime.now())] = \
+        """
+        # if the status of power has changed, record the new state
+        #last_summary_ac = self.last_summary_ac_state()
+        #if last_summary_ac != self.get_ac_status():
+        if self.last_summary_ac_state() != self.get_ac_status():
+            self.write_summary()
+
+        data_dict[self.format_datetime(datetime.datetime.now())] = \
                                     self.get_ac_status()
+        self.put_data_file()
+
+    def write_summary(self):
+        """ record the change in ac power to permanent record """
+        self.write_summary_key_value(self.format_datetime(datetime.datetime.now()),
+                                    self.get_ac_status())
+
+    def write_summary_key_value(self, key="", value=""):
+        """ write summary file as key, value pair """
+        global summary_dict
+        name = self.get_summary_filename()
+        if (len(name)>0):
+            try:
+                fsummary = file(name,'r')
+                data_str = fsummary.read()
+                summary_dict = json.loads(data_str)
+            except:
+                print("write_summary_error. name:%s"%name)
+                raise AcException("Summary file write key value error")
+        else:
+            #we need to generate a new file name and file
+            name = self.format_datetime(datetime.datetime.now())
+            name = name.replace("/","_")
+            name = name.replace(":","-")
+            name = os.path.join(SUMMARY_PREFIX,name) + SUMMARY_SUFFIX
+            self.put_summary_filename(name)
+            summary_dict = {}
+        summary_dict[key] = value
         data_str = json.dumps(summary_dict)
         try:
             #print data_str
-            fsummary = file(SUMMARY_FILE,'w')
+            fsummary = file(name,'w')
             fsummary.write(data_str)
             fsummary.close()
         except IOError,e:
             logging.exception("failed to write summary file. error:%s"% (e,))
-            raise AcException("Summaary file write error")
+            raise AcException("Summary file write key value error")
 
     def last_summary_ac_state(self):
         """ return the key (datestring) of the most recently recorded change """
@@ -169,24 +238,66 @@ class tools:
         minutes, remainder = divmod(remainder, 60)
         return (days, hours, minutes)
 
+    def enable(self):
+        result, flag = self.cli("grep -e xs-acpowergaps-cron /etc/crontab")
+        print("result:%s  flag:%s"%(result,flag,))
+        if flag != 0:
+            result, flag = self.cli('echo "*/6 * * * * root /usr/bin/xs-acpowergaps-cron" >> /etc/crontab')
+        self.write_summary_key_value("enabled","1")
 
-class ShowPowerHistory(tools):
-    def __init__(self):
+    def isenabled(self):
+            #check that the cron pointer is in place
+            result, flag = self.cli("grep -e xs-acpowergaps-cron /etc/crontab")
+            if flag == 0:
+                return True
+            return False
+
+    def disable(self):
+        """ remove the entry in crontab that samples the AC power state """
+        cmd = "sed -i -e /xs-acpowergaps/d /etc/crontab"
+        result, flag = self.cli(cmd)
+
+        #record the current status -- And mark the end of the series
+        cd = CollectData()
+
+        # by removing the file that points to the current power series, the next
+        #    call to make an entry will generate a new file
+        fn = os.path.join(SUMMARY_PREFIX,SUMMARY_CURRENT)
+        cmd = "rm -f %s" % fn
+        result, status = self.cli(cmd)
+
+
+class ShowPowerHistory(Tools):
+    def __init__(self, action=""):
         global summary_dict, data_dict
-        first = None
         number_of_gaps = 0
         if not self.is_exist_summary_file() or not self.is_exist_data_file():
             # this is the first invocation of the AC logger
             self.write_summary()
+        if action == "enable":
+            self.enable()
+            self.write_summary_key_value(ENABLED, "1")
         #record the current status -- primarily useful for debugging
-        self.write_current_ac_status()
+        #cd = CollectData()
+        self.output_state()
+        self.output_all_summaries(SUMMARY_PREFIX)
+
+    def output_all_summaries(self, summary_path):
+        dirlist = glob.glob(os.path.join(SUMMARY_PREFIX,"*" + SUMMARY_SUFFIX))
+        for fname in sorted(dirlist,reverse=True):
+            self.output_summary(fname)
+
+
+    def output_summary(self,fname):
         #get the summary file so we can operate upon the values
+        first = None
         try:
-            fsummary = file(SUMMARY_FILE,'r')
+            fsummary = file(fname,'r')
             data_str = fsummary.read()
-            summary_dict = json.loads(data_str)
         except IOError:
             raise AcException("Summaary file read error in init of ShowPowerHistory")
+        fsummary.close()
+        summary_dict = json.loads(data_str)
         keylist = sorted(summary_dict.keys())
         if self.is_exist_data_file():
             last = self.format_datetime(datetime.datetime.now())
@@ -197,6 +308,8 @@ class ShowPowerHistory(tools):
         # gaps is power outages in seconds
         gaps = {}
         gap_start = None
+        print("\n\nGAPS IN AC POWER DURING %s to %s:" % (keylist[0], keylist[-1],))
+        print("File Name: %s\n"%(fname,))
         for key in keylist:
             if not first:
                 first = key
@@ -218,8 +331,6 @@ class ShowPowerHistory(tools):
                 mysum += v
             average_seconds = mysum / float(number_of_gaps)
             (days, hours, minutes) = self.dhm_from_seconds(average_seconds)
-            hours, remainder = divmod(average_seconds, 3600)
-            minutes, remainder = divmod(remainder, 60)
             print "average length of outage: %s days %s hours %s minutes" % \
                                 (days, hours,minutes)
             gap_length_list = []
@@ -229,26 +340,33 @@ class ShowPowerHistory(tools):
             #for item, value in gap_list:
                 #print item, value
             shortest_gap = gap_list[0][1]
-            hours, remainder = divmod(shortest_gap, 3600)
-            minutes, seconds = divmod(remainder, 60)
-            print "shortest outage: %s hours %s minutes %s seconds " % \
-                        (hours, minutes, seconds)
+            if shortest_gap < 60:
+                print "shortest outage: %s seconds " % (shortest_gap)
+            else:
+                (days, hours, minutes) = self.dhm_from_seconds(shortest_gap)
+                print "shortest outage: %s days %s hours %s minutes " % \
+                            (days, hours, minutes,)
             longest_gap = gap_list[-1][1]
-            hours, remainder = divmod(longest_gap, 3600)
-            minutes, seconds = divmod(remainder, 60)
-            print "longest outage: %s hours %s minutes %s seconds" % \
-                                            (hours, minutes, seconds)
-            print
-            print("RAW DATA:")
+            (days, hours, minutes) = self.dhm_from_seconds(longest_gap)
+            print "longest outage: %s days %s hours %s minutes " % \
+                                            (days,hours, minutes,)
+            print("\nINDIVIDUAL POWER DISRUPTIONS:")
             for item, value in gap_list:
-                hours, remainder = divmod(value, 3600)
-                minutes, remainder = divmod(remainder, 60)
-                print "%s %s hours %s minutes and %s seconds" % \
-                            (item, hours, minutes, seconds,)
+                (days, hours, minutes) = self.dhm_from_seconds(value)
+                print "%s %s days %s hours and %s minutes" % \
+                            (item, days, hours, minutes, )
 
+    def output_state(self):
+        if self.isenabled():
+            state = "ENABLED"
+        else:
+            state = "DISABLED"
+        print("")
+        print("AC Power Monitor is currently %s"%state)
 
-class CollectData(tools):
+class CollectData(Tools):
     def __init__(self):
+        global summary_dict
         if not self.is_exist_summary_file():
             # this is the first invocation of the AC logger
             self.write_summary()
@@ -257,12 +375,14 @@ class CollectData(tools):
             self.write_summary()
         # if the status of power has changed, record the new state
         last_summary_ac = self.last_summary_ac_state()
+        #print("last_summary_ac: %s ac_status: %s"%(last_summary_ac,
+                                        #self.get_ac_status()))
         if last_summary_ac != self.get_ac_status():
             self.write_summary()
         #record the current status
         self.write_current_ac_status()
 
-class RawData(tools):
+class RawData(Tools):
     def __init__(self):
         global summary_dict
         # get summary data
@@ -271,7 +391,7 @@ class RawData(tools):
             data_str = fsummary.read()
             summary_dict = json.loads(data_str)
         except IOError:
-            raise AcException("Summaary file read error in init of ShowPowerHistory")
+            raise AcException("Summaary file read error in init of RawData")
         keylist = sorted(summary_dict.keys())
         print "Summary file:"
         for item in keylist:
@@ -285,7 +405,7 @@ class RawData(tools):
             fd.close()
         except IOError,e:
             logging.exception("failed to write data file. error:%s"% (e,))
-            raise AcException("Datafile write error")
+            raise AcException("Datafile read error in RawData")
         keylist = sorted(data_dict.keys())
         print "Current data file:"
         for item in keylist:
@@ -302,7 +422,14 @@ if __name__ == "__main__":
         # dump the data in understandable form
         if sys.argv[1] == '--debug':
             pa = RawData()
-        sys.exit(0)
+        if sys.argv[1] == '--enable':
+            tools = Tools()
+            tools.enable()
+        if sys.argv[1] == '--disable':
+            tools = Tools()
+            tools.disable()
+            sys.exit(0)
+
     # pop up the GUI
     #Gtk.main()
-    exit(0)
+    sys.exit(0)

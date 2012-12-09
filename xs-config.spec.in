@@ -40,7 +40,7 @@ Requires: avahi-ui
 #Requires: ejabberd
 #Requires: xs-release
 Requires: yum-utils
-
+Requires: NetworkManager
 
 Requires(post): coreutils
 

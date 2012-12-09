@@ -1,4 +1,23 @@
 #!/bin/bash +x
+
+#  Copyright 2012, One Laptop per Child
+#  Author: George Hunt, Jerry Vonau
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public
+# License along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
 # collect here all the separate setup independent changes to stock XO software
 #  -- ordered alphabetically
 # usage: source this file -- for example to install a WWW server:
@@ -65,6 +84,8 @@ function activity-server()
         ;;
     "no")
         rm $SETUPSTATEDIR/activity-server
+        unlink /etc/usbmount/mount.d/60-xs-activity-server-installcontent
+        unlink /etc/httpd/conf.d/xs-activity-server.conf
         ;;
     esac
 }
@@ -162,8 +183,16 @@ function ejabberd()
 {
 	case "$1" in
 	"yes")
-            $YUM_CMD ejabberd 2>&1 | tee -a $LOG
-		    if [ $? -ne 0 ] ; then
+            if [ -e /etc/ejabberd/ejabberd.pem ]; then
+                if [ -e /var/lib/ejabberd/spool ]; then
+                    rm -rf /var/lib/ejabberd/spool
+                fi
+                rm -f /etc/ejabberd/ejabberd.pem
+                yum reinstall ejabberd 2>&1 | tee -a $LOG
+            else
+                $YUM_CMD ejabberd 2>&1 | tee -a $LOG
+		    fi
+            if [ $? -ne 0 ] ; then
 		        echo "\n\nYum returned an error\n\n" | tee -a $LOG
 		        exit $YUMERROR
 		    fi
@@ -190,19 +219,22 @@ function gateway()
         cp /etc/sysconfig/olpc-scripts/firewall-xs.in /etc/sysconfig/olpc-scripts/firewall-xs
         cp /etc/sysconfig/iptables-config.in /etc/sysconfig/iptables-config
 
-        # either enable the service or create the file not both
-        ln -sf $CFGDIR/etc/systemd/system/iptables.service $DESTDIR/etc/systemd/system
-        # systemd has a check for exist /etc/sysconfig/iptables - so ensure that it exists
         touch $SETUPSTATEDIR/gateway
+        ln -sf $CFGDIR/etc/systemd/system/iptables.service $DESTDIR/etc/systemd/system
+
+        # systemd has a check for exist /etc/sysconfig/iptables - so ensure that it exists
+        # the following script regenerates /etc/sysconfig/iptables
         /etc/sysconfig/iptables-config
+
         systemctl enable iptables.service
+        systemctl restart iptables.service
         systemctl enable ip6tables.service
-        systemctl condrestart iptables.service
         systemctl start ip6tables.service
         ;;
 	"no")
+        # the gateway flag is used to control masquerading in iptables
         rm $SETUPSTATEDIR/gateway
-        /etc/sysconfig/olpcs-scripts/firewall-xs
+        # the following call removes the httpcache flag and regenerates iptables
         squid no
         ;;
 	esac
@@ -341,7 +373,7 @@ function named()
 		systemctl stop named.service 2>&1 | tee -a $LOG
         # let the dhclinet control the name resolution normally
         set +x
-        rm /etc/sysconfig/olpc-scripts/resolv.conf
+        #rm /etc/sysconfig/olpc-scripts/resolv.conf
         rm $SETUPSTATEDIR/named
         set -x
         ;;
@@ -356,21 +388,34 @@ function opendns()
             echo "You must enter an IP address in the form 123.456.789.123"
             exit 1
         fi
+
+        # make the simplifying assumption that if opendns is wanted, it must be
+        #   enforced by the localhost name server via named
+        if [ ! -e $SETUPSTATEDIR/named]; then
+            named yes
+        fi
         sed -i -e "
         /\@\@forwarders\@\@/ c\
-        forwarders      {$2;}; //@@forwarders@@" \
+        forwarders      {$2;}; //@@forwarders@@" /etc/named-xs.conf
+        echo $2 > /etc/sysconfig/xs_opendns_ip
         systemctl restart named.service
-        /etc/named-xs.conf
+
+        # need for force name resolution to be through local named
+        # so drop a script to ensure this in the wan NM up dir
+        ln -s /$CFGDIR/etc/NetworkManager/dispatcher.d/xs-net-device \
+                /etc/NetworkManager/dispatcher.d/
 
         touch $SETUPSTATEDIR/opendns
         ;;
     "no")
-        rm $SETUPSTATEDIR/opendns
+        # remove the rerouting through named and forwarders - dont error out
+        set +e; unlink /etc/NetworkManager/dispatcher.d/xs-wan-opendns-up; set -e;
+
         sed -i -e '
         /\@\@forwarders\@\@/ c\
-        // @@forwarders@@ disabled ; //@@forwarders@@' \
-        /etc/named-xs.conf
+        // @@forwarders@@ disabled ; //@@forwarders@@' /etc/named-xs.conf
         systemctl restart named.service
+        rm $SETUPSTATEDIR/opendns
         ;;
     esac
 }
@@ -495,6 +540,32 @@ function sdcard()
     esac
 }
 
+#new code to use NetworkManager to set up devices
+function write_nm_connection(){
+    # receives connection_filename, hwaddr,  device_name as parameters
+    cp "/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/$1" \
+        "/etc/NetworkManager/system-connections/$1"
+    #removed -i to try to get rid of sed intermediate files 9/24/2012
+    sed -i  "s/\@\@MAC\@\@/$2/" "/etc/NetworkManager/system-connections/$1"
+    sed -i  "s/\@\@DEVICE\@\@/$3/" "/etc/NetworkManager/system-connections/$1"
+    chmod 600 "/etc/NetworkManager/system-connections/$1"
+}
+
+function setlan()
+{
+    if [ "$#" != 1 ];then
+        exit 1
+    fi
+    IP=`echo $1 | gawk 'BEGIN {FS=":"} {print $1}'`
+    MASK=`echo $1 | gawk 'BEGIN {FS=":"} {print $2}'`
+    GATEWAY=`echo $1 | gawk 'BEGIN {FS=":"} {print $3}'`
+    DNS=`echo $1 | gawk 'BEGIN {FS=":"} {print $4}'`
+    mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;}
+        /^ *ether / { if (eth == "eth1:") print( $2);}'`
+    write_nm_connection "static" "$mac" "eth1"
+
+}
+
 function squid()
 {
 	case "$1" in
@@ -535,7 +606,7 @@ function vnc()
 	"yes")
         # mod_ssl permits vnc to be encrypted, nmap provides ncat which listens
         #       to a port and provides feedback across network to a remote client
-	    $YUM_CMD tigervnc-server novnc mod_ssl nmap 2>&1 | tee -a $LOG
+	    $YUM_CMD tigervnc-server novnc mod_ssl nmap python-setuptools 2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
                 exit $YUMERROR
@@ -639,6 +710,10 @@ function xs-acpowergaps()
 {
 	case "$1" in
     "yes")
+        if [ ISXO != "1" ] ; then
+            echo "This feature is only available on XS running on XO hardware"
+            exit 1
+        fi
         grep -e xs-acpowergaps-cron /etc/crontab |
                     > /dev/null
         if [ $? ]; then
@@ -748,7 +823,10 @@ function do_first()
         fi
 
         echo "-y" > $DESTDIR/fsckoptions
-        ln -sf $CFGDIR/etc/dhcp/dhclient-exit-hooks $DESTDIR/etc/dhcp
+        # exit-hooks blasts school server into resolv.conf, use NM, and finese
+        #ln -sf $CFGDIR/etc/dhcp/dhclient-exit-hooks $DESTDIR/etc/dhcp
+        ln -sf $CFGDIR/etc/NetworkManager/dispatcher.d/wan-dev \
+                            $DESTDIR/etc/NetworkManager/dispatcher.d
         ln -sf $CFGDIR/etc/httpd/conf.d/*.conf $DESTDIR/etc/httpd/conf.d
         ln -sf $CFGDIR/etc/logrotate.d/* $DESTDIR/etc/logrotate.d
         ln -sf $CFGDIR/etc/usbmount/mount.d/* $DESTDIR/etc/usbmount/mount.d
@@ -768,12 +846,12 @@ function do_first()
         etckeeper-if-selected "disabled selinux, scripts sourced"
 
         # following packages are the core set of packages installed on all xs servers
-	$YUM_CMD syck rssh mtd-utils acpid mlocate 2>&1 | tee -a $LOG
+    	$YUM_CMD syck rssh mtd-utils acpid mlocate 2>&1 | tee -a $LOG
         if [ $? -ne 0 ] ; then
             echo "\n\nYum returned an error\n\n" | tee -a $LOG
             exit $YUMERROR
         fi
-
+P
         # make a non privileged user, and give her remote access
         if [ ! `grep $DEFAULTUSER /etc/passwd` ]; then
             adduser $DEFAULTUSER
@@ -783,6 +861,7 @@ function do_first()
             #  the apply_changes script which will be written in /home/admin
             chmod 770 /home/$DEFAULTUSER
         fi
+
         # we need a login for vnc with password that is not user changeable
         if [ ! `grep $VNCUSER /etc/passwd` ]; then
             adduser $VNCUSER
@@ -792,6 +871,17 @@ function do_first()
         sed -i -e 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
         systemctl enable sshd.service
         systemctl restart sshd.service
+
+        # Initialize the default LAN address
+        #   the syntax is "ip;mask;gateway;nameserver;"
+        mkdir -p /home/$DEFAULTUSER/etc/sysconfig/
+        echo "172.18.96.1;255.255.224.0;0.0.0;127.0.0.1;" > /home/$DEFAULTUSER/etc/sysconfig/xs_lan_ip
+        # Initialize the default WAN address
+        echo "DHCP" > /home/$DEFAULTUSER/etc/sysconfig/xs_wan_ip
+        # Initialize the default opendns ip address
+        echo "208.67.222.222;208.67.220.220;" > /home/$DEFAULTUSER/etc/sysconfig/xs_opendns_ip
+        chmod -R 770 /home/$DEFAULTUSER
+        chgrp -R $DEFAULTUSER/$DEFAULTUSER /home/$DEFAULTUSER
 
         etckeeper-if-selected "after installing core packages"
 

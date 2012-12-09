@@ -1,5 +1,24 @@
 #!/usr/bin/python
-#program to control the sleep cycles of the XS
+# Program to control the sleep cycles of the XS
+
+#  Copyright 2012, One Laptop per Child
+#  Author: George Hunt
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public
+# License along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
 try:
     from gi.repository import Gtk, Gdk
 except:
@@ -86,64 +105,80 @@ class SleepTools:
         since_epoch_delta = dtime - epoch
         return since_epoch_delta.total_seconds()
 
-class PowerInterface(SleepTools):
-	def __init__(self):
-		global cfg
-		global builder
-		#get the config file with previous selections
-		try:
-			fd = file(CONFIG_FILE,'r')
-		except IOError:
-			#this is first run of program, set up defaults
-			try:
-				fd = file(CONFIG_FILE,'w')
-				cfg = {
-					"sleepenable" :False,
-					"sleepstart"  :'17:00',
-					"sleepstop"    :'6:00',
-					"skipmon"     :False,
-					"skiptue"     :False,
-					"skipwed"     :False,
-					"skipthu"     :False,
-					"skipfri"     :False,
-					"skipsat"     :True,
-					"skipsun"     :True,
-					"override"    :False,
-					"sleepstoplong":0L,
-					"sleepstartlong":0L
-				}
-				cfg_str = json.dumps(cfg)
-				print ("json:%s."%(cfg_str,))
-				fd.write(cfg_str)
-				fd.close()
-				fd = file(CONFIG_FILE,'r')
-			except IOError,e:
-				logging.exception("failed to write config str. error:%s"% (e,))
-				fd = file(CONFIG_FILE,'r')
-		cfg_str = fd.read()
-		cfg = json.loads(cfg_str)
+    def enable(self):
+        result, flag = self.cli("grep -e /xs-sleep/ /etc/crontab")
+        if flag != 0:
+            result, flag = self.cli('echo "*/30 * * * * root \'/usr/bin/xs-sleep --timeout\'" >> /etc/crontab')
 
-		#use Glade generated XML description of UI GTK widgets to create window
-		builder = Gtk.Builder()
-		fname = os.path.join(SCRIPT_DIR,"sleep.glade")
-		builder.add_from_file(fname)
-		window = builder.get_object("window1")
-		window.show_all()
-		handlers = {
-			"onDeleteWindow": self.done,
-			"override_clicked_cb"   : self.override,
-			"enable_toggled_cb"     : self.enable_toggled,
-			"sleepbegin_changed_cb" : self.sleepstart_changed,
-			"sleepend_changed_cb"  : self.sleepstop_changed,
-			"mon1_toggled_cb"       : self.mon1_toggled,
-			"tue1_toggled_cb"       : self.tue1_toggled,
-			"wed1_toggled_cb"       : self.wed1_toggled,
-			"thu1_toggled_cb"       : self.thu1_toggled,
-			"fri1_toggled_cb"       : self.fri1_toggled,
-			"sat1_toggled_cb"       : self.sat1_toggled,
-			"sun1_toggled_cb"       : self.sun1_toggled,
-			"newtime_activate_cb"	: self.time_changed_cb,
-		}
+    def disable(self):
+        cmd = "sed -i -e /xs-sleep/d /etc/crontab"
+        result, flag = self.cli(cmd)
+
+    def isenabled(self):
+        result, flag = self.cli("grep -e /xs-sleep/ /etc/crontab")
+        if flag != 0:
+            return True
+        else:
+            return False
+
+class PowerInterface(SleepTools):
+    def __init__(self):
+        global cfg
+        global builder
+        #get the config file with previous selections
+        try:
+            fd = file(CONFIG_FILE,'r')
+        except IOError:
+            #this is first run of program, set up defaults
+            try:
+                fd = file(CONFIG_FILE,'w')
+                cfg = {
+                    "sleepenable" :False,
+                    "sleepstart"  :'17:00',
+                    "sleepstop"    :'6:00',
+                    "skipmon"     :False,
+                    "skiptue"     :False,
+                    "skipwed"     :False,
+                    "skipthu"     :False,
+                    "skipfri"     :False,
+                    "skipsat"     :True,
+                    "skipsun"     :True,
+                    "override"    :False,
+                    "sleepstoplong":0L,
+                    "sleepstartlong":0L
+                }
+                cfg_str = json.dumps(cfg)
+                print ("json:%s."%(cfg_str,))
+                fd.write(cfg_str)
+                fd.close()
+                fd = file(CONFIG_FILE,'r')
+            except IOError,e:
+                logging.exception("failed to write config str. error:%s"% (e,))
+                fd = file(CONFIG_FILE,'r')
+        cfg_str = fd.read()
+        cfg = json.loads(cfg_str)
+
+        #use Glade generated XML description of UI GTK widgets to create window
+        builder = Gtk.Builder()
+        fname = os.path.join(SCRIPT_DIR,"xs-sleep.glade")
+        builder.add_from_file(fname)
+        window = builder.get_object("window1")
+        window.show_all()
+        handlers = {
+            "onDeleteWindow": self.done,
+            "override_clicked_cb"   : self.override,
+            "enable_toggled_cb"     : self.enable_toggled,
+            "sleepbegin_changed_cb" : self.sleepstart_changed,
+            "sleepend_changed_cb"  : self.sleepstop_changed,
+            "mon1_toggled_cb"       : self.mon1_toggled,
+            "tue1_toggled_cb"       : self.tue1_toggled,
+            "wed1_toggled_cb"       : self.wed1_toggled,
+            "thu1_toggled_cb"       : self.thu1_toggled,
+            "fri1_toggled_cb"       : self.fri1_toggled,
+            "sat1_toggled_cb"       : self.sat1_toggled,
+            "sun1_toggled_cb"       : self.sun1_toggled,
+            "newtime_activate_cb"   : self.time_changed_cb,
+        }
 
         builder.connect_signals(handlers)
 
@@ -200,7 +235,7 @@ class PowerInterface(SleepTools):
         timezone = os.environ.get('TZ', "UTC")
         os.environ["TZ"] = timezone
         label.set_text("TimeZone: %s  Current Time: %s"%\
-			(timezone, strftime("%H:%M",localtime())))
+            (timezone, strftime("%H:%M",localtime())))
 
     def getindex(self, lst, val):
         #return index of val in list or -1 if not in list
@@ -377,8 +412,10 @@ class PowerAction(SleepTools):
             return
         cfg = json.loads(cfg_str)
 
+        if not cfg["sleepenable"]:
+            sys.exit(0)
+
         #is current time > sleepstart?
-        daynum = datetime.datetime.now().weekday()
         hrs, mins = self.parse_time(cfg["sleepstart"] )
         current  = datetime.datetime.now()
         start = datetime.datetime(current.year, current.month, current.day, hrs, mins)
@@ -405,6 +442,14 @@ if __name__ == "__main__":
         # if coming from cron, the check for an action to do
         if sys.argv[1] == '--timeout':
             pa = PowerAction()
+        if sys.argv[1] == '--enable':
+            tools = SleepTools()
+            tools.enable()
+        if sys.argv[1] == '--disable':
+            tools = SleepTools()
+            tools.disable()
+            sys.exit(0)
+
         sys.exit(0)
     # pop up the GUI
     Gtk.main()

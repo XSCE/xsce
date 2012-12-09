@@ -1,0 +1,48 @@
+#!/bin/bash
+# Respond to network device changes, preserve XS function
+
+#  Copyright 2012, One Laptop per Child
+#  Author: George Hunt, Jerry Vonau
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public
+# License along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+ISXO=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
+
+# Determine the number of interfaces
+num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
+
+if [[ $ISXO == "1"]]; then
+    if [[ $1 == "eth2" && $2 == "up" ]]; then
+        # if the wan adapter is coming up, regerate the firewall masquerade
+        if [ -f /etc/sysconfig/xs_wan_device && /etc/sysconfig/xs_wan_device -eq "eth0" ]
+            #disable the wifi adapter when the second dongle is inserted
+            nmcli con down eth0
+            echo "eth2" > /etc/sysconfig/xs_lan_device
+            # regenerate the masquerade
+            /etc/sysconfig/iptables-config
+        fi
+    fi
+    if [[ $1 == "eth2" && $2 == "down" ]]; then
+        # if the wan adapter has changed, regerate the firewall masquerade
+        if [ -f /etc/sysconfig/xs_wan_device && /etc/sysconfig/xs_wan_device -eq "eth2" ]
+            #enable the wifi adapter when the second dongle is removed
+            nmcli con up eth0
+            echo "eth0" > /etc/sysconfig/xs_lan_device
+            # regenerate the masquerade
+            /etc/sysconfig/iptables-config
+        fi
+    fi
+fi

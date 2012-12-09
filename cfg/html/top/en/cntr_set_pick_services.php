@@ -13,8 +13,6 @@
  			$selected['squid'] = 'on'; }else{ $selected['squid'] = 'off';}
 		if (isset($_POST['named']) ) {
  			$selected['named'] = 'on';} else {$selected['named'] = 'off';}
-		if (isset($_POST['dhcpd']) ) {
- 			$selected['dhcpd'] = 'on';} else {$selected['dhcpd'] = 'off';}
 		//die(print_r($_POST));
 	} else {
 		//die(print_r($installed));
@@ -23,8 +21,8 @@
 		$selected['opendns'] = (in_array("opendns", $installed) ? 'on' : 'off');
 		$selected['squid'] = (in_array("squid", $installed) ? 'on' : 'off');
 		$selected['named'] = (in_array("named", $installed) ? 'on' : 'off');
-		$selected['dhcpd'] = (in_array("dhcpd", $installed) ? 'on' : 'off');
 	}
+
 	$forwarders = "";
 	if (isset($_POST['token'])) {
 		if (strlen($_POST['opendnsip']) > 0) {
@@ -38,7 +36,7 @@
 				}
 			}
 		}
-	}
+}
 
 	function parse_ip($ip_in){
 		$ok = true;
@@ -90,14 +88,10 @@ var internet = '<?php echo $selected['gateway'] ?>';
 </head>
 
 <body onload="setvisible()">
-<h2>Internet:</h2>
 <div class="centerframe">
+<h2>Internet:</h2>
 <form action="" method="post" >
 <table>
-<tr><td>
-<?php if ($selected['dhcpd'] == 'on') $checked = "CHECKED";  else $checked = "";?>
-  <input name="dhcpd" class="mO" type="checkbox" value=""<?php echo $checked ?>  /></td><td class="mS">
-Uncheck to disable ip address assignments (dhcpd) if XS is joining an established network</td></tr>
 <tr><td>
 <?php if ($selected['gateway'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="gateway" class="mH" onclick="toggleMenu('menu1')" type="checkbox" value=""<?php echo $checked ?> /></td><td class="mS">
@@ -106,14 +100,16 @@ Check here if you have internet service and want the School Server to provide in
 <div id="menu1" class="mL">
 <table>
 <tr><td>
-<?php if ($selected['opendns'] == 'on') $checked = "CHECKED";  else $checked = "";	?>
-
-  <input name="opendns" class="mO" type="checkbox"  value=""<?php echo $checked ?>  /></td><td class="mS">
+<?php if ($selected['opendns'] == 'on') $checked = "CHECKED";  else $checked = "";	
+		$results = shell_exec("cat /etc/sysconfig/xs_opendns_ip");
+?>
+  <input name="opendns"  type="checkbox"  value=""<?php echo $checked ?>  /></td>
+<td class="mS">
 Enable Domain Name Service content controls using OPENDNS (is mainteined for schools worldwide by specialists)</td></tr>
-<tr><td></td><td><div align="center" >Ip address of OPENDNS service: <input name="opendnsip" type="text"  /></div></td></tr>
+<tr><td></td><td><div align="center" >Ip address of OPENDNS service: <input name="opendnsip" type="text" value="<?php echo $results ?>" /></div></td></tr>
 <tr><td>
 <?php if ($selected['dansguardian'] == 'on') $checked = "CHECKED";  else $checked = "";?>
-  <input name="dansguardian" class="mO" type="checkbox"  value=""<?php echo $checked ?>  /></td><td class="mS">
+  <input name="dansguardian" type="checkbox"  value=""<?php echo $checked ?>  /></td><td class="mS">
 Install Dan's Guardian content filter (permits local control, requires setup, continued maintenance)
 </td></tr>
 
@@ -122,10 +118,10 @@ Install Dan's Guardian content filter (permits local control, requires setup, co
  Is your internet speed faster than 1Megabit for 5 students, 5 Megabits for 30 students, or 15Mebagits for 75 students? If not:</td></tr><tr><br /></tr> </tr><td>
   
 <?php if ($selected['squid'] == 'on') $checked = "CHECKED";  else $checked = "";?>
-  <input name="squid" class="mO" type="checkbox" value=""<?php echo $checked ?>  /></td><td class="mS">
+  <input name="squid"  type="checkbox" value=""<?php echo $checked ?>  /></td><td class="mS">
 Enable local web page storage for later fast access<br /></td></tr><tr><td>
 <?php if ($selected['named'] == 'on') $checked = "CHECKED";  else $checked = "";?>
-  <input name="named" class="mO" type="checkbox" value=""<?php echo $checked ?>  /></td><td class="mS">
+  <input name="named"  type="checkbox" value=""<?php echo $checked ?>  /></td><td class="mS">
 Enable local Domain Name storage for faster access
 </td></tr>
 </table>
@@ -158,9 +154,6 @@ if (isset($_POST['token'])) {
 	if ( $selected['named'] == 'on' and !in_array("named", $installed) ) $outstr .= "named yes\n";
 	if ( ($selected['named'] == 'off') and in_array("named", $installed) ) $outstr .= "named no\n";
 	
-	if ( $selected['dhcpd'] == 'on' and !in_array("dhcpd", $installed) ) $outstr .= "dhcpd yes\n";
-	if ( ($selected['dhcpd'] == 'off') and in_array("dhcpd", $installed) ) $outstr .= "dhcpd no\n";
-
 	$outstr .= "do-last\n";
 	// see if there are no changes in the output string
 	$matchloc = strpos($outstr, "do-first\ndo-last");

@@ -48,8 +48,9 @@ a.nav {
 }
 .mH {color:#60c; cursor:pointer;  font-weight:bold; border-top:1px solid #300;}
 .mL {display:none;}
-.mO {display:block;}
+.mO {display:none;}
 .mS {padding-left:20px;}
-                    .centerpick form table tr td {
+
+.centerpick form table tr td {
 	font-size: 36px;
 }

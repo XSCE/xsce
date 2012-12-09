@@ -1,7 +1,24 @@
 #!/bin/bash -x
 #
-# Install XS custom networking configuration
+
+#  Copyright 2012, One Laptop per Child
+#  Author: Jerry Vonau, George Hunt
 #
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public
+# License along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
 # Parse options
 opt_upgrade_only=
 if ! options=$(getopt -o u -l upgrade-only -- "$@"); then
@@ -45,7 +62,7 @@ function write_nm_connection(){
     #removed -i to try to get rid of sed intermediate files 9/24/2012
     sed -i  "s/\@\@MAC\@\@/$2/" "/etc/NetworkManager/system-connections/$1"
     sed -i  "s/\@\@DEVICE\@\@/$3/" "/etc/NetworkManager/system-connections/$1"
-    chmod 600 "/etc/NetworkManager/system-connections/$1" 
+    chmod 600 "/etc/NetworkManager/system-connections/$1"
 }
 
 #========================================================
@@ -56,14 +73,14 @@ if [[ $is_xo = "1" ]]; then
         ipaddr=ifconfig eth0| awk -F ' *|:' '/inet addr/{print $4}'
     fi
     if [[ $num_ifaces  > 1 ]]; then
-        mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
+        mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;}
             /^ *ether / { if (eth == "eth1:") print( $2);}'`
         write_nm_connection "static" "$mac" "eth1"
         ipaddr=172.18.96.1
     fi
     # if we have 2 ethernet dongles, lo, )
     if [[ $num_ifaces = 3 ]] ; then
-        mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
+        mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;}
             /^ *ether / { if (eth == "eth2:") print( $2);}'`
         write_nm_connection "dhcp" "$mac" "eth2"
         echo "eth2" > /etc/sysconfig/xs_wan_device
@@ -73,14 +90,19 @@ if [[ $is_xo = "1" ]]; then
         echo "ignore-auto-dns=true" >> $UPLINK
     fi
 else
-    mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
-        /^ *ether / { if (eth == "eth0:") print( $2);}'`
-    write_nm_connection "static" "$mac" "eth0"
+    # not xo, if we have 2 network cards and lo, make the second the wan
+    if [[ $num_ifaces  = 3 ]]; then
+        mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;}
+            /^ *ether / { if (eth == "eth0:") print( $2);}'`
+        write_nm_connection "dhcp" "$mac" "eth1"
+        echo "eth1" > /etc/sysconfig/xs_wan_device
+    fi
+    # assume that we have at least one network adapter
     ipaddr=172.18.96.1
-    mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;} 
+    mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;}
         /^ *ether / { if (eth == "eth1:") print( $2);}'`
-    write_nm_connection "dhcp" "$mac" "eth1"
-    echo "eth1" > /etc/sysconfig/xs_wan_device
+    write_nm_connection "static" "$mac" "eth0"
+    echo "eth0" > /etc/sysconfig/xs_lan_device
 fi
 
 pushd /etc
@@ -119,4 +141,3 @@ echo "XS standard networking configured"
 # systemctl start NetworkManager.service
 
 sleep 5
-

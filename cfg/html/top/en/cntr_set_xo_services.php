@@ -9,6 +9,10 @@
 		if (isset($_POST['moodle-xs'])) $selected['moodle-xs'] = 'on'; else $selected['moodle-xs'] = 'off';
 		if (isset($_POST['xs-security'])) $selected['xs-security'] = 'on'; else $selected['xs-security'] = 'off';
 		if (isset($_POST['upload'])) $selected['upload'] = 'on'; else $selected['upload'] = 'off';
+		if (isset($_POST['dhcpd']) ) {
+ 			$selected['dhcpd'] = 'on';} else {$selected['dhcpd'] = 'off';}
+		if (isset($_POST['xs-acpowergaps']) ) {
+ 			$selected['xs-acpowergaps'] = 'on';} else {$selected['xs-acpowergaps'] = 'off';}
 	} else {
 		$selected['register'] = (in_array("idmgr", $installed) ? 'on' : 'off');
 		$selected['ejabberd'] = (in_array("ejabberd", $installed) ? 'on' : 'off');
@@ -16,6 +20,8 @@
 		$selected['moodle-xs'] = (in_array("moodle-xs", $installed) ? 'on' : 'off');
 		$selected['xs-security'] = (in_array("xs-security", $installed) ? 'on' : 'off');
 		$selected['upload'] = (in_array("upload", $installed) ? 'on' : 'off');
+		$selected['dhcpd'] = (in_array("dhcpd", $installed) ? 'on' : 'off');
+		$selected['xs-acpowergaps'] = (in_array("xs-acpowergaps", $installed) ? 'on' : 'off');
 	}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -39,29 +45,57 @@ function toggleMenu(objID) {
 </head>
 
 <body>
-<div class="centerpick">
+<div class="centerframe">
 <h2>Services to the XO Laptops</h2>
 <form action="" method="post" >
+<table>
+<tr><td>
 <?php if ($selected['register'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="register" type="checkbox" value=""<?php echo $checked ?> />
-Register XO's and backup student Journals.<br />
+</td><td class="mS">
+Register XO's and backup student Journals.
+</td></tr><tr><td>
 <?php if ($selected['activity_server'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="activity_server" type="checkbox"  value="" <?php echo $checked ?>/>
-Serve Activities, input to server VIA Upload.<br />
+</td><td class="mS">
+Serve Activities, input to server VIA Upload.
+</td></tr><tr><td>
 <?php if ($selected['moodle-xs'] == 'on') $checked = "CHECKED";  else $checked = "";?>
 <input name="moodle-xs" type="checkbox" value="" <?php echo $checked ?>/>
-Moodle content and classroom management system.<br />
+</td><td class="mS">
+Moodle content and classroom management system.
+</td></tr><tr><td>
 <?php if ($selected['xs-security'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="xs-security" type="checkbox" value=""<?php echo $checked ?>/>
-Manage activation of XO leases, and security.<br  />
+</td><td class="mS">
+Manage activation of XO leases, and security.
+</td></tr><tr><td>
 <?php if ($selected['upload'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="upload" type="checkbox" value="" <?php echo $checked ?>/>
-WebDav Storage and retrieval of files on the server.<br  />
+</td><td class="mS">
+WebDav Storage and retrieval of files on the server.
+</td></tr><tr><td>
 <?php if ($selected['ejabberd'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="ejabberd" type="checkbox"  value="" <?php echo $checked ?>/>
-Make collaboration faster (ejabber server)<br />
+</td><td class="mS">
+Make collaboration faster (ejabber server)
   <input name="token" type="hidden" />
+</td></tr><tr><td>
+<?php if ($selected['dhcpd'] == 'on') $checked = "CHECKED";  else $checked = "";?>
+  <input name="dhcpd" type="checkbox" value=""<?php echo $checked ?>  />
+</td><td class="mS">
+Uncheck to disable ip address assignments (dhcpd) if XS is joining an established network
+</td></tr><tr><td>
+<?php if ($selected['xs-acpowergaps'] == 'on') $checked = "CHECKED";  else $checked = "";?>
+  <input name="xs-acpowergaps" type="checkbox"  value="" <?php echo $checked ?>/>
+</td><td class="mS">
+Enable Recording of AC power failures.
+</td></tr>
+</table>
+<?php if ( ! isset($_POST['token'])) { ?>
 <div  align="center"> <input class="centerpick" onClick="peervnc()" name="Apply" value ="Apply Changes" type="submit"/></div>
+<?php } ?>
+
 </form>
 </div>
 <?php 
@@ -90,6 +124,14 @@ if (isset($_POST['token'])) {
 
 	if ( $selected['upload'] == 'on' and !in_array("upload", $installed) ) $outstr .= "upload yes\n";
 	if ( $selected['upload'] == 'off' and in_array("upload", $installed) ) $outstr .= "upload no\n";
+
+	if ( $selected['dhcpd'] == 'on' and !in_array("dhcpd", $installed) ) $outstr .= "dhcpd yes\n";
+	if ( ($selected['dhcpd'] == 'off') and in_array("dhcpd", $installed) ) $outstr .= "dhcpd no\n";
+
+	if ( $selected['xs-acpowergaps'] == 'on' and !in_array("xs-acpowergaps", $installed) ) 
+			$outstr .= "xs-acpowergaps yes\n";
+	if ( ($selected['xs-acpowergaps'] == 'off') and in_array("xs-acpowergaps", $installed) ) 
+			$outstr .= "xs-acpowergaps no\n";
 
 	$outstr .= "do-last\n";
 	// see if there are no changes in the output string
