@@ -635,7 +635,7 @@ function squid()
             etckeeper-if-selected 'xs-setup force-create httpcache flag'
         fi
         systemctl enable squid.service 2>&1 | tee -a $LOG
-        systemctl start squid.service 2>&1 | tee -a $LOG
+        set +x; systemctl start squid.service 2>&1 | tee -a $LOG; set -x
         # need to set up iptables to forward port 80 queries
 
         ;;
@@ -902,7 +902,7 @@ function do_first()
             echo "\n\nYum returned an error\n\n" | tee -a $LOG
             exit $YUMERROR
         fi
-P
+
         # make a non privileged user, and give her remote access
         if [ ! `grep $DEFAULTUSER /etc/passwd` ]; then
             adduser $DEFAULTUSER
@@ -924,15 +924,15 @@ P
         systemctl restart sshd.service
 
         # Initialize the default LAN address
-        #   the syntax is "ip;mask;gateway;nameserver;"
+        #   the syntax is "ip:<number of 1's in mask>:gateway:nameserver:"
         mkdir -p /home/$DEFAULTUSER/etc/sysconfig/
-        echo "172.18.96.1;255.255.224.0;0.0.0;127.0.0.1;" > /home/$DEFAULTUSER/etc/sysconfig/xs_lan_ip
+        echo "172.18.96.1:19:0.0.0.0;127.0.0.1;" > /home/$DEFAULTUSER/etc/sysconfig/xs_lan_ip
         # Initialize the default WAN address
         echo "DHCP" > /home/$DEFAULTUSER/etc/sysconfig/xs_wan_ip
         # Initialize the default opendns ip address
         echo "208.67.222.222;208.67.220.220;" > /home/$DEFAULTUSER/etc/sysconfig/xs_opendns_ip
         chmod -R 770 /home/$DEFAULTUSER
-        chgrp -R $DEFAULTUSER/$DEFAULTUSER /home/$DEFAULTUSER
+        chown -R $DEFAULTUSER:$DEFAULTUSER /home/$DEFAULTUSER
 
         etckeeper-if-selected "after installing core packages"
 
