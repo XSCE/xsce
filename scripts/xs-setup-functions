@@ -227,7 +227,7 @@ function gateway()
         /etc/sysconfig/iptables-config
 
         systemctl enable iptables.service
-        systemctl restart iptables.service
+        set +x; systemctl restart iptables.service; set -x
         systemctl enable ip6tables.service
         systemctl start ip6tables.service
         ;;
