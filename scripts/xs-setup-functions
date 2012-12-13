@@ -227,7 +227,7 @@ function gateway()
         /etc/sysconfig/iptables-config
 
         systemctl enable iptables.service
-        set +x; systemctl restart iptables.service; set -x
+        set +e; systemctl restart iptables.service; set -e
         systemctl enable ip6tables.service
         systemctl start ip6tables.service
         ;;
@@ -761,7 +761,7 @@ function xs-acpowergaps()
 {
 	case "$1" in
     "yes")
-        if [ ISXO != "1" ] ; then
+        if [ $ISXO != "1" ] ; then
             echo "This feature is only available on XS running on XO hardware"
             exit 1
         fi

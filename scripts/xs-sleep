@@ -431,7 +431,7 @@ class PowerAction(SleepTools):
 
     def sleep():
         sleeptime = cfg["sleepstoplong"] - datetime.datetime.now()
-        rtcstring = "rtcwake -s %s -m disk"%(sleeptime,)
+        rtcstring = "rtcwake -s %s -m mem -v"%(sleeptime,)
         p1 = Popen(rtcstring,stdout=PIPE, shell=True)
 
 if __name__ == "__main__":
