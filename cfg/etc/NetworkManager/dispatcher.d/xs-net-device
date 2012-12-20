@@ -24,12 +24,24 @@ ISXO=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
 # Determine the number of interfaces
 num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
 
-if [[ $ISXO == "1"]]; then
-    if [[ $1 == "eth2" && $2 == "up" ]]; then
-        # if the wan adapter is coming up, regerate the firewall masquerade
+if [[ "$ISXO" == "1"]]; then
+    if [[ "$1" == "eth2" && "$2" == "up" ]]; then
+        # if the wan dongle adapter is coming up, we need to turn off the wifi
         if [ -f /etc/sysconfig/xs_wan_device && /etc/sysconfig/xs_wan_device -eq "eth0" ]
-            #disable the wifi adapter when the second dongle is inserted
-            nmcli con down eth0
+            #disable the XO wifi adapter when the second dongle is inserted
+            #but first we need to disable autoconnect (the default) on the WAN wifi connection
+            ESSID=`/usr/bin/iwconfig  2>/dev/null |gawk -F[\"] '/ESSID:/ {print $2}'`
+            if [ -f "/etc/NetworkManager/system-connections/$ESSID" ]; then
+                grep -eautoconnect "/etc/NetworkManager/system-connections/$ESSID"
+                if [ "$?" == '1']; then
+                    # if no autoconnect clause, put one
+                    sed '
+                    /connection/ a\
+autoconnect=false
+                    ' "/etc/NetworkManager/system-connections/$ESSID"
+                fi
+                nmcli con down id "$ESSID"
+            fi
             echo "eth2" > /etc/sysconfig/xs_lan_device
             # regenerate the masquerade
             /etc/sysconfig/iptables-config

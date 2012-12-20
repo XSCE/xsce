@@ -109,6 +109,55 @@ function avahi()
 	esac
 }
 
+function create-usb-repo()
+{
+    #$YUM_CMD createrepo
+    if [ $? -ne 0 ] ; then
+        echo "\n\nYum returned an error\n\n" | tee -a $LOG
+        exit $YUMERROR
+    fi
+    if [[ -d $1 && $# -eq 1 ]]; then
+        mkdir -p $1/xs-repo
+        ARCH=`ls /var/cache/yum`
+        RELEASEVER=`ls /var/cache/yum/$ARCH`
+        cp -r /var/cache/yum/$ARCH/$RELEASEVER/* $1/xs-repo
+        createrepo $1/xs-repo
+        cat << EOF > $1/media.repo
+"[usb-media]
+name=usb-media
+baseurl=file:///$1/xs-repo
+enabled=1
+gpgcheck=0
+cost=100"
+EOF
+
+    else
+        echo "the number of parameters was $#"
+        echo "$1 folder is not able to receive repo"
+    fi
+}
+
+function create-usb-autoexec()
+{
+    if [ $# -eq 1 ]; then
+        TARGET=$1
+    else
+        TARGET=`cat /proc/mounts | gawk '/\/dev\/sd/ {print $2}'`
+    fi
+    if [[ -d "$TARGET" && -w $TARGET ]]; then
+        # first check that there is enough space
+        SPACE=`df -k | gawk '/\/dev\/sd/ {print $4}'`
+        if [ $SPACE -gt 20000 ]; then
+            tar xf  $CFGDIR/microcore*
+            cp -rf $CFGDIR/boot $TARGET
+        else
+            echo "not enough space on $TARGET or not writeable"
+        fi
+    else
+        echo "$TARGET folder is not able to receive microcore linux"
+    fi
+}
+
 function dansguardian()
 {
 	case "$1" in
@@ -227,7 +276,7 @@ function gateway()
         /etc/sysconfig/iptables-config
 
         systemctl enable iptables.service
-        set +e; systemctl restart iptables.service; set -e
+        set +x; systemctl restart iptables.service; set -x
         systemctl enable ip6tables.service
         systemctl start ip6tables.service
         ;;
@@ -432,12 +481,17 @@ function pathagar()
                 exit $YUMERROR
             fi
         touch $SETUPSTATEDIR/pathagar
-        adduser bookserver
+        set +e;adduser bookserver; set -e
         cd /home/bookserver
-        git clone git://github.com/johnsensile/django-sendfile.git
-        git clone git://github.com/manuq/pthagar
-        python setup.py install
-        rm -rf /home/bookserver/django-sendfile
+        set +e
+        #git clones fail if this is not first attempt to install
+        git clone git://github.com/johnsensible/django-sendfile.git
+        git clone git://github.com/manuq/pathagar
+        set -e
+        cd /home/bookserver/django-sendfile
+        python /home/bookserver/django-sendfile/setup.py install
+        #rm -rf /home/bookserver/django-sendfile
+        python /home/bookserver/pathagar/manage.py syncdb
         chown -R apache:apache /home/bookserver/pathagar
         chmod u-w -R /home/bookserver/pathagar
         chmod g+w -R /home/bookserver/pathagar
@@ -761,7 +815,7 @@ function xs-acpowergaps()
 {
 	case "$1" in
     "yes")
-        if [ $ISXO != "1" ] ; then
+        if [ ISXO != "1" ] ; then
             echo "This feature is only available on XS running on XO hardware"
             exit 1
         fi
@@ -923,6 +977,8 @@ function do_first()
         systemctl enable sshd.service
         systemctl restart sshd.service
 
+        #  setup NetworkManager -- turns off xo's wifi when second adapter is added, reinit masquerade
+        cp $CFGDIR/etc/NetworkManager/dispatcher.d/xs-net-device $DESTDIR/etc/NetworkManager/dispatcher.d
         # Initialize the default LAN address
         #   the syntax is "ip:<number of 1's in mask>:gateway:nameserver:"
         mkdir -p /home/$DEFAULTUSER/etc/sysconfig/
