@@ -101,12 +101,19 @@ vnc yes
 
 # Core services offered
 ejabberd yes
-upload yes
 xs-security yes
 idmgr yes
 postgresql yes
 moodle-xs yes
 activity-server yes
+
+# optional services -- enabled now for testing
+pathagar yes
+avahi yes
+dansguardian yes
+ntop yes
+nmon yes
+upload yes
 
 # Finalize install
 yum-etckeeper yes

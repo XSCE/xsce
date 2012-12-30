@@ -158,6 +158,7 @@ class PowerInterface(SleepTools):
         cfg_str = fd.read()
         cfg = json.loads(cfg_str)
 
+    def show_gui(self):
         #use Glade generated XML description of UI GTK widgets to create window
         builder = Gtk.Builder()
         fname = os.path.join(SCRIPT_DIR,"xs-sleep.glade")
@@ -264,6 +265,10 @@ class PowerInterface(SleepTools):
         self.save_cfg()
         self.show_override_status()
 
+    def set_override(self):
+        global cfg
+        cfg["override"] = True
+        self.save_cfg()
 
     def sleepstart_changed(self, widget):
         global cfg
@@ -419,26 +424,27 @@ class PowerAction(SleepTools):
         hrs, mins = self.parse_time(cfg["sleepstart"] )
         current  = datetime.datetime.now()
         start = datetime.datetime(current.year, current.month, current.day, hrs, mins)
-        if current > cfg["sleepstartlong"]:
+        if self.tstamp(current) > cfg["sleepstartlong"]:
             #are we in an override situation?
             if cfg["override"]:
-                if current > cfg["sleepstoplong"]:
+                if self.tstamp(current) > cfg["sleepstoplong"]:
                     # end of sleep period, turn off override
                     cfg["override"] = False
                 return
             # set stop/wakeup time
-            self.sleep()
+            self.sleep(cfg)
 
-    def sleep():
-        sleeptime = cfg["sleepstoplong"] - datetime.datetime.now()
-        rtcstring = "rtcwake -s %s -m mem -v"%(sleeptime,)
+    def sleep(self, cfg):
+        sleeptime = cfg["sleepstoplong"] - self.tstamp(datetime.datetime.now())
+        rtcstring = "rtcwake -s %s -m mem -v"%(int(sleeptime),)
         p1 = Popen(rtcstring,stdout=PIPE, shell=True)
 
 if __name__ == "__main__":
     # if interactive from command line, do gui
     if len(sys.argv) == 1:
         pi = PowerInterface()
-    elif len(sys.argv == 2):
+        pi.show_gui()
+    elif len(sys.argv) == 2:
         # if coming from cron, the check for an action to do
         if sys.argv[1] == '--timeout':
             pa = PowerAction()
@@ -448,8 +454,9 @@ if __name__ == "__main__":
         if sys.argv[1] == '--disable':
             tools = SleepTools()
             tools.disable()
-            sys.exit(0)
-
+        if sys.argv[1] == '--skip':
+            pi = PowerInterface()
+            pi.set_override()
         sys.exit(0)
     # pop up the GUI
     Gtk.main()

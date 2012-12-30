@@ -54,7 +54,7 @@ function status_click() {
     <td width="10%"><a class="nav" href="nav_set.html" target="navigation" onClick="setup_click()">Setup</a></td>
     <td width="10%"><a class="nav" href="nav_rpt_classroom.html" target="navigation" onClick="classroom_click()">Classroom</a></td>
     <td width="10%">&nbsp;</td>
-    <td width="10%"><a class="nav" href="nav_upl.html" target="navigation" onClick="upload_click()">Upload</a></td>
+    <td width="10%"><a class="nav" href="nav_tools.html" target="navigation" onClick="upload_click()">Tools</a></td>
     <td width="10%"><a class="nav" href="nav_srv.html"target="navigation" onClick="status_click()">Status</a></td>
     <td width="10%"><a href="" onClick="peervnc()">test</a></td>
     <td width="20%">

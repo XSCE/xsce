@@ -111,51 +111,86 @@ function avahi()
 
 function create-usb-repo()
 {
-    #$YUM_CMD createrepo
+    $YUM_CMD createrepo
     if [ $? -ne 0 ] ; then
         echo "\n\nYum returned an error\n\n" | tee -a $LOG
         exit $YUMERROR
     fi
-    if [[ -d $1 && $# -eq 1 ]]; then
+    date
+    if [[ -d $1 && $# -eq 1 && -w $1 ]]; then
+        SPACE=`df -k | gawk '/\/dev\/sd/ {print $4}'`
+        if [ $SPACE -lt 200000 ]; then
+            echo "not enough space on $TARGET or not writeable"
+            exit 1
+        fi
         mkdir -p $1/xs-repo
         ARCH=`ls /var/cache/yum`
         RELEASEVER=`ls /var/cache/yum/$ARCH`
-        cp -r /var/cache/yum/$ARCH/$RELEASEVER/* $1/xs-repo
+        set +x
+        echo
+        echo "The following copy to USB stick takes about 5 minutes"
+        echo
+        set -x
+        rsync -r /var/cache/yum/$ARCH/$RELEASEVER/ $1/xs-repo/$ARCH
         createrepo $1/xs-repo
         cat << EOF > $1/media.repo
-"[usb-media]
+[usb-media]
 name=usb-media
 baseurl=file:///$1/xs-repo
 enabled=1
 gpgcheck=0
-cost=100"
+cost=100
+
 EOF
 
     else
         echo "the number of parameters was $#"
         echo "$1 folder is not able to receive repo"
     fi
+    date
 }
 
-function create-usb-autoexec()
+function create-usb-microcore-linux()
 {
     if [ $# -eq 1 ]; then
         TARGET=$1
     else
-        TARGET=`cat /proc/mounts | gawk '/\/dev\/sd/ {print $2}'`
+        TARGET=""
     fi
     if [[ -d "$TARGET" && -w $TARGET ]]; then
         # first check that there is enough space
         SPACE=`df -k | gawk '/\/dev\/sd/ {print $4}'`
         if [ $SPACE -gt 20000 ]; then
-            tar xf  $CFGDIR/microcore*
-            cp -rf $CFGDIR/boot $TARGET
+            mkdir -p $1/boot
+            tar --no-xattrs  -xf  $CFGDIR/microcore* -C $TARGET/boot
+            # make sure root has a private/public ssh keypair to use with remote admin
+            if [ ! -f /root/.ssh/id_rsa.pub ]; then
+                ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
+            fi
+            # copy the admin pub key to the new media
+            mkdir -p $TARGET/.ssh
+            cp /root/.ssh/id_rsa.pub $TARGET
+            cat << EOF > $TARGET/onboot
+#!/bin/sh
+# small script to copy the adinistrative public key to XO's in a classroom
+mkdir /mnt/mmcblk0p2/home/root/.ssh/
+chmod 600 /mnt/mmcblk0p2/home/root/.ssh/
+echo /mnt/sda1/.ssh/id_rsa.pub >> /mnt/mmcblk0p2/home/root/.ssh/authorized_keys
+chmod 644 /mnt/mmcblk0p2/home/root/.ssh/authorized_keys
+EOF
+            # expand the python distributed shell interface
+            tar zxf $CFGDIR/pydsh*
+            pushd $CFGDIR/pydsh*
+            chmod 755 install.sh
+            install.sh --install
+            popd
         else
             echo "not enough space on $TARGET or not writeable"
         fi
     else
         echo "$TARGET folder is not able to receive microcore linux"
     fi
+
 }
 
 function dansguardian()
@@ -429,6 +464,48 @@ function named()
 	esac
 }
 
+function nmon()
+{
+	case "$1" in
+    "yes")
+        touch SETUPSTATEDIR/nmon
+        ARCH=`uname -m`
+        case $ARCH in
+        "i686")
+            ln -s $CFGDIR/nmon_x86_fedora17 /usr/bin/xs-nmon
+            chmod 755 /usr/bin/xs-nmon
+            ;;
+        "armv7l")
+            ln -s $CFGDIR/nmon_arm_fedora17 /usr/bin/xs-nmon
+            chmod 755 /usr/bin/xs-nmon
+            ;;
+        "*")
+            echo "nmon machine architecture not recognized"
+        esac
+        ;;
+    "no")
+        rm $SETUPSTATEDIR/nmon
+        ;;
+    esac
+}
+function ntop()
+{
+	case "$1" in
+    "yes")
+        yum -y install  ntop 2>&1 | tee -a $LOG
+        if [ $? -ne 0 ] ; then
+            echo "\n\nYum returned an error\n\n" | tee -a $LOG
+            exit $YUMERROR
+        fi
+        touch SETUPSTATEDIR/ntop
+        #execute the setup script
+        ;;
+    "no")
+        rm $SETUPSTATEDIR/ntop
+        ;;
+    esac
+}
+
 function opendns()
 {
 	case "$1" in
@@ -488,6 +565,7 @@ function pathagar()
         git clone git://github.com/johnsensible/django-sendfile.git
         git clone git://github.com/manuq/pathagar
         set -e
+        # I need to detect git clone failure by looking at tree created  FIXME
         cd /home/bookserver/django-sendfile
         python /home/bookserver/django-sendfile/setup.py install
         #rm -rf /home/bookserver/django-sendfile
@@ -594,7 +672,8 @@ function sdcard()
     esac
 }
 
-#new code to use NetworkManager to set up devices
+# new code to use NetworkManager to set up devices
+# copied verbatim from xs-setup-network
 function write_nm_connection(){
     # receives connection_filename, hwaddr,  device_name as parameters
     cp "/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/$1" \
@@ -606,6 +685,7 @@ function write_nm_connection(){
 }
 
 function setlan()
+# a GUI action routine
 {
     if [ "$#" != 1 ];then
         exit 1
@@ -635,6 +715,7 @@ dns=$GATEWAY;" /etc/NetworkManager/system-connections/static
 }
 
 function setwan()
+# a GUI action routine
 {
     if [ "$#" != 1 ];then
         exit 1
@@ -815,7 +896,7 @@ function xs-acpowergaps()
 {
 	case "$1" in
     "yes")
-        if [ ISXO != "1" ] ; then
+        if [ $ISXO != "1" ] ; then
             echo "This feature is only available on XS running on XO hardware"
             exit 1
         fi
