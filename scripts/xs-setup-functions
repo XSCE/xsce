@@ -124,6 +124,7 @@ function create-usb-repo()
             exit 1
         fi
         mkdir -p $1/xs-repo
+        chmod 755 $1/xs-repo
         ARCH=`ls /var/cache/yum`
         RELEASEVER=`ls /var/cache/yum/$ARCH`
         set +x
@@ -304,16 +305,16 @@ function gateway()
         cp /etc/sysconfig/iptables-config.in /etc/sysconfig/iptables-config
 
         touch $SETUPSTATEDIR/gateway
-        ln -sf $CFGDIR/etc/systemd/system/iptables.service $DESTDIR/etc/systemd/system
+        cp  $CFGDIR/etc/systemd/system/iptables.service $DESTDIR/etc/systemd/system
 
         # systemd has a check for exist /etc/sysconfig/iptables - so ensure that it exists
         # the following script regenerates /etc/sysconfig/iptables
         /etc/sysconfig/iptables-config
 
         systemctl enable iptables.service
-        set +x; systemctl restart iptables.service; set -x
+        #set +x; systemctl restart iptables.service; set -x
         systemctl enable ip6tables.service
-        systemctl start ip6tables.service
+        #systemctl start ip6tables.service
         ;;
 	"no")
         # the gateway flag is used to control masquerading in iptables
@@ -468,7 +469,7 @@ function nmon()
 {
 	case "$1" in
     "yes")
-        touch SETUPSTATEDIR/nmon
+        touch $SETUPSTATEDIR/nmon
         ARCH=`uname -m`
         case $ARCH in
         "i686")
@@ -497,8 +498,7 @@ function ntop()
             echo "\n\nYum returned an error\n\n" | tee -a $LOG
             exit $YUMERROR
         fi
-        touch SETUPSTATEDIR/ntop
-        #execute the setup script
+        touch $SETUPSTATEDIR/ntop
         ;;
     "no")
         rm $SETUPSTATEDIR/ntop
@@ -551,15 +551,20 @@ function pathagar()
 	case "$1" in
 	"yes")
         httpd yes
-	    $YUM_CMD mod_python mod_wsgi  python-django Django \
+	    $YUM_CMD pathagar mod_python mod_wsgi  python-django Django \
                 python-setuptools sqlite django-tagging
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
                 exit $YUMERROR
             fi
         touch $SETUPSTATEDIR/pathagar
+        <<COMMENT1
+        # this comment with the << is multiline temp revision
+        # don't error out if this user is already set up
         set +e;adduser bookserver; set -e
         cd /home/bookserver
+        # let apache read in this tree
+        chmod 755 /home/bookserver
         set +e
         #git clones fail if this is not first attempt to install
         git clone git://github.com/johnsensible/django-sendfile.git
@@ -567,19 +572,21 @@ function pathagar()
         set -e
         # I need to detect git clone failure by looking at tree created  FIXME
         cd /home/bookserver/django-sendfile
-        python /home/bookserver/django-sendfile/setup.py install
-        #rm -rf /home/bookserver/django-sendfile
-        python /home/bookserver/pathagar/manage.py syncdb
-        chown -R apache:apache /home/bookserver/pathagar
-        chmod u-w -R /home/bookserver/pathagar
-        chmod g+w -R /home/bookserver/pathagar
-        cd /home/bookserver/pathagar
+        tar zxf $CFGDIR/pathagar.tar.gz -C /home/$DEFAULTDIR/
+        COMMENT1
+        # get the python preample for site-packages where pathagar is loaded
+        SITE=`python -c "import site;print(site.getsitepackages()[0])"`
+        python $SITE/django-sendfile/setup.py install
+        mkdir -p /library/pathagar
+        chown apache.apache /library/pathagar
+        echo -e "yes\n$DEFAULTUSER\ngeorgejhunt@gmail.com\n$DEFAULTPASSWORD\n$DEFAULTPASSWORD\n" \
+            | python $SITE/pathagar/manage.py syncdb
+        # apache needs to add books
         ln -fs $CFGDIR/etc/httpd/conf.d/pathagar.conf \
                 $DESTDIR/etc/httpd/conf.d/pathagar.conf
-        chmod u+w database.db static_media books
         ;;
 	"no")
-        set -x;rm $SETUPSTATEDIR/pathagar; set +x
+        set +e;rm $SETUPSTATEDIR/pathagar; set
         ;;
 	esac
 }
@@ -889,6 +896,25 @@ function yum-etckeeper()
         sed  -i -e 's/^enabled=1/enabled=0/' /etc/yum/pluginconf.d/etckeeper.conf
         ;;
 	esac
+}
+
+function xo-admin()
+{
+	case "$1" in
+    "yes")
+        yum -y install  sneakerconfig 2>&1 | tee -a $LOG
+        if [ $? -ne 0 ] ; then
+            echo "\n\nYum returned an error\n\n" | tee -a $LOG
+            exit $YUMERROR
+        fi
+        touch SETUPSTATEDIR/xo-admin
+        tar zxf $CFGDIR/pydsh-0.7.tar.gz -C $SITE/
+        #execute the setup script
+        ;;
+    "no")
+        rm $SETUPSTATEDIR/xo-admin
+        ;;
+    esac
 }
 
 function xs-acpowergaps()

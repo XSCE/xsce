@@ -112,8 +112,9 @@ pathagar yes
 avahi yes
 dansguardian yes
 ntop yes
-nmon yes
+#nmon yes
 upload yes
+xo-admin yes
 
 # Finalize install
 yum-etckeeper yes
