@@ -14,6 +14,6 @@ if [ $OS = 'Linux' ]; then
       ;;
   esac
 fi
-terminal -e 'ncat -l -k -p 29753 localhost' &
+terminal --title "Output screen for APPLY UPDATES" -e 'ncat -l -k -p 29753 localhost' &
 #xterm -e 'ncat -l -k -p 29753 localhost' &
 startxfce4 &

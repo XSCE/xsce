@@ -1,0 +1,9 @@
+#!/bin/bash
+# return the unique ip address for clients to connect to
+ifconfig|grep -q 172.18.96.1
+if [ $? = 0 ]; then
+	echo "172.18.96.1"
+else
+	dev=`netstat -rn | awk '/UG/ {print $8}'`
+	echo `ifconfig $dev|awk '/inet / {print $2}'`
+fi

@@ -550,37 +550,49 @@ function pathagar()
 {
 	case "$1" in
 	"yes")
-        httpd yes
-	    $YUM_CMD pathagar mod_python mod_wsgi  python-django Django \
-                python-setuptools sqlite django-tagging
+        #httpd yes -- currently on by default
+	    #$YUM_CMD pathagar mod_python mod_wsgi Django \
+                #vipython-setuptools sqlite django-tagging
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
                 exit $YUMERROR
             fi
         touch $SETUPSTATEDIR/pathagar
-        <<COMMENT1
-        # this comment with the << is multiline temp revision
-        # don't error out if this user is already set up
-        set +e;adduser bookserver; set -e
-        cd /home/bookserver
-        # let apache read in this tree
-        chmod 755 /home/bookserver
-        set +e
-        #git clones fail if this is not first attempt to install
-        git clone git://github.com/johnsensible/django-sendfile.git
-        git clone git://github.com/manuq/pathagar
-        set -e
-        # I need to detect git clone failure by looking at tree created  FIXME
-        cd /home/bookserver/django-sendfile
-        tar zxf $CFGDIR/pathagar.tar.gz -C /home/$DEFAULTDIR/
-        COMMENT1
+        cp /etc/pathagar/settings.py.in /etc/pathagar/settings.py
+        sed -i -e "s/\@\@PASSWORD\@\@/$DEFAULTPASSWORD/" /etc/pathagar/settings.py
+        sed -i -e "s/\@\@USER\@\@/$DEFAULTUSER/" /etc/pathagar/settings.py
+
         # get the python preample for site-packages where pathagar is loaded
         SITE=`python -c "import site;print(site.getsitepackages()[0])"`
+        pushd $SITE/django-sendfile
         python $SITE/django-sendfile/setup.py install
-        mkdir -p /library/pathagar
-        chown apache.apache /library/pathagar
-        echo -e "yes\n$DEFAULTUSER\ngeorgejhunt@gmail.com\n$DEFAULTPASSWORD\n$DEFAULTPASSWORD\n" \
-            | python $SITE/pathagar/manage.py syncdb
+        popd
+
+        # don't error out if this script is already executed once
+        LOADED=`psql -U postgres -l | awk '/books/ {print $1}'`
+        if [ $LOADED != "books" ]; then
+            # create administrative postgresql user and database for pathagar
+            psql -U postgres -c "create database books"
+            psql -U postgres -c "create role $DEFAULTUSER with password \'$DEFAULTPASSWORD\'"
+            psql -U postgres -c "grant all privileges on database books to $DEFAULTUSER"
+            psql -U postgres -c "create role apache with password \'$DEFAULTPASSWORD\'"
+            psql -U postgres -c "grant all privileges on database books to apache"
+        fi
+
+        pushd $SITE/pathagar
+            # replace the default development settings with our configured ones
+            if [ -f ./settings.py ] ; then
+                rm -f ./settings.py
+            fi
+            # link our settings to project folder
+            ln -s /etc/pathagar/settings.py .
+            export "DJANGO_SETTINGS_MODULE=pathagar.settings"
+            echo "from django.contrib.auth.models import User; \
+                User.objects.create_superuser('admin', 'admin@example.com', '12admin')" | \
+                ./manage.py shell
+            django-admin syncdb --noinput --traceback --settings=pathagar.settings
+        popd
+
         # apache needs to add books
         ln -fs $CFGDIR/etc/httpd/conf.d/pathagar.conf \
                 $DESTDIR/etc/httpd/conf.d/pathagar.conf
@@ -959,6 +971,16 @@ function xs-security()
 
 function do_first()
 {
+    # for public demo, disable any functions that would change the machine state
+    if [ -f /etc/sysconfig/xs-disable-config ]; then
+        echo ""
+        echo "======================================================"
+        echo
+        echo "This public demonstration server cannot be configured remotely"
+        echo
+        echo "======================================================"
+        exit 0
+    fi
     #things to do the first time -- only once
     if [ -e /home/olpc/xs-setup.log ]; then
 	mv /home/olpc/xs-setup.log /var/log/

@@ -31,9 +31,8 @@
 
 <body>
 <div align="center" class="centerframe">
-<h2>Create USB Media For</h2>
-<h4>Automatic update of Classroom XO's</h4>
-
+<h3>Create USB to update Classroom XO's</h3>
+<h4>Will execute "onboot" script in USB root Directory</h4>
 <?php 
 	if (count($devices) > 0 and $devices[0] != ""){
 			if ($device == "") {
@@ -65,6 +64,7 @@ function echo_device($this_dev){
 	$cmd = "sudo df -h ".$this_dev." | grep -e ".$this_dev." | gawk '{print $4}'";
 	//$cmd = "sudo df -h ".$dev ;
 	$space = shell_exec($cmd);
+	//die($space);
 	echo("  --  Free Space: ".$space."\n");
 	$cmd = "sudo ls -lh ".$this_dev." | grep  -v -e total";
 	//$cmd = "sudo ls -l ".$dev;
@@ -101,6 +101,7 @@ if (isset($_POST['token'])) {
 	$outstr = "#!/bin/bash\n";
 	$outstr .= "# small apply script to change selected configuration of School server\n";
 	$outstr .= "source /usr/bin/xs-setup-functions\n";
+	$outstr .= "do-first\n";
 	$outstr .= 'create-usb-microcore-linux '.$device;
 
 	fwrite($fh,$outstr);

@@ -31,8 +31,7 @@
 
 <body>
 <div align="center" class="centerframe">
-<h2>Create USB Media</h2>
-<h4>For Offline School Server Installation</h4>
+<h3>Copy Install files to USB</h3>
 
 <?php 
 	if (count($devices) > 0 and $devices[0] != ""){
@@ -101,6 +100,7 @@ if (isset($_POST['token'])) {
 	$outstr = "#!/bin/bash\n";
 	$outstr .= "# small apply script to change selected configuration of School server\n";
 	$outstr .= "source /usr/bin/xs-setup-functions\n";
+	$outstr .= "do-first\n";
 	$outstr .= 'create-usb-repo '.$device;
 
 	fwrite($fh,$outstr);
