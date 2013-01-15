@@ -404,6 +404,14 @@ function corename()   # Get name of app that created a corefile.
     done 
 }
 
+function sr() #systemctl restart
+{
+	systemctl restart $1.service
+}
+function st() #systemctl status
+{
+	systemctl status $1.service
+}
 
 
 

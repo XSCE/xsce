@@ -52,7 +52,7 @@ function template()
 {
 	case "$1" in
     "yes")
-        yum -y install  xs-release 2>&1 | tee -a $LOG
+        $YUM_CMD  xs-release 2>&1 | tee -a $LOG
         if [ $? -ne 0 ] ; then
             echo "\n\nYum returned an error\n\n" | tee -a $LOG
             exit $YUMERROR
@@ -309,7 +309,9 @@ function gateway()
 
         # systemd has a check for exist /etc/sysconfig/iptables - so ensure that it exists
         # the following script regenerates /etc/sysconfig/iptables
-        /etc/sysconfig/iptables-config
+        /etc/sysconfig/olpc-scripts/firewall-xs
+        iptables-save >/etc/sysconfig/iptables
+
 
         systemctl enable iptables.service
         #set +x; systemctl restart iptables.service; set -x
@@ -329,7 +331,7 @@ function httpd()
 {
 	case "$1" in
 	"yes")
-	    $YUM_CMD httpd php  2>&1 | tee -a $LOG
+	    $YUM_CMD httpd php mod_auth_pam 2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
                 exit $YUMERROR
@@ -363,6 +365,17 @@ function httpd()
         mkdir -p /var/run/httpd
         chown apache:apache /var/log/httpd
         chown apache:apache /var/run/httpd
+        touch $SETUPSTATEDIR/httpd
+
+        # Add symlink to 64 bit php modules because we use a 32 bit php.ini
+                is32or64bit=`uname -m`
+        echo $is32or64bit
+        if [[ "$is32or64bit" = "x86_64" ]]; then
+          echo "is 64"
+          ln -s /usr/lib64/php /usr/lib/php
+        fi
+
+
 		;;
 	"no")
 		systemctl disable httpd.service 2>&1 | tee -a $LOG
@@ -546,13 +559,32 @@ function opendns()
     esac
 }
 
+
+function openvpn()
+{
+	case "$1" in
+    "yes")
+        $YUM_CMD  openvpn 2>&1 | tee -a $LOG
+        if [ $? -ne 0 ] ; then
+            echo "\n\nYum returned an error\n\n" | tee -a $LOG
+            exit $YUMERROR
+        fi
+        touch SETUPSTATEDIR/openvpn
+        #execute the setup script
+        ;;
+    "no")
+        rm $SETUPSTATEDIR/openvpn
+        ;;
+    esac
+}
+
 function pathagar()
 {
 	case "$1" in
 	"yes")
-        #httpd yes -- currently on by default
-	    #$YUM_CMD pathagar mod_python mod_wsgi Django \
-                #vipython-setuptools sqlite django-tagging
+        #httpd yes #-- currently on by default
+	    $YUM_CMD pathagar mod_python mod_wsgi Django \
+                python-setuptools sqlite django-tagging
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
                 exit $YUMERROR
@@ -570,13 +602,15 @@ function pathagar()
 
         # don't error out if this script is already executed once
         LOADED=`psql -U postgres -l | awk '/books/ {print $1}'`
-        if [ $LOADED != "books" ]; then
+        if [ "$LOADED" != "books" ]; then
             # create administrative postgresql user and database for pathagar
             psql -U postgres -c "create database books"
-            psql -U postgres -c "create role $DEFAULTUSER with password \'$DEFAULTPASSWORD\'"
-            psql -U postgres -c "grant all privileges on database books to $DEFAULTUSER"
-            psql -U postgres -c "create role apache with password \'$DEFAULTPASSWORD\'"
-            psql -U postgres -c "grant all privileges on database books to apache"
+            psql -U postgres -c "create user $DEFAULTUSER;"
+            psql -U postgres -c "create database $DEFAULTUSER;"
+            psql -U postgres -c "grant all privileges on database books to $DEFAULTUSER;"
+            psql -U postgres -c "create user apache;"
+            psql -U postgres -c "create database apache;"
+            psql -U postgres -c "grant all privileges on database books to apache;"
         fi
 
         pushd $SITE/pathagar
@@ -587,10 +621,10 @@ function pathagar()
             # link our settings to project folder
             ln -s /etc/pathagar/settings.py .
             export "DJANGO_SETTINGS_MODULE=pathagar.settings"
-            echo "from django.contrib.auth.models import User; \
-                User.objects.create_superuser('admin', 'admin@example.com', '12admin')" | \
-                ./manage.py shell
             django-admin syncdb --noinput --traceback --settings=pathagar.settings
+            echo "from django.contrib.auth.models import User; \
+                User.objects.create_superuser('admin', 'admin@schoolserver.local', '12admin')" | \
+                ./manage.py shell -U postgres
         popd
 
         # apache needs to add books
@@ -645,6 +679,24 @@ backslash_quote = on
         rm $SETUPSTATEDIR/postgresql
 		;;
 	esac
+}
+
+function puppet()
+{
+	case "$1" in
+    "yes")
+        $YUM_CMD  puppet 2>&1 | tee -a $LOG
+        if [ $? -ne 0 ] ; then
+            echo "\n\nYum returned an error\n\n" | tee -a $LOG
+            exit $YUMERROR
+        fi
+        touch SETUPSTATEDIR/puppet
+        #execute the setup script
+        ;;
+    "no")
+        rm $SETUPSTATEDIR/puppet
+        ;;
+    esac
 }
 
 function sdcard()
@@ -798,8 +850,10 @@ function squid()
         systemctl stop squid.service 2>&1 | tee -a $LOG
         rm /etc/sysconfig/xs_httpcache_on
         rm $SETUPSTATEDIR/squid
+
         # reinitialize the iptables to just use masqueradeing
-        /etc/sysconfig/iptables-config
+        /etc/sysconfig/olpc-scripts/firewall-xs
+        iptables-save >/etc/sysconfig/iptables
         systemctl restart iptables.service
         ;;
     esac

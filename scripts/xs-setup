@@ -106,6 +106,8 @@ idmgr yes
 postgresql yes
 moodle-xs yes
 activity-server yes
+openvpn yes
+puppet yes
 
 # optional services -- enabled now for testing
 pathagar yes

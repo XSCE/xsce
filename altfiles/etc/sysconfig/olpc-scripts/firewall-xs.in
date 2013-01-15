@@ -1,7 +1,7 @@
 #!/bin/bash -x
 IPTABLES=/usr/sbin/iptables
-wan="eth0"
-lan="eth1"
+#wan="eth0"
+#lan="eth1"
 LANIF=`route -n | grep "172.18.96" | gawk '{ print $8 }'`
 WANIF=`route -n | grep "UG" | gawk '{ print $8 }'`
 if [ ! "x$WANIF" == "x" ]; then
