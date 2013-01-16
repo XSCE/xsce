@@ -83,6 +83,7 @@ install: $(DESTDIR)
 	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/setup.d
 	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/setup.d/installed
 	install -D -d $(DESTDIR)/etc/sudoers.d
+	install -D -d $(DESTDIR)/etc/pathagar
 	install -D -d $(DESTDIR)/var
 	install -D -d $(DESTDIR)/var/named-xs
 	install -D -d $(DESTDIR)/var/named-xs/data
@@ -100,6 +101,7 @@ install: $(DESTDIR)
 
 	install -D altfiles/etc/named-xs.conf.in  $(DESTDIR)/etc
 	install -D altfiles/etc/dhcpd-xs.conf.in     $(DESTDIR)/etc
+	install -D altfiles/etc/pathagar/settings.py.in     $(DESTDIR)/etc/pathagar
 
 	install -D -d $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d
 	install -D altfiles/etc/sysconfig/olpc-scripts/domain_config.d/dhcpd    $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d

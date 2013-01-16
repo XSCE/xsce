@@ -36,8 +36,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'books',
         'USER': 'admin',
-        'PASWORD': '12admin',
-        'HOST': '',
+        'PASSWORD': '12admin',
+        'HOST': 'localhost',
     }
 }
 

@@ -57,7 +57,7 @@ function template()
             echo "\n\nYum returned an error\n\n" | tee -a $LOG
             exit $YUMERROR
         fi
-        touch SETUPSTATEDIR/xs-release
+        touch $SETUPSTATEDIR/xs-release
         #execute the setup script
         ;;
     "no")
@@ -569,7 +569,7 @@ function openvpn()
             echo "\n\nYum returned an error\n\n" | tee -a $LOG
             exit $YUMERROR
         fi
-        touch SETUPSTATEDIR/openvpn
+        touch $SETUPSTATEDIR/openvpn
         #execute the setup script
         ;;
     "no")
@@ -601,16 +601,16 @@ function pathagar()
         popd
 
         # don't error out if this script is already executed once
-        LOADED=`psql -U postgres -l | awk '/books/ {print $1}'`
+        LOADED=`su - postgres -c "psql -l" | gawk '{if($1=="books") print $1}'`
         if [ "$LOADED" != "books" ]; then
             # create administrative postgresql user and database for pathagar
-            psql -U postgres -c "create database books"
-            psql -U postgres -c "create user $DEFAULTUSER;"
-            psql -U postgres -c "create database $DEFAULTUSER;"
-            psql -U postgres -c "grant all privileges on database books to $DEFAULTUSER;"
-            psql -U postgres -c "create user apache;"
-            psql -U postgres -c "create database apache;"
-            psql -U postgres -c "grant all privileges on database books to apache;"
+            su postgres -c "psql  -c 'create database books'"
+            su postgres -c "psql  -c \"create user $DEFAULTUSER;\""
+            su postgres -c "psql  -c \"create database $DEFAULTUSER;\""
+            su postgres -c "psql  -c \"grant all privileges on database books to $DEFAULTUSER;\""
+            su postgres -c "psql  -c \"create user apache;\""
+            su postgres -c "psql  -c \"create database apache;\""
+            su postgres -c "psql  -c \"grant all privileges on database books to apache;\""
         fi
 
         pushd $SITE/pathagar
@@ -621,10 +621,10 @@ function pathagar()
             # link our settings to project folder
             ln -s /etc/pathagar/settings.py .
             export "DJANGO_SETTINGS_MODULE=pathagar.settings"
-            django-admin syncdb --noinput --traceback --settings=pathagar.settings
             echo "from django.contrib.auth.models import User; \
                 User.objects.create_superuser('admin', 'admin@schoolserver.local', '12admin')" | \
-                ./manage.py shell -U postgres
+                su - $DEFAULTUSER -c "$SITE/pathagar/manage.py shell"
+            su - $DEFAULTUSER -c "django-admin syncdb --noinput --traceback --settings=pathagar.settings"
         popd
 
         # apache needs to add books
@@ -690,7 +690,7 @@ function puppet()
             echo "\n\nYum returned an error\n\n" | tee -a $LOG
             exit $YUMERROR
         fi
-        touch SETUPSTATEDIR/puppet
+        touch $SETUPSTATEDIR/puppet
         #execute the setup script
         ;;
     "no")
@@ -973,7 +973,7 @@ function xo-admin()
             echo "\n\nYum returned an error\n\n" | tee -a $LOG
             exit $YUMERROR
         fi
-        touch SETUPSTATEDIR/xo-admin
+        touch $SETUPSTATEDIR/xo-admin
         tar zxf $CFGDIR/pydsh-0.7.tar.gz -C $SITE/
         #execute the setup script
         ;;

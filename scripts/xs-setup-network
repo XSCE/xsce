@@ -90,7 +90,6 @@ if [[ $is_xo = "1" ]]; then
         echo "ignore-auto-dns=true" >> $UPLINK
     fi
 else
-else
     # NOT an XO 1/9/2013 TFM
 
     # If there is only one card it will be wan if there is a gateway otherwise it will be lan
