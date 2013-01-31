@@ -159,6 +159,10 @@ do
     fi
 done
 popd
+
+/etc/sysconfig/olpc-scripts/firewall-xs
+iptables-save > $IPTABLES_DATA
+
 echo "XS standard networking configured"
 # systemctl start NetworkManager.service
 

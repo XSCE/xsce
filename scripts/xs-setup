@@ -110,7 +110,7 @@ openvpn yes
 puppet yes
 
 # optional services -- enabled now for testing
-pathagar yes
+#pathagar yes
 avahi yes
 dansguardian yes
 ntop yes

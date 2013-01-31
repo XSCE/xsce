@@ -605,12 +605,13 @@ function pathagar()
         if [ "$LOADED" != "books" ]; then
             # create administrative postgresql user and database for pathagar
             su postgres -c "psql  -c 'create database books'"
-            su postgres -c "psql  -c \"create user $DEFAULTUSER;\""
-            su postgres -c "psql  -c \"create database $DEFAULTUSER;\""
-            su postgres -c "psql  -c \"grant all privileges on database books to $DEFAULTUSER;\""
-            su postgres -c "psql  -c \"create user apache;\""
-            su postgres -c "psql  -c \"create database apache;\""
-            su postgres -c "psql  -c \"grant all privileges on database books to apache;\""
+            su postgres -c "psql  -c 'create user $DEFAULTUSER;'"
+            su postgres -c "psql  -c 'create database $DEFAULTUSER;'"
+            su postgres -c "psql  -c 'grant all privileges on database books to $DEFAULTUSER;'"
+            # moodle may already have created  apache user
+            #su postgres -c "psql  -c \"create user apache;\""
+            su postgres -c "psql  -c 'create database apache;'"
+            su postgres -c "psql  -c 'grant all privileges on database books to apache;'"
         fi
 
         pushd $SITE/pathagar
@@ -842,7 +843,11 @@ function squid()
         fi
         systemctl enable squid.service 2>&1 | tee -a $LOG
         set +x; systemctl start squid.service 2>&1 | tee -a $LOG; set -x
+
         # need to set up iptables to forward port 80 queries
+        # the following script regenerates /etc/sysconfig/iptables
+        /etc/sysconfig/olpc-scripts/firewall-xs
+        iptables-save >/etc/sysconfig/iptables
 
         ;;
     "no")

@@ -5,6 +5,7 @@
 
 IPTABLES_DATA=/etc/sysconfig/iptables
 #xs-gen-iptables $IPTABLES_DATA
+# the following 2 lines moved to xs-setup-network
 #/etc/sysconfig/olpc-scripts/firewall-xs
 #iptables-save > $IPTABLES_DATA
 
