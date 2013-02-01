@@ -61,7 +61,7 @@ EOF
 	cp -p /home/olpc/.bashrc /root
 
     # stateless linux rwtab file creates tmpfs that is too small installs
-    set -i -e '/^RW_OPTIONS/ c\
+    sed -i -e '/^RW_OPTIONS/ c\
     RW_OPTIONS="-o size=4M -o nr_inodes=2048"' /etc/sysconfig/readonly-root
 
 	# Keep docs when installing packages
