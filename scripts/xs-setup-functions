@@ -29,7 +29,8 @@
 #httpd yes
 #do-last
 #===============================================================================
-
+#
+# notes: need to systemctl unmask before systemctl enable
 set -x -e -u
 
 DESTDIR=""
@@ -168,7 +169,6 @@ function create-usb-microcore-linux()
             if [ ! -f /root/.ssh/id_rsa.pub ]; then
                 ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
             fi
-            # copy the admin pub key to the new media
             mkdir -p $TARGET/.ssh
             cp /root/.ssh/id_rsa.pub $TARGET
             cat << EOF > $TARGET/onboot
@@ -431,13 +431,14 @@ function moodle-xs()
                 exit $YUMERROR
             fi
         touch $SETUPSTATEDIR/moodle-xs
-        # we've dropped a file in /etc/httpd/conf.d, pick up the change
         systemctl restart httpd.service 2>&1 | tee -a $LOG
         # execute the moodle startup script
         /usr/libexec/moodle-xs-init start 2>&1 | tee -a $LOG
-        # mimic the exec of above at every startup by createing a systemd oneshot
+        # we've dropped a file in /etc/httpd/conf.d, pick up the change
         cp /etc/systemd/system/moodle-xs.service.in /etc/systemd/system/moodle-xs.service
-        systemctl enable moodle-xs.service
+        cp -p /etc/httpd/conf.d/010-make-moodle-default.conf.in \
+                    /etc/httpd/conf.d/010-make-moodle-default.conf
+        systemctl -f enable moodle-xs.service
 	;;
 
 	"no")
