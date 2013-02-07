@@ -42,7 +42,7 @@ function unsupported()
     shutdown now
 }
 
-function library-1st
+function library_1st()
 {
     echo "#####################################################"
     echo ""
@@ -65,7 +65,7 @@ function library-1st
     shutdown now
 }
 
-function get-devices
+function get_devices()
 {
     FOUNDDEVS=
     BLKID=`blkid | awk '{split($0,a,":"); print a[1]}'`
@@ -74,15 +74,15 @@ function get-devices
     done
 }
 
-function find-repo
+function find_repo()
 {
     MNT=`mount | grep dev/sdb | awk '{print $3}'`
     if ! [ -d $MNT/xs-repo ]; then
-        library-1st
+        library_1st
     fi
 }
 
-function togglepart
+function togglepart()
 {
     cat <<EOF | fdisk /dev/mmcblk0
 t
@@ -93,7 +93,7 @@ EOF
     mkfs.ext4 -L library $MEDIADEV2
 }
 
-function partition-usb-hd
+function partition_usb_hd()
 {
     echo "placeholder"
 }
@@ -104,7 +104,7 @@ if ! [ -d $MEDIAMNT ]; then
     mkdir $MEDIAMNT
 fi
 
-get-devices
+get_devices
 DEVS=`echo $FOUNDDEVS | wc | awk '{print $1}'`
 echo "found block devices $FOUNDDEVS"
 echo "found $MMC character devices for mmcblk0"
@@ -124,7 +124,7 @@ for i in $FOUNDDEVS; do
 done
 
 if [ -c /dev/sdb ]; then
-    find-repo
+    find_repo
     MEDIADEV2=/dev/sdc
     DEVS=1
 fi
