@@ -85,7 +85,6 @@ function activity-server()
         ;;
     "no")
         rm $SETUPSTATEDIR/activity-server
-        unlink /etc/usbmount/mount.d/60-xs-activity-server-installcontent
         unlink /etc/httpd/conf.d/xs-activity-server.conf
         ;;
     esac
@@ -1125,7 +1124,6 @@ function do_first()
                             $DESTDIR/etc/NetworkManager/dispatcher.d
         ln -sf $CFGDIR/etc/httpd/conf.d/*.conf $DESTDIR/etc/httpd/conf.d
         ln -sf $CFGDIR/etc/logrotate.d/* $DESTDIR/etc/logrotate.d
-        ln -sf $CFGDIR/etc/usbmount/mount.d/* $DESTDIR/etc/usbmount/mount.d
         ln -sf $CFGDIR/etc/profile.d/* $DESTDIR/etc/profile.d
 
         # sudo doesn't accept symlinks here
