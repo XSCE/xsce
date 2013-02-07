@@ -66,65 +66,69 @@ function write_nm_connection(){
 }
 
 #========================================================
+
 # all xo's have a wifi and a lo interface
-if [[ $is_xo = "1" ]]; then
-    num_ifaces=$(( $num_ifaces - 1 ))
-    if [[ $num_ifaces  = 1 ]]; then
-        ipaddr=ifconfig eth0| awk -F ' *|:' '/inet addr/{print $4}'
+#if [[ $is_xo = "1" ]]; then
+#    num_ifaces=$(( $num_ifaces - 1 ))
+#   if [[ $num_ifaces  = 1 ]]; then
+#        ipaddr=ifconfig eth0| awk -F ' *|:' '/inet addr/{print $4}'
+#    fi
+#    if [[ $num_ifaces  > 1 ]]; then
+#        mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;}
+#            /^ *ether / { if (eth == "eth1:") print( $2);}'`
+#        write_nm_connection "static" "$mac" "eth1"
+#        ipaddr=172.18.96.1
+#    fi
+#    # if we have 2 ethernet dongles, lo, )
+#    if [[ $num_ifaces = 3 ]] ; then
+#        mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;}
+#            /^ *ether / { if (eth == "eth2:") print( $2);}'`
+#        write_nm_connection "dhcp" "$mac" "eth2"
+#        echo "eth2" > /etc/sysconfig/xs_wan_device
+#    else
+#        echo "eth0" > /etc/sysconfig/xs_wan_device
+#	# based on observed created files
+#        echo "ignore-auto-dns=true" >> $UPLINK
+#    fi
+#else
+
+# NOT an XO 1/9/2013 TFM
+
+# If there is only one card it will be wan if there is a gateway otherwise it will be lan
+# If there are more than 2 cards, the last non-gateway one will be lan
+
+# Try to figure out which interface is connected to a gateway
+
+gw_iface=`route -n | awk '{if($4=="UG")print $8}'`
+
+# Pick a another card, any card (except lo and gw_iface, if not null)
+
+for iface in $(ifconfig | gawk 'BEGIN{FS=":"}(/^.*: flags=/) {print( $1);}')
+    do
+    if [ "$iface" != "lo" ] && [ "$iface" != "$gw_iface" ]; then
+       oth_iface=$iface
     fi
-    if [[ $num_ifaces  > 1 ]]; then
-        mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;}
-            /^ *ether / { if (eth == "eth1:") print( $2);}'`
-        write_nm_connection "static" "$mac" "eth1"
-        ipaddr=172.18.96.1
-    fi
-    # if we have 2 ethernet dongles, lo, )
-    if [[ $num_ifaces = 3 ]] ; then
-        mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;}
-            /^ *ether / { if (eth == "eth2:") print( $2);}'`
-        write_nm_connection "dhcp" "$mac" "eth2"
-        echo "eth2" > /etc/sysconfig/xs_wan_device
-    else
-        echo "eth0" > /etc/sysconfig/xs_wan_device
-	# based on observed created files
-        echo "ignore-auto-dns=true" >> $UPLINK
-    fi
-else
-    # NOT an XO 1/9/2013 TFM
+    done
 
-    # If there is only one card it will be wan if there is a gateway otherwise it will be lan
-    # If there are more than 2 cards, the last non-gateway one will be lan
+if [ -n $gw_iface ]; then
+    wan_iface=$gw_iface
+    wan_mac=`ifconfig $wan_iface | gawk '(/^ *ether /) {print( $2);}'`
+    wan_ip=`ifconfig $wan_iface | gawk '(/netmask /) {print( $2);}'`
+    ipaddr=$wan_ip
 
-    # Try to figure out which interface is connected to a gateway
+    write_nm_connection "dhcp" "$wan_mac" "$wan_iface"
+    echo "$wan_iface" > /etc/sysconfig/xs_wan_device
+    for i in $UPLINK
+        do 
+        echo "ignore-auto-dns=true" >>  /etc/NetworkManager/system-connections/$i 
+        done  
+fi
 
-    gw_iface=`route -n | awk '{if($4=="UG")print $8}'`
-
-    # Pick a another card, any card (except lo and gw_iface, if not null)
-
-    for iface in $(ifconfig | gawk 'BEGIN{FS=":"}(/^.*: flags=/) {print( $1);}')
-      do
-        if [ "$iface" != "lo" ] && [ "$iface" != "$gw_iface" ]; then
-           oth_iface=$iface
-        fi
-      done
-
-    if [ -n $gw_iface ]; then
-      wan_iface=$gw_iface
-      wan_mac=`ifconfig $wan_iface | gawk '(/^ *ether /) {print( $2);}'`
-      wan_ip=`ifconfig $wan_iface | gawk '(/netmask /) {print( $2);}'`
-      ipaddr=$wan_ip
-
-      write_nm_connection "dhcp" "$wan_mac" "$wan_iface"
-      echo "$wan_iface" > /etc/sysconfig/xs_wan_device
-    fi
-
-    if [ -n $oth_iface ]; then
-      oth_mac=`ifconfig $oth_iface | gawk '(/^ *ether /) {print( $2);}'`
-
-      write_nm_connection "static" "$oth_mac" "$oth_iface"
-      echo "$oth_iface" > /etc/sysconfig/xs_lan_device
-      ipaddr=172.18.96.1
-    fi
+if [ -n $oth_iface ]; then
+    oth_mac=`ifconfig $oth_iface | gawk '(/^ *ether /) {print( $2);}'`
+    write_nm_connection "static" "$oth_mac" "$oth_iface"
+    echo "$oth_iface" > /etc/sysconfig/xs_lan_device
+    ipaddr=172.18.96.1
 fi
 
 pushd /etc
@@ -132,6 +136,7 @@ for i in $CFG_TEMPLATES; do
 	cp -p $i.in $i
 	#etckeeper commit -m "Made from $i.in"
 done
+sed -i -e s/@@LAN_IF@@/$oth_iface/ /etc/sysconfig/dhcpd
 
 short_host=`hostname -s`
 new_name=`hostname -f`
