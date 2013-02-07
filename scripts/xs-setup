@@ -90,33 +90,33 @@ if [[ $num_ifaces > 2 ]]; then
     dhcpd yes
     named yes
     gateway yes
-    squid yes
+    #squid yes
     xs-resolvconf
     touch /.olpcxs-net-configured
 fi
 
 # Remote admin services
 httpd yes
-vnc yes
+#vnc yes
 
 # Core services offered
 ejabberd yes
-xs-security yes
+#xs-security yes
 idmgr yes
-postgresql yes
-moodle-xs yes
-activity-server yes
-openvpn yes
-puppet yes
+#postgresql yes
+#moodle-xs yes
+#activity-server yes
+#openvpn yes
+#puppet yes
 
 # optional services -- enabled now for testing
 #pathagar yes
-avahi yes
-dansguardian yes
-ntop yes
+#avahi yes
+#dansguardian yes
+#ntop yes
 #nmon yes
-upload yes
-xo-admin yes
+#upload yes
+#xo-admin yes
 
 # Finalize install
 yum-etckeeper yes
