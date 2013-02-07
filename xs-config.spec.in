@@ -158,4 +158,5 @@ fi
 
 %files xo
 %{_bindir}/bootstrap-xo
+%{_bindir}/prep-storage.sh
 %{_libdir}/udev/rules.d/10-olpc-net.rules
