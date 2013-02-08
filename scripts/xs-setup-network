@@ -116,12 +116,15 @@ if [ -n $gw_iface ]; then
     wan_ip=`ifconfig $wan_iface | gawk '(/netmask /) {print( $2);}'`
     ipaddr=$wan_ip
 
-    write_nm_connection "dhcp" "$wan_mac" "$wan_iface"
-    echo "$wan_iface" > /etc/sysconfig/xs_wan_device
-    for i in $UPLINK
+    if [ $is_xo == "0" ]; then
+        write_nm_connection "dhcp" "$wan_mac" "$wan_iface"
+    fi
+
+    for i in $UPLINK;
         do 
-        echo "ignore-auto-dns=true" >>  /etc/NetworkManager/system-connections/$i 
+            echo "ignore-auto-dns=true" >>  $i 
         done  
+    echo "$wan_iface" > /etc/sysconfig/xs_wan_device
 fi
 
 if [ -n $oth_iface ]; then
