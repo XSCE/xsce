@@ -46,7 +46,7 @@ xs-config.spec: xs-config.spec.in
 rpm: SOURCES xs-config.spec
 	$(RPMBUILD) -ba --target $(ARCH) $(PKGNAME).spec
 	rm -fr $(BUILDDIR)/BUILD/$(NV)
-	rpmlint $(BUILDDIR)/RPMS/$(ARCH)/$(NV)-$(REL).$(ARCH).rpm
+	#rpmlint $(BUILDDIR)/RPMS/$(ARCH)/$(NV)-$(REL).$(ARCH).rpm
 
 # for scp `make rpm-name` ...
 rpm-name:
