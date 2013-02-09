@@ -103,7 +103,7 @@ fqdncache_size 1024
 #          |         |         |    |  L2 (directories)
 #          |         |         |    |  |
 #cache_dir aufs /library/cache 20000 32 256
-#cache_dir ufs /library/cache 200 16 128
+cache_dir ufs /library/cache 200 16 128
 
 ###############################
 #  Logging

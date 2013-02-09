@@ -83,7 +83,7 @@ function activity-server()
         chmod -R 775 /library/xs-activity-server
         # short term addition of link for upload-activity server
         ln -sf /usr/share/xs-config/cfg/html/top/en/cntr_upl_activity.php \
-                    /var/www/html/upload.activity.php
+                    /var/www/html/upload_activity.php
 
         touch $SETUPSTATEDIR/activity-server
         ;;
@@ -575,6 +575,7 @@ function one2many()
         # Replace the key- and crt-path in conf-file, so that secure-transfer may be enabled.
         #
         filename="/etc/httpd/conf.d/ssl.conf"
+        cp $filename.in $filename
         SearchAndReplaceRegex $filename "SSLCertificateKeyFile \/etc\/pki\/tls\/private\/localhost.key" \
             "SSLCertificateKeyFile \/etc\/httpd\/conf.d\/ssl.key"
         SearchAndReplaceRegex $filename "SSLCertificateFile \/etc\/pki\/tls\/certs\/localhost.crt" \
