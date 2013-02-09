@@ -81,6 +81,10 @@ function activity-server()
         # permit apache to perform the upload task,
         chgrp -R admin /library/xs-activity-server
         chmod -R 775 /library/xs-activity-server
+        # short term addition of link for upload-activity server
+        ln -sf /usr/share/xs-config/cfg/html/top/en/cntr_upl_activity.php \
+                    /var/www/html/upload.activity.php
+
         touch $SETUPSTATEDIR/activity-server
         ;;
     "no")
@@ -374,9 +378,6 @@ function httpd()
           echo "is 64"
           ln -s /usr/lib64/php /usr/lib/php
         fi
-        # short term addition of link for upload-activity server
-        ln -s /usr/share/xs-config/cfg/html/top/en/cntr_upl_activity.php \
-                    /var/www/html/upload.activity.php
 		;;
 	"no")
 		systemctl disable httpd.service 2>&1 | tee -a $LOG
