@@ -1,12 +1,3 @@
-####
-#### XS Override
-####
-
-# For now, we disable this module
-# remove the IfDefine to reenable.
-<IfDefine BOGUS_SSL_DISABLED>
-
-
 #
 # This is the Apache server configuration file providing SSL support.
 # It contains the configuration directives to instruct the server how to
@@ -24,7 +15,7 @@ LoadModule ssl_module modules/mod_ssl.so
 # When we also provide SSL we have to listen to the 
 # the HTTPS port in addition.
 #
-Listen 0.0.0.0:443
+Listen 443
 
 ##
 ##  SSL Global Context
@@ -33,17 +24,11 @@ Listen 0.0.0.0:443
 ##  the main server and all SSL-enabled virtual hosts.
 ##
 
-#
-#   Some MIME-types for downloading Certificates and CRLs
-#
-AddType application/x-x509-ca-cert .crt
-AddType application/x-pkcs7-crl    .crl
-
 #   Pass Phrase Dialog:
 #   Configure the pass phrase gathering process.
 #   The filtering dialog program (`builtin' is a internal
 #   terminal dialog) has to provide the pass phrase on stdout.
-SSLPassPhraseDialog  builtin
+SSLPassPhraseDialog exec:/usr/libexec/httpd-ssl-pass-dialog
 
 #   Inter-Process Session Cache:
 #   Configure the SSL Session Cache: First the mechanism 
@@ -109,23 +94,29 @@ SSLEngine on
 SSLProtocol all -SSLv2
 
 #   SSL Cipher Suite:
-# List the ciphers that the client is permitted to negotiate.
-# See the mod_ssl documentation for a complete list.
-SSLCipherSuite ALL:!ADH:!EXPORT:!SSLv2:RC4+RSA:+HIGH:+MEDIUM:+LOW
+#   List the ciphers that the client is permitted to negotiate.
+#   See the mod_ssl documentation for a complete list.
+SSLCipherSuite RC4-SHA:AES128-SHA:ALL:!ADH:!EXP:!LOW:!MD5:!SSLV2:!NULL
+
+#   SSL Cipher Honor Order:
+#   On a busy HTTPS server you may want to enable this directive
+#   to force clients to use one of the faster ciphers like RC4-SHA
+#   or AES128-SHA in the order defined by SSLCipherSuite.
+#SSLHonorCipherOrder on 
 
 #   Server Certificate:
 # Point SSLCertificateFile at a PEM encoded certificate.  If
 # the certificate is encrypted, then you will be prompted for a
 # pass phrase.  Note that a kill -HUP will prompt again.  A new
 # certificate can be generated using the genkey(1) command.
-SSLCertificateFile /etc/pki/tls/certs/localhost.crt
+SSLCertificateFile /etc/httpd/conf.d/ssl.crt
 
 #   Server Private Key:
 #   If the key is not combined with the certificate, use this
 #   directive to point at the key file.  Keep in mind that if
 #   you've both a RSA and a DSA private key you can configure
 #   both in parallel (to also allow the use of DSA ciphers, etc.)
-SSLCertificateKeyFile /etc/pki/tls/private/localhost.key
+SSLCertificateKeyFile /etc/httpd/conf.d/ssl.key
 
 #   Server Certificate Chain:
 #   Point SSLCertificateChainFile at a file containing the
@@ -234,6 +225,23 @@ SetEnvIf User-Agent ".*MSIE.*" \
 CustomLog logs/ssl_request_log \
           "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
 
-</VirtualHost>                                  
 
-</IfDefine>
+
+        DocumentRoot /var/www/web1/web
+        <Directory /var/www/web1/web/>
+                Options Indexes MultiViews
+                AllowOverride None
+                Order allow,deny
+                allow from all
+        </Directory>
+
+        Alias /webdav /var/www/web1/web
+
+        <Location /webdav>
+            DAV On
+            AuthType Basic
+            AuthName "webdav"
+            AuthUserFile /var/www/web1/passwd.dav
+            Require valid-user
+        </Location>
+</VirtualHost>

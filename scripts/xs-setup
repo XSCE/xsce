@@ -90,7 +90,7 @@ if [[ $num_ifaces > 2 ]]; then
     dhcpd yes
     named yes
     gateway yes
-    #squid yes
+    squid yes
     xs-resolvconf
     touch /.olpcxs-net-configured
 fi
@@ -105,8 +105,8 @@ ejabberd yes
 idmgr yes
 #postgresql yes
 #moodle-xs yes
-#activity-server yes
-#openvpn yes
+activity-server yes
+openvpn yes
 #puppet yes
 
 # optional services -- enabled now for testing
@@ -122,6 +122,6 @@ idmgr yes
 yum-etckeeper yes
 do-last
 
-echo "XS configured; services are ready to use."
+echo "XS configured; ready to reboot and use."
 #echo "please check the configured services below"
 #xs-services-check

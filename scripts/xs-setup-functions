@@ -81,10 +81,15 @@ function activity-server()
         # permit apache to perform the upload task,
         chgrp -R admin /library/xs-activity-server
         chmod -R 775 /library/xs-activity-server
+        # short term addition of link for upload-activity server
+        ln -sf /usr/share/xs-config/cfg/html/top/en/cntr_upl_activity.php \
+                    /var/www/html/upload_activity.php
+
         touch $SETUPSTATEDIR/activity-server
         ;;
     "no")
         rm $SETUPSTATEDIR/activity-server
+        unlink /etc/usbmount/mount.d/60-xs-activity-server-installcontent
         unlink /etc/httpd/conf.d/xs-activity-server.conf
         ;;
     esac
@@ -285,7 +290,6 @@ function ejabberd()
             systemctl enable ejabberd-xs.service 2>&1 | tee -a $LOG
             echo "the following start command executes for a long time. Have a cup of coffee!"
             systemctl start ejabberd-xs.service 2>&1 | tee -a $LOG
-            xs-ejabberd-srg &
 		;;
 	"no")
             systemctl disable ejabberd.service 2>&1 | tee -a $LOG
@@ -368,14 +372,12 @@ function httpd()
         touch $SETUPSTATEDIR/httpd
 
         # Add symlink to 64 bit php modules because we use a 32 bit php.ini
-                is32or64bit=`uname -m`
+        is32or64bit=`uname -m`
         echo $is32or64bit
         if [[ "$is32or64bit" = "x86_64" ]]; then
           echo "is 64"
           ln -s /usr/lib64/php /usr/lib/php
         fi
-
-
 		;;
 	"no")
 		systemctl disable httpd.service 2>&1 | tee -a $LOG
@@ -516,6 +518,87 @@ function ntop()
         ;;
     "no")
         rm $SETUPSTATEDIR/ntop
+        ;;
+    esac
+}
+
+# following two routines used by one2many
+#
+SearchAndReplaceRegex()
+        {
+            cat $1 | sed "s/$2/$3/g" > temp
+            cat temp > $1
+        }
+
+SearchAndDeleteLineContainingRegex()
+        {
+            cat $1 | sed "/$2/d" > temp
+            cat temp > $1
+        }
+
+function one2many()
+{
+	case "$1" in
+    "yes")
+        httpd yes
+        $YUM_CMD  mod_ssl 2>&1 | tee -a $LOG
+        if [ $? -ne 0 ] ; then
+            echo "\n\nYum returned an error\n\n" | tee -a $LOG
+            exit $YUMERROR
+        fi
+        touch $SETUPSTATEDIR/one2many
+
+        # Make the directories (if not already), and set the permissions.
+        #
+        mkdir -p /var/www/web1/web/.Sugar-Metadata
+        chmod -R 0777 /var/www/web1/
+
+        # Some necessary tweaks in "httpd" service.
+        #
+        filename=/etc/httpd/logs
+        if [ -d $filename ];
+        then
+            rm -rf /etc/httpd/logs
+        fi
+        mkdir -p /etc/httpd/logs
+
+        # Create the password file for WebDAV.
+        #
+        htpasswd -bc /var/www/web1/passwd.dav test olpc
+
+        # Generate the ssl-key and certificate.
+        #
+        openssl req -new -newkey rsa:1024 -days 365 -nodes -x509 -subj \
+                "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" \
+                -keyout /etc/httpd/conf.d/ssl.key -out /etc/httpd/conf.d/ssl.crt
+
+        # Replace the key- and crt-path in conf-file, so that secure-transfer may be enabled.
+        #
+        filename="/etc/httpd/conf.d/ssl.conf"
+        cp $filename.in $filename
+        SearchAndReplaceRegex $filename "SSLCertificateKeyFile \/etc\/pki\/tls\/private\/localhost.key" \
+            "SSLCertificateKeyFile \/etc\/httpd\/conf.d\/ssl.key"
+        SearchAndReplaceRegex $filename "SSLCertificateFile \/etc\/pki\/tls\/certs\/localhost.crt" \
+            "SSLCertificateFile \/etc\/httpd\/conf.d\/ssl.crt"
+
+        # Disable SElinux.
+        #
+        # don't error out
+        set +e
+        #
+        # (F-17)
+        echo 0 > /sys/fs/selinux/enforce
+        #
+        # (F-14)
+        echo 0 > /selinux/enforce
+        set -e
+
+        # Restart the "httpd" service.
+        #
+        systemctl restart httpd.service
+       ;;
+    "no")
+        rm $SETUPSTATEDIR/one2many
         ;;
     esac
 }
@@ -1125,6 +1208,7 @@ function do_first()
                             $DESTDIR/etc/NetworkManager/dispatcher.d
         ln -sf $CFGDIR/etc/httpd/conf.d/*.conf $DESTDIR/etc/httpd/conf.d
         ln -sf $CFGDIR/etc/logrotate.d/* $DESTDIR/etc/logrotate.d
+        ln -sf $CFGDIR/etc/usbmount/mount.d/* $DESTDIR/etc/usbmount/mount.d
         ln -sf $CFGDIR/etc/profile.d/* $DESTDIR/etc/profile.d
 
         # sudo doesn't accept symlinks here

@@ -36,7 +36,9 @@ if ((($_FILES["file"]["type"] == "application/octet-stream")
   }
 else
   {
-  echo "Invalid file -- The suffix was not '.xo'";
+	if ( isset($_POST["tag"])) {
+  		echo "Invalid file -- The suffix was not '.xo'";
+	}
   }
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -52,6 +54,7 @@ enctype="multipart/form-data">
 <h3>Upload Activity (suffix=.xo)</h3>
 <label for="file">Filename:</label>
 <input type="file" name="file" id="file" /> 
+<input type="hidden" name="tag"  /> 
 <br />
 <input type="submit" name="submit" value="Submit" />
 </form>
