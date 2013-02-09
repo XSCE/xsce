@@ -58,7 +58,7 @@ UPLINK=`find /etc/NetworkManager/system-connections -maxdepth 1 -type f -name "*
 function write_nm_connection(){
     # receives connection_filename, hwaddr,  device_name as parameters
     cp "/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/$1" \
-        "/etc/NetworkManager/system-connections/$1"
+        "/etc/NetworkManager/system-connections/$3"
     #removed -i to try to get rid of sed intermediate files 9/24/2012
     sed -i  "s/\@\@MAC\@\@/$2/" "/etc/NetworkManager/system-connections/$1"
     sed -i  "s/\@\@DEVICE\@\@/$3/" "/etc/NetworkManager/system-connections/$1"
