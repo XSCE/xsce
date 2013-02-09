@@ -110,6 +110,13 @@ for iface in $(ifconfig | gawk 'BEGIN{FS=":"}(/^.*: flags=/) {print( $1);}')
     fi
     done
 
+if [ -n $oth_iface ]; then
+    oth_mac=`ifconfig $oth_iface | gawk '(/^ *ether /) {print( $2);}'`
+    write_nm_connection "static" "$oth_mac" "$oth_iface"
+    echo "$oth_iface" > /etc/sysconfig/xs_lan_device
+    ipaddr=172.18.96.1
+fi
+
 if [ -n $gw_iface ]; then
     wan_iface=$gw_iface
     wan_mac=`ifconfig $wan_iface | gawk '(/^ *ether /) {print( $2);}'`
@@ -120,18 +127,17 @@ if [ -n $gw_iface ]; then
         write_nm_connection "dhcp" "$wan_mac" "$wan_iface"
     fi
 
-    for i in $UPLINK;
-        do 
-            echo "ignore-auto-dns=true" >>  $i 
-        done  
+    if [ $is_xo == "1" ]; then
+        if [ $gw_iface != "eth0" ]; then
+            write_nm_connection "dhcp" "$wan_mac" "$wan_iface"
+        else
+            for i in $UPLINK;
+            do 
+                echo "ignore-auto-dns=true" >>  $i 
+            done  
+        fi
+    fi
     echo "$wan_iface" > /etc/sysconfig/xs_wan_device
-fi
-
-if [ -n $oth_iface ]; then
-    oth_mac=`ifconfig $oth_iface | gawk '(/^ *ether /) {print( $2);}'`
-    write_nm_connection "static" "$oth_mac" "$oth_iface"
-    echo "$oth_iface" > /etc/sysconfig/xs_lan_device
-    ipaddr=172.18.96.1
 fi
 
 pushd /etc
