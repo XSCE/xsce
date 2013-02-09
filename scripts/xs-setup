@@ -122,6 +122,6 @@ openvpn yes
 yum-etckeeper yes
 do-last
 
-echo "XS configured; services are ready to use."
+echo "XS configured; ready to reboot and use."
 #echo "please check the configured services below"
 #xs-services-check
