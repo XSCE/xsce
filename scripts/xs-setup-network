@@ -58,11 +58,11 @@ UPLINK=`find /etc/NetworkManager/system-connections -maxdepth 1 -type f -name "*
 function write_nm_connection(){
     # receives connection_filename, hwaddr,  device_name as parameters
     cp "/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/$1" \
-        "/etc/NetworkManager/system-connections/$3"
+        "/etc/NetworkManager/system-connections/$3-$1"
     #removed -i to try to get rid of sed intermediate files 9/24/2012
-    sed -i  "s/\@\@MAC\@\@/$2/" "/etc/NetworkManager/system-connections/$3"
-    sed -i  "s/\@\@DEVICE\@\@/$3/" "/etc/NetworkManager/system-connections/$3"
-    chmod 600 "/etc/NetworkManager/system-connections/$3"
+    sed -i  "s/\@\@MAC\@\@/$2/" "/etc/NetworkManager/system-connections/$3-$1"
+    sed -i  "s/\@\@DEVICE\@\@/$3/" "/etc/NetworkManager/system-connections/$3-$1"
+    chmod 600 "/etc/NetworkManager/system-connections/$3-$1"
 }
 
 #========================================================
@@ -150,7 +150,7 @@ sed -i -e s/@@LAN_IF@@/$oth_iface/ /etc/sysconfig/dhcpd
 short_host=`hostname -s`
 new_name=`hostname -f`
 
-#systemctl stop NetworkManager.service
+systemctl stop NetworkManager.service
 
 #  This is the suffix which original versions of modified files will have
 BACKUP_SUFFIX=old
@@ -178,6 +178,4 @@ popd
 iptables-save > $IPTABLES_DATA
 
 echo "XS standard networking configured"
-# systemctl start NetworkManager.service
-
-sleep 5
+systemctl start NetworkManager.service
