@@ -18,7 +18,8 @@
 # consult the online docs. You have been warned.  
 #
 
-LoadModule ssl_module modules/mod_ssl.so
+# Disabling ssl for now as it is causing httpd to fail.
+# LoadModule ssl_module modules/mod_ssl.so
 
 #
 # When we also provide SSL we have to listen to the 
