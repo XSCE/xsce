@@ -133,7 +133,7 @@ if [ -n $gw_iface ]; then
         else
             for i in $UPLINK;
             do 
-                echo "ignore-auto-dns=true" >>  $i 
+                echo "ignore-auto-dns=true" >>  $i
             done  
         fi
     fi
