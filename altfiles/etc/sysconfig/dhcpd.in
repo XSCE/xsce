@@ -4,4 +4,5 @@
 ##  see /usr/share/doc/xs-config-<version>/README 
 #
 # Point dhcpd to the XS-specific config
-DHCPDARGS='-cf /etc/dhcpd-xs.conf'
+DHCPDARGS='-cf /etc/dhcpd-xs.conf @@LAN_IF@@`
+
