@@ -1,0 +1,21 @@
+function xo-admin()
+{
+	case "$1" in
+    "yes")
+        yum -y install  sneakerconfig 2>&1 | tee -a $LOG
+        if [ $? -ne 0 ] ; then
+            echo "\n\nYum returned an error\n\n" | tee -a $LOG
+            exit $YUMERROR
+        fi
+        touch $SETUPSTATEDIR/xo-admin
+        SITE=`python -c "import site;print(site.getsitepackages()[0])"`
+        tar zxf $CFGDIR/pydsh-0.7.tar.gz -C $SITE/
+        #execute the setup script
+        ;;
+    "no")
+        rm $SETUPSTATEDIR/xo-admin
+        ;;
+    esac
+}
+
+

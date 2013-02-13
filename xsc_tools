@@ -1,0 +1,65 @@
+#!/bin/bash 
+# tools to create, manage, simplify services and modules on XS server
+case "$1" in
+"mktree")
+	if [ $# -eq 2 -a $2 = "all" ]; then
+		MODULES=`cat modules_manifest`
+	fi
+	if [ $# -eq 2 -a $2 != "all" ]; then
+		MODULES=$2
+	fi
+	if [ $# -eq 1 ]; then
+		MODULES=`cat modules_manifest`
+	fi
+	for mod in $MODULES; do
+		mkdir -p modules.d/$mod
+		pushd modules.d/$mod
+		mkdir -p yum files
+		touch sequence enabled $mod.sh Makefile manifest \
+			README description
+		popd
+	done
+	;;
+"mkinks")
+	if [ $# -eq 2 -a $2 = "all" ]; then
+		MODULES=`cat modules_manifest`
+	fi
+	if [ $# -eq 2 -a $2 != "all" ]; then
+		MODULES=$2
+	fi
+	if [ $# -eq 1 ]; then
+		MODULES=`cat modules_manifest`
+	fi
+	for mod in $MODULES; do
+		pushd modules.d/$mod
+		seq="50"
+		if [ -f sequence ]; then
+		        newseq=`cat sequence`
+		fi
+		if [ -nz $newseq ]; then
+		        seq=$newseq
+		fi
+                ln -s ../../$mod ../active.d/$seq-$mod
+                popd
+	done
+	;;
+"yum")
+        for mod in `ls modules.d`; do
+                echo `ls -1 modules.d/$mod/yum/`
+        done
+        ;;
+                
+"functions")
+        for mod in `ls modules.d`; do
+                pushd modules.d/$mod
+                echo `ls -1 *.sh`
+                popd
+        done
+        ;;
+                
+                
+
+*)
+	ls -da modules.d
+	;;
+esac

@@ -1,0 +1,18 @@
+function xs-security()
+{
+	case "$1" in
+    "yes")
+	    $YUM_CMD xs-tools olpc-bios-crypto bitfrost xs-activation 2>&1 | tee -a $LOG
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
+        touch $SETUPSTATEDIR/xs-security
+        ;;
+    "no")
+        rm $SETUPSTATEDIR/xs-security
+        ;;
+    esac
+}
+
+
