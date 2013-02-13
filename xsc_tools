@@ -17,10 +17,11 @@ case "$1" in
 		mkdir -p yum files
 		touch sequence enabled $mod.sh Makefile manifest \
 			README description
+        chmod 755 $mod.sh
 		popd
 	done
 	;;
-"mkinks")
+"mklinks")
 	if [ $# -eq 2 -a $2 = "all" ]; then
 		MODULES=`cat modules_manifest`
 	fi
@@ -50,16 +51,26 @@ case "$1" in
         ;;
                 
 "functions")
+        curdir=`pwd`
         for mod in `ls modules.d`; do
-                pushd modules.d/$mod
+                cd modules.d/$mod
                 echo `ls -1 *.sh`
-                popd
+                cd $curdir
         done
         ;;
                 
-                
-
+"exec")
+        curdir=`pwd`
+        for mod in `ls modules.d`; do
+                cd modules.d/$mod
+                script=`ls -1 *.sh`
+                if [ ! -z $script ]; then
+                    source "./$script"
+                fi
+                cd $curdir
+        done
+        ;;
 *)
-	ls -da modules.d
+	ls  modules.d
 	;;
 esac
