@@ -1,2 +1,2 @@
 source xsc_tools exec
-gateway yes
+vnc yes
