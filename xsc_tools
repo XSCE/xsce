@@ -12,8 +12,8 @@ case "$1" in
 		MODULES=`cat modules_manifest`
 	fi
 	for mod in $MODULES; do
-		mkdir -p modules.d/$mod
-		pushd modules.d/$mod
+		mkdir -p plugins.d/$mod
+		pushd plugins.d/$mod
 		mkdir -p yum files
 		touch sequence enabled $mod.sh Makefile manifest \
 			README description
@@ -32,7 +32,7 @@ case "$1" in
 		MODULES=`cat modules_manifest`
 	fi
 	for mod in $MODULES; do
-		pushd modules.d/$mod
+		pushd plugins.d/$mod
 		seq="50"
 		if [ -f sequence ]; then
 		        newseq=`cat sequence`
@@ -45,15 +45,15 @@ case "$1" in
 	done
 	;;
 "yum")
-        for mod in `ls modules.d`; do
-                echo `ls -1 modules.d/$mod/yum/`
+        for mod in `ls plugins.d`; do
+                echo `ls -1 plugins.d/$mod/yum/`
         done
         ;;
                 
 "functions")
         curdir=`pwd`
-        for mod in `ls modules.d`; do
-                cd modules.d/$mod
+        for mod in `ls plugins.d`; do
+                cd plugins.d/$mod
                 echo `ls -1 *.sh`
                 cd $curdir
         done
@@ -61,8 +61,8 @@ case "$1" in
                 
 "exec")
         curdir=`pwd`
-        for mod in `ls modules.d`; do
-                cd modules.d/$mod
+        for mod in `ls plugins.d`; do
+                cd plugins.d/$mod
                 script=`ls -1 *.sh`
                 if [ ! -z $script ]; then
                     source "./$script"
@@ -70,7 +70,15 @@ case "$1" in
                 cd $curdir
         done
         ;;
+"savetree")
+        mkdir -p ../plugins.d.backup
+        cp -rp ./plugins.d/* ../plugins.d.backup
+        ;;
+"restoretree")
+        mkdir -p ./modules.test
+        cp -rp ../plugins.d.backup/* ./modules.test
+        ;;
 *)
-	ls  modules.d
+	ls  plugins.d
 	;;
 esac

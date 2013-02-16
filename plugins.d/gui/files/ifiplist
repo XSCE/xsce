@@ -1,0 +1,4 @@
+#!/bin/bash
+# get the ip information for each network interface
+base=`dirname  "$0"`
+ifconfig | gawk -f "$base/iflist.awk"

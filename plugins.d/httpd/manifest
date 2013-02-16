@@ -1,0 +1,7 @@
+/etc/php.ini.in
+/etc/httpd/conf.d/proxy_ajp.conf.in
+/etc/httpd/conf/httpd-xs.conf.in
+/etc/sysconfig/httpd.in
+/usr/share/xs-config/cfg/etc/httpd/conf.d/xs.conf
+/usr/share/xs-config/cfg/etc/sudoers.d/xs-http
+/usr/bin/xs-httpcache

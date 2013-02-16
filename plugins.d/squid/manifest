@@ -1,0 +1,3 @@
+/etc/sysconfig/olpc-scripts/domain_config.d/squid
+/etc/sysconfig/squid.in
+/etc/squid/squid-xs.conf.in

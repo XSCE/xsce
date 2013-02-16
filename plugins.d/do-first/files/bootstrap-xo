@@ -1,0 +1,106 @@
+#!/bin/bash
+# undo some XO specific changes done by OOB while creating the image
+
+ISXO=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
+FIX_RPMS="sed libidn grep which util-linux wget gnupg2 groff gnash"
+LOG=/home/olpc/xs-setup.log
+
+if [ $ISXO = "1" ]
+then
+    # there are files open in the tempfs /var/log -- so we cannot just unmount it
+    # we need to disable tempfs and then start up again on a /var/log directory
+    # that persists
+#    set +e; err=`grep -e "#varlog" /etc/fstab`; set -e;
+    err=`cat /etc/fstab | grep -e "#varlog"`
+    if [ "x$err" = "x" ]; then
+	echo "bootstrap-xo routine started" | tee -a $LOG
+	date  2>&1 | tee -a $LOG
+	# use the supplied 10-olpc-net.rules remove the 70-olpc-net.rules
+	if [ -e /usr/lib/udev/rules.d/70-olpc-net.rules ]; then
+	    rm /usr/lib/udev/rules.d/70-olpc-net.rules
+	fi
+
+    # NM plugin need to be specified for it to manage deveces
+    echo "plugins=keyfile" >> /etc/NetworkManager/NetworkManager.conf
+
+    cat << EOF > /etc/NetworkManager/system-connections/"Sugar Modem Connection"
+
+[connection]
+id=Sugar Modem Connection
+uuid=62be9bcb7a3d3929fc01d82e038c42f93b339334
+type=gsm
+autoconnect=false
+
+[ppp]
+lcp-echo-failure=5
+lcp-echo-interval=30
+
+[ipv4]
+method=auto
+ignore-auto-dns=true
+
+[serial]
+baud=115200
+
+[gsm]
+number=*99#
+EOF
+
+        chmod 0600 /etc/NetworkManager/system-connections/"Sugar Modem Connection"
+
+	# servers should not sleep
+	touch /etc/powerd/flags/inhibit-suspend
+
+	# keep yum cache
+	sed -i -e  's/keepcache=0/keepcache=1/' /etc/yum.conf
+
+	# disable "su" without password on the XO
+	sed -i -e '6s/^auth/#auth/' /etc/pam.d/su
+
+	# copy .bashrc to /root
+	cp -p /home/olpc/.bashrc /root
+
+    # stateless linux rwtab file creates tmpfs that is too small installs
+    sed -i -e '/^RW_OPTIONS/ c\
+    RW_OPTIONS="-o size=4M -o nr_inodes=2048"' /etc/sysconfig/readonly-root
+
+	# Keep docs when installing packages
+	sed -i -e  's/%_excludedocs 1/%_excludedocs 0/' /etc/rpm/macros.imgcreate
+
+	yum -y install man-pages man-db man 2>&1 | tee -a $LOG
+
+	# re-install these packages to pickup missing docs
+	yum -y reinstall $FIX_RPMS 2>&1 | tee -a $LOG
+
+	# install xs-config
+	yum -y install xs-config 2>&1 | tee -a $LOG
+
+	# Rename the XO to be schoolserver.local
+	sed -i -e '/HOSTNAME=xo/d' /etc/sysconfig/network
+	echo "HOSTNAME=schoolserver.local" >> /etc/sysconfig/network
+
+	# XO release 12.1.0 makes /var/log  a tempfs -- server logs should persist
+	sed -i -e 's:vartmp:#vartmp:' /etc/fstab
+	sed -i -e 's:varlog:#varlog:' /etc/fstab
+	echo "bootstrap-xo routine completed" | tee -a $LOG
+	date  2>&1 | tee -a $LOG
+	cp /var/log/yum.log /home/olpc/
+    set +x
+    echo
+    echo "================================================================="
+	echo "The setup program must reboot before additional setup can proceed"
+    echo
+	echo "Next step is to run 'xs-setup' when rebooted"
+    echo "================================================================="
+    echo
+	read -p "Press [Enter] key to reboot"
+	echo "rebooting in 5 seconds"
+	sleep 5
+	reboot
+    else
+        echo "This part of the configuration is already completed"
+        echo "Next step is to run 'xs-setup'"
+    fi
+else
+    echo "Not an XO please run 'xs-config'"
+fi
