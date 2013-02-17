@@ -77,5 +77,7 @@ install: $(DESTDIR)
 	@echo $(PLUGINDIRLIST)
 	for D in $$PLUGINDIRLIST; do \
 		$(MAKE) -C $$D; \
+		$(warning D is $($D)) \
+		@echo "current direcdtory is $$D" \
 	done
 print-%: ; @echo $* is $($*)
