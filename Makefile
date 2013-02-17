@@ -1,8 +1,9 @@
 # Installs OLPC XS/XSX default configurations.
 
 # install root
-DESTDIR = ./build/
+DESTDIR = /
 PLUGINDIR = ./plugins.d/
+MYENV = 'DESTDIR=$(DESTDIR)'
 
 $(DESTDIR):
 	mkdir -p $(DESTDIR)
@@ -73,11 +74,12 @@ publish-stable:
 PLUGINDIRLIST = $(shell find -maxdepth 1 $(PLUGINDIR) -type d  -print )
 install: $(DESTDIR)
 	# Makefile at ROOT_DIRECTORY creates all the directories in BUILDROOT
-	$(MAKE) -C $(ROOT_DIRECTORY)
+	$(MAKE) -C $(ROOT_DIRECTORY) $(MFLAGS) $(MYENV)  install
 	@echo $(PLUGINDIRLIST)
-	for D in $$PLUGINDIRLIST; do \
-		$(MAKE) -C $$D; \
+	@for D in $$PLUGINDIRLIST; do \
+		$(MAKE) -C $$D $(MFLAGS) $(MYENV) install; \
 		$(warning D is $($D)) \
-		@echo "current direcdtory is $$D" \
+		echo "current direcdtory is $$D" \
 	done
+# use print-<macro> from command line to inspect its value
 print-%: ; @echo $* is $($*)
