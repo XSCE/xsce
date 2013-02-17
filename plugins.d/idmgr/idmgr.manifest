@@ -1,0 +1,2 @@
+/etc/systemd/system/idmgr.service.in
+/etc/sysconfig/olpc-scripts/domain_config.d/idmgr

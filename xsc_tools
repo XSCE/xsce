@@ -2,14 +2,15 @@
 # tools to create, manage, simplify services and modules on XS server
 case "$1" in
 "mktree")
+# Read plugin names from m_manifest (or 2nd parameter) and create plugin tree
 	if [ $# -eq 2 -a $2 = "all" ]; then
-		MODULES=`cat modules_manifest`
+		MODULES=`cat m_manifest`
 	fi
 	if [ $# -eq 2 -a $2 != "all" ]; then
 		MODULES=$2
 	fi
 	if [ $# -eq 1 ]; then
-		MODULES=`cat modules_manifest`
+		MODULES=`cat m_manifest`
 	fi
 	for mod in $MODULES; do
 		mkdir -p plugins.d/$mod
@@ -22,14 +23,15 @@ case "$1" in
 	done
 	;;
 "mklinks")
+# probably will delete this function
 	if [ $# -eq 2 -a $2 = "all" ]; then
-		MODULES=`cat modules_manifest`
+		MODULES=`cat m_manifest`
 	fi
 	if [ $# -eq 2 -a $2 != "all" ]; then
 		MODULES=$2
 	fi
 	if [ $# -eq 1 ]; then
-		MODULES=`cat modules_manifest`
+		MODULES=`cat m_manifest`
 	fi
 	for mod in $MODULES; do
 		pushd plugins.d/$mod
@@ -45,12 +47,14 @@ case "$1" in
 	done
 	;;
 "yum")
+# echo the yum modules in all the plugins
         for mod in `ls plugins.d`; do
                 echo `ls -1 plugins.d/$mod/yum/`
         done
         ;;
                 
 "functions")
+# echo the function names (*.sh) in the plugin tree
         curdir=`pwd`
         for mod in `ls plugins.d`; do
                 cd plugins.d/$mod
@@ -60,6 +64,7 @@ case "$1" in
         ;;
                 
 "exec")
+# source all the functions in the plugin tree
         curdir=`pwd`
         for mod in `ls plugins.d`; do
                 cd plugins.d/$mod
@@ -71,13 +76,106 @@ case "$1" in
         done
         ;;
 "savetree")
-        mkdir -p ../plugins.d.backup
-        cp -rp ./plugins.d/* ../plugins.d.backup
+# copy the plugin tree to ../plugins.d.backup, or 2nd parameter
+        target=../plugins.d.backup
+        if [ $# = 1 ]; then
+            target=$1
+        fi 
+        mkdir -p $target
+        cp -rp ./plugins.d/* $target
         ;;
 "restoretree")
-        mkdir -p ./modules.test
-        cp -rp ../plugins.d.backup/* ./modules.test
+# copy the plugin tree from ../plugins.d.backup, or 2nd parameter to ./plugins.test
+        source=../plugins.d.backup
+        if [ $# = 1 -a -d $1 ]; then
+            source=$1
+        fi 
+        mkdir -p ./plugins.test
+        cp -rp $source/* ./modules.test
         ;;
+"git2linux")
+# extract the current git branch to a tree one directory up from current
+        target=../linuxtree
+        if [ $# = 1 ];then
+            target=../$1
+        fi
+        export DESTDIR=$target
+        mkdir -p $target
+        make -e install
+        ;;
+"mkmake")
+# use manifest to generate Makefiles in each plugin
+    curdir=`pwd`
+    # scan through all the files in the input tree, and create the directories
+    # use an array to eliminate duplicates
+    for mod in `ls plugins.d`; do
+        cd plugins.d/$mod
+        #echo "$PWD/$mod.manifest"
+        if [ -f ./$mod.manifest ]; then
+            manlist+=" plugins.d/$mod/$mod.manifest"
+        fi
+        cd $curdir
+    done
+        cat $manlist | gawk '{
+            line = $0
+            nibbles[0]=""
+            for (i in nibbles) {delete nibble[i]}
+            #print $0
+            directories[0]=""
+            num = split($0,nibbles,"/")
+            #for (i in nibbles) {print( nibbles[i])}
+            path = "" 
+            for (i=1; i<num; i++){
+                path = path nibbles[i] "/"
+                #print path
+                if (!( path in directories)) {
+                    makef = sprintf("\tinstall -D -d  \044(DESTDIR)%s",path)
+                    cmd = sprintf("echo '\''%s'\'' >> ~/dextrose/xs-config/plugins.d/Makefile",makef)
+                    #print(cmd "  " path)
+                    system(cmd)
+                    directories[path]=""        
+                }
+            }
+        }' 
+  ;; 
+"dummy")
+    for mod in `ls plugins.d`; do
+        cd plugins.d/$mod
+            rm -f Makefile
+            echo "install:" >>Makefile
+            #echo `cat $mod.manifest `
+        if [ -f $mod.manifest ];then
+            cat $mod.manifest | gawk -v plug=$mod '{
+            ar[0] = ""
+            num = split($0,ar,"/")
+            makef = sprintf("\tinstall -D files/%s \044(DESTDIR)%s",ar[num], $0)
+            cmd = sprintf("echo '\''%s'\'' >> ~/dextrose/xs-config/plugins.d/%s/Makefile",makef,plug)
+            system(cmd)
+            print(cmd)}'
+        fi
+        cd $curdir
+    done
+    ;;
+tree2plugins.d)
+# input is list of files (find BUILDROOT with plugin name added), 
+# param1=treeroot output is files copied to ./files, manifest written
+
+    gawk -v treeloc=$3 'BEGIN { RS = "\r" }
+    {
+    src = $1 
+    tree = $1
+    sub(/\./,"",tree)
+    sub(/\./,"",src)
+    if ($2 != ""){
+        line = sprintf("cp %s%s plugins.d/%s/files/",treeloc,tree,$2) 
+        print( line )
+    #    system(line)
+        addline = sprintf("echo '%s' >> plugins.d/%s/%s.manifest",tree,$2,$2)
+        print(addline)
+        system(addline)
+    }
+    }' $2
+    ;;
 *)
 	ls  plugins.d
 	;;
