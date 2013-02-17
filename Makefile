@@ -2,9 +2,9 @@
 
 # install root
 DESTDIR = /
-PLUGINDIR = ./plugins.d/
+PLUGINDIR = plugins.d/
 MYENV = 'DESTDIR=$(DESTDIR)'
-PLUGINDIRLIST = $(shell find  $(PLUGINDIR) -maxdepth 1 -type d  -print )
+PLUGINDIRLIST = $(shell find $(CURDIR)/$(PLUGINDIR) -maxdepth 1 -type d  -print )
 $(warning PLUGINDIRLIST IS $(PLUGINDIRLIST))
 
 $(DESTDIR):
@@ -78,7 +78,7 @@ install: $(DESTDIR)
 	$(MAKE) -C $(ROOT_DIRECTORY) $(MFLAGS) $(MYENV)  install
 	@echo $(PLUGINDIRLIST)
 	@for D in $(PLUGINDIRLIST); do \
-		$(MAKE) -C $$D $(MFLAGS) $(MYENV) install; \
+		(cd $$D; $(MAKE)  $(MFLAGS) $(MYENV) install); \
 		$(warning D is $$D) \
 		echo "current direcdtory is $$D" \
 	done
