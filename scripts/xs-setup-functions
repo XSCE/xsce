@@ -828,6 +828,7 @@ function sdcard()
     esac
 }
 
+#### update me JV
 # new code to use NetworkManager to set up devices
 # copied verbatim from xs-setup-network
 function write_nm_connection(){
@@ -929,13 +930,6 @@ function squid()
         fi
         systemctl enable squid.service 2>&1 | tee -a $LOG
         set +x; systemctl start squid.service 2>&1 | tee -a $LOG; set -x
-
-        # need to set up iptables to forward port 80 queries
-        # the following script regenerates /etc/sysconfig/iptables
-        cp /etc/sysconfig/olpc-scripts/firewall-xs.in /etc/sysconfig/olpc-scripts/firewall-xs
-        /etc/sysconfig/olpc-scripts/firewall-xs
-        iptables-save >/etc/sysconfig/iptables
-
         ;;
     "no")
         systemctl disable squid.service 2>&1 | tee -a $LOG
@@ -1181,6 +1175,7 @@ function do_first()
 	# use NM keyfile in place of ifcfg-rh XOs have this set already via OOB
 	sed -i -e 's/ifcfg-rh/keyfile/' /etc/NetworkManager/NetworkManager.conf
 
+        #### split these into new modules functions. JV 
         ## Prepare config files
         CFG_TEMPLATES="rsyslog.conf motd.olpc sysctl.conf ssh/sshd_config
         sysconfig/named sysconfig/init sysconfig/squid rssh.conf php.ini
@@ -1270,6 +1265,7 @@ function do_first()
         popd
 
     fi
+    #### end JV
     echo "do first routine completed" | tee -a $LOG
     date  2>&1 | tee -a $LOG
 

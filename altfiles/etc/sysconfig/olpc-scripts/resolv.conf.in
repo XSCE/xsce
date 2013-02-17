@@ -3,4 +3,4 @@
 ##       resolv.conf.in
 ##
 search @@BASEDNSNAME@@
-nameserver 172.18.96.1
+nameserver 127.0.0.1

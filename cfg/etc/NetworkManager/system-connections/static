@@ -6,7 +6,7 @@ type=802-3-ethernet
 
 [ipv4]
 method=manual
-dns=172.18.96.1;
+dns=127.0.0.1;
 dns-search=local;
 addresses1=172.18.96.1;19;0.0.0.0;
 may-fail=true
