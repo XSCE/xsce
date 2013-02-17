@@ -79,7 +79,7 @@ install: $(DESTDIR)
 	@echo $(PLUGINDIRLIST)
 	@for D in $(PLUGINDIRLIST); do \
 		$(MAKE) -C $$D $(MFLAGS) $(MYENV) install; \
-		$(warning D is $($D)) \
+		$(warning D is $$D) \
 		echo "current direcdtory is $$D" \
 	done
 # use print-<macro> from command line to inspect its value
