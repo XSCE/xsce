@@ -1,7 +1,7 @@
 # Installs OLPC XS/XSX default configurations.
 
 # install root
-DESTDIR = /
+DESTDIR = ./build/
 PLUGINDIR = plugins.d
 
 $(DESTDIR):
@@ -69,8 +69,11 @@ publish-stable:
 	    xs-dev.laptop.org:/xsrepos/testing/olpc/$(BRANCH)/source/SRPMS/
 	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/$(BRANCH)/i586
 	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/$(BRANCH)/source/SRPMS
-
-
+ROOT_DIRECTORY := ./plugins.d/
+PLUGINDIRLIST = $(shell find -type d -maxdepth 1 -print $(ROOT_DIRECTORY) )
 install: $(DESTDIR)
-	PLUGINDIRLIST := `ls -d $(PLUGINDIR)`
-	(for D in $(PLUGINDIRLIST);do;cd $(D);make -e install;done)
+	@echo $(PLUGINDIRLIST)
+	for D in $$PLUGINDIRLIST; do \
+		$(MAKE) -C $$D; \
+	done
+print-%: ; @echo $* is $($*)
