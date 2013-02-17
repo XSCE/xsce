@@ -2,7 +2,7 @@
 
 # install root
 DESTDIR = ./build/
-PLUGINDIR = plugins.d
+PLUGINDIR = ./plugins.d/
 
 $(DESTDIR):
 	mkdir -p $(DESTDIR)
