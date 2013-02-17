@@ -70,7 +70,7 @@ Bootstraper for running OLPC XS School server on an XO.
 %install
 echo $PWD
 rm -rf $RPM_BUILD_ROOT
-make DESTDIR=$RPM_BUILD_ROOT/%{DESTDIR} install
+make DESTDIR=$RPM_BUILD_ROOT%{DESTDIR} install
 %clean
 rm -rf $RPM_BUILD_ROOT
 
