@@ -2,9 +2,9 @@
 
 # install root
 DESTDIR = /
-PLUGINDIR = plugins.d/
+PLUGINDIR := $(CURDIR)/plugins.d/
 MYENV = 'DESTDIR=$(DESTDIR)'
-PLUGINDIRLIST = $(shell find $(CURDIR)/$(PLUGINDIR) -maxdepth 1 -type d  -print )
+PLUGINDIRLIST := $(shell find $(PLUGINDIR) -maxdepth 1 -type d  -print )
 $(warning PLUGINDIRLIST IS $(PLUGINDIRLIST))
 
 $(DESTDIR):
