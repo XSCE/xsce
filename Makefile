@@ -71,7 +71,7 @@ publish-stable:
 	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/$(BRANCH)/i586
 	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/$(BRANCH)/source/SRPMS
 
-PLUGINDIRLIST = $(shell find -maxdepth 1 $(PLUGINDIR) -type d  -print )
+PLUGINDIRLIST = $(shell find  $(PLUGINDIR) -maxdepth 1 -type d  -print )
 install: $(DESTDIR)
 	# Makefile at ROOT_DIRECTORY creates all the directories in BUILDROOT
 	$(MAKE) -C $(ROOT_DIRECTORY) $(MFLAGS) $(MYENV)  install
