@@ -69,9 +69,11 @@ publish-stable:
 	    xs-dev.laptop.org:/xsrepos/testing/olpc/$(BRANCH)/source/SRPMS/
 	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/$(BRANCH)/i586
 	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/$(BRANCH)/source/SRPMS
-ROOT_DIRECTORY := ./plugins.d/
-PLUGINDIRLIST = $(shell find -type d -maxdepth 1 -print $(ROOT_DIRECTORY) )
+
+PLUGINDIRLIST = $(shell find -maxdepth 1 $(PLUGINDIR) -type d  -print )
 install: $(DESTDIR)
+	# Makefile at ROOT_DIRECTORY creates all the directories in BUILDROOT
+	$(MAKE) -C $(ROOT_DIRECTORY)
 	@echo $(PLUGINDIRLIST)
 	for D in $$PLUGINDIRLIST; do \
 		$(MAKE) -C $$D; \
