@@ -77,7 +77,7 @@ install: $(DESTDIR)
 	# Makefile at ROOT_DIRECTORY creates all the directories in BUILDROOT
 	$(MAKE) -C $(ROOT_DIRECTORY) $(MFLAGS) $(MYENV)  install
 	@echo $(PLUGINDIRLIST)
-	@for D in $$PLUGINDIRLIST; do \
+	@for D in $(PLUGINDIRLIST); do \
 		$(MAKE) -C $$D $(MFLAGS) $(MYENV) install; \
 		$(warning D is $($D)) \
 		echo "current direcdtory is $$D" \
