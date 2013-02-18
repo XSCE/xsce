@@ -77,7 +77,9 @@ MY = one two
 install:
 	# Makefile at PLUGINS_ROOT creates all the directories in BUILDROOT
 	(cd $(PLUGINS_ROOT); $(MAKE) $(MFLAGS) $(MYENV)  install)
-
+	@for D in $(PLUGINDIRLIST); do \
+		(cd $$D; $(MAKE)  $(MFLAGS) $(MYENV) install) \
+	done
 # use print-<macro> from command line to inspect its value
 print-%: ; @echo $* is $($*)
 # cause shell commands to output the rules being executed
