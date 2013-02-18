@@ -1,7 +1,0 @@
-/etc/init.d/ejabberd-xs
-/etc/systemd/system/ejabberd-xs.service.in
-/etc/ejabberd/ejabberd-xs.cfg.in
-/etc/sysconfig/olpc-scripts/domain_config.d/ejabberd
-/etc/sysconfig/ejabberd-xs
-/usr/share/xs-config/cfg/etc/sudoers.d/10-ejabberdmoodle
-/usr/bin/xs-ejabberd-srg

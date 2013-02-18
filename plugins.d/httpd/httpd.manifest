@@ -5,17 +5,3 @@
 /usr/bin/xs-httpcache
 /usr/share/xs-config/cfg/etc/httpd/conf.d/xs.conf
 /usr/share/xs-config/cfg/etc/sudoers.d/xs-http
-/etc/httpd/conf.d/proxy_ajp.conf.in
-/etc/httpd/conf/httpd-xs.conf.in
-/etc/php.ini.in
-/etc/sysconfig/httpd.in
-/usr/bin/xs-httpcache
-/usr/share/xs-config/cfg/etc/httpd/conf.d/xs.conf
-/usr/share/xs-config/cfg/etc/sudoers.d/xs-http
-/etc/httpd/conf.d/proxy_ajp.conf.in
-/etc/httpd/conf/httpd-xs.conf.in
-/etc/php.ini.in
-/etc/sysconfig/httpd.in
-/usr/bin/xs-httpcache
-/usr/share/xs-config/cfg/etc/httpd/conf.d/xs.conf
-/usr/share/xs-config/cfg/etc/sudoers.d/xs-http

@@ -16,8 +16,7 @@ case "$1" in
 		mkdir -p plugins.d/$mod
 		pushd plugins.d/$mod
 		mkdir -p yum files
-		touch sequence enabled $mod.sh Makefile manifest \
-			README description
+		touch $mod.sh Makefile manifest README 
         chmod 755 $mod.sh
 		popd
 	done

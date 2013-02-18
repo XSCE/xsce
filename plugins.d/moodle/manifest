@@ -1,3 +1,0 @@
-/etc/systemd/system/moodle-xs.service.in
-/etc/httpd/conf.d/010-make-moodle-default.conf.in
-/usr/libexec/moodle-xs-init
