@@ -118,28 +118,28 @@ case "$1" in
         fi
         cd $curdir
     done
-            echo "install:" >>$MKDIR_MAKEFILE
-        cat $manlist | gawk -v mkfile=$MKDIR_MAKEFILE'{
-            line = $0
-            nibbles[0]=""
-            for (i in nibbles) {delete nibble[i]}
-            print $0
-            directories[0]=""
-            num = split($0,nibbles,"/")
-            #for (i in nibbles) {print( nibbles[i])}
-            path = ""
-            for (i=1; i<num; i++){
-                path = path nibbles[i] "/"
-                #print path
-                if (!( path in directories)) {
-                    makef = sprintf("\tinstall -D -d  \044(DESTDIR)%s",path)
-                    cmd = sprintf("echo '\''%s'\'' >> mkfile", makef)
-                    #print(cmd "  " path)
-                    system(cmd)
-                    directories[path]=""
-                }
+    echo "install:" >>$MKDIR_MAKEFILE
+    cat $manlist | gawk -v mkfile=$MKDIR_MAKEFILE '{
+        line = $0
+        nibbles[0]=""
+        for (i in nibbles) {delete nibble[i]}
+        print $0
+        directories[0]=""
+        num = split($0,nibbles,"/")
+        #for (i in nibbles) {print( nibbles[i])}
+        path = ""
+        for (i=1; i<num; i++){
+            path = path nibbles[i] "/"
+            #print path
+            if (!( path in directories)) {
+                makef = sprintf("\tinstall -D -d  \044(DESTDIR)%s",path)
+                cmd = sprintf("echo '\''%s'\'' >> %s", makef, mkfile)
+                #print(cmd "  " path)
+                system(cmd)
+                directories[path]=""
             }
-        }'
+        }
+    }'
     for mod in `ls plugins.d`; do
         cd plugins.d/$mod
         rm -f Makefile
@@ -161,7 +161,7 @@ case "$1" in
         cd $curdir
     done
     ;;
-    
+
 tree2plugins.d)
 # input is list of files (find BUILDROOT with plugin name added),
 # param1=treeroot output is files copied to ./files, manifest written
