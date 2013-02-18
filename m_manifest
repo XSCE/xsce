@@ -1,12 +1,13 @@
-template
 activity-server
 avahi
 create-usb-repo
 create-usb-microcore-linux
 dansguardian
 dhcpd
+do-first
 ejabberd
-gatewauy
+gateway
+gui
 httpd
 idmgr
 moodle

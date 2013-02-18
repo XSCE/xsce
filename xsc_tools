@@ -167,9 +167,10 @@ case "$1" in
 tree2plugins.d)
 # input is list of files (find BUILDROOT with plugin name added),
 # param1=treeroot output is files copied to ./files, manifest written
-
-    gawk -v treeloc=$3 'BEGIN { RS = "\r" }
+# usage: cat <find / of root> | xsc_tools tree2plugins.d ../linuxtree
+    gawk  'BEGIN { RS = "\r" }
     {
+    treeloc = "../linuxtree"
     src = $1
     tree = $1
     sub(/\./,"",tree)

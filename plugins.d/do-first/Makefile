@@ -1,22 +1,20 @@
 install:
+	install -D files/hosts.in $(DESTDIR)/etc/
 	install -D files/motd.in $(DESTDIR)/etc/
-	install -D files/sysctl.conf.in $(DESTDIR)/etc/
-	install -D files/sshd_config.in $(DESTDIR)/etc/ssh/
-	install -D files/rsyslog.conf.in $(DESTDIR)/etc/
-	install -D files/rssh.conf.in $(DESTDIR)/etc/
 	install -D files/motd.olpc.in $(DESTDIR)/etc/
+	install -D files/rssh.conf.in $(DESTDIR)/etc/
+	install -D files/rsyslog.conf.in $(DESTDIR)/etc/
+	install -D files/sshd_config.in $(DESTDIR)/etc/ssh/
 	install -D files/init.in $(DESTDIR)/etc/sysconfig/
 	install -D files/pcspkr.modules $(DESTDIR)/etc/sysconfig/modules/
-	install -D files/functions $(DESTDIR)/etc/sysconfig/olpc-scripts/
-	install -D files/hosts.in $(DESTDIR)/etc/
-	install -D files/manifest $(DESTDIR)/
+	install -D files/sysctl.conf.in $(DESTDIR)/etc/
 	install -D files/xs-apply-changes $(DESTDIR)/root/
-	install -D files/bashrc_xs.sh $(DESTDIR)/usr/share/xs-config/cfg/etc/profile.d/
-	install -D files/media.repo $(DESTDIR)/usr/share/xs-config/cfg/etc/yum.repos.d/
 	install -D files/bootstrap-xo $(DESTDIR)/usr/bin/
-	install -D files/xs-setup $(DESTDIR)/usr/bin/
-	install -D files/xs-mkaccount $(DESTDIR)/usr/bin/
 	install -D files/cat-parts $(DESTDIR)/usr/bin/
 	install -D files/prep-storage.sh $(DESTDIR)/usr/bin/
+	install -D files/xs-mkaccount $(DESTDIR)/usr/bin/
 	install -D files/xs-services-check $(DESTDIR)/usr/bin/
+	install -D files/xs-setup $(DESTDIR)/usr/bin/
 	install -D files/xs-setup-functions $(DESTDIR)/usr/bin/
+	install -D files/bashrc_xs.sh $(DESTDIR)/usr/share/xs-config/cfg/etc/profile.d/
+	install -D files/media.repo $(DESTDIR)/usr/share/xs-config/cfg/etc/yum.repos.d/
