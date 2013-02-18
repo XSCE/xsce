@@ -75,7 +75,7 @@ publish-stable:
 
 install: $(DESTDIR)
 	# Makefile at PLUGINS_ROOT creates all the directories in BUILDROOT
-	$(MAKE) -C $(PLUGINS_ROOT) $(MFLAGS) $(MYENV)  install
+	(cd $(PLUGINS_ROOT); $(MAKE)  $(MFLAGS) $(MYENV)  install)
 	@echo $(PLUGINDIRLIST)
 	@for D in $(PLUGINDIRLIST); do \
 		(cd $$D; $(MAKE)  $(MFLAGS) $(MYENV) install); \
@@ -85,6 +85,6 @@ install: $(DESTDIR)
 # use print-<macro> from command line to inspect its value
 print-%: ; @echo $* is $($*)
 # cause shell commands to output the rules being executed
-OLD_SHEL := $(SHELL)
+OLD_SHELL := $(SHELL)
 SHELL = $(warning [$@ ($^)
 		($?)])$(OLD SHELL)
