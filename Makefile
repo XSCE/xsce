@@ -85,6 +85,6 @@ install: $(DESTDIR)
 # use print-<macro> from command line to inspect its value
 print-%: ; @echo $* is $($*)
 # cause shell commands to output the rules being executed
-OLD_SHELL := $(SHELL)
-SHELL = $(warning [$@ ($^)
-		($?)]) $(OLD SHELL)
+#OLD_SHELL := $(SHELL)
+#SHELL = $(warning [$@ ($^)
+#		($?)]) $(OLD SHELL)
