@@ -1,0 +1,68 @@
+#!/usr/bin/python
+
+"""We take one parameter: the path of the resulting iptables file.
+
+ - the template is assumed to be the same path, with a ".in" suffix
+ - the file will be updated =atomically=
+
+"""
+
+import re
+import os, os.path
+import logging
+import sys
+import tempfile
+
+
+
+sysconfig_path = "/etc/sysconfig"
+
+if len(sys.argv) < 2:
+     sys.stderr.write("Need a filepath parameter\n")
+     exit(1)
+
+# will try and update it atomically
+output_path = sys.argv[1]
+
+# default
+lan = 'eth0'
+wan = 'eth1'
+
+wanconf_path = os.path.join(sysconfig_path, 'xs_wan_device')
+if os.path.exists(wanconf_path):
+     # if there is no file, use the default silently
+     try:
+          conf = wanconf_path
+          fh = open(conf)
+          fc = fh.readline().strip()
+          if fc != '':
+               wan = fc
+     except IOError:
+          logging.warning("Prolem reading " + wanconf_pathconf + " , assuming " + wan)
+
+proxyison_conf = os.path.join(sysconfig_path, 'xs_httpcache_on')
+if os.path.exists(proxyison_conf):
+     proxyison = True
+else:
+     proxyison = False
+
+#print("wan="+wan+" squid=%i" % squid)
+
+template = open(output_path + ".in")
+# write it as a tmpfile in the destination directory, for an atomic update
+(destfh, tmpfile) = tempfile.mkstemp(dir=os.path.dirname(output_path))
+for line in template:
+     if (re.match('@@SQUID@@', line)):
+          if proxyison:
+               os.write(destfh, '-A PREROUTING ! -i %s -p tcp --dport 80 -j REDIRECT --to-ports 3128\n' % wan)
+     else:
+          # line = line.rstrip()
+          line = re.sub(r'\@\@WAN\@\@', wan, line)
+          line = re.sub(r'\@\@LAN\@\@', lan, line)
+          os.write(destfh, line)
+
+os.close(destfh)
+
+# update atomically
+os.rename(tmpfile, output_path)
+

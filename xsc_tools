@@ -178,7 +178,7 @@ tree2plugins.d)
     if ($2 != ""){
         line = sprintf("cp %s%s plugins.d/%s/files/",treeloc,tree,$2)
         print( line )
-    #    system(line)
+        system(line)
         addline = sprintf("echo '%s' >> plugins.d/%s/%s.manifest",tree,$2,$2)
         print(addline)
         system(addline)

@@ -1,0 +1,183 @@
+#!/bin/bash -x
+#
+
+#  Copyright 2012, One Laptop per Child
+#  Author: Jerry Vonau, George Hunt
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public
+# License along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# Parse options
+opt_upgrade_only=
+if ! options=$(getopt -o u -l upgrade-only -- "$@"); then
+	exit 1
+fi
+
+eval set -- $options
+while [ $# -gt 0 ]; do
+	case $1 in
+		-u|--upgrade-only) opt_upgrade_only=1 ;;
+		(--) shift; break;;
+		(-*) echo "$0: error - unrecognized option $1" >&2; exit 1;;
+		(*) break;;
+	esac
+	shift
+done
+
+# The user can request that we only perform setup steps if setup had been
+# previously performed by an admin. This is useful for automated upgrades
+# (e.g. RPM post scripts).
+if [ -n "$opt_upgrade_only" ]; then
+	echo "$0: doing nothing, XS standard networking is not active."
+	exit 0
+fi
+
+# Determine the number of interfaces
+num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
+
+# Is this an XO
+is_xo=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
+echo $is_xo
+CFG_TEMPLATES="sysconfig/dhcpd sysconfig/iptables-config sysconfig/ip6tables-config"
+CONFIG_LIST="/etc/hosts"
+UPLINK=`find /etc/NetworkManager/system-connections -maxdepth 1 -type f -name "*" -not -name static -not -name "Sugar *"`
+
+#new code to use NetworkManager to set up devices
+function write_nm_connection(){
+    # receives connection_filename, hwaddr,  device_name as parameters
+    cp "/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/$1" \
+        "/etc/NetworkManager/system-connections/$3"
+    #removed -i to try to get rid of sed intermediate files 9/24/2012
+    sed -i  "s/\@\@MAC\@\@/$2/" "/etc/NetworkManager/system-connections/$3"
+    sed -i  "s/\@\@DEVICE\@\@/$3/" "/etc/NetworkManager/system-connections/$3"
+    chmod 600 "/etc/NetworkManager/system-connections/$3"
+}
+
+#========================================================
+
+# all xo's have a wifi and a lo interface
+#if [[ $is_xo = "1" ]]; then
+#    num_ifaces=$(( $num_ifaces - 1 ))
+#   if [[ $num_ifaces  = 1 ]]; then
+#        ipaddr=ifconfig eth0| awk -F ' *|:' '/inet addr/{print $4}'
+#    fi
+#    if [[ $num_ifaces  > 1 ]]; then
+#        mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;}
+#            /^ *ether / { if (eth == "eth1:") print( $2);}'`
+#        write_nm_connection "static" "$mac" "eth1"
+#        ipaddr=172.18.96.1
+#    fi
+#    # if we have 2 ethernet dongles, lo, )
+#    if [[ $num_ifaces = 3 ]] ; then
+#        mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;}
+#            /^ *ether / { if (eth == "eth2:") print( $2);}'`
+#        write_nm_connection "dhcp" "$mac" "eth2"
+#        echo "eth2" > /etc/sysconfig/xs_wan_device
+#    else
+#        echo "eth0" > /etc/sysconfig/xs_wan_device
+#	# based on observed created files
+#        echo "ignore-auto-dns=true" >> $UPLINK
+#    fi
+#else
+
+# NOT an XO 1/9/2013 TFM
+
+# If there is only one card it will be wan if there is a gateway otherwise it will be lan
+# If there are more than 2 cards, the last non-gateway one will be lan
+
+# Try to figure out which interface is connected to a gateway
+
+gw_iface=`route -n | awk '{if($4=="UG")print $8}'`
+
+# Pick a another card, any card (except lo and gw_iface, if not null)
+
+for iface in $(ifconfig | gawk 'BEGIN{FS=":"}(/^.*: flags=/) {print( $1);}')
+    do
+    if [ "$iface" != "lo" ] && [ "$iface" != "$gw_iface" ]; then
+       oth_iface=$iface
+    fi
+    done
+
+if [ -n $oth_iface ]; then
+    oth_mac=`ifconfig $oth_iface | gawk '(/^ *ether /) {print( $2);}'`
+    write_nm_connection "static" "$oth_mac" "$oth_iface"
+    echo "$oth_iface" > /etc/sysconfig/xs_lan_device
+    ipaddr=172.18.96.1
+fi
+
+if [ -n $gw_iface ]; then
+    wan_iface=$gw_iface
+    wan_mac=`ifconfig $wan_iface | gawk '(/^ *ether /) {print( $2);}'`
+    wan_ip=`ifconfig $wan_iface | gawk '(/netmask /) {print( $2);}'`
+    ipaddr=$wan_ip
+
+    if [ $is_xo == "0" ]; then
+        write_nm_connection "dhcp" "$wan_mac" "$wan_iface"
+    fi
+
+    if [ $is_xo == "1" ]; then
+        if [ $gw_iface != "eth0" ]; then
+            write_nm_connection "dhcp" "$wan_mac" "$wan_iface"
+        else
+            for i in $UPLINK;
+            do 
+                echo "ignore-auto-dns=true" >>  $i
+            done  
+        fi
+    fi
+    echo "$wan_iface" > /etc/sysconfig/xs_wan_device
+fi
+
+pushd /etc
+for i in $CFG_TEMPLATES; do
+	cp -p $i.in $i
+	#etckeeper commit -m "Made from $i.in"
+done
+sed -i -e s/@@LAN_IF@@/$oth_iface/ /etc/sysconfig/dhcpd
+
+short_host=`hostname -s`
+new_name=`hostname -f`
+
+#systemctl stop NetworkManager.service
+
+#  This is the suffix which original versions of modified files will have
+BACKUP_SUFFIX=old
+
+for config in $CONFIG_LIST;
+do
+    if [ -e $config.in ]; then
+	if [ -e $config ]; then
+	    cp $config $config.$BACKUP_SUFFIX ;
+	fi
+	cp $config.in $config.tmp ;
+	sed -i -e s/@@BASEDNSNAME2@@/$new_name/ $config.tmp ;
+	sed -i -e s/@@BASEDNSNAME3@@/$short_host/ $config.tmp ;
+	sed -i -e s/@@IPADDR@@/$ipaddr/ $config.tmp ;
+	cat $config.tmp > $config ;
+	rm $config.tmp ;
+	#etckeeper commit -m "set /etc/hosts to $ipaddr $new_name $short_host"
+    else
+	echo WARNING: Skipped $config - template file is missing!
+    fi
+done
+popd
+
+/etc/sysconfig/olpc-scripts/firewall-xs
+iptables-save > $IPTABLES_DATA
+
+echo "XS standard networking configured"
+# systemctl start NetworkManager.service
+
+sleep 5
