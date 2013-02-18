@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 # tools to create, manage, simplify services and modules on XS server
 case "$1" in
 "mktree")
@@ -52,7 +52,7 @@ case "$1" in
                 echo `ls -1 plugins.d/$mod/yum/`
         done
         ;;
-                
+
 "functions")
 # echo the function names (*.sh) in the plugin tree
         curdir=`pwd`
@@ -62,7 +62,7 @@ case "$1" in
                 cd $curdir
         done
         ;;
-                
+
 "exec")
 # source all the functions in the plugin tree
         curdir=`pwd`
@@ -80,7 +80,7 @@ case "$1" in
         target=../plugins.d.backup
         if [ $# = 1 ]; then
             target=$1
-        fi 
+        fi
         mkdir -p $target
         cp -rp ./plugins.d/* $target
         ;;
@@ -89,7 +89,7 @@ case "$1" in
         source=../plugins.d.backup
         if [ $# = 1 -a -d $1 ]; then
             source=$1
-        fi 
+        fi
         mkdir -p ./plugins.test
         cp -rp $source/* ./modules.test
         ;;
@@ -106,6 +106,8 @@ case "$1" in
 "mkmake")
 # use manifest to generate Makefiles in each plugin
     curdir=`pwd`
+    MKDIR_MAKEFILE=$curdir/plugins.d/Makefile
+    rm -f $MKDIR_MAKEFILE
     # scan through all the files in the input tree, and create the directories
     # use an array to eliminate duplicates
     for mod in `ls plugins.d`; do
@@ -116,7 +118,8 @@ case "$1" in
         fi
         cd $curdir
     done
-        cat $manlist | gawk '{
+            echo "install:" >>$MKDIR_MAKEFILE
+        cat $manlist | gawk -v mkfile=$MKDIR_MAKEFILE'{
             line = $0
             nibbles[0]=""
             for (i in nibbles) {delete nibble[i]}
@@ -124,50 +127,53 @@ case "$1" in
             directories[0]=""
             num = split($0,nibbles,"/")
             #for (i in nibbles) {print( nibbles[i])}
-            path = "" 
+            path = ""
             for (i=1; i<num; i++){
                 path = path nibbles[i] "/"
                 #print path
                 if (!( path in directories)) {
                     makef = sprintf("\tinstall -D -d  \044(DESTDIR)%s",path)
-                    cmd = sprintf("echo '\''%s'\'' >> ~/dextrose/xs-config/plugins.d/Makefile",makef)
+                    cmd = sprintf("echo '\''%s'\'' >> mkfile", makef)
                     #print(cmd "  " path)
                     system(cmd)
-                    directories[path]=""        
+                    directories[path]=""
                 }
             }
-        }' 
-  ;; 
-"dummy")
+        }'
     for mod in `ls plugins.d`; do
         cd plugins.d/$mod
-            rm -f Makefile
-            echo "install:" >>Makefile
-            #echo `cat $mod.manifest `
-        if [ -f $mod.manifest ];then
-            cat $mod.manifest | gawk -v plug=$mod '{
+        rm -f Makefile
+        echo "install:" >> Makefile
+        #echo `cat $mod.manifest `
+        if [ -f $mod.manifest ]; then
+            cat $mod.manifest | gawk -v pluginloc=$mod '{
             ar[0] = ""
             num = split($0,ar,"/")
-            makef = sprintf("\tinstall -D files/%s \044(DESTDIR)%s",ar[num], $0)
-            cmd = sprintf("echo '\''%s'\'' >> ~/dextrose/xs-config/plugins.d/%s/Makefile",makef,plug)
+            path = ""
+            for (i=1; i<num; i++){
+                path = path ar[i] "/"
+            }
+            makef = sprintf("\tinstall -D files/%s \044(DESTDIR)%s",ar[num],path )
+            cmd = sprintf("echo '\''%s'\'' >> ~/dextrose/xs-config/plugins.d/%s/Makefile",makef,pluginloc)
             system(cmd)
             print(cmd)}'
         fi
         cd $curdir
     done
     ;;
+    
 tree2plugins.d)
-# input is list of files (find BUILDROOT with plugin name added), 
+# input is list of files (find BUILDROOT with plugin name added),
 # param1=treeroot output is files copied to ./files, manifest written
 
     gawk -v treeloc=$3 'BEGIN { RS = "\r" }
     {
-    src = $1 
+    src = $1
     tree = $1
     sub(/\./,"",tree)
     sub(/\./,"",src)
     if ($2 != ""){
-        line = sprintf("cp %s%s plugins.d/%s/files/",treeloc,tree,$2) 
+        line = sprintf("cp %s%s plugins.d/%s/files/",treeloc,tree,$2)
         print( line )
     #    system(line)
         addline = sprintf("echo '%s' >> plugins.d/%s/%s.manifest",tree,$2,$2)

@@ -2,9 +2,9 @@
 
 # install root
 DESTDIR = /
-PLUGINDIR := $(CURDIR)/plugins.d/
+PLUGINS_ROOT := $(CURDIR)/plugins.d/
 MYENV = 'DESTDIR=$(DESTDIR)'
-PLUGINDIRLIST := $(shell find $(PLUGINDIR) -maxdepth 1 -type d  -print )
+PLUGINDIRLIST := $(shell find $(PLUGINS_ROOT) -maxdepth 1 -type d  -print )
 $(warning PLUGINDIRLIST IS $(PLUGINDIRLIST))
 
 $(DESTDIR):
@@ -74,8 +74,8 @@ publish-stable:
 	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/$(BRANCH)/source/SRPMS
 
 install: $(DESTDIR)
-	# Makefile at ROOT_DIRECTORY creates all the directories in BUILDROOT
-	$(MAKE) -C $(ROOT_DIRECTORY) $(MFLAGS) $(MYENV)  install
+	# Makefile at PLUGINS_ROOT creates all the directories in BUILDROOT
+	$(MAKE) -C $(PLUGINS_ROOT) $(MFLAGS) $(MYENV)  install
 	@echo $(PLUGINDIRLIST)
 	@for D in $(PLUGINDIRLIST); do \
 		(cd $$D; $(MAKE)  $(MFLAGS) $(MYENV) install); \
@@ -84,3 +84,7 @@ install: $(DESTDIR)
 	done
 # use print-<macro> from command line to inspect its value
 print-%: ; @echo $* is $($*)
+# cause shell commands to output the rules being executed
+OLD_SHEL := $(SHELL)
+SHELL = $(warning [$@ ($^)
+		($?)])$(OLD SHELL)
