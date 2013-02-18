@@ -130,6 +130,8 @@ case "$1" in
         path = ""
         for (i=1; i<num; i++){
             path = path nibbles[i] "/"
+            # clip off the leading slash
+            #sub(/^\//,"",path)
             #print path
             if (!( path in directories)) {
                 makef = sprintf("\tinstall -D -d  \044(DESTDIR)%s",path)

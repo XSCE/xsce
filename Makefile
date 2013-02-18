@@ -72,15 +72,17 @@ publish-stable:
 	    xs-dev.laptop.org:/xsrepos/testing/olpc/$(BRANCH)/source/SRPMS/
 	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/$(BRANCH)/i586
 	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/$(BRANCH)/source/SRPMS
+MY = one two
 
-install: $(DESTDIR) .PHONY
+install:
 	# Makefile at PLUGINS_ROOT creates all the directories in BUILDROOT
-	(cd $(PLUGINS_ROOT); $(MAKE)  $(MFLAGS) $(MYENV)  install)
+	(cd $(PLUGINS_ROOT); $(MAKE) $(MFLAGS) $(MYENV)  install)
 	@echo $(PLUGINDIRLIST)
-	@for D in $(PLUGINDIRLIST); do \
-		(cd $$D; $(warning current directory is `pwd`) $(MAKE)  $(MFLAGS) $(MYENV) install); \
-		$(warning D is $$D) \
-		echo "current direcdtory is $$D" \
+	@for D in $(PLUGINDIRLIST); do echo $$D; done
+		#(cd $$D; $(warning current directory is `pwd`) $(MAKE)  $(MFLAGS) $(MYENV) install); \
+		#$(warning D is $$D) \
+		echo $$D \
+		#echo "current direcdtory is $$D"
 	done
 # use print-<macro> from command line to inspect its value
 print-%: ; @echo $* is $($*)
