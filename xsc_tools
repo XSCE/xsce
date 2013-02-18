@@ -123,7 +123,7 @@ case "$1" in
             line = $0
             nibbles[0]=""
             for (i in nibbles) {delete nibble[i]}
-            #print $0
+            print $0
             directories[0]=""
             num = split($0,nibbles,"/")
             #for (i in nibbles) {print( nibbles[i])}
