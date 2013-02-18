@@ -78,8 +78,7 @@ install:
 	# Makefile at PLUGINS_ROOT creates all the directories in BUILDROOT
 	(cd $(PLUGINS_ROOT); $(MAKE) $(MFLAGS) $(MYENV)  install)
 	@for D in $(PLUGINDIRLIST); do \
-		echo "entering the following leaf to execute makefile" $$D
-		(cd $$D; $(MAKE)  $(MFLAGS) $(MYENV) install) \
+		(cd $$D; echo $$D; $(MAKE)  $(MFLAGS) $(MYENV) install) \
 	done
 # use print-<macro> from command line to inspect its value
 print-%: ; @echo $* is $($*)
