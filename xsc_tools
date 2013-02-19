@@ -16,7 +16,7 @@ case "$1" in
 		mkdir -p plugins.d/$mod
 		pushd plugins.d/$mod
 		mkdir -p yum files
-		touch $mod.sh Makefile manifest README 
+		touch $mod.sh Makefile $mod.manifest $mod.README 
         chmod 755 $mod.sh
 		popd
 	done
@@ -183,6 +183,9 @@ tree2plugins.d)
         system(addline)
     }
     }' $2
+    ;;
+"treediff")
+    diff -r . ~/dextrose/linuxtree
     ;;
 *)
 	ls  plugins.d

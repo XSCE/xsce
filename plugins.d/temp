@@ -1,0 +1,3 @@
+for plug in `ls -d *`; do
+    cp $plug/$plug.yum/* $plug/yum
+done
