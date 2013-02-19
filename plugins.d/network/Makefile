@@ -19,7 +19,7 @@ install:
 	install -D files/eth0-wireless $(DESTDIR)/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/
 	install -D files/eth0-wireless-lan $(DESTDIR)/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/
 	install -D files/static $(DESTDIR)/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/
-	install -D files/Sugar\ Modem\ Connection $(DESTDIR)/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/
+	install -D files/Sugar $(DESTDIR)/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/
 	install -D files/iptables.service $(DESTDIR)/usr/share/xs-config/cfg/etc/systemd/system/
 	install -D files/cnt_interface_info.php $(DESTDIR)/usr/share/xs-config/cfg/html/top/es/
 	install -D files/cnt_net-config.php $(DESTDIR)/usr/share/xs-config/cfg/html/top/es/

@@ -17,3 +17,4 @@ install:
 	install -D files/school.internal.zone.48.in-addr.db.in $(DESTDIR)/var/named-xs/
 	install -D files/school.internal.zone.db $(DESTDIR)/var/named-xs/
 	install -D files/school.internal.zone.in-addr.db.in $(DESTDIR)/var/named-xs/
+	install -D files/dummy $(DESTDIR)/var/named-xs/data/

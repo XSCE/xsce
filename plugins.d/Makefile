@@ -34,6 +34,7 @@ install:
 	install -D -d  $(DESTDIR)/usr/libexec/
 	install -D -d  $(DESTDIR)/var/
 	install -D -d  $(DESTDIR)/var/named-xs/
+	install -D -d  $(DESTDIR)/var/named-xs/data/
 	install -D -d  $(DESTDIR)/usr/lib/
 	install -D -d  $(DESTDIR)/usr/lib/udev/
 	install -D -d  $(DESTDIR)/usr/lib/udev/rules.d/
