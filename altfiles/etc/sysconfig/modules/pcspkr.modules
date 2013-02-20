@@ -1,6 +1,0 @@
-#!/bin/sh
-# OLPC XS uses PC speaker functionality in usbmount scripts, for audible
-# confirmation of start and end of processing. Ensure that the module
-# is loaded so that these beeps are reproduced.
-
-modprobe pcspkr

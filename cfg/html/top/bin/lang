@@ -1,3 +1,0 @@
-#!/bin/bash
-# return the XO language
-cat /home/olpc/.i18n | gawk 'BEGIN {FS="="};/LANGUAGE/ {print $2}'

@@ -1,4 +1,0 @@
-#!/bin/bash
-# script to call xs-acpowergaps with flag --timeout indicating cron invocation
-xs-acpowergaps --timeout
-

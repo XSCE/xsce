@@ -1,6 +1,0 @@
-#!/bin/bash
-# report sd info in prep for reformatting
-sudo fdisk -l /dev/mmcblk0
-base=`dirname  "$0"`
-sudo fdisk -l /dev/mmcblk0 | gawk -f $base/sdformat.awk
-

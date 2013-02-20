@@ -1,4 +1,0 @@
-#!/bin/bash
-# return a list of all devices that look like "/dev/sd*"
-DEVICES=`mount |  gawk '/\/dev\/sd/ {print $3}'`
-echo $DEVICES
