@@ -6,6 +6,7 @@
 /etc/ssh/sshd_config.in
 /etc/sysconfig/init.in
 /etc/sysconfig/modules/pcspkr.modules
+/etc/sysconfig/olpc-scripts/setup.d/installed/dummy
 /etc/sysctl.conf.in
 /root/xs-apply-changes
 /usr/bin/bootstrap-xo
@@ -17,3 +18,4 @@
 /usr/bin/xs-setup-functions
 /usr/share/xs-config/cfg/etc/profile.d/bashrc_xs.sh
 /usr/share/xs-config/cfg/etc/yum.repos.d/media.repo
+

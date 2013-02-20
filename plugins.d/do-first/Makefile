@@ -17,4 +17,5 @@ install:
 	install -D files/xs-setup $(DESTDIR)/usr/bin/
 	install -D files/xs-setup-functions $(DESTDIR)/usr/bin/
 	install -D files/bashrc_xs.sh $(DESTDIR)/usr/share/xs-config/cfg/etc/profile.d/
+	install -D files/dummy $(DESTDIR)/etc/sysconfig/olpc-scripts/setup.d/installed
 	install -D files/media.repo $(DESTDIR)/usr/share/xs-config/cfg/etc/yum.repos.d/

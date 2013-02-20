@@ -8,6 +8,7 @@ install:
 	install -D -d  $(DESTDIR)/etc/sysconfig/
 	install -D -d  $(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D -d  $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d/
+	install -D -d  $(DESTDIR)/etc/sysconfig/olpc-scripts/setupd.d/installed
 	install -D -d  $(DESTDIR)/etc/ssh/
 	install -D -d  $(DESTDIR)/etc/sysconfig/modules/
 	install -D -d  $(DESTDIR)/root/

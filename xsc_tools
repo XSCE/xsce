@@ -1,48 +1,25 @@
 #!/bin/bash
 # tools to create, manage, simplify services and modules on XS server
+PLUGINS_DIR=plugins.d
+CHILD=`ls | grep plugins.d`
+if [ ! $CHILD = $PLUGINS_DIR ]; then
+    echo "These school server developer tools must be run from $PLUGINS_DIR's parent"
+    exit 2
+fi
+CURDIR=`pwd`
+DIRECTORY_MAKEFILE=$CURDIR/$PLUGINS_DIR/Makefile
+
+#=================================================================================
 case "$1" in
 "mktree")
-# Read plugin names from m_manifest (or 2nd parameter) and create plugin tree
-	if [ $# -eq 2 -a $2 = "all" ]; then
-		MODULES=`cat m_manifest`
-	fi
-	if [ $# -eq 2 -a $2 != "all" ]; then
-		MODULES=$2
-	fi
-	if [ $# -eq 1 ]; then
-		MODULES=`cat m_manifest`
-	fi
-	for mod in $MODULES; do
+# Read plugin name from 2nd parameter and create plugin tree
+	for mod in $2; do
 		mkdir -p plugins.d/$mod
 		pushd plugins.d/$mod
 		mkdir -p yum files
 		touch $mod.sh Makefile $mod.manifest $mod.README 
         chmod 755 $mod.sh
 		popd
-	done
-	;;
-"mklinks")
-# probably will delete this function
-	if [ $# -eq 2 -a $2 = "all" ]; then
-		MODULES=`cat m_manifest`
-	fi
-	if [ $# -eq 2 -a $2 != "all" ]; then
-		MODULES=$2
-	fi
-	if [ $# -eq 1 ]; then
-		MODULES=`cat m_manifest`
-	fi
-	for mod in $MODULES; do
-		pushd plugins.d/$mod
-		seq="50"
-		if [ -f sequence ]; then
-		        newseq=`cat sequence`
-		fi
-		if [ -nz $newseq ]; then
-		        seq=$newseq
-		fi
-                ln -s ../../$mod ../active.d/$seq-$mod
-                popd
 	done
 	;;
 "yum")
@@ -93,7 +70,8 @@ case "$1" in
         cp -rp $source/* ./modules.test
         ;;
 "git2linux")
-# extract the current git branch to a tree one directory up from current
+# use make install to extract the current git branch to a tree
+# to 2nd param or ../linuxtree if no 2nd param 
         target=../linuxtree
         if [ $# = 1 ];then
             target=../$1
@@ -103,17 +81,66 @@ case "$1" in
         make -e install
         ;;
 "mkmake")
-# use manifest to generate Makefiles in each plugin
-    curdir=`pwd`
-    MKDIR_MAKEFILE=$curdir/plugins.d/Makefile
-    rm -f $MKDIR_MAKEFILE
+# use contents of "plugins.d/files" to generate Makefiles in each plugin
+    MKDIR_MAKEFILE=$CURDIR/$PLUGINS_DIR/Makefile
+	if [ $# -eq 2 -a $2 = "all" ]; then
+		PLUGIINS=`ls -d plugins.d`
+    fi
+	if [ $# -eq 2 -a $2 != "all" ]; then
+		PLUGINS=$2
+	fi
+	if [ $# -eq 1 ]; then
+		PLUGINS=`cat m_manifest`
+	fi
+    generate_directories
+	for plugin in $PLUGINS; do
+        make_makefile_for_plugin
+    done
+    ;;     
+
+"tree2plugins.d")
+# input is list of files (find BUILDROOT with plugin name added),
+# param1=treeroot output is files copied to ./files, manifest written
+# usage: cat <find / of root> | xsc_tools tree2plugins.d ../linuxtree
+    gawk  'BEGIN { RS = "\r" }
+    {
+    treeloc = "../linuxtree"
+    src = $1
+    tree = $1
+    sub(/\./,"",tree)
+    sub(/\./,"",src)
+    if ($2 != ""){
+        line = sprintf("cp %s%s plugins.d/%s/files/",treeloc,tree,$2)
+        print( line )
+        system(line)
+        addline = sprintf("echo '%s' >> plugins.d/%s/%s.manifest",tree,$2,$2)
+        print(addline)
+        system(addline)
+    }
+    }' $2
+    ;;
+
+"treediff")
+    diff -r . ~/dextrose/linuxtree
+    ;;
+*)
+	ls  plugins.d
+	;;
+esac
+
+#=================================================================================
+#functions to make the above more understandable    
+
+function  generate_directories()
+{
+    rm -f $DIRECTORY_MAKEFILE
     # scan through all the files in the input tree, and create the directories
     # use an array to eliminate duplicates
-    for mod in `ls plugins.d`; do
-        cd plugins.d/$mod
-        #echo "$PWD/$mod.manifest"
-        if [ -f ./$mod.manifest ]; then
-            manlist+=" plugins.d/$mod/$mod.manifest"
+    for plugin in `ls plugins.d`; do
+        cd plugins.d/$plugin
+        #echo "$PWD/$plugin.manifest"
+        if [ -f ./$plugin.manifest ]; then
+            manlist+=" plugins.d/$plugin/$mod.manifest"
         fi
         cd $curdir
     done
@@ -141,11 +168,15 @@ case "$1" in
             }
         }
     }'
-    for mod in `ls plugins.d`; do
-        cd plugins.d/$mod
+}
+
+#=================================================================================
+function make_makefile_for_plugin()
+{    
+        cd plugins.d/$plugin
         rm -f Makefile
         echo "install:" >> Makefile
-        #echo `cat $mod.manifest `
+        #echo `cat $plugin.manifest `
         if [ -f $mod.manifest ]; then
             cat $mod.manifest | gawk -v pluginloc=$mod '{
             ar[0] = ""
@@ -160,34 +191,11 @@ case "$1" in
             print(cmd)}'
         fi
         cd $curdir
-    done
-    ;;
+}
 
-tree2plugins.d)
-# input is list of files (find BUILDROOT with plugin name added),
-# param1=treeroot output is files copied to ./files, manifest written
-# usage: cat <find / of root> | xsc_tools tree2plugins.d ../linuxtree
-    gawk  'BEGIN { RS = "\r" }
-    {
-    treeloc = "../linuxtree"
-    src = $1
-    tree = $1
-    sub(/\./,"",tree)
-    sub(/\./,"",src)
-    if ($2 != ""){
-        line = sprintf("cp %s%s plugins.d/%s/files/",treeloc,tree,$2)
-        print( line )
-        system(line)
-        addline = sprintf("echo '%s' >> plugins.d/%s/%s.manifest",tree,$2,$2)
-        print(addline)
-        system(addline)
-    }
-    }' $2
-    ;;
-"treediff")
-    diff -r . ~/dextrose/linuxtree
-    ;;
-*)
-	ls  plugins.d
-	;;
-esac
+#=================================================================================
+function extract_directory_list_from_files()
+# first get a list of connec
+{
+    FILELIST=`find .`
+}
