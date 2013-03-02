@@ -10,6 +10,115 @@ CURDIR=`pwd`
 DIRECTORY_MAKEFILE=$CURDIR/$PLUGINS_DIR/Makefile
 
 #=================================================================================
+#functions to make the big case statement more understandable
+
+function  generate_directories()
+# first make a list of the manifest files for all plugins
+{
+    echo "made it to generate_directories"
+    rm -f $DIRECTORY_MAKEFILE
+    # scan through all the files in the plugin tree, and create the directories
+    # use an array to eliminate duplicates
+    for plugin in `find $PLUGINS_DIR/ -maxdepth 1 -type d | sed s:$PLUGINS_DIR/::`; do
+        cd plugins.d/$plugin
+        echo "$PWD/$plugin.manifest"
+        if [ -f ./$plugin.manifest ]; then
+            manlist+=" plugins.d/$plugin/$plugin.manifest"
+            # make list of files for later use
+            echo `find ./files/ | sed s:./files/::` > $plugin.find
+        fi
+        cd $CURDIR
+    done
+
+    echo "install:" >>$MKDIR_MAKEFILE
+
+    # now feed all of these files, or connectors, to gawk to find unique path names
+    cat $manlist | \
+    gawk  -v mkfile=$MKDIR_MAKEFILE '
+    {
+        line = $0
+        for (i in nibbles) {delete nibble[i]}
+        print $0
+        directories[0]=""
+        num = split($0,nibbles,"/")
+        path = ""
+        for (i=1; i<num; i++){
+            path = path nibbles[i] "/"
+            if (!( path in directories)) {
+                write_directory(path, mkfile, directories)
+            }
+        }
+        add_leaf_directories($nibbles[i-1], manfile, mkfile, directories)
+
+
+    }
+
+    function add_leaf_directories(connector, manifest_path, mkfile, directories){
+        match(manifest_path,/.*\//)
+        if (RLENGTH > 0){
+            find_file_data = sprintf("%s/%s",substr(manifest_path,1,RLENGTH),"files")
+            print ("find_file_data: ", find_file_data)
+            while ((getline line < find_file_data) > 0) {
+                print(line)
+                split(line, nibbles, "/")
+                split(connector, parents, "/")
+                if (nibbles[1] == parents[length(parents)]){
+                    full_path = "/"
+                    for (i in connector) {
+                        full_path += connector[i] "/"
+                    }
+                    for (i=2; i<=length(nibbles); i++){
+                        full_path += nibbles[i] "/"
+                    }
+
+                    if (!( full_path in directories)) {
+                        write_directory(full_path, mkfile, directories)
+                    }
+                }
+            }
+        }
+   }
+
+   function write_directory(path, mkfile, directories){
+        makef = sprintf("\tinstall -D -d  \044(DESTDIR)%s",path)
+        cmd = sprintf("echo '\''%s'\'' >> %s", makef, mkfile)
+           #print(cmd "  " path)
+        system(cmd)
+        directories[path]=""
+    }
+    '
+}
+
+#=================================================================================
+function make_makefile_for_plugin()
+{
+        cd plugins.d/$plugin
+        rm -f Makefile
+        echo "install:" >> Makefile
+        #echo `cat $plugin.manifest `
+        if [ -f $mod.manifest ]; then
+            cat $mod.manifest | gawk -v pluginloc=$mod '{
+            ar[0] = ""
+            num = split($0,ar,"/")
+            path = ""
+            for (i=1; i<num; i++){
+                path = path ar[i] "/"
+            }
+            makef = sprintf("\tinstall -D files/%s \044(DESTDIR)%s",ar[num],path )
+            cmd = sprintf("echo '\''%s'\'' >> ~/dextrose/xs-config/plugins.d/%s/Makefile",makef,pluginloc)
+            system(cmd)
+            print(cmd)}'
+        fi
+        cd $curdir
+}
+
+#=================================================================================
+function extract_directory_list_from_files()
+# first get a list of connec
+{
+    FILELIST=`find .`
+}
+#=================================================================================
 case "$1" in
 "mktree")
 # Read plugin name from 2nd parameter and create plugin tree
@@ -17,7 +126,7 @@ case "$1" in
 		mkdir -p plugins.d/$mod
 		pushd plugins.d/$mod
 		mkdir -p yum files
-		touch $mod.sh Makefile $mod.manifest $mod.README 
+		touch $mod.sh Makefile $mod.manifest $mod.README
         chmod 755 $mod.sh
 		popd
 	done
@@ -71,7 +180,7 @@ case "$1" in
         ;;
 "git2linux")
 # use make install to extract the current git branch to a tree
-# to 2nd param or ../linuxtree if no 2nd param 
+# to 2nd param or ../linuxtree if no 2nd param
         target=../linuxtree
         if [ $# = 1 ];then
             target=../$1
@@ -92,11 +201,12 @@ case "$1" in
 	if [ $# -eq 1 ]; then
 		PLUGINS=`cat m_manifest`
 	fi
+    echo "about to generate_directories"
     generate_directories
 	for plugin in $PLUGINS; do
-        make_makefile_for_plugin
+        make_makefile_for_plugin $plugin
     done
-    ;;     
+    ;;
 
 "tree2plugins.d")
 # input is list of files (find BUILDROOT with plugin name added),
@@ -127,75 +237,3 @@ case "$1" in
 	ls  plugins.d
 	;;
 esac
-
-#=================================================================================
-#functions to make the above more understandable    
-
-function  generate_directories()
-{
-    rm -f $DIRECTORY_MAKEFILE
-    # scan through all the files in the input tree, and create the directories
-    # use an array to eliminate duplicates
-    for plugin in `ls plugins.d`; do
-        cd plugins.d/$plugin
-        #echo "$PWD/$plugin.manifest"
-        if [ -f ./$plugin.manifest ]; then
-            manlist+=" plugins.d/$plugin/$mod.manifest"
-        fi
-        cd $curdir
-    done
-    echo "install:" >>$MKDIR_MAKEFILE
-    cat $manlist | gawk -v mkfile=$MKDIR_MAKEFILE '{
-        line = $0
-        nibbles[0]=""
-        for (i in nibbles) {delete nibble[i]}
-        print $0
-        directories[0]=""
-        num = split($0,nibbles,"/")
-        #for (i in nibbles) {print( nibbles[i])}
-        path = ""
-        for (i=1; i<num; i++){
-            path = path nibbles[i] "/"
-            # clip off the leading slash
-            #sub(/^\//,"",path)
-            #print path
-            if (!( path in directories)) {
-                makef = sprintf("\tinstall -D -d  \044(DESTDIR)%s",path)
-                cmd = sprintf("echo '\''%s'\'' >> %s", makef, mkfile)
-                #print(cmd "  " path)
-                system(cmd)
-                directories[path]=""
-            }
-        }
-    }'
-}
-
-#=================================================================================
-function make_makefile_for_plugin()
-{    
-        cd plugins.d/$plugin
-        rm -f Makefile
-        echo "install:" >> Makefile
-        #echo `cat $plugin.manifest `
-        if [ -f $mod.manifest ]; then
-            cat $mod.manifest | gawk -v pluginloc=$mod '{
-            ar[0] = ""
-            num = split($0,ar,"/")
-            path = ""
-            for (i=1; i<num; i++){
-                path = path ar[i] "/"
-            }
-            makef = sprintf("\tinstall -D files/%s \044(DESTDIR)%s",ar[num],path )
-            cmd = sprintf("echo '\''%s'\'' >> ~/dextrose/xs-config/plugins.d/%s/Makefile",makef,pluginloc)
-            system(cmd)
-            print(cmd)}'
-        fi
-        cd $curdir
-}
-
-#=================================================================================
-function extract_directory_list_from_files()
-# first get a list of connec
-{
-    FILELIST=`find .`
-}
