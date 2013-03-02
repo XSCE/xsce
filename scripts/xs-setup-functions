@@ -51,7 +51,7 @@ YUM_CMD="yum -y install"
 
 function template()
 {
-	case "$1" in
+    case "$1" in
     "yes")
         $YUM_CMD  xs-release 2>&1 | tee -a $LOG
         if [ $? -ne 0 ] ; then
@@ -69,7 +69,7 @@ function template()
 
 function activity-server()
 {
-	case "$1" in
+    case "$1" in
     "yes")
         $YUM_CMD xs-activity-server 2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
@@ -96,21 +96,21 @@ function activity-server()
 
 function avahi()
 {
-	case "$1" in
-	"yes")
-	    $YUM_CMD nss-mdns avahi avahi-tools avahi-ui 2>&1 | tee -a $LOG
+    case "$1" in
+    "yes")
+        $YUM_CMD nss-mdns avahi avahi-tools avahi-ui 2>&1 | tee -a $LOG
         if [ $? -ne 0 ] ; then
             echo "\n\nYum returned an error\n\n" | tee -a $LOG
             exit $YUMERROR
         fi
-        systemctl enable avahi-daemon.service 2>&1 | tee -a $LOG
+        safe_systemctl enable avahi-daemon.service
         touch $SETUPSTATEDIR/avahi
         ;;
-	"no")
-	systemctl disable avahi-daemon.service 2>&1 | tee -a $LOG
+    "no")
+    safe_systemctl disable avahi-daemon.service
         rm $SETUPSTATEDIR/avahi
         ;;
-	esac
+    esac
 }
 
 function create-usb-repo()
@@ -199,7 +199,7 @@ EOF
 
 function dansguardian()
 {
-	case "$1" in
+    case "$1" in
     "yes")
         yum -y install  dansguardian 2>&1 | tee -a $LOG
         if [ $? -ne 0 ] ; then
@@ -217,23 +217,23 @@ function dansguardian()
 
 function dhcpd()
 {
-	case "$1" in
-	"yes")
-	    $YUM_CMD dhcp 2>&1 | tee -a $LOG
+    case "$1" in
+    "yes")
+        $YUM_CMD dhcp 2>&1 | tee -a $LOG
         if [ $? -ne 0 ] ; then
             echo "\n\nYum returned an error\n\n" | tee -a $LOG
             exit $YUMERROR
         fi
         touch $SETUPSTATEDIR/dhcpd
-        systemctl enable dhcpd.service 2>&1 | tee -a $LOG
-        systemctl start dhcpd.service 2>&1 | tee -a $LOG
+        safe_systemctl enable dhcpd.service
+        safe_systemctl start dhcpd.service
         ;;
-	"no")
-		systemctl disable dhcpd.service 2>&1 | tee -a $LOG
-        systemctl stop dhcpd.service 2>&1 | tee -a $LOG
+    "no")
+        safe_systemctl disable dhcpd.service
+        safe_systemctl stop dhcpd.service
         rm $SETUPSTATEDIR/dhcpd
         ;;
-	esac
+    esac
 }
 
 function etckeeper-if-selected()
@@ -247,8 +247,8 @@ function etckeeper-if-selected()
 
 function set-etckeeper()
 {
-	case "$1" in
-	"yes")
+    case "$1" in
+    "yes")
         if [ ! -d /etc/.git ]; then
             pushd /etc
             etckeeper init
@@ -259,18 +259,18 @@ function set-etckeeper()
             touch $SETUPSTATEDIR/etckeeper
         fi
         ;;
-	"no")
+    "no")
         if [ -e $SETUPSTATEDIR/etckeeper ]; then
             rm $SETUPSTATEDIR/etckeeper
         fi
         ;;
-	esac
+    esac
 }
 
 function ejabberd()
 {
-	case "$1" in
-	"yes")
+    case "$1" in
+    "yes")
             if [ -e /etc/ejabberd/ejabberd.pem ]; then
                 if [ -e /var/lib/ejabberd/spool ]; then
                     rm -rf /var/lib/ejabberd/spool
@@ -279,30 +279,30 @@ function ejabberd()
                 yum reinstall ejabberd 2>&1 | tee -a $LOG
             else
                 $YUM_CMD ejabberd 2>&1 | tee -a $LOG
-		    fi
+            fi
             if [ $? -ne 0 ] ; then
-		        echo "\n\nYum returned an error\n\n" | tee -a $LOG
-		        exit $YUMERROR
-		    fi
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
             touch $SETUPSTATEDIR/ejabberd
             # and set it to autostart
-            systemctl enable ejabberd-xs.service 2>&1 | tee -a $LOG
+            safe_systemctl enable ejabberd-xs.service
             echo "the following start command executes for a long time. Have a cup of coffee!"
-            systemctl start ejabberd-xs.service 2>&1 | tee -a $LOG
+            safe_systemctl start ejabberd-xs.service
             /usr/bin/xs-ejabberd-srg
-		;;
-	"no")
-            systemctl disable ejabberd.service 2>&1 | tee -a $LOG
-            systemctl stop ejabberd.service 2>&1 | tee -a $LOG
+        ;;
+    "no")
+            safe_systemctl disable ejabberd.service
+            safe_systemctl stop ejabberd.service
             rm $SETUPSTATEDIR/ejabberd
-		;;
-		esac
+        ;;
+        esac
 }
 
 function gateway()
 {
-	case "$1" in
-	"yes")
+    case "$1" in
+    "yes")
         cp /etc/sysconfig/olpc-scripts/iptables-xs.in /etc/sysconfig/olpc-scripts/iptables-xs
         cp /etc/sysconfig/olpc-scripts/ip6tables-xs.in /etc/sysconfig/olpc-scripts/ip6tables-xs
         cp /etc/sysconfig/olpc-scripts/firewall-xs.in /etc/sysconfig/olpc-scripts/firewall-xs
@@ -316,52 +316,51 @@ function gateway()
         /etc/sysconfig/olpc-scripts/firewall-xs
         iptables-save >/etc/sysconfig/iptables
 
-
-        systemctl enable iptables.service
-        #set +x; systemctl restart iptables.service; set -x
-        systemctl enable ip6tables.service
-        #systemctl start ip6tables.service
+        safe_systemctl enable iptables.service
+        #set +x; safe_systemctl restart iptables.service; set -x
+        safe_systemctl enable ip6tables.service
+        #safe_systemctl start ip6tables.service
         ;;
-	"no")
+    "no")
         # the gateway flag is used to control masquerading in iptables
         rm $SETUPSTATEDIR/gateway
         # the following call removes the httpcache flag and regenerates iptables
         squid no
         ;;
-	esac
+    esac
 }
 
 function httpd()
 {
-	case "$1" in
-	"yes")
-	    $YUM_CMD httpd php mod_auth_pam 2>&1 | tee -a $LOG
+    case "$1" in
+    "yes")
+        $YUM_CMD httpd php mod_auth_pam 2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
                 exit $YUMERROR
             fi
         touch $SETUPSTATEDIR/httpd
         cp -p /etc/httpd/conf/httpd-xs.conf.in /etc/httpd/conf/httpd-xs.conf
-		# Choose a config depending on memory
-		MEMSIZE=$(grep '^MemTotal' /proc/meminfo | grep -oP '\d+')
-		CONFMEM=256m
-		# Note: the sizes are rounded to a lower value
-		#       as they are usually reported a tad lower than the
-		#       "proper" MB value in bytes (video cards often steal RAM!).
-		if [ $MEMSIZE -gt  500000 ]; then
-		    CONFMEM=512m
-		fi
-		if [ $MEMSIZE -gt 1000000 ]; then
-		    CONFMEM=1024m
-		fi
-		if [ $MEMSIZE -gt 2000000 ]; then
-		    CONFMEM=2048m
-		fi
-		#update the httpd.conf file with this information
-		sed -i -e "s/\@\@CONFMEM\@\@/MEM$CONFMEM/" /etc/httpd/conf/httpd-xs.conf
-		etckeeper-if-selected "modified /etc/httpd/conf/httpd-xs.conf"
-        systemctl start httpd.service 2>&1 | tee -a $LOG
-		systemctl enable httpd.service 2>&1 | tee -a $LOG
+        # Choose a config depending on memory
+        MEMSIZE=$(grep '^MemTotal' /proc/meminfo | grep -oP '\d+')
+        CONFMEM=256m
+        # Note: the sizes are rounded to a lower value
+        #       as they are usually reported a tad lower than the
+        #       "proper" MB value in bytes (video cards often steal RAM!).
+        if [ $MEMSIZE -gt  500000 ]; then
+            CONFMEM=512m
+        fi
+        if [ $MEMSIZE -gt 1000000 ]; then
+            CONFMEM=1024m
+        fi
+        if [ $MEMSIZE -gt 2000000 ]; then
+            CONFMEM=2048m
+        fi
+        #update the httpd.conf file with this information
+        sed -i -e "s/\@\@CONFMEM\@\@/MEM$CONFMEM/" /etc/httpd/conf/httpd-xs.conf
+        etckeeper-if-selected "modified /etc/httpd/conf/httpd-xs.conf"
+        safe_systemctl start httpd.service
+        safe_systemctl enable httpd.service
         # add apache user to the admin group, so she can write to admin
         usermod -G admin,apache apache
         # for some reason, http does not make the needed directories
@@ -378,19 +377,19 @@ function httpd()
           echo "is 64"
           ln -s /usr/lib64/php /usr/lib/php
         fi
-		;;
-	"no")
-		systemctl disable httpd.service 2>&1 | tee -a $LOG
+        ;;
+    "no")
+        safe_systemctl disable httpd.service
         rm $SETUPSTATEDIR/httpd
-		;;
-	esac
+        ;;
+    esac
 }
 
 function idmgr()
 {
-	case "$1" in
-	"yes")
-	    $YUM_CMD idmgr ds-backup-server \
+    case "$1" in
+    "yes")
+        $YUM_CMD idmgr ds-backup-server \
                 xs-rsync xinetd 2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
@@ -411,50 +410,49 @@ function idmgr()
 
         cp /etc/systemd/system/idmgr.service.in /etc/systemd/system/idmgr.service
 
-		systemctl enable idmgr.service 2>&1 | tee -a $LOG
-		systemctl start idmgr.service 2>&1 | tee -a $LOG
-		systemctl enable xinetd.service 2>&1 | tee -a $LOG
-		systemctl start xinetd.service 2>&1 | tee -a $LOG
+        safe_systemctl enable idmgr.service
+        safe_systemctl start idmgr.service
+        safe_systemctl enable xinetd.service
+        safe_systemctl start xinetd.service
         ;;
-	"no")
-		systemctl disable idmgr.service 2>&1 | tee -a $LOG
+    "no")
+        safe_systemctl disable idmgr.service
         rm $SETUPSTATEDIR/idmgr
         ;;
-	esac
+    esac
 }
 
 function moodle-xs()
 {
-	case "$1" in
-	"yes")
-	    $YUM_CMD moodle-xs 2>&1 | tee -a $LOG
+    case "$1" in
+    "yes")
+        $YUM_CMD moodle-xs 2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
                 exit $YUMERROR
             fi
         touch $SETUPSTATEDIR/moodle-xs
-        systemctl restart httpd.service 2>&1 | tee -a $LOG
+        safe_systemctl restart httpd.service
         # execute the moodle startup script
         /usr/libexec/moodle-xs-init start 2>&1 | tee -a $LOG
         # we've dropped a file in /etc/httpd/conf.d, pick up the change
         cp /etc/systemd/system/moodle-xs.service.in /etc/systemd/system/moodle-xs.service
         cp -p /etc/httpd/conf.d/010-make-moodle-default.conf.in \
                     /etc/httpd/conf.d/010-make-moodle-default.conf
-        systemctl -f enable moodle-xs.service
-	;;
-
-	"no")
+        safe_systemctl enable moodle-xs.service
+    ;;
+    "no")
         /usr/libexec/moodle-xs-init stop 2>&1 | tee -a $LOG
         set +x; rm $SETUPSTATEDIR/moodle-xs; set -x
-	;;
-	esac
+    ;;
+    esac
 }
 
 function named()
 {
-	case "$1" in
-	"yes")
-	    $YUM_CMD bind bind-utils 2>&1 | tee -a $LOG
+    case "$1" in
+    "yes")
+        $YUM_CMD bind bind-utils 2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
                 exit $YUMERROR
@@ -466,24 +464,24 @@ function named()
         if [ -d /var/named-xs ]; then
             chgrp -R named /var/named-xs
         fi
-        systemctl enable named.service 2>&1 | tee -a $LOG
-        systemctl start named.service 2>&1 | tee -a $LOG
+        safe_systemctl enable named.service
+        safe_systemctl start named.service
         ;;
-	"no")
-		systemctl disable named.service 2>&1 | tee -a $LOG
-		systemctl stop named.service 2>&1 | tee -a $LOG
+    "no")
+        safe_systemctl disable named.service
+        safe_systemctl stop named.service
         # let the dhclinet control the name resolution normally
         set +x
         #rm /etc/sysconfig/olpc-scripts/resolv.conf
         rm $SETUPSTATEDIR/named
         set -x
         ;;
-	esac
+    esac
 }
 
 function nmon()
 {
-	case "$1" in
+    case "$1" in
     "yes")
         touch $SETUPSTATEDIR/nmon
         ARCH=`uname -m`
@@ -505,9 +503,10 @@ function nmon()
         ;;
     esac
 }
+
 function ntop()
 {
-	case "$1" in
+    case "$1" in
     "yes")
         yum -y install  ntop 2>&1 | tee -a $LOG
         if [ $? -ne 0 ] ; then
@@ -538,7 +537,7 @@ SearchAndDeleteLineContainingRegex()
 
 function one2many()
 {
-	case "$1" in
+    case "$1" in
     "yes")
         httpd yes
         $YUM_CMD  mod_ssl 2>&1 | tee -a $LOG
@@ -595,7 +594,7 @@ function one2many()
 
         # Restart the "httpd" service.
         #
-        systemctl restart httpd.service
+        safe_systemctl restart httpd.service
        ;;
     "no")
         rm $SETUPSTATEDIR/one2many
@@ -605,7 +604,7 @@ function one2many()
 
 function opendns()
 {
-	case "$1" in
+    case "$1" in
     "yes")
         if [ "$#" -lt 2 ]; then
             echo "You must enter an IP address in the form 123.456.789.123"
@@ -621,8 +620,8 @@ function opendns()
         /\@\@forwarders\@\@/ c\
         forwarders      {$2;}; //@@forwarders@@" /etc/named-xs.conf
         echo $2 > /etc/sysconfig/xs_opendns_ip
-        systemctl restart named.service
-
+        safe_systemctl restart named.service
+ 
         # need for force name resolution to be through local named
         # so drop a script to ensure this in the wan NM up dir
         ln -s /$CFGDIR/etc/NetworkManager/dispatcher.d/xs-net-device \
@@ -637,16 +636,15 @@ function opendns()
         sed -i -e '
         /\@\@forwarders\@\@/ c\
         // @@forwarders@@ disabled ; //@@forwarders@@' /etc/named-xs.conf
-        systemctl restart named.service
+        safe_systemctl restart named.service
         rm $SETUPSTATEDIR/opendns
         ;;
     esac
 }
 
-
 function openvpn()
 {
-	case "$1" in
+    case "$1" in
     "yes")
         $YUM_CMD  openvpn 2>&1 | tee -a $LOG
         if [ $? -ne 0 ] ; then
@@ -664,10 +662,10 @@ function openvpn()
 
 function pathagar()
 {
-	case "$1" in
-	"yes")
+    case "$1" in
+    "yes")
         #httpd yes #-- currently on by default
-	    $YUM_CMD pathagar mod_python mod_wsgi Django \
+        $YUM_CMD pathagar mod_python mod_wsgi Django \
                 python-setuptools sqlite django-tagging
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
@@ -716,17 +714,17 @@ function pathagar()
         ln -fs $CFGDIR/etc/httpd/conf.d/pathagar.conf \
                 $DESTDIR/etc/httpd/conf.d/pathagar.conf
         ;;
-	"no")
+    "no")
         set +e;rm $SETUPSTATEDIR/pathagar; set
         ;;
-	esac
+    esac
 }
 
 function postgresql()
 {
-	case "$1" in
-	"yes")
-	    $YUM_CMD postgresql postgresql-server 2>&1 | tee -a $LOG
+    case "$1" in
+    "yes")
+        $YUM_CMD postgresql postgresql-server 2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
                 exit $YUMERROR
@@ -735,17 +733,17 @@ function postgresql()
         cp -f $CFGDIR/etc/systemd/system/postgresql-xs.service \
             $DESTDIR/lib/systemd/system/
         # systemctl does not enable by linking a link, hence above cp
-		systemctl enable postgresql-xs.service 2>&1 | tee -a $LOG
+        safe_systemctl enable postgresql-xs.service
 
-		# Pg - prime the DB if needed.
-		if [ ! -e ${POSTGRESSDIR}/PG_VERSION ];then
+        # Pg - prime the DB if needed.
+        if [ ! -e ${POSTGRESSDIR}/PG_VERSION ];then
             # /etc/init.d/pgsql-xs initdb -- this was used before systemd
             # postgresql-setup initdb need to move this edit upstream FIXME
             mkdir -p /library/pgsql-xs
             chown -R postgres:postgres /library/pgsql-xs/
             sed -i -e "s/--auth='ident'\"/--auth='ident' --encoding='UTF8'\"/" \
                                     /usr/bin/postgresql-setup
-			/usr/bin/postgresql-setup  initdb postgresql-xs
+            /usr/bin/postgresql-setup  initdb postgresql-xs
             sed -i -e '
             /^#standard_conforming_strings/ c\
 standard_conforming_strings = off
@@ -754,21 +752,21 @@ standard_conforming_strings = off
             /^#backslash_quote/ c\
 backslash_quote = on
             ' /library/pgsql-xs/postgresql.conf
-		fi
+        fi
 
-		# and set it to autostart
-		systemctl start postgresql-xs.service 2>&1 | tee -a $LOG
-		;;
-	"no")
-		systemctl disable postgresql-xs.service 2>&1 | tee -a $LOG
+        # and set it to autostart
+        safe_systemctl start postgresql-xs.service
+        ;;
+    "no")
+        safe_systemctl disable postgresql-xs.service
         rm $SETUPSTATEDIR/postgresql
-		;;
-	esac
+        ;;
+    esac
 }
 
 function puppet()
 {
-	case "$1" in
+    case "$1" in
     "yes")
         $YUM_CMD  puppet 2>&1 | tee -a $LOG
         if [ $? -ne 0 ] ; then
@@ -786,7 +784,7 @@ function puppet()
 
 function sdcard()
 {
-	case "$1" in
+    case "$1" in
     "yes")
         mountpoint = `df | gawk '/^\/dev\/mmcblk0p1 {print $7;}'`
         echo "Contents of $mountpoint"
@@ -819,7 +817,7 @@ function sdcard()
         } else {}
             exit(1)
         }'
-
+ 
         touch SETUPSTATEDIR/sdcard
         ;;
     "no")
@@ -911,47 +909,47 @@ dns=$GATEWAY;" /etc/NetworkManager/system-connections/static
 
 function squid()
 {
-	case "$1" in
-	"yes")
-	    $YUM_CMD squid 2>&1 | tee -a $LOG
+    case "$1" in
+    "yes")
+        $YUM_CMD squid 2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
                 exit $YUMERROR
             fi
         touch $SETUPSTATEDIR/squid
         # create the cache directories
-	mkdir /library/cache
-	chown squid:squid /library/cache
+        mkdir /library/cache
+        chown squid:squid /library/cache
         squid -z
         ## Update flag for httpd cache
         if [ ! -e /etc/sysconfig/xs_httpcache_on ]; then
             touch /etc/sysconfig/xs_httpcache_on
             etckeeper-if-selected 'xs-setup force-create httpcache flag'
         fi
-        systemctl enable squid.service 2>&1 | tee -a $LOG
-        set +x; systemctl start squid.service 2>&1 | tee -a $LOG; set -x
+        safe_systemctl enable squid.service
+        set +x; safe_systemctl start squid.service
         ;;
     "no")
-        systemctl disable squid.service 2>&1 | tee -a $LOG
-        systemctl stop squid.service 2>&1 | tee -a $LOG
+        safe_systemctl disable squid.service
+        safe_systemctl stop squid.service
         rm /etc/sysconfig/xs_httpcache_on
         rm $SETUPSTATEDIR/squid
-
+ 
         # reinitialize the iptables to just use masqueradeing
         /etc/sysconfig/olpc-scripts/firewall-xs
         iptables-save >/etc/sysconfig/iptables
-        systemctl restart iptables.service
+        safe_systemctl restart iptables.service
         ;;
     esac
 }
 
 function vnc()
 {
-	case "$1" in
-	"yes")
+    case "$1" in
+    "yes")
         # mod_ssl permits vnc to be encrypted, nmap provides ncat which listens
         #       to a port and provides feedback across network to a remote client
-	    $YUM_CMD tigervnc-server novnc mod_ssl nmap python-setuptools 2>&1 | tee -a $LOG
+        $YUM_CMD tigervnc-server novnc mod_ssl nmap python-setuptools 2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
                 exit $YUMERROR
@@ -967,7 +965,7 @@ function vnc()
         sed -i -e "s/<USER>/$VNCUSER/" /etc/systemd/system/vncserver\@.service
 
         # start the websocket service (part of the novnc package)
-       systemctl enable vncserverweb.service 2>&1 | tee -a $LOG
+       safe_systemctl enable vncserverweb.service
         mkdir -m 755 -p /home/$VNCUSER/.vnc
         #ln -sf $CFGDIR/etc/systemd/system/* $DESTDIR/etc/systemd/system
         ln -sf $DESTDIR/etc/systemd/system/vncserver\@.service \
@@ -977,7 +975,7 @@ function vnc()
 
         sed -i -e "/password = WebUtil/ c\
 password = WebUtil.getQueryVar(\'password\', \'$VNCPASSWORD\');" /usr/share/novnc/vnc_auto.html
-
+ 
         chown -R $VNCUSER:$VNCUSER /home/$VNCUSER/.vnc
         chmod 600 /home/$VNCUSER/.vnc/passwd
         cp $CFGDIR/etc/sysconfig/vnc/self.pem /home/$VNCUSER
@@ -985,9 +983,9 @@ password = WebUtil.getQueryVar(\'password\', \'$VNCPASSWORD\');" /usr/share/novn
         cp /etc/httpd/conf.d/ssl.conf.in /etc/httpd/conf.d/ssl.conf
         sed -i -e 's/^<ifDefine BOGUS/#<ifDefine BOGUS/' /etc/httpd/conf.d/ssl.conf
         sed -i -e 's/^<\/ifDefine/#<\/ifDefine/' /etc/httpd/conf.d/ssl.conf
-		systemctl enable vncserver\@\:1.service 2>&1 | tee -a $LOG
-        systemctl start vncserver\@\:1.service 2>&1 | tee -a $LOG
-        systemctl start vncserverweb.service 2>&1 | tee -a $LOG
+        safe_systemctl enable vncserver\@\:1.service
+        safe_systemctl start vncserver\@\:1.service
+        safe_systemctl start vncserverweb.service 2>&1
 
         # disable the startup panel config screen by populating the .config directory
         mkdir -m 755 -p /home/$VNCUSER/.config/xfce4/xfconf/xfce-perchannel-xml/
@@ -1005,21 +1003,21 @@ password = WebUtil.getQueryVar(\'password\', \'$VNCPASSWORD\');" /usr/share/novn
         #  -l = listen
         #   -k = keep open
         ;;
-	"no")
-		systemctl disable vncserver\@.service 2>&1 | tee -a $LOG
-		systemctl stop vncserver\@.service 2>&1 | tee -a $LOG
+    "no")
+        safe_systemctl disable vncserver\@.service
+        safe_systemctl stop vncserver\@.service
         rm $SETUPSTATEDIR/vnc
         ;;
-	esac
+    esac
 }
 
 function upload()
 # this is webdav, renamed, because sugar-panel used the webdav name at httpd root
 {
-	case "$1" in
-	"yes")
+    case "$1" in
+    "yes")
         cp /etc/httpd/conf.d/upload.conf.in /etc/httpd/conf.d/upload.conf
-	    $YUM_CMD cadaver
+        $YUM_CMD cadaver
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
                 exit $YUMERROR
@@ -1030,29 +1028,29 @@ function upload()
         htpasswd -cb /etc/httpd/upload.users.pwd $DEFAULTUSER $DEFAULTPASSWORD
         chown apache:apache /etc/httpd/upload.users.pwd
         ;;
-	"no")
+    "no")
         rm /etc/httpd/conf.d/upload.conf
         rm $SETUPSTATEDIR/upload
         ;;
-	esac
+    esac
 }
 
 function yum-etckeeper()
 {
-	case "$1" in
-	"yes")
+    case "$1" in
+    "yes")
         set-etckeeper yes
         sed  -i -e 's/^enabled=0/enabled=1/' /etc/yum/pluginconf.d/etckeeper.conf
         ;;
-	"no")
+    "no")
         sed  -i -e 's/^enabled=1/enabled=0/' /etc/yum/pluginconf.d/etckeeper.conf
         ;;
-	esac
+    esac
 }
 
 function xo-admin()
 {
-	case "$1" in
+    case "$1" in
     "yes")
         yum -y install  sneakerconfig 2>&1 | tee -a $LOG
         if [ $? -ne 0 ] ; then
@@ -1073,7 +1071,7 @@ function xo-admin()
 function xs-acpowergaps()
 # This function is only available on the XS which is running on an XO
 {
-	case "$1" in
+    case "$1" in
     "yes")
         if [ $ISXO != "1" ] ; then
             echo "This feature is only available on XS running on XO hardware"
@@ -1095,9 +1093,9 @@ function xs-acpowergaps()
 
 function xs-security()
 {
-	case "$1" in
+    case "$1" in
     "yes")
-	    $YUM_CMD xs-tools olpc-bios-crypto bitfrost xs-activation 2>&1 | tee -a $LOG
+        $YUM_CMD xs-tools olpc-bios-crypto bitfrost xs-activation 2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
                 exit $YUMERROR
@@ -1106,6 +1104,22 @@ function xs-security()
         ;;
     "no")
         rm $SETUPSTATEDIR/xs-security
+        ;;
+    esac
+}
+
+function safe_systemctl()
+{
+# wrapper for systemctl to handle various quirks
+    case "$1" in
+    "enable")
+
+        systemctl unmask $2 2>&1 | tee -a $LOG
+        systemctl -f enable $2 2>&1 | tee -a $LOG
+      
+        ;;
+    *)
+      systemctl $1 $2 2>&1 | tee -a $LOG
         ;;
     esac
 }
@@ -1124,8 +1138,8 @@ function do_first()
     fi
     #things to do the first time -- only once
     if [ -e /home/olpc/xs-setup.log ]; then
-	mv /home/olpc/xs-setup.log /var/log/
-	mv /home/olpc/yum.log /var/log/FA
+    mv /home/olpc/xs-setup.log /var/log/
+    mv /home/olpc/yum.log /var/log/FA
     fi
 
     # init etckeeper and turn it off
@@ -1166,16 +1180,16 @@ function do_first()
             fi
         fi
 
-	# keep yum cache
-	sed -i -e 's/keepcache=0/keepcache=1/' /etc/yum.conf
-	sed -i -e 's/metadata_expire=7d/metadata_expire=never/' /etc/yum.repos.d/fedora.repo
-#	sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora.repo
-#	sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora-updates.repo
+    # keep yum cache
+    sed -i -e 's/keepcache=0/keepcache=1/' /etc/yum.conf
+    sed -i -e 's/metadata_expire=7d/metadata_expire=never/' /etc/yum.repos.d/fedora.repo
+#    sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora.repo
+#    sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora-updates.repo
 
-	# use NM keyfile in place of ifcfg-rh XOs have this set already via OOB
-	sed -i -e 's/ifcfg-rh/keyfile/' /etc/NetworkManager/NetworkManager.conf
+    # use NM keyfile in place of ifcfg-rh XOs have this set already via OOB
+    sed -i -e 's/ifcfg-rh/keyfile/' /etc/NetworkManager/NetworkManager.conf
 
-        #### split these into new modules functions. JV 
+        #### split these into new modules functions. JV
         ## Prepare config files
         CFG_TEMPLATES="rsyslog.conf motd.olpc sysctl.conf ssh/sshd_config
         sysconfig/named sysconfig/init sysconfig/squid rssh.conf php.ini
@@ -1221,7 +1235,7 @@ function do_first()
         etckeeper-if-selected "disabled selinux, scripts sourced"
 
         # following packages are the core set of packages installed on all xs servers
-    	$YUM_CMD syck rssh mtd-utils acpid mlocate 2>&1 | tee -a $LOG
+        $YUM_CMD syck rssh mtd-utils acpid mlocate 2>&1 | tee -a $LOG
         if [ $? -ne 0 ] ; then
             echo "\n\nYum returned an error\n\n" | tee -a $LOG
             exit $YUMERROR
@@ -1244,8 +1258,8 @@ function do_first()
             echo "alias passwd='echo \"NOT ALLOWED!. It will break VNC remote access\"' " >> /home/$VNCUSER/.bashrc
         fi
         sed -i -e 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
-        systemctl enable sshd.service
-        systemctl restart sshd.service
+        safe_systemctl enable sshd.service
+        safe_systemctl restart sshd.service
 
         #  setup NetworkManager -- turns off xo's wifi when second adapter is added, reinit masquerade
         cp $CFGDIR/etc/NetworkManager/dispatcher.d/xs-net-device $DESTDIR/etc/NetworkManager/dispatcher.d
