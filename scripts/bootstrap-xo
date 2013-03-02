@@ -78,7 +78,7 @@ EOF
 	# Rename the XO to be schoolserver.local
 	sed -i -e '/HOSTNAME=xo/d' /etc/sysconfig/network
 	echo "HOSTNAME=schoolserver.local" >> /etc/sysconfig/network
-        sed -i -e ":NM_IGNORE_HOSTNAME_LOCALHOST=yes:NM_IGNORE_HOSTNAME_LOCALHOST=no:"
+        sed -i -e "s:NM_IGNORE_HOSTNAME_LOCALHOST=yes:NM_IGNORE_HOSTNAME_LOCALHOST=no:"
 
 	# XO release 12.1.0 makes /var/log  a tempfs -- server logs should persist
 	sed -i -e 's:vartmp:#vartmp:' /etc/fstab

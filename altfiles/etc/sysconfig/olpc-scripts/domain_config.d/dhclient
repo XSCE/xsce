@@ -5,17 +5,14 @@ BACKUP_SUFFIX=old
 . /etc/sysconfig/network
 
 hostname $HOSTNAME
-cp "/usr/share/xs-config/cfg/etc/dhclient-hostname.conf" "/etc/dhclient.conf.in"
+cp -f /usr/share/xs-config/cfg/etc/dhclient-hostname.conf /etc/dhclient.conf.in
 
 short_host=`hostname -s`
 
 for config in $CONFIG_LIST;
 do
     if [ -e $config.in ]; then
-	if [ -e $config ]; then
-	    mv $config $config.$BACKUP_SUFFIX
-	fi
-	sed -e s/@@BASEDNSNAME3@@/$short_host/ $config.in > $config ;
+	sed -e s/@@BASEDNSNAME3@@/$short_host/ $config.in ;
     else
 	echo WARNING: Skipped $config - template file is missing!
     fi
