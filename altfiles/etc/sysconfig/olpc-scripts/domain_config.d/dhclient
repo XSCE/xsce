@@ -1,0 +1,26 @@
+#!/bin/sh -e
+SERVICE_NAME=dhclient
+CONFIG_LIST="/etc/dhclient.conf.in"
+BACKUP_SUFFIX=old
+. /etc/sysconfig/network
+
+hostname $HOSTNAME
+cp "/usr/share/xs-config/cfg/etc/dhclient-hostname.conf" "/etc/dhclient.conf.in"
+
+short_host=`hostname -s`
+
+for config in $CONFIG_LIST;
+do
+    if [ -e $config.in ]; then
+	if [ -e $config ]; then
+	    mv $config $config.$BACKUP_SUFFIX
+	fi
+	sed -e s/@@BASEDNSNAME3@@/$short_host/ $config.in > $config ;
+    else
+	echo WARNING: Skipped $config - template file is missing!
+    fi
+done
+
+exit 0
+
+

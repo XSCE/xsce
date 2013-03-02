@@ -130,6 +130,9 @@ if [ -n $gw_iface ]; then
             done  
         fi
     fi
+    # create dhclient file that solves hostname problem with some routers
+    rm /etc/dhclient-*.conf
+    cp "/etc/dhclient.conf.in" "/etc/dhclient-$wan_iface.conf"
     echo "$wan_iface" > /etc/sysconfig/xs_wan_device
 fi
 
@@ -147,10 +150,11 @@ for i in $CFG_TEMPLATES; do
 done
 sed -i -e s/@@LAN_IF@@/$oth_iface/ /etc/sysconfig/dhcpd
 
+systemctl stop NetworkManager.service
+systemctl start NetworkManager.service
+
 short_host=`hostname -s`
 new_name=`hostname -f`
-
-systemctl stop NetworkManager.service
 
 #  This is the suffix which original versions of modified files will have
 BACKUP_SUFFIX=old
@@ -175,4 +179,3 @@ done
 popd
 
 echo "XS standard networking configured"
-systemctl start NetworkManager.service
