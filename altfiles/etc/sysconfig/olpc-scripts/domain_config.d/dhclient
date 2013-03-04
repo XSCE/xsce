@@ -11,8 +11,8 @@ short_host=`hostname -s`
 
 for config in $CONFIG_LIST;
 do
-    if [ -e $config.in ]; then
-	sed -e s/@@BASEDNSNAME3@@/$short_host/ $config.in ;
+    if [ -e $config ]; then
+	sed -e s/@@BASEDNSNAME3@@/$short_host/ $config ;
     else
 	echo WARNING: Skipped $config - template file is missing!
     fi
