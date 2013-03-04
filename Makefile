@@ -109,7 +109,7 @@ install: $(DESTDIR)
 	install -D altfiles/etc/sysconfig/olpc-scripts/domain_config.d/idmgr    $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d
 	install -D altfiles/etc/sysconfig/olpc-scripts/domain_config.d/named    $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d
 	install -D altfiles/etc/sysconfig/olpc-scripts/domain_config.d/squid    $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d
-	install -D altfiles/etc/sysconfig/olpc-scripts/domain_config.d/dhcpd    $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d
+	install -D altfiles/etc/sysconfig/olpc-scripts/domain_config.d/dhclient $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d
 	install -D altfiles/etc/sysconfig/olpc-scripts/resolv.conf.in       $(DESTDIR)/etc/sysconfig/olpc-scripts
 	install -D altfiles/etc/sysconfig/olpc-scripts/iptables-xs.in  		$(DESTDIR)/etc/sysconfig/olpc-scripts/
 	install -D altfiles/etc/sysconfig/olpc-scripts/ip6tables-xs.in  	$(DESTDIR)/etc/sysconfig/olpc-scripts/
