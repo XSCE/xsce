@@ -132,7 +132,7 @@ if [ -n $gw_iface ]; then
     fi
     # create dhclient file that solves hostname problem with some routers
     rm /etc/dhclient-*.conf
-    cp "/etc/dhclient.conf.in" "/etc/dhclient-$wan_iface.conf"
+    cp "/etc/dhclient-wan_iface.conf.in" "/etc/dhclient-$wan_iface.conf"
     echo "$wan_iface" > /etc/sysconfig/xs_wan_device
 fi
 

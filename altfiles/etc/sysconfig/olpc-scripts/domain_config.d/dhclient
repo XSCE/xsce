@@ -1,11 +1,11 @@
 #!/bin/sh -e
 SERVICE_NAME=dhclient
-CONFIG_LIST="/etc/dhclient.conf.in"
+CONFIG_LIST="/etc/dhclient-wan_iface.conf.in"
 BACKUP_SUFFIX=old
 . /etc/sysconfig/network
 
 hostname $HOSTNAME
-cp -f /usr/share/xs-config/cfg/etc/dhclient-hostname.conf /etc/dhclient.conf.in
+cp -f /usr/share/xs-config/cfg/etc/dhclient-hostname.conf.in /etc/dhclient-wan_iface.conf.in
 
 short_host=`hostname -s`
 
