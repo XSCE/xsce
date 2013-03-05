@@ -5,3 +5,4 @@ install:
 	install -D files/httpd.in  $(DESTDIR)/etc/sysconfig/httpd.in
 	install -D files/xs-httpcache  $(DESTDIR)/usr/bin/xs-httpcache
 	install -D files/xs.conf  $(DESTDIR)/usr/share/xs-config/cfg/etc/httpd/conf.d/xs.conf
+	install -D files/xs-http  $(DESTDIR)/usr/share/xs-config/cfg/etc/sudoers.d/xs-http

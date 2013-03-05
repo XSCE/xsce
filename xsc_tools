@@ -120,13 +120,11 @@ function make_makefile_for_plugin()
             echo $manifest_line | \
             gawk -v manifest_line=$manifest_line 'BEGIN {FS = "/"}
             {
-            print("input line is:" $0)
-            if (!system("test -f " $0)){
-                parent = $(NF)
-            }else{
-                parent = $(NF-1)
-            }
+            # create a fast lookup array
+            parent = $(NF)
+            if (parent == "") parent = $(NF-1)
             connectors[parent]=manifest_line
+
             print("parent:" parent "manifest_line:" manifest_line)
             # cycle through all the files
             while ((getline line < "./find") > 0) {

@@ -8,7 +8,10 @@ install:
 	install -D files/init.in  $(DESTDIR)/etc/sysconfig/init.in
 	install -D files/pcspkr.modules  $(DESTDIR)/etc/sysconfig/modules/pcspkr.modules
 	install -D files/sysctl.conf.in  $(DESTDIR)/etc/sysctl.conf.in
+	install -D files/xs-apply-changes  $(DESTDIR)/root/xs-apply-changes
+	install -D files/bootstrap-xo  $(DESTDIR)/usr/bin/bootstrap-xo
 	install -D files/cat-parts  $(DESTDIR)/usr/bin/cat-parts
+	install -D files/prep-storage.sh  $(DESTDIR)/usr/bin/prep-storage.sh
 	install -D files/xs-mkaccount  $(DESTDIR)/usr/bin/xs-mkaccount
 	install -D files/xs-services-check  $(DESTDIR)/usr/bin/xs-services-check
 	install -D files/xs-setup  $(DESTDIR)/usr/bin/xs-setup
