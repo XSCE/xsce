@@ -1,20 +1,4 @@
 install:
-	install -D files/named-xs.conf.in $(DESTDIR)/etc/
-	install -D files/named.in $(DESTDIR)/etc/sysconfig/
-	install -D files/named $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d/
-	install -D files/localdomain.zone $(DESTDIR)/var/named-xs/
-	install -D files/localhost.zone $(DESTDIR)/var/named-xs/
-	install -D files/named.broadcast $(DESTDIR)/var/named-xs/
-	install -D files/named.ip6.local $(DESTDIR)/var/named-xs/
-	install -D files/named.local $(DESTDIR)/var/named-xs/
-	install -D files/named.rfc1912.zones $(DESTDIR)/var/named-xs/
-	install -D files/named.root $(DESTDIR)/var/named-xs/
-	install -D files/named.root.hints $(DESTDIR)/var/named-xs/
-	install -D files/named.zero $(DESTDIR)/var/named-xs/
-	install -D files/school.external.zone.db $(DESTDIR)/var/named-xs/
-	install -D files/school.internal.zone.16.in-addr.db.in $(DESTDIR)/var/named-xs/
-	install -D files/school.internal.zone.32.in-addr.db.in $(DESTDIR)/var/named-xs/
-	install -D files/school.internal.zone.48.in-addr.db.in $(DESTDIR)/var/named-xs/
-	install -D files/school.internal.zone.db $(DESTDIR)/var/named-xs/
-	install -D files/school.internal.zone.in-addr.db.in $(DESTDIR)/var/named-xs/
-	install -D files/dummy $(DESTDIR)/var/named-xs/data/
+	install -D files/named-xs.conf.in  $(DESTDIR)/etc/named-xs.conf.in
+	install -D files/named.in  $(DESTDIR)/etc/sysconfig/named.in
+	install -D files/named  $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d/named

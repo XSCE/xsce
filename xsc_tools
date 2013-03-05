@@ -110,9 +110,51 @@ function  generate_directories()
 #=================================================================================
 function make_makefile_for_plugin()
 {
-        cd plugins.d/$plugin
+        cd $CURDIR
+        cd ./plugins.d/$1/
         rm -f Makefile
         echo "install:" >> Makefile
+        manifest_list=`cat ./$1.manifest`
+        for manifest_line in $manifest_list; do
+            echo "manifest line is $manifest_line"
+            echo $manifest_line | \
+            gawk -v manifest_line=$manifest_line 'BEGIN {FS = "/"}
+            {
+            print("input line is:" $0)
+            if (!system("test -f " $0)){
+                parent = $(NF)
+            }else{
+                parent = $(NF-1)
+            }
+            connectors[parent]=manifest_line
+            print("parent:" parent "manifest_line:" manifest_line)
+            # cycle through all the files
+            while ((getline line < "./find") > 0) {
+                #print(line)
+                num = split(line,chunks,"/")
+                if (chunks[1] in connectors) {
+                    full_path = connectors[chunks[1]]
+                    for(i=2;i<num;i++){
+                        full_path = full_path chunks[i] "/"
+                    }
+                    print("prefix:" connectors[chunks[1]] "loc:" line)
+                    if (! system("test -f ./files/" line)){
+                        print("writing")
+                        write_makefile(line,full_path,"Makefile")
+                    }
+                }
+            }}
+
+       function write_makefile(source, full_path, mkfile ){
+            makef = sprintf("\tinstall -D files/%s  \044(DESTDIR)%s", source, full_path)
+            cmd = sprintf("echo '\''%s'\'' >> %s", makef, mkfile)
+               print(cmd "  " path)
+            system(cmd)
+        }
+            '
+        done
+}
+function dummy(){
         #echo `cat $plugin.manifest `
         if [ -f $mod.manifest ]; then
             cat $mod.manifest | gawk -v pluginloc=$mod '{
@@ -211,7 +253,7 @@ case "$1" in
 # use contents of "plugins.d/files" to generate Makefiles in each plugin
     MKDIR_MAKEFILE=$CURDIR/$PLUGINS_DIR/Makefile
 	if [ $# -eq 2 -a $2 = "all" ]; then
-		PLUGIINS=`ls -d plugins.d`
+		PLUGINS=`find $PLUGINS_DIR/ -maxdepth 1 -type d | sed s:$PLUGINS_DIR/::`
     fi
 	if [ $# -eq 2 -a $2 != "all" ]; then
 		PLUGINS=$2
@@ -221,7 +263,9 @@ case "$1" in
 	fi
     #cecho "about to generate_directories"
     generate_directories
+    echo "directories done, now do makefile for plugin"
 	for plugin in $PLUGINS; do
+        echo "$plugin"
         make_makefile_for_plugin $plugin
     done
     ;;
