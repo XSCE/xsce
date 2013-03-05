@@ -23,12 +23,16 @@
 
 DOMAIN_CONFIG_DIR="/etc/sysconfig/olpc-scripts/domain_config.d/"
 SYSCONFIGDIR="/etc/sysconfig"
+LOG=/var/log/xs-setup.log
 
 #  Check the number of arguments and print usage if abnormal
 if [ "$1" = '-h' -o $# -gt 1 ]; then
   echo "usage:  xs-domain-config [ <new_domain_name> ]"
   exit 0 ;
 fi
+
+echo "called xs-domain-config on" | tee -a $LOG
+date  2>&1 | tee -a $LOG
 
 #  Parse arguments
 new_domain_name=$1
@@ -42,7 +46,7 @@ else
 	new_domain_name="local"
     fi
 fi
-echo Setting the base dns name to $new_domain_name
+echo Setting the base dns name to $new_domain_name | tee -a $LOG
 
 #  Apply each executable in the config directory
 for file in `find $DOMAIN_CONFIG_DIR -maxdepth 1 -type f -perm /u+x ! -name "*~" -print` ;
@@ -55,4 +59,5 @@ do
     [ "${file%.swp}" != "${file}" ]     && continue
     [ "${file%,v}" != "${file}" ]       && continue
     eval $file $new_domain_name ;
+    echo "xs-domain-config ran $file" | tee -a $LOG
 done

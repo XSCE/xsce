@@ -20,6 +20,7 @@
 # 02111-1307, USA.
 
 # Parse options
+LOG=/var/log/xs-setup.log
 opt_upgrade_only=
 if ! options=$(getopt -o u -l upgrade-only -- "$@"); then
 	exit 1
@@ -46,10 +47,11 @@ fi
 
 # Determine the number of interfaces
 num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
-
+echo "running xs-setup-network on" | tee -a $LOG
+date  2>&1 | tee -a $LOG
 # Is this an XO
 is_xo=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
-echo $is_xo
+echo "is_xo = $is_xo" | tee -a $LOG 
 CFG_TEMPLATES="sysconfig/dhcpd sysconfig/iptables-config sysconfig/ip6tables-config"
 CONFIG_LIST="/etc/hosts"
 UPLINK=`find /etc/NetworkManager/system-connections -maxdepth 1 -type f -name "*" -not -name static -not -name "Sugar *"`
@@ -63,6 +65,7 @@ function write_nm_connection(){
     sed -i  "s/\@\@MAC\@\@/$2/" "/etc/NetworkManager/system-connections/$3-$1"
     sed -i  "s/\@\@DEVICE\@\@/$3/" "/etc/NetworkManager/system-connections/$3-$1"
     chmod 600 "/etc/NetworkManager/system-connections/$3-$1"
+    echo "write_nm_connection wrote $3-$1 with mac addr $2" | tee -a $LOG
 }
 
 #========================================================
@@ -130,7 +133,7 @@ if [ -n $gw_iface ]; then
                 if [ x$present = x ]; then
                     echo "ignore-auto-dns=true" >>  $i
                 else
-                    echo "ignore-auto-dns=true already present for $i -- skipping"
+                    echo "ignore-auto-dns=true already present for $i" | tee -a $LOG
                 fi
             done
         fi
@@ -181,9 +184,13 @@ do
 	rm $config.tmp ;
 	#etckeeper commit -m "set /etc/hosts to $ipaddr $new_name $short_host"
     else
-	echo WARNING: Skipped $config - template file is missing!
+	echo WARNING: Skipped $config - template file is missing! | tee -a $LOG
     fi
 done
 popd
 
-echo "XS standard networking configured"
+echo "XS standard networking configured with" | tee -a $LOG
+echo "hostname = $short_host" | tee -a $LOG
+echo "FQDN = $new_name" | tee -a $LOG
+echo "LAN device $oth_iface using $ipaddr " | tee -a $LOG
+echo "gateway device $gw_iface using $wan_ip" | tee -a $LOG
