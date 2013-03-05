@@ -15,17 +15,16 @@ DIRECTORY_MAKEFILE=$CURDIR/$PLUGINS_DIR/Makefile
 function  generate_directories()
 # first make a list of the manifest files for all plugins
 {
-    echo "made it to generate_directories"
     rm -f $DIRECTORY_MAKEFILE
     # scan through all the files in the plugin tree, and create the directories
     # use an array to eliminate duplicates
     for plugin in `find $PLUGINS_DIR/ -maxdepth 1 -type d | sed s:$PLUGINS_DIR/::`; do
         cd plugins.d/$plugin
-        echo "$PWD/$plugin.manifest"
+        #echo "$PWD/$plugin.manifest"
         if [ -f ./$plugin.manifest ]; then
             manlist+=" plugins.d/$plugin/$plugin.manifest"
             # make list of files for later use
-            echo `find ./files/ | sed s:./files/::` > $plugin.find
+            find ./files/ | sed s:^./files/:: > find
         fi
         cd $CURDIR
     done
@@ -33,60 +32,79 @@ function  generate_directories()
     echo "install:" >>$MKDIR_MAKEFILE
 
     # now feed all of these files, or connectors, to gawk to find unique path names
-    cat $manlist | \
-    gawk  -v mkfile=$MKDIR_MAKEFILE '
-    {
-        line = $0
-        for (i in nibbles) {delete nibble[i]}
-        print $0
-        directories[0]=""
-        num = split($0,nibbles,"/")
-        path = ""
-        for (i=1; i<num; i++){
-            path = path nibbles[i] "/"
-            if (!( path in directories)) {
-                write_directory(path, mkfile, directories)
+    for manifest in $manlist; do
+        cat $manifest | \
+        gawk  -v mkfile=$MKDIR_MAKEFILE  -v man_file=$manifest '{
+            # get back the lookup array
+            while ((getline line < mkfile) > 0) {
+                path = substr(line,27)
+                directories[path] = ""
             }
-        }
-        add_leaf_directories($nibbles[i-1], manfile, mkfile, directories)
-
-
-    }
-
-    function add_leaf_directories(connector, manifest_path, mkfile, directories){
-        match(manifest_path,/.*\//)
-        if (RLENGTH > 0){
-            find_file_data = sprintf("%s/%s",substr(manifest_path,1,RLENGTH),"files")
-            print ("find_file_data: ", find_file_data)
-            while ((getline line < find_file_data) > 0) {
-                print(line)
-                split(line, nibbles, "/")
-                split(connector, parents, "/")
-                if (nibbles[1] == parents[length(parents)]){
-                    full_path = "/"
-                    for (i in connector) {
-                        full_path += connector[i] "/"
-                    }
-                    for (i=2; i<=length(nibbles); i++){
-                        full_path += nibbles[i] "/"
-                    }
-
-                    if (!( full_path in directories)) {
-                        write_directory(full_path, mkfile, directories)
-                    }
+            manifest_line = $0
+            # if it is a directory, terminate it with a slash
+            if (system("test -d " manifest_line) && ! match(manifest_line, /.*\/$/ )){
+                manifest_line = manifest_line "/"
+            }
+            for (i in nibbles) {delete nibble[i]}
+            #if(man_file == "plugins.d/vnc/vnc.manifest") {print("input from manifest", $0)}
+            num = split($0,nibbles,"/")
+            path = ""
+            for (i=1; i<num; i++){
+                if (nibbles[i] != ""){path = path nibbles[i] "/"}
+                if (!( path in directories)) {
+                    write_directory(path, mkfile, directories)
+                    directories[path] = ""
                 }
             }
+            add_leaf_directories(nibbles, man_file, mkfile, directories)
         }
-   }
 
-   function write_directory(path, mkfile, directories){
-        makef = sprintf("\tinstall -D -d  \044(DESTDIR)%s",path)
-        cmd = sprintf("echo '\''%s'\'' >> %s", makef, mkfile)
-           #print(cmd "  " path)
-        system(cmd)
-        directories[path]=""
-    }
-    '
+        function add_leaf_directories(connector, manifest_path, mkfile, directories){
+            match(manifest_path,/.*\//)
+            prefix = "./" substr(manifest_path,1,RLENGTH) "files/"
+            if (RLENGTH > 0){
+                find_file_data = sprintf("%s%s",substr(manifest_path,1,RLENGTH),"find")
+                while ((getline line < find_file_data) > 0) {
+                    #print(line)
+                    split(line, chunks, "/")
+                    last_parent = connector[length(connector)]
+                    if (last_parent == ""){last_parent = connector[length(connector) - 1]}
+                    #if (manifest_path == "plugins.d/vnc/vnc.manifest")
+                        #{print("root of files:",chunks[1],"parent:",last_parent)}
+                    if (chunks[1] == last_parent && length(chunks) > 1){
+                        full_path = "/"
+                        candidate = prefix
+                        for (i=1; i<length(connector)-1;i++) {
+                            if (connector[i] != ""){full_path = full_path connector[i] "/"}
+                        }
+                        #for (j=1;j<length(chunks);j++) print (chunks[j])
+                        for (i=1; i<=length(chunks); i++){
+                            candidate = candidate chunks[i] "/"
+                            #print(full_path " candidate:" candidate)
+                            if (!system("test -d " candidate)){
+#                                #if (chunks[i] != ""){full_path = full_path chunks[i] "/"}
+                                full_path = full_path chunks[i] "/"
+                            }
+                        }
+                        if (!( full_path in directories)) {
+                            write_directory(full_path, mkfile, directories)
+                            #print("writing:",full_path)
+                        }
+                    }
+                }
+                close(find_file_data)
+            }
+       }
+
+       function write_directory(path, mkfile, directories){
+            makef = sprintf("\tinstall -D -d  \044(DESTDIR)%s",path)
+            cmd = sprintf("echo '\''%s'\'' >> %s", makef, mkfile)
+               #print(cmd "  " path)
+            system(cmd)
+            directories[path]=""
+        }
+        '
+    done
 }
 
 #=================================================================================
@@ -201,7 +219,7 @@ case "$1" in
 	if [ $# -eq 1 ]; then
 		PLUGINS=`cat m_manifest`
 	fi
-    echo "about to generate_directories"
+    #cecho "about to generate_directories"
     generate_directories
 	for plugin in $PLUGINS; do
         make_makefile_for_plugin $plugin
