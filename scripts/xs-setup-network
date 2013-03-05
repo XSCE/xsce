@@ -125,9 +125,14 @@ if [ -n $gw_iface ]; then
             write_nm_connection "dhcp" "$wan_mac" "$wan_iface"
         else
             for i in $UPLINK;
-            do 
-                echo "ignore-auto-dns=true" >>  $i
-            done  
+            do
+                present=`cat $i | grep ignore-auto-dns=true`
+                if [ x$present = x ]; then
+                    echo "ignore-auto-dns=true" >>  $i
+                else
+                    echo "ignore-auto-dns=true already present for $i -- skipping"
+                fi
+            done
         fi
     fi
     # create dhclient file that solves hostname problem with some routers
@@ -151,6 +156,9 @@ done
 sed -i -e s/@@LAN_IF@@/$oth_iface/ /etc/sysconfig/dhcpd
 
 systemctl stop NetworkManager.service
+if [ -e /var/run/nm-dhclient-$wan_iface.conf ]; then
+    rm /var/run/nm-dhclient-$wan_iface.conf
+fi
 systemctl start NetworkManager.service
 
 short_host=`hostname -s`
