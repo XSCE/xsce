@@ -48,6 +48,7 @@ NCATPORT=29753
 ISXO=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
 YUMERROR=10
 YUM_CMD="yum -y install"
+NEW_NAME=`hostname -f`
 
 function template()
 {
@@ -409,6 +410,8 @@ function idmgr()
         /etc/sysconfig/olpc-scripts/setup.d/ds-backup
 
         cp /etc/systemd/system/idmgr.service.in /etc/systemd/system/idmgr.service
+        cp -f /etc/idmgr.conf.in /etc/idmgr.conf
+        sed -e s/@@BASEDNSNAME2@@/$NEW_NAME/ /etc/idmgr.conf
 
         safe_systemctl enable idmgr.service
         safe_systemctl start idmgr.service
