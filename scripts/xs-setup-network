@@ -101,11 +101,9 @@ function write_nm_connection(){
 # If there are more than 2 cards, the last non-gateway one will be lan
 
 # Try to figure out which interface is connected to a gateway
-
 gw_iface=`route -n | awk '{if($4=="UG")print $8}'`
 
 # Pick a another card, any card (except lo and gw_iface, if not null)
-
 for iface in $(ifconfig | gawk 'BEGIN{FS=":"}(/^.*: flags=/) {print( $1);}')
     do
     if [ "$iface" != "lo" ] && [ "$iface" != "$gw_iface" ]; then
@@ -138,9 +136,7 @@ if [ -n $gw_iface ]; then
             done
         fi
     fi
-    # create dhclient file that solves hostname problem with some routers
-    rm /etc/dhclient-*.conf
-    cp "/etc/dhclient-wan_iface.conf.in" "/etc/dhclient-$wan_iface.conf"
+
     echo "$wan_iface" > /etc/sysconfig/xs_wan_device
 fi
 
@@ -159,9 +155,6 @@ done
 sed -i -e s/@@LAN_IF@@/$oth_iface/ /etc/sysconfig/dhcpd
 
 systemctl stop NetworkManager.service
-if [ -e /var/run/nm-dhclient-$wan_iface.conf ]; then
-    rm /var/run/nm-dhclient-$wan_iface.conf
-fi
 systemctl start NetworkManager.service
 
 short_host=`hostname -s`
