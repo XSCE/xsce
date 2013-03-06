@@ -120,37 +120,41 @@ function make_makefile_for_plugin()
             echo $manifest_line | \
             gawk -v manifest_line=$manifest_line 'BEGIN {FS = "/"}
             {
-            # create a fast lookup array
-            parent = $(NF)
-            if (parent == "") parent = $(NF-1)
-            connectors[parent]=manifest_line
+                # create a fast lookup array
+                parent = $(NF)
+                if (parent == "") parent = $(NF-1)
+                connectors[parent]=manifest_line
 
-            print("parent:" parent "manifest_line:" manifest_line)
-            # cycle through all the files
-            while ((getline line < "./find") > 0) {
-                #print(line)
-                num = split(line,chunks,"/")
-                if (chunks[1] in connectors) {
-                    full_path = connectors[chunks[1]]
-                    for(i=2;i<num;i++){
-                        full_path = full_path chunks[i] "/"
-                    }
-                    print("prefix:" connectors[chunks[1]] "loc:" line)
-                    if (! system("test -f ./files/" line)){
-                        print("writing")
-                        write_makefile(line,full_path,"Makefile")
+                print("parent:" parent "manifest_line:" manifest_line)
+                # cycle through all the files
+                while ((getline line < "./find") > 0) {
+                    #print(line)
+                    num = split(line,chunks,"/")
+                    if (chunks[1] in connectors) {
+                        full_path = connectors[chunks[1]]
+                        for(i=2;i<num;i++){
+                            full_path = full_path chunks[i] "/"
+                        }
+                        print("prefix:" connectors[chunks[1]] "loc:" line)
+                        if (! system("test -f ./files/" line)){
+                            print("writing")
+                            write_makefile(line,full_path,"Makefile")
+                        }
                     }
                 }
-            }}
+            }
 
-       function write_makefile(source, full_path, mkfile ){
-            makef = sprintf("\tinstall -D files/%s  \044(DESTDIR)%s", source, full_path)
-            cmd = sprintf("echo '\''%s'\'' >> %s", makef, mkfile)
-               print(cmd "  " path)
-            system(cmd)
-        }
-            '
+            function write_makefile(source, full_path, mkfile ){
+                 makef = sprintf("\tinstall -D files/%s  \044(DESTDIR)%s", source, full_path)
+                 cmd = sprintf("echo '\''%s'\'' >> %s", makef, mkfile)
+                    print(cmd "  " path)
+                 system(cmd)
+             }
+             '
         done
+        #clean up the "find" file created by generate Makefiles
+        rm -f ./find
+        cd $CURDIR
 }
 function dummy(){
         #echo `cat $plugin.manifest `
