@@ -920,7 +920,7 @@ function squid()
             fi
         touch $SETUPSTATEDIR/squid
         # create the cache directories
-        mkdir /library/cache
+        mkdir -p /library/cache
         chown squid:squid /library/cache
         squid -z
         ## Update flag for httpd cache
