@@ -24,7 +24,7 @@ if [ x$short_host = x  ]; then
 fi
 
 # append the passed domain name
-$xs_full_name=$short_host.$1
+xs_full_name=$short_host.$1
 
 echo "changing FQDN to $xs_full_name"
 hostname $xs_full_name
