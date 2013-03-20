@@ -277,7 +277,7 @@ function ejabberd()
                     rm -rf /var/lib/ejabberd/spool
                 fi
                 rm -f /etc/ejabberd/ejabberd.pem
-                yum reinstall ejabberd 2>&1 | tee -a $LOG
+                yum -y reinstall ejabberd 2>&1 | tee -a $LOG
             else
                 $YUM_CMD ejabberd 2>&1 | tee -a $LOG
             fi
@@ -920,7 +920,7 @@ function squid()
             fi
         touch $SETUPSTATEDIR/squid
         # create the cache directories
-        mkdir /library/cache
+        mkdir -p /library/cache
         chown squid:squid /library/cache
         squid -z
         ## Update flag for httpd cache
