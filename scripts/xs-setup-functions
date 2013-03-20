@@ -87,6 +87,7 @@ function activity-server()
                     /var/www/html/upload_activity.php
 
         touch $SETUPSTATEDIR/activity-server
+        safe_systemctl restart httpd.service
         ;;
     "no")
         rm $SETUPSTATEDIR/activity-server
@@ -342,6 +343,7 @@ function httpd()
             fi
         touch $SETUPSTATEDIR/httpd
         cp -p /etc/httpd/conf/httpd-xs.conf.in /etc/httpd/conf/httpd-xs.conf
+        ln -sf $CFGDIR/etc/httpd/conf.d/mime_olpc.conf $DESTDIR/etc/httpd/conf.d/
         # Choose a config depending on memory
         MEMSIZE=$(grep '^MemTotal' /proc/meminfo | grep -oP '\d+')
         CONFMEM=256m
@@ -715,6 +717,7 @@ function pathagar()
         # apache needs to add books
         ln -fs $CFGDIR/etc/httpd/conf.d/pathagar.conf \
                 $DESTDIR/etc/httpd/conf.d/pathagar.conf
+        safe_systemctl restart httpd.service 
         ;;
     "no")
         set +e;rm $SETUPSTATEDIR/pathagar; set
@@ -982,9 +985,12 @@ password = WebUtil.getQueryVar(\'password\', \'$VNCPASSWORD\');" /usr/share/novn
         chmod 600 /home/$VNCUSER/.vnc/passwd
         cp $CFGDIR/etc/sysconfig/vnc/self.pem /home/$VNCUSER
         chown $VNCUSER:$VNCUSER /home/$VNCUSER/self.pem
+        ln -sf $CFGDIR/etc/httpd/conf.d/novnc.conf $DESTDIR/etc/httpd/conf.d/
+        ln -sf $CFGDIR/etc/httpd/conf.d/xs.conf $DESTDIR/etc/httpd/conf.d/
         cp /etc/httpd/conf.d/ssl.conf.in /etc/httpd/conf.d/ssl.conf
         sed -i -e 's/^<ifDefine BOGUS/#<ifDefine BOGUS/' /etc/httpd/conf.d/ssl.conf
         sed -i -e 's/^<\/ifDefine/#<\/ifDefine/' /etc/httpd/conf.d/ssl.conf
+        safe_systemctl restart httpd.service 
         safe_systemctl enable vncserver\@\:1.service
         safe_systemctl start vncserver\@\:1.service
         safe_systemctl start vncserverweb.service 2>&1
@@ -1029,6 +1035,7 @@ function upload()
         chown apache:apache /library/upload
         htpasswd -cb /etc/httpd/upload.users.pwd $DEFAULTUSER $DEFAULTPASSWORD
         chown apache:apache /etc/httpd/upload.users.pwd
+        safe_systemctl restart httpd.service 
         ;;
     "no")
         rm /etc/httpd/conf.d/upload.conf
@@ -1219,9 +1226,9 @@ function do_first()
         #ln -sf $CFGDIR/etc/dhcp/dhclient-exit-hooks $DESTDIR/etc/dhcp
         ln -sf $CFGDIR/etc/NetworkManager/dispatcher.d/wan-dev \
                             $DESTDIR/etc/NetworkManager/dispatcher.d
-        ln -sf $CFGDIR/etc/httpd/conf.d/*.conf $DESTDIR/etc/httpd/conf.d
+        #ln -sf $CFGDIR/etc/httpd/conf.d/*.conf $DESTDIR/etc/httpd/conf.d
         ln -sf $CFGDIR/etc/logrotate.d/* $DESTDIR/etc/logrotate.d
-        ln -sf $CFGDIR/etc/profile.d/* $DESTDIR/etc/profile.d
+        #ln -sf $CFGDIR/etc/profile.d/* $DESTDIR/etc/profile.d
 
         # sudo doesn't accept symlinks here
         install -m 440 $CFGDIR/etc/sudoers.d/* $DESTDIR/etc/sudoers.d
