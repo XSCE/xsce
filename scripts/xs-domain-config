@@ -36,6 +36,10 @@ date  2>&1 | tee -a $LOG
 
 #  Parse arguments
 new_domain_name=$1
+
+#### reference future config file here ####
+# for domain name
+
 if [ -n "$new_domain_name" ];then
     echo $new_domain_name > "$SYSCONFIGDIR/xs_domain_name"
 else
@@ -46,10 +50,11 @@ else
 	new_domain_name="local"
     fi
 fi
-echo Setting the base dns name to $new_domain_name | tee -a $LOG
+echo "Setting the base domain name to $new_domain_name" | tee -a $LOG
 
 #  Apply each executable in the config directory
-for file in `find $DOMAIN_CONFIG_DIR -maxdepth 1 -type f -perm /u+x ! -name "*~" -print` ;
+#  JV - sort places dhclient to be run first in the list
+for file in `find $DOMAIN_CONFIG_DIR -maxdepth 1 -type f -perm /u+x ! -name "*~" -print | sort` ;
 do
     # skip saved/backup files
     [ "${file%.cfsaved}" != "${file}" ] && continue
