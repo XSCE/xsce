@@ -38,7 +38,7 @@ Requires: avahi-ui
 #Requires: php-common
 #Requires: moodle-xs
 #Requires: ejabberd
-#Requires: xs-release
+Requires: hostname
 Requires: yum-utils
 Requires: NetworkManager
 
