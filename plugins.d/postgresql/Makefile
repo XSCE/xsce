@@ -8,3 +8,4 @@ install:
 	install -D files/pgsql-xs  $(DESTDIR)/library/pgsql-xs
 	install -D files/postgresql-xs.service  $(DESTDIR)/usr/share/xs-config/cfg/etc/systemd/system/postgresql-xs.service
 	install -D files/pg_hba.conf  $(DESTDIR)/usr/share/xs-config/cfg/library/pgsql-xs/pg_hba.conf
+    install -D postgresql.sh $(DESTDIR)/usr/share/xs-config/sh.d/

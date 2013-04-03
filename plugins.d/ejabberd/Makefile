@@ -6,3 +6,4 @@ install:
 	install -D files/ejabberd-xs.service.in  $(DESTDIR)/etc/systemd/system/ejabberd-xs.service.in
 	install -D files/xs-ejabberd-srg  $(DESTDIR)/usr/bin/xs-ejabberd-srg
 	install -D files/10-ejabberdmoodle  $(DESTDIR)/usr/share/xs-config/cfg/etc/sudoers.d/10-ejabberdmoodle
+    install -D ejabberd.sh $(DESTDIR)/usr/share/xs-config/sh.d/

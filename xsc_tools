@@ -105,6 +105,7 @@ function  generate_directories()
         }
         '
     done
+    echo  -e  "    install -D -d \044(DESTDIR)/usr/share/xs-config/sh.d" >>$MKDIR_MAKEFILE
 }
 
 #=================================================================================
@@ -114,9 +115,13 @@ function make_makefile_for_plugin()
         cd ./plugins.d/$1/
         rm -f Makefile
         echo "install:" >> Makefile
-        manifest_list=`cat ./$1.manifest`
+        if [ -f ./$1.manifest ]; then
+            manifest_list=`cat ./$1.manifest`
+        else
+            manifest_list=""
+        fi
         for manifest_line in $manifest_list; do
-            echo "manifest line is $manifest_line"
+            #echo "manifest line is $manifest_line"
             echo $manifest_line | \
             gawk -v manifest_line=$manifest_line 'BEGIN {FS = "/"}
             {
@@ -125,7 +130,7 @@ function make_makefile_for_plugin()
             if (parent == "") parent = $(NF-1)
             connectors[parent]=manifest_line
 
-            print("parent:" parent "manifest_line:" manifest_line)
+            #print("parent:" parent "manifest_line:" manifest_line)
             # cycle through all the files
             while ((getline line < "./find") > 0) {
                 #print(line)
@@ -135,9 +140,9 @@ function make_makefile_for_plugin()
                     for(i=2;i<num;i++){
                         full_path = full_path chunks[i] "/"
                     }
-                    print("prefix:" connectors[chunks[1]] "loc:" line)
+                    #print("prefix:" connectors[chunks[1]] "loc:" line)
                     if (! system("test -f ./files/" line)){
-                        print("writing")
+                        #print("writing")
                         write_makefile(line,full_path,"Makefile")
                     }
                 }
@@ -146,11 +151,14 @@ function make_makefile_for_plugin()
        function write_makefile(source, full_path, mkfile ){
             makef = sprintf("\tinstall -D files/%s  \044(DESTDIR)%s", source, full_path)
             cmd = sprintf("echo '\''%s'\'' >> %s", makef, mkfile)
-               print(cmd "  " path)
+               #print(cmd "  " path)
             system(cmd)
         }
             '
         done
+        if [ -f ./$1.sh ];then
+            echo -e  "    install -D $1.sh \044(DESTDIR)/usr/share/xs-config/sh.d/" >> Makefile
+        fi
 }
 function dummy(){
         #echo `cat $plugin.manifest `
@@ -165,7 +173,7 @@ function dummy(){
             makef = sprintf("\tinstall -D files/%s \044(DESTDIR)%s",ar[num],path )
             cmd = sprintf("echo '\''%s'\'' >> ~/dextrose/xs-config/plugins.d/%s/Makefile",makef,pluginloc)
             system(cmd)
-            print(cmd)}'
+            #print(cmd)}'
         fi
         cd $curdir
 }
@@ -259,11 +267,10 @@ case "$1" in
 	if [ $# -eq 1 ]; then
 		PLUGINS=`cat m_manifest`
 	fi
-    #cecho "about to generate_directories"
     generate_directories
-    echo "directories done, now do makefile for plugin"
+    #echo "directories done, now do makefile for plugin"
 	for plugin in $PLUGINS; do
-        echo "$plugin"
+        #echo "$plugin"
         make_makefile_for_plugin $plugin
     done
     ;;
@@ -293,7 +300,23 @@ case "$1" in
 "treediff")
     diff -r . ~/dextrose/linuxtree
     ;;
+"help")
+    gawk ' /^\".*)$/{
+            print $0;
+            flag="true";
+            while (flag == "true"){
+                getline
+                if (substr($0,1,1) == "#"){
+                    print $0;
+                }else{
+                    flag="false";
+                }
+            }
+      }' $0
+        
+    ;;
 *)
-	ls  plugins.d
+    echo -e "\nThe following functions are available in xsc_tools"
+    cat $0 | grep -e "^\".*)$"
 	;;
 esac

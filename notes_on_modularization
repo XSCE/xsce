@@ -1,9 +1,0 @@
-start from a current make of master
-"make rpm" leaves a clean copy of the build tree in ./build/BUILDROOT/xs-conf*
-go to this tree, do a "find . > tree" to get the structure
-import this in excel, and add a colum for each file indicating which plugin it belongs in
-cut this excel, and paste it into a textedit file (which uses RS=^M
-cat this map of <files to plugin name> into "xsc_tools tree2pluginds.d"
-(this creates the manifest, and copies the files themselver into files directory)
-create the Makefiles "xsc_tools mkmake"
-make -d rpm > temp

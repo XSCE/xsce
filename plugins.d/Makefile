@@ -60,3 +60,4 @@ install:
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/etc/sysconfig/vnc/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/top/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/top/es/
+    install -D -d $(DESTDIR)/usr/share/xs-config/sh.d
