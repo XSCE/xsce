@@ -1,3 +1,3 @@
 install:
 
-    install -D xs-security.sh $(DESTDIR)usr/share/xs-config/sh.d/
+	install -D xs-security.sh $(DESTDIR)usr/share/xs-config/sh.d/

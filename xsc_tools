@@ -97,7 +97,7 @@ function  generate_directories()
        }
 
        function write_directory(path, mkfile, directories){
-            makef = sprintf("    install -D -d  \044(DESTDIR)%s",path)
+            makef = sprintf("\tinstall -D -d  \044(DESTDIR)%s",path)
             cmd = sprintf("echo '\''%s'\'' >> %s", makef, mkfile)
                #print(cmd "  " path)
             system(cmd)
@@ -105,7 +105,7 @@ function  generate_directories()
         }
         '
     done
-    echo  -e  "    install -D -d \044(DESTDIR)usr/share/xs-config/sh.d" >>$MKDIR_MAKEFILE
+    echo  -e  "\tinstall -D -d \044(DESTDIR)usr/share/xs-config/sh.d" >>$MKDIR_MAKEFILE
 }
 
 #=================================================================================
@@ -149,7 +149,7 @@ function make_makefile_for_plugin()
             }}
 
        function write_makefile(source, full_path, mkfile ){
-            makef = sprintf("    install -D files/%s  \044(DESTDIR)%s", source, full_path)
+            makef = sprintf("\tinstall -D files/%s  \044(DESTDIR)%s", source, full_path)
             cmd = sprintf("echo '\''%s'\'' >> %s", makef, mkfile)
                #print(cmd "  " path)
             system(cmd)
@@ -157,7 +157,7 @@ function make_makefile_for_plugin()
             '
         done
         if [ -f ./$1.sh ];then
-            echo -e  "    install -D $1.sh \044(DESTDIR)usr/share/xs-config/sh.d/" >> Makefile
+            echo -e  "\tinstall -D $1.sh \044(DESTDIR)usr/share/xs-config/sh.d/" >> Makefile
         fi
 }
 function dummy(){
