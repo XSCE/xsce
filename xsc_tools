@@ -105,7 +105,7 @@ function  generate_directories()
         }
         '
     done
-    echo  -e  "    install -D -d \044(DESTDIR)/usr/share/xs-config/sh.d" >>$MKDIR_MAKEFILE
+    echo  -e  "    install -D -d \044(DESTDIR)usr/share/xs-config/sh.d" >>$MKDIR_MAKEFILE
 }
 
 #=================================================================================
@@ -157,7 +157,7 @@ function make_makefile_for_plugin()
             '
         done
         if [ -f ./$1.sh ];then
-            echo -e  "    install -D $1.sh \044(DESTDIR)/usr/share/xs-config/sh.d/" >> Makefile
+            echo -e  "    install -D $1.sh \044(DESTDIR)usr/share/xs-config/sh.d/" >> Makefile
         fi
 }
 function dummy(){
