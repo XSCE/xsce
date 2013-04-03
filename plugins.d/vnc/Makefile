@@ -8,4 +8,4 @@ install:
     install -D files/etc/sysconfig/vnc/self.pem  $(DESTDIR)/usr/share/xs-config/cfg/etc/sysconfig/vnc/
     install -D files/html/top/es/vnc_auto.html  $(DESTDIR)/usr/share/xs-config/cfg/html/top/es/
     install -D files/html/top/vnc.js  $(DESTDIR)/usr/share/xs-config/cfg/html/top/
-    install -D vnc.sh $(DESTDIR)/usr/share/xs-config/sh.d/
+    install -D vnc.sh $(DESTDIR)usr/share/xs-config/sh.d/

@@ -19,4 +19,4 @@ install:
     install -D files/xs-setup-functions  $(DESTDIR)/usr/bin/xs-setup-functions
     install -D files/bashrc_xs.sh  $(DESTDIR)/usr/share/xs-config/cfg/etc/profile.d/bashrc_xs.sh
     install -D files/media.repo  $(DESTDIR)/usr/share/xs-config/cfg/etc/yum.repos.d/media.repo
-    install -D do-first.sh $(DESTDIR)/usr/share/xs-config/sh.d/
+    install -D do-first.sh $(DESTDIR)usr/share/xs-config/sh.d/
