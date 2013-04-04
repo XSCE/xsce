@@ -158,9 +158,6 @@ function make_makefile_for_plugin()
         }
             '
         done
-        if [ -f ./$1.sh ];then
-            echo -e  "\tinstall -D $1.sh \044(DESTDIR)usr/share/xs-config/sh.d/" >> Makefile
-        fi
 }
 function dummy(){
         #echo `cat $plugin.manifest `
