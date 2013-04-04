@@ -1,0 +1,128 @@
+#!/bin/bash
+# Initial script to convert existing OS installation into an OLPC XS.
+# Configures fundamental XS items.
+# Usage: xs-setup [hostname]
+
+set -x -e
+
+DESTDIR=/
+CFGDIR=/usr/share/xs-config/cfg
+MARKER=/.olpcxs-configured
+ISXO=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
+DOMAIN=local
+# Determine the number of interfaces
+num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
+
+# Parse options
+opt_upgrade_only=
+if ! options=$(getopt -o u -l upgrade-only -- "$@"); then
+	exit 1
+fi
+
+eval set -- $options
+while [ $# -gt 0 ]; do
+	case $1 in
+		-u|--upgrade-only) opt_upgrade_only=1 ;;
+		(--) shift; break;;
+		(-*) echo "$0: error - unrecognized option $1" >&2; exit 1;;
+		(*) break;;
+	esac
+	shift
+done
+
+# The user can request that we only perform setup steps if setup had been
+# previously performed by an admin. This is useful for automated upgrades
+# (e.g. RPM post scripts).
+if [ -n "$opt_upgrade_only" ]; then
+	echo "$0: doing nothing, upgrade-only on cmdline."
+	exit 0
+fi
+
+# seed low-level network conf and domain
+if [ x$1 = x ]; then
+    xs-domain-config $DOMAIN
+else
+    xs-domain-config $1
+fi
+
+#systemd change
+echo '-y' > /fsckoptions
+# enable no-fsck-questions
+#chkconfig --add no-fsck-questions
+
+# beginning of interface with setup functions
+#
+# for testing, let's load all the available options
+source /usr/bin/xs-setup-functions
+
+# prep the XO
+#do-first function has had its name changed to startup
+startup
+
+if [[ $num_ifaces < 3 && $ISXO = 1 ]]; then
+    set +x
+    echo
+    echo  "====================================================================="
+    echo  "No lan adapter was found. If you want the XS to act as a content filter"
+    echo  "   and a gateway to the internet, you need to stop now and add a second"
+    echo  "   network adapter. If you add another adapter, at a later time, you must  "
+    echo  "   rerun xs-setup."
+    echo  "====================================================================="
+    echo
+    echo  "   INSERT ETHERNET DONGLE NOW. (this is for local XO connections)."
+    echo  " Do you want to continue with setup? (y/N):"
+    read resp
+    case $resp in
+    [Yy] | [Yy][Ee][Ss] )
+        sleep 5
+    ;;
+    *)
+        # anythin else
+        exit 1
+    ;;
+    esac
+fi
+set -x
+
+# Determine the number of interfaces again since it may have changed
+num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
+if [[ $num_ifaces > 2 ]]; then
+    xs-setup-network
+    dhcpd yes
+    named yes
+    gateway yes
+    squid yes
+    xs-resolvconf
+    touch /.olpcxs-net-configured
+fi
+
+# Remote admin services
+httpd yes
+#vnc yes
+
+# Core services offered
+ejabberd yes
+#xs-security yes
+idmgr yes
+#postgresql yes
+#moodle-xs yes
+activity-server yes
+openvpn yes
+#puppet yes
+
+# optional services -- enabled now for testing
+#pathagar yes
+#avahi yes
+#dansguardian yes
+#ntop yes
+#nmon yes
+#upload yes
+#xo-admin yes
+
+# Finalize install
+yum-etckeeper yes
+do-last
+
+echo "XS configured; ready to reboot and use."
+#echo "please check the configured services below"
+#xs-services-check

@@ -1,0 +1,1310 @@
+#!/bin/bash +x
+
+#  Copyright 2012, One Laptop per Child
+#  Author: George Hunt, Jerry Vonau
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public
+# License along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# collect here all the separate setup independent changes to stock XO software
+#  -- ordered alphabetically
+# usage: source this file -- for example to install a WWW server:
+#===============================================================================
+#!/bin/bash
+#examble install script
+#source /usr/bin/xs-setup-functions
+#do-first
+#httpd yes
+#do-last
+#===============================================================================
+#
+# notes: need to systemctl unmask before systemctl enable
+set -x -e -u
+
+DESTDIR=""
+CFGDIR=/usr/share/xs-config/cfg
+CFGFUNCTIONS=/etc/sysconfig/olpc-scripts/functions
+MARKER=/.olpcxs-configured
+LOG=/var/log/xs-setup.log
+POSTGRESSDIR=/library/pgsql-xs
+SETUPSTATEDIR=/etc/sysconfig/olpc-scripts/setup.d/installed
+DEFAULTUSER='admin'
+DEFAULTPASSWORD='12admin'
+VNCUSER='vnc'
+VNCPASSWORD='*vnc4u*'
+NCATPORT=29753
+ISXO=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
+YUMERROR=10
+YUM_CMD="yum -y install"
+
+function template()
+{
+	case "$1" in
+    "yes")
+        $YUM_CMD  xs-release 2>&1 | tee -a $LOG
+        if [ $? -ne 0 ] ; then
+            echo "\n\nYum returned an error\n\n" | tee -a $LOG
+            exit $YUMERROR
+        fi
+        touch $SETUPSTATEDIR/xs-release
+        #execute the setup script
+        ;;
+    "no")
+        rm $SETUPSTATEDIR/xs-release
+        ;;
+    esac
+}
+
+function activity-server()
+{
+	case "$1" in
+    "yes")
+        $YUM_CMD xs-activity-server 2>&1 | tee -a $LOG
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
+        #execute the setup script
+        /etc/sysconfig/olpc-scripts/setup.d/xs-activity-server
+        # permit apache to perform the upload task,
+        chgrp -R admin /library/xs-activity-server
+        chmod -R 775 /library/xs-activity-server
+        # short term addition of link for upload-activity server
+        ln -sf /usr/share/xs-config/cfg/html/top/en/cntr_upl_activity.php \
+                    /var/www/html/upload_activity.php
+
+        touch $SETUPSTATEDIR/activity-server
+        ;;
+    "no")
+        rm $SETUPSTATEDIR/activity-server
+        unlink /etc/httpd/conf.d/xs-activity-server.conf
+        ;;
+    esac
+}
+
+function avahi()
+{
+	case "$1" in
+	"yes")
+	    $YUM_CMD nss-mdns avahi avahi-tools avahi-ui 2>&1 | tee -a $LOG
+        if [ $? -ne 0 ] ; then
+            echo "\n\nYum returned an error\n\n" | tee -a $LOG
+            exit $YUMERROR
+        fi
+        systemctl enable avahi-daemon.service 2>&1 | tee -a $LOG
+        touch $SETUPSTATEDIR/avahi
+        ;;
+	"no")
+	systemctl disable avahi-daemon.service 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/avahi
+        ;;
+	esac
+}
+
+function create-usb-repo()
+{
+    $YUM_CMD createrepo
+    if [ $? -ne 0 ] ; then
+        echo "\n\nYum returned an error\n\n" | tee -a $LOG
+        exit $YUMERROR
+    fi
+    date
+    if [[ -d $1 && $# -eq 1 && -w $1 ]]; then
+        SPACE=`df -k | gawk '/\/dev\/sd/ {print $4}'`
+        if [ $SPACE -lt 200000 ]; then
+            echo "not enough space on $TARGET or not writeable"
+            exit 1
+        fi
+        mkdir -p $1/xs-repo
+        chmod 755 $1/xs-repo
+        ARCH=`ls /var/cache/yum`
+        RELEASEVER=`ls /var/cache/yum/$ARCH`
+        set +x
+        echo
+        echo "The following copy to USB stick takes about 5 minutes"
+        echo
+        set -x
+        rsync -r /var/cache/yum/$ARCH/$RELEASEVER/ $1/xs-repo/$ARCH
+        createrepo $1/xs-repo
+        cat << EOF > $1/media.repo
+[usb-media]
+name=usb-media
+baseurl=file:///$1/xs-repo
+enabled=1
+gpgcheck=0
+cost=100
+
+EOF
+
+    else
+        echo "the number of parameters was $#"
+        echo "$1 folder is not able to receive repo"
+    fi
+    date
+}
+
+function create-usb-microcore-linux()
+{
+    if [ $# -eq 1 ]; then
+        TARGET=$1
+    else
+        TARGET=""
+    fi
+    if [[ -d "$TARGET" && -w $TARGET ]]; then
+        # first check that there is enough space
+        SPACE=`df -k | gawk '/\/dev\/sd/ {print $4}'`
+        if [ $SPACE -gt 20000 ]; then
+            mkdir -p $1/boot
+            tar --no-xattrs  -xf  $CFGDIR/microcore* -C $TARGET/boot
+            # make sure root has a private/public ssh keypair to use with remote admin
+            if [ ! -f /root/.ssh/id_rsa.pub ]; then
+                ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
+            fi
+            mkdir -p $TARGET/.ssh
+            cp /root/.ssh/id_rsa.pub $TARGET
+            cat << EOF > $TARGET/onboot
+#!/bin/sh
+# small script to copy the adinistrative public key to XO's in a classroom
+mkdir /mnt/mmcblk0p2/home/root/.ssh/
+chmod 600 /mnt/mmcblk0p2/home/root/.ssh/
+echo /mnt/sda1/.ssh/id_rsa.pub >> /mnt/mmcblk0p2/home/root/.ssh/authorized_keys
+chmod 644 /mnt/mmcblk0p2/home/root/.ssh/authorized_keys
+EOF
+            # expand the python distributed shell interface
+            tar zxf $CFGDIR/pydsh*
+            pushd $CFGDIR/pydsh*
+            chmod 755 install.sh
+            install.sh --install
+            popd
+        else
+            echo "not enough space on $TARGET or not writeable"
+        fi
+    else
+        echo "$TARGET folder is not able to receive microcore linux"
+    fi
+
+}
+
+function dansguardian()
+{
+	case "$1" in
+    "yes")
+        yum -y install  dansguardian 2>&1 | tee -a $LOG
+        if [ $? -ne 0 ] ; then
+            echo "\n\nYum returned an error\n\n" | tee -a $LOG
+            exit $YUMERROR
+        fi
+        touch $SETUPSTATEDIR/dansguardian
+        #execute the setup script
+        ;;
+    "no")
+        rm $SETUPSTATEDIR/dansguardian
+        ;;
+    esac
+}
+
+function dhcpd()
+{
+	case "$1" in
+	"yes")
+	    $YUM_CMD dhcp 2>&1 | tee -a $LOG
+        if [ $? -ne 0 ] ; then
+            echo "\n\nYum returned an error\n\n" | tee -a $LOG
+            exit $YUMERROR
+        fi
+        touch $SETUPSTATEDIR/dhcpd
+        systemctl enable dhcpd.service 2>&1 | tee -a $LOG
+        systemctl start dhcpd.service 2>&1 | tee -a $LOG
+        ;;
+	"no")
+		systemctl disable dhcpd.service 2>&1 | tee -a $LOG
+        systemctl stop dhcpd.service 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/dhcpd
+        ;;
+	esac
+}
+
+function etckeeper-if-selected()
+{
+    if [ -e $SETUPSTATEDIR/etckeeper && $# -gt 1 ]; then
+        set +e
+        etckeeper commit -m $2
+        set -e
+    fi
+}
+
+function set-etckeeper()
+{
+	case "$1" in
+	"yes")
+        if [ ! -d /etc/.git ]; then
+            pushd /etc
+            etckeeper init
+            popd
+        fi
+
+        if [ ! -e $SETUPSTATEDIR/etckeeper ]; then
+            touch $SETUPSTATEDIR/etckeeper
+        fi
+        ;;
+	"no")
+        if [ -e $SETUPSTATEDIR/etckeeper ]; then
+            rm $SETUPSTATEDIR/etckeeper
+        fi
+        ;;
+	esac
+}
+
+function ejabberd()
+{
+	case "$1" in
+	"yes")
+            if [ -e /etc/ejabberd/ejabberd.pem ]; then
+                if [ -e /var/lib/ejabberd/spool ]; then
+                    rm -rf /var/lib/ejabberd/spool
+                fi
+                rm -f /etc/ejabberd/ejabberd.pem
+                yum reinstall ejabberd 2>&1 | tee -a $LOG
+            else
+                $YUM_CMD ejabberd 2>&1 | tee -a $LOG
+		    fi
+            if [ $? -ne 0 ] ; then
+		        echo "\n\nYum returned an error\n\n" | tee -a $LOG
+		        exit $YUMERROR
+		    fi
+            touch $SETUPSTATEDIR/ejabberd
+            # and set it to autostart
+            systemctl enable ejabberd-xs.service 2>&1 | tee -a $LOG
+            echo "the following start command executes for a long time. Have a cup of coffee!"
+            systemctl start ejabberd-xs.service 2>&1 | tee -a $LOG
+            /usr/bin/xs-ejabberd-srg
+		;;
+	"no")
+            systemctl disable ejabberd.service 2>&1 | tee -a $LOG
+            systemctl stop ejabberd.service 2>&1 | tee -a $LOG
+            rm $SETUPSTATEDIR/ejabberd
+		;;
+		esac
+}
+
+function gateway()
+{
+	case "$1" in
+	"yes")
+        cp /etc/sysconfig/olpc-scripts/iptables-xs.in /etc/sysconfig/olpc-scripts/iptables-xs
+        cp /etc/sysconfig/olpc-scripts/ip6tables-xs.in /etc/sysconfig/olpc-scripts/ip6tables-xs
+        cp /etc/sysconfig/olpc-scripts/firewall-xs.in /etc/sysconfig/olpc-scripts/firewall-xs
+        cp /etc/sysconfig/iptables-config.in /etc/sysconfig/iptables-config
+
+        touch $SETUPSTATEDIR/gateway
+        cp  $CFGDIR/etc/systemd/system/iptables.service $DESTDIR/etc/systemd/system
+
+        # systemd has a check for exist /etc/sysconfig/iptables - so ensure that it exists
+        # the following script regenerates /etc/sysconfig/iptables
+        /etc/sysconfig/olpc-scripts/firewall-xs
+        iptables-save >/etc/sysconfig/iptables
+
+
+        systemctl enable iptables.service
+        #set +x; systemctl restart iptables.service; set -x
+        systemctl enable ip6tables.service
+        #systemctl start ip6tables.service
+        ;;
+	"no")
+        # the gateway flag is used to control masquerading in iptables
+        rm $SETUPSTATEDIR/gateway
+        # the following call removes the httpcache flag and regenerates iptables
+        squid no
+        ;;
+	esac
+}
+
+function httpd()
+{
+	case "$1" in
+	"yes")
+	    $YUM_CMD httpd php mod_auth_pam 2>&1 | tee -a $LOG
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
+        touch $SETUPSTATEDIR/httpd
+        cp -p /etc/httpd/conf/httpd-xs.conf.in /etc/httpd/conf/httpd-xs.conf
+		# Choose a config depending on memory
+		MEMSIZE=$(grep '^MemTotal' /proc/meminfo | grep -oP '\d+')
+		CONFMEM=256m
+		# Note: the sizes are rounded to a lower value
+		#       as they are usually reported a tad lower than the
+		#       "proper" MB value in bytes (video cards often steal RAM!).
+		if [ $MEMSIZE -gt  500000 ]; then
+		    CONFMEM=512m
+		fi
+		if [ $MEMSIZE -gt 1000000 ]; then
+		    CONFMEM=1024m
+		fi
+		if [ $MEMSIZE -gt 2000000 ]; then
+		    CONFMEM=2048m
+		fi
+		#update the httpd.conf file with this information
+		sed -i -e "s/\@\@CONFMEM\@\@/MEM$CONFMEM/" /etc/httpd/conf/httpd-xs.conf
+		etckeeper-if-selected "modified /etc/httpd/conf/httpd-xs.conf"
+        systemctl start httpd.service 2>&1 | tee -a $LOG
+		systemctl enable httpd.service 2>&1 | tee -a $LOG
+        # add apache user to the admin group, so she can write to admin
+        usermod -G admin,apache apache
+        # for some reason, http does not make the needed directories
+        mkdir -p /var/log/httpd
+        mkdir -p /var/run/httpd
+        chown apache:apache /var/log/httpd
+        chown apache:apache /var/run/httpd
+        touch $SETUPSTATEDIR/httpd
+
+        # Add symlink to 64 bit php modules because we use a 32 bit php.ini
+        is32or64bit=`uname -m`
+        echo $is32or64bit
+        if [[ "$is32or64bit" = "x86_64" ]]; then
+          echo "is 64"
+          ln -s /usr/lib64/php /usr/lib/php
+        fi
+		;;
+	"no")
+		systemctl disable httpd.service 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/httpd
+		;;
+	esac
+}
+
+function idmgr()
+{
+	case "$1" in
+	"yes")
+	    $YUM_CMD idmgr ds-backup-server \
+                xs-rsync xinetd 2>&1 | tee -a $LOG
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
+        touch $SETUPSTATEDIR/idmgr
+        # set up the sqlite database for idmgr
+        /etc/sysconfig/olpc-scripts/setup.d/idmgr
+
+        # long term, change the idmgr package
+        cp /etc/init.d/idmgr /usr/libexec/idmgr.init
+
+        # execute the xs-rsync setup script
+        /etc/sysconfig/olpc-scripts/setup.d/xs-rsync
+
+        # setup ds-backup symlinks to config locations
+        /etc/sysconfig/olpc-scripts/setup.d/ds-backup
+
+        cp /etc/systemd/system/idmgr.service.in /etc/systemd/system/idmgr.service
+
+		systemctl enable idmgr.service 2>&1 | tee -a $LOG
+		systemctl start idmgr.service 2>&1 | tee -a $LOG
+		systemctl enable xinetd.service 2>&1 | tee -a $LOG
+		systemctl start xinetd.service 2>&1 | tee -a $LOG
+        ;;
+	"no")
+		systemctl disable idmgr.service 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/idmgr
+        ;;
+	esac
+}
+
+function moodle-xs()
+{
+	case "$1" in
+	"yes")
+	    $YUM_CMD moodle-xs 2>&1 | tee -a $LOG
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
+        touch $SETUPSTATEDIR/moodle-xs
+        systemctl restart httpd.service 2>&1 | tee -a $LOG
+        # execute the moodle startup script
+        /usr/libexec/moodle-xs-init start 2>&1 | tee -a $LOG
+        # we've dropped a file in /etc/httpd/conf.d, pick up the change
+        cp /etc/systemd/system/moodle-xs.service.in /etc/systemd/system/moodle-xs.service
+        cp -p /etc/httpd/conf.d/010-make-moodle-default.conf.in \
+                    /etc/httpd/conf.d/010-make-moodle-default.conf
+        systemctl -f enable moodle-xs.service
+	;;
+
+	"no")
+        /usr/libexec/moodle-xs-init stop 2>&1 | tee -a $LOG
+        set +x; rm $SETUPSTATEDIR/moodle-xs; set -x
+	;;
+	esac
+}
+
+function named()
+{
+	case "$1" in
+	"yes")
+	    $YUM_CMD bind bind-utils 2>&1 | tee -a $LOG
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
+            touch $SETUPSTATEDIR/named
+        cp /etc/sysconfig/olpc-scripts/resolv.conf.in /etc/sysconfig/olpc-scripts/resolv.conf
+        # if xs data files are installed before bind, named user doesn't exist,
+        # and group ownership is set to root, which user named cannot read
+        if [ -d /var/named-xs ]; then
+            chgrp -R named /var/named-xs
+        fi
+        systemctl enable named.service 2>&1 | tee -a $LOG
+        systemctl start named.service 2>&1 | tee -a $LOG
+        ;;
+	"no")
+		systemctl disable named.service 2>&1 | tee -a $LOG
+		systemctl stop named.service 2>&1 | tee -a $LOG
+        # let the dhclinet control the name resolution normally
+        set +x
+        #rm /etc/sysconfig/olpc-scripts/resolv.conf
+        rm $SETUPSTATEDIR/named
+        set -x
+        ;;
+	esac
+}
+
+function nmon()
+{
+	case "$1" in
+    "yes")
+        touch $SETUPSTATEDIR/nmon
+        ARCH=`uname -m`
+        case $ARCH in
+        "i686")
+            ln -s $CFGDIR/nmon_x86_fedora17 /usr/bin/xs-nmon
+            chmod 755 /usr/bin/xs-nmon
+            ;;
+        "armv7l")
+            ln -s $CFGDIR/nmon_arm_fedora17 /usr/bin/xs-nmon
+            chmod 755 /usr/bin/xs-nmon
+            ;;
+        "*")
+            echo "nmon machine architecture not recognized"
+        esac
+        ;;
+    "no")
+        rm $SETUPSTATEDIR/nmon
+        ;;
+    esac
+}
+function ntop()
+{
+	case "$1" in
+    "yes")
+        yum -y install  ntop 2>&1 | tee -a $LOG
+        if [ $? -ne 0 ] ; then
+            echo "\n\nYum returned an error\n\n" | tee -a $LOG
+            exit $YUMERROR
+        fi
+        touch $SETUPSTATEDIR/ntop
+        ;;
+    "no")
+        rm $SETUPSTATEDIR/ntop
+        ;;
+    esac
+}
+
+# following two routines used by one2many
+#
+SearchAndReplaceRegex()
+        {
+            cat $1 | sed "s/$2/$3/g" > temp
+            cat temp > $1
+        }
+
+SearchAndDeleteLineContainingRegex()
+        {
+            cat $1 | sed "/$2/d" > temp
+            cat temp > $1
+        }
+
+function one2many()
+{
+	case "$1" in
+    "yes")
+        httpd yes
+        $YUM_CMD  mod_ssl 2>&1 | tee -a $LOG
+        if [ $? -ne 0 ] ; then
+            echo "\n\nYum returned an error\n\n" | tee -a $LOG
+            exit $YUMERROR
+        fi
+        touch $SETUPSTATEDIR/one2many
+
+        # Make the directories (if not already), and set the permissions.
+        #
+        mkdir -p /var/www/web1/web/.Sugar-Metadata
+        chmod -R 0777 /var/www/web1/
+
+        # Some necessary tweaks in "httpd" service.
+        #
+        filename=/etc/httpd/logs
+        if [ -d $filename ];
+        then
+            rm -rf /etc/httpd/logs
+        fi
+        mkdir -p /etc/httpd/logs
+
+        # Create the password file for WebDAV.
+        #
+        htpasswd -bc /var/www/web1/passwd.dav test olpc
+
+        # Generate the ssl-key and certificate.
+        #
+        openssl req -new -newkey rsa:1024 -days 365 -nodes -x509 -subj \
+                "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" \
+                -keyout /etc/httpd/conf.d/ssl.key -out /etc/httpd/conf.d/ssl.crt
+
+        # Replace the key- and crt-path in conf-file, so that secure-transfer may be enabled.
+        #
+        filename="/etc/httpd/conf.d/ssl.conf"
+        cp $filename.in $filename
+        SearchAndReplaceRegex $filename "SSLCertificateKeyFile \/etc\/pki\/tls\/private\/localhost.key" \
+            "SSLCertificateKeyFile \/etc\/httpd\/conf.d\/ssl.key"
+        SearchAndReplaceRegex $filename "SSLCertificateFile \/etc\/pki\/tls\/certs\/localhost.crt" \
+            "SSLCertificateFile \/etc\/httpd\/conf.d\/ssl.crt"
+
+        # Disable SElinux.
+        #
+        # don't error out
+        set +e
+        #
+        # (F-17)
+        echo 0 > /sys/fs/selinux/enforce
+        #
+        # (F-14)
+        echo 0 > /selinux/enforce
+        set -e
+
+        # Restart the "httpd" service.
+        #
+        systemctl restart httpd.service
+       ;;
+    "no")
+        rm $SETUPSTATEDIR/one2many
+        ;;
+    esac
+}
+
+function opendns()
+{
+	case "$1" in
+    "yes")
+        if [ "$#" -lt 2 ]; then
+            echo "You must enter an IP address in the form 123.456.789.123"
+            exit 1
+        fi
+
+        # make the simplifying assumption that if opendns is wanted, it must be
+        #   enforced by the localhost name server via named
+        if [ ! -e $SETUPSTATEDIR/named]; then
+            named yes
+        fi
+        sed -i -e "
+        /\@\@forwarders\@\@/ c\
+        forwarders      {$2;}; //@@forwarders@@" /etc/named-xs.conf
+        echo $2 > /etc/sysconfig/xs_opendns_ip
+        systemctl restart named.service
+
+        # need for force name resolution to be through local named
+        # so drop a script to ensure this in the wan NM up dir
+        ln -s /$CFGDIR/etc/NetworkManager/dispatcher.d/xs-net-device \
+                /etc/NetworkManager/dispatcher.d/
+
+        touch $SETUPSTATEDIR/opendns
+        ;;
+    "no")
+        # remove the rerouting through named and forwarders - dont error out
+        set +e; unlink /etc/NetworkManager/dispatcher.d/xs-wan-opendns-up; set -e;
+
+        sed -i -e '
+        /\@\@forwarders\@\@/ c\
+        // @@forwarders@@ disabled ; //@@forwarders@@' /etc/named-xs.conf
+        systemctl restart named.service
+        rm $SETUPSTATEDIR/opendns
+        ;;
+    esac
+}
+
+
+function openvpn()
+{
+	case "$1" in
+    "yes")
+        $YUM_CMD  openvpn 2>&1 | tee -a $LOG
+        if [ $? -ne 0 ] ; then
+            echo "\n\nYum returned an error\n\n" | tee -a $LOG
+            exit $YUMERROR
+        fi
+        touch $SETUPSTATEDIR/openvpn
+        #execute the setup script
+        ;;
+    "no")
+        rm $SETUPSTATEDIR/openvpn
+        ;;
+    esac
+}
+
+function pathagar()
+{
+	case "$1" in
+	"yes")
+        #httpd yes #-- currently on by default
+	    $YUM_CMD pathagar mod_python mod_wsgi Django \
+                python-setuptools sqlite django-tagging
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
+        touch $SETUPSTATEDIR/pathagar
+        cp /etc/pathagar/settings.py.in /etc/pathagar/settings.py
+        sed -i -e "s/\@\@PASSWORD\@\@/$DEFAULTPASSWORD/" /etc/pathagar/settings.py
+        sed -i -e "s/\@\@USER\@\@/$DEFAULTUSER/" /etc/pathagar/settings.py
+
+        # get the python preample for site-packages where pathagar is loaded
+        SITE=`python -c "import site;print(site.getsitepackages()[0])"`
+        pushd $SITE/django-sendfile
+        python $SITE/django-sendfile/setup.py install
+        popd
+
+        # don't error out if this script is already executed once
+        LOADED=`su - postgres -c "psql -l" | gawk '{if($1=="books") print $1}'`
+        if [ "$LOADED" != "books" ]; then
+            # create administrative postgresql user and database for pathagar
+            su postgres -c "psql  -c 'create database books'"
+            su postgres -c "psql  -c 'create user $DEFAULTUSER;'"
+            su postgres -c "psql  -c 'create database $DEFAULTUSER;'"
+            su postgres -c "psql  -c 'grant all privileges on database books to $DEFAULTUSER;'"
+            # moodle may already have created  apache user
+            #su postgres -c "psql  -c \"create user apache;\""
+            su postgres -c "psql  -c 'create database apache;'"
+            su postgres -c "psql  -c 'grant all privileges on database books to apache;'"
+        fi
+
+        pushd $SITE/pathagar
+            # replace the default development settings with our configured ones
+            if [ -f ./settings.py ] ; then
+                rm -f ./settings.py
+            fi
+            # link our settings to project folder
+            ln -s /etc/pathagar/settings.py .
+            export "DJANGO_SETTINGS_MODULE=pathagar.settings"
+            echo "from django.contrib.auth.models import User; \
+                User.objects.create_superuser('admin', 'admin@schoolserver.local', '12admin')" | \
+                su - $DEFAULTUSER -c "$SITE/pathagar/manage.py shell"
+            su - $DEFAULTUSER -c "django-admin syncdb --noinput --traceback --settings=pathagar.settings"
+        popd
+
+        # apache needs to add books
+        ln -fs $CFGDIR/etc/httpd/conf.d/pathagar.conf \
+                $DESTDIR/etc/httpd/conf.d/pathagar.conf
+        ;;
+	"no")
+        set +e;rm $SETUPSTATEDIR/pathagar; set
+        ;;
+	esac
+}
+
+function postgresql()
+{
+	case "$1" in
+	"yes")
+	    $YUM_CMD postgresql postgresql-server 2>&1 | tee -a $LOG
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
+            touch $SETUPSTATEDIR/postgresql
+        cp -f $CFGDIR/etc/systemd/system/postgresql-xs.service \
+            $DESTDIR/lib/systemd/system/
+        # systemctl does not enable by linking a link, hence above cp
+		systemctl enable postgresql-xs.service 2>&1 | tee -a $LOG
+
+		# Pg - prime the DB if needed.
+		if [ ! -e ${POSTGRESSDIR}/PG_VERSION ];then
+            # /etc/init.d/pgsql-xs initdb -- this was used before systemd
+            # postgresql-setup initdb need to move this edit upstream FIXME
+            mkdir -p /library/pgsql-xs
+            chown -R postgres:postgres /library/pgsql-xs/
+            sed -i -e "s/--auth='ident'\"/--auth='ident' --encoding='UTF8'\"/" \
+                                    /usr/bin/postgresql-setup
+			/usr/bin/postgresql-setup  initdb postgresql-xs
+            sed -i -e '
+            /^#standard_conforming_strings/ c\
+standard_conforming_strings = off
+            ' /library/pgsql-xs/postgresql.conf
+            sed -i -e '
+            /^#backslash_quote/ c\
+backslash_quote = on
+            ' /library/pgsql-xs/postgresql.conf
+		fi
+
+		# and set it to autostart
+		systemctl start postgresql-xs.service 2>&1 | tee -a $LOG
+		;;
+	"no")
+		systemctl disable postgresql-xs.service 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/postgresql
+		;;
+	esac
+}
+
+function puppet()
+{
+	case "$1" in
+    "yes")
+        $YUM_CMD  puppet 2>&1 | tee -a $LOG
+        if [ $? -ne 0 ] ; then
+            echo "\n\nYum returned an error\n\n" | tee -a $LOG
+            exit $YUMERROR
+        fi
+        touch $SETUPSTATEDIR/puppet
+        #execute the setup script
+        ;;
+    "no")
+        rm $SETUPSTATEDIR/puppet
+        ;;
+    esac
+}
+
+function sdcard()
+{
+	case "$1" in
+    "yes")
+        mountpoint = `df | gawk '/^\/dev\/mmcblk0p1 {print $7;}'`
+        echo "Contents of $mountpoint"
+        ls -l $mountpoint
+        echo -n "you are about to delete all this data. Is this ok? (y/N)"
+        read response
+        case $response in
+        #fall through
+        [yY] ) ;;
+        * ) exit 1
+            ;;
+        esac
+        umount /dev/mmcblk0p1
+        #delete all partitions on the drive
+        echo "d\n1\nd\n2\nd\n3\nd\n4\nw" | fdisk /dev/mmcblk0
+        fdisk -l /dev/mmcblk0 | gawk '
+        /^\/dev\/mmcblk0/ {start = $2; end = $3; blocks =  $4;}
+        /^Units/ {unit = $9;}
+        /^Disk \/dev/ { total_bytes = $5;}
+        # assume that the start is the errase block size
+        END {
+        if (start != 0) {
+            #assume that start is equal to erase block size
+            erase_block_size = start;
+            SWAP_MB = 512;
+            swap_size = SWAP_MB * 1024 * 1024;
+            swap_num_erase_blocks = int(swap_size / (erase_block_size * 512));
+            erase_blocks = int(end / start);
+            swap_begin = int(erase_blocks - swap_num_erase_blocks) * 8192;
+        } else {}
+            exit(1)
+        }'
+
+        touch SETUPSTATEDIR/sdcard
+        ;;
+    "no")
+        rm $SETUPSTATEDIR/sdcard
+        ;;
+    esac
+}
+
+# new code to use NetworkManager to set up devices
+# copied verbatim from xs-setup-network
+function write_nm_connection(){
+    # receives connection_filename, hwaddr,  device_name as parameters
+    cp "/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/$1" \
+        "/etc/NetworkManager/system-connections/$1"
+    #removed -i to try to get rid of sed intermediate files 9/24/2012
+    sed -i  "s/\@\@MAC\@\@/$2/" "/etc/NetworkManager/system-connections/$1"
+    sed -i  "s/\@\@DEVICE\@\@/$3/" "/etc/NetworkManager/system-connections/$1"
+    chmod 600 "/etc/NetworkManager/system-connections/$1"
+}
+
+function setlan()
+# a GUI action routine
+{
+    if [ "$#" != 1 ];then
+        exit 1
+    fi
+    IP=`echo $1 | gawk 'BEGIN {FS=":"} {print $1}'`
+    MASK=`echo $1 | gawk 'BEGIN {FS=":"} {print $2}'`
+    GATEWAY=`echo $1 | gawk 'BEGIN {FS=":"} {print $3}'`
+    DNS=`echo $1 | gawk 'BEGIN {FS=":"} {print $4}'`
+    if [ "$IP" == "0.0.0.0" ]; then
+        # user wants a dhcp client config
+        mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;}
+            /^ *ether / { if (eth == "eth1:") print( $2);}'`
+        write_nm_connection "dhcp" "$mac" "eth1"
+        rm -f /etc/NetworkManager/system-connections/static
+    else
+        mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;}
+            /^ *ether / { if (eth == "eth1:") print( $2);}'`
+        write_nm_connection "static" "$mac" "eth1"
+        sed -i -e "
+    /^addresses1=/ c\
+addresses1=$IP;$MASK;$GATEWAY;" /etc/NetworkManager/system-connctions/static
+        sed -i -e "
+    /^dns=/ c\
+dns=$GATEWAY;" /etc/NetworkManager/system-connections/static
+        rm -f /etc/NetworkManager/system-connections/dhcp
+    fi
+}
+
+function setwan()
+# a GUI action routine
+{
+    if [ "$#" != 1 ];then
+        exit 1
+    fi
+
+    # Determine the number of interfaces
+    num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
+    if [ $num_ifaces = 3 && "$ISXO" == "1" ]; then
+        wanif="eth2"
+    else
+        wanif="eth0"
+    fi
+    IP=`echo $1 | gawk 'BEGIN {FS=":"} {print $1}'`
+    MASK=`echo $1 | gawk 'BEGIN {FS=":"} {print $2}'`
+    GATEWAY=`echo $1 | gawk 'BEGIN {FS=":"} {print $3}'`
+    DNS=`echo $1 | gawk 'BEGIN {FS=":"} {print $4}'`
+    if [ "$IP" == "0.0.0.0" ]; then
+        # user wants a dhcp client config
+        mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;}
+            /^ *ether / { if (eth == "$wanif:") print( $2);}'`
+        write_nm_connection "dhcp" "$mac" "$wanif"
+        rm -f /etc/NetworkManager/system-connections/static
+    else
+        mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;}
+            /^ *ether / { if (eth == "$wanif:") print( $2);}'`
+        write_nm_connection "static" "$mac" "eth1"
+        sed -i -e "
+    /^addresses1=/ c\
+addresses1=$IP;$MASK;$GATEWAY;" /etc/NetworkManager/system-connctions/static
+        sed -i -e "
+    /^dns=/ c\
+dns=$GATEWAY;" /etc/NetworkManager/system-connections/static
+        rm -f /etc/NetworkManager/system-connections/dhcp
+    fi
+}
+
+function squid()
+{
+	case "$1" in
+	"yes")
+	    $YUM_CMD squid 2>&1 | tee -a $LOG
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
+        touch $SETUPSTATEDIR/squid
+        # create the cache directories
+	#mkdir /library/cache
+	#chown squid:squid /library/cache
+        squid -z
+        ## Update flag for httpd cache
+        if [ ! -e /etc/sysconfig/xs_httpcache_on ]; then
+            touch /etc/sysconfig/xs_httpcache_on
+            etckeeper-if-selected 'xs-setup force-create httpcache flag'
+        fi
+        systemctl enable squid.service 2>&1 | tee -a $LOG
+        set +x; systemctl start squid.service 2>&1 | tee -a $LOG; set -x
+
+        # need to set up iptables to forward port 80 queries
+        # the following script regenerates /etc/sysconfig/iptables
+        cp /etc/sysconfig/olpc-scripts/firewall-xs.in /etc/sysconfig/olpc-scripts/firewall-xs
+        /etc/sysconfig/olpc-scripts/firewall-xs
+        iptables-save >/etc/sysconfig/iptables
+
+        ;;
+    "no")
+        systemctl disable squid.service 2>&1 | tee -a $LOG
+        systemctl stop squid.service 2>&1 | tee -a $LOG
+        rm /etc/sysconfig/xs_httpcache_on
+        rm $SETUPSTATEDIR/squid
+
+        # reinitialize the iptables to just use masqueradeing
+        /etc/sysconfig/olpc-scripts/firewall-xs
+        iptables-save >/etc/sysconfig/iptables
+        systemctl restart iptables.service
+        ;;
+    esac
+}
+
+function vnc()
+{
+	case "$1" in
+	"yes")
+        # mod_ssl permits vnc to be encrypted, nmap provides ncat which listens
+        #       to a port and provides feedback across network to a remote client
+	    $YUM_CMD tigervnc-server novnc mod_ssl nmap python-setuptools 2>&1 | tee -a $LOG
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
+        touch $SETUPSTATEDIR/vnc
+        yum -y groupinstall XFCE  --exclude=xscreensaver-base 2>&1 | tee -a $LOG
+        if [ $? -ne 0 ] ; then
+            echo "\n\nYum returned an error\n\n" | tee -a $LOG
+            exit $YUMERROR
+        fi
+        # or yum install x11vnc-javaviewers | tee -a $LOG
+        cp -p /lib/systemd/system/vncserver\@.service /etc/systemd/system
+        sed -i -e "s/<USER>/$VNCUSER/" /etc/systemd/system/vncserver\@.service
+
+        # start the websocket service (part of the novnc package)
+       systemctl enable vncserverweb.service 2>&1 | tee -a $LOG
+        mkdir -m 755 -p /home/$VNCUSER/.vnc
+        #ln -sf $CFGDIR/etc/systemd/system/* $DESTDIR/etc/systemd/system
+        ln -sf $DESTDIR/etc/systemd/system/vncserver\@.service \
+            $DESTDIR/etc/systemd/system/multi-user.target.wants/vncserver\@\:1.service
+        cp $CFGDIR/etc/sysconfig/vnc/xstartup /home/$VNCUSER/.vnc/
+        echo "$VNCPASSWORD" | vncpasswd -f > /home/$VNCUSER/.vnc/passwd
+
+        sed -i -e "/password = WebUtil/ c\
+password = WebUtil.getQueryVar(\'password\', \'$VNCPASSWORD\');" /usr/share/novnc/vnc_auto.html
+
+        chown -R $VNCUSER:$VNCUSER /home/$VNCUSER/.vnc
+        chmod 600 /home/$VNCUSER/.vnc/passwd
+        cp $CFGDIR/etc/sysconfig/vnc/self.pem /home/$VNCUSER
+        chown $VNCUSER:$VNCUSER /home/$VNCUSER/self.pem
+        cp /etc/httpd/conf.d/ssl.conf.in /etc/httpd/conf.d/ssl.conf
+        sed -i -e 's/^<ifDefine BOGUS/#<ifDefine BOGUS/' /etc/httpd/conf.d/ssl.conf
+        sed -i -e 's/^<\/ifDefine/#<\/ifDefine/' /etc/httpd/conf.d/ssl.conf
+		systemctl enable vncserver\@\:1.service 2>&1 | tee -a $LOG
+        systemctl start vncserver\@\:1.service 2>&1 | tee -a $LOG
+        systemctl start vncserverweb.service 2>&1 | tee -a $LOG
+
+        # disable the startup panel config screen by populating the .config directory
+        mkdir -m 755 -p /home/$VNCUSER/.config/xfce4/xfconf/xfce-perchannel-xml/
+        cp $CFGDIR/etc/sysconfig/vnc/xfce4-panel.xml \
+            /home/$VNCUSER/.config/xfce4/xfconf/xfce-perchannel-xml/
+        chown $VNCUSER:$VNCUSER \
+            /home/$VNCUSER/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml
+        # turn off the xfce4 screen saver
+        #su -c '/usr/bin/xfconf-query -c xfce4-session -n -t bool -p /startup/screensaver/enabled -s false' vnc
+
+        # explore using ncat to pass install info to vnc client
+        # at XS -- "xs-setup 2>&1 | tee > (ncat -p 20000 localhost)"
+        # and at VNC -- "ncat -l -k p 20000 --ssl-key /home/admin/self.pem
+        #    --ssl-cert /home/admin/self.pem localhost"
+        #  -l = listen
+        #   -k = keep open
+        ;;
+	"no")
+		systemctl disable vncserver\@.service 2>&1 | tee -a $LOG
+		systemctl stop vncserver\@.service 2>&1 | tee -a $LOG
+        rm $SETUPSTATEDIR/vnc
+        ;;
+	esac
+}
+
+function upload()
+# this is webdav, renamed, because sugar-panel used the webdav name at httpd root
+{
+	case "$1" in
+	"yes")
+        cp /etc/httpd/conf.d/upload.conf.in /etc/httpd/conf.d/upload.conf
+	    $YUM_CMD cadaver
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
+        touch $SETUPSTATEDIR/upload
+        mkdir -p /library/upload
+        chown apache:apache /library/upload
+        htpasswd -cb /etc/httpd/upload.users.pwd $DEFAULTUSER $DEFAULTPASSWORD
+        chown apache:apache /etc/httpd/upload.users.pwd
+        ;;
+	"no")
+        rm /etc/httpd/conf.d/upload.conf
+        rm $SETUPSTATEDIR/upload
+        ;;
+	esac
+}
+
+function yum-etckeeper()
+{
+	case "$1" in
+	"yes")
+        set-etckeeper yes
+        sed  -i -e 's/^enabled=0/enabled=1/' /etc/yum/pluginconf.d/etckeeper.conf
+        ;;
+	"no")
+        sed  -i -e 's/^enabled=1/enabled=0/' /etc/yum/pluginconf.d/etckeeper.conf
+        ;;
+	esac
+}
+
+function xo-admin()
+{
+	case "$1" in
+    "yes")
+        yum -y install  sneakerconfig 2>&1 | tee -a $LOG
+        if [ $? -ne 0 ] ; then
+            echo "\n\nYum returned an error\n\n" | tee -a $LOG
+            exit $YUMERROR
+        fi
+        touch $SETUPSTATEDIR/xo-admin
+        SITE=`python -c "import site;print(site.getsitepackages()[0])"`
+        tar zxf $CFGDIR/pydsh-0.7.tar.gz -C $SITE/
+        #execute the setup script
+        ;;
+    "no")
+        rm $SETUPSTATEDIR/xo-admin
+        ;;
+    esac
+}
+
+function xs-acpowergaps()
+# This function is only available on the XS which is running on an XO
+{
+	case "$1" in
+    "yes")
+        if [ $ISXO != "1" ] ; then
+            echo "This feature is only available on XS running on XO hardware"
+            exit 1
+        fi
+        grep -e xs-acpowergaps-cron /etc/crontab |
+                    > /dev/null
+        if [ $? ]; then
+           echo "*/6 * * * * root /usr/bin/xs-acpowergaps-cron" >> /etc/crontab
+        fi
+        touch $SETUPSTATEDIR/xs-acpowergaps
+        ;;
+    "no")
+        sed -i -e /xs-acpowergaps-cron/d /etc/crontab
+        rm $SETUPSTATEDIR/xs-acpowergaps
+        ;;
+    esac
+}
+
+function xs-security()
+{
+	case "$1" in
+    "yes")
+	    $YUM_CMD xs-tools olpc-bios-crypto bitfrost xs-activation 2>&1 | tee -a $LOG
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
+        touch $SETUPSTATEDIR/xs-security
+        ;;
+    "no")
+        rm $SETUPSTATEDIR/xs-security
+        ;;
+    esac
+}
+
+function do_first()
+{
+    # for public demo, disable any functions that would change the machine state
+    if [ -f /etc/sysconfig/xs-disable-config ]; then
+        echo ""
+        echo "======================================================"
+        echo
+        echo "This public demonstration server cannot be configured remotely"
+        echo
+        echo "======================================================"
+        exit 0
+    fi
+    #things to do the first time -- only once
+    if [ -e /home/olpc/xs-setup.log ]; then
+	mv /home/olpc/xs-setup.log /var/log/
+	mv /home/olpc/yum.log /var/log/FA
+    fi
+
+    # init etckeeper and turn it off
+    set-etckeeper yes
+    yum-etckeeper no
+    set-etckeeper no
+
+    ## Prepare etckeeper database
+    if [ ! -e $MARKER ]; then
+        pushd /etc
+
+        ###
+        ### CLEANUP XS 0.4 to XS 0.5
+        ###
+        # Remove old configs that are unambiguously old
+        OLDCONFIGS="/etc/sysconfig/network-scripts/ifcfg-dummy0
+                    /etc/sysconfig/network-scripts/ifcfg-br0
+                    /etc/sysconfig/network-scripts/ifcfg-br1
+                    /etc/sysconfig/network-scripts/ifcfg-br2  "
+        for FPATH in $OLDCONFIGS; do
+            if [ -e "${DESTDIR}$FPATH" ];then
+               rm -f "${DESTDIR}$FPATH"
+            fi
+        done
+        # Remove ifcfg-ethX files that refer to libertas devices
+        # these have been replaced with wmeshX devices
+        for FPATH in ${DESTDIR}/etc/sysconfig/network-scripts/ifcfg-eth*; do
+            # Here the implicit ls has incorporated $DESTDIR
+            if grep -q '^ESSID=\"school-mesh-' "$FPATH" ;then
+                rm -f "$FPATH"
+            fi
+        done
+        # remove eth1:1 if it's the 'school server master address'
+        FPATH="${DESTDIR}/etc/sysconfig/network-scripts/ifcfg-eth1:1"
+        if [ -e "$FPATH" ];then
+            if grep -q '^IPADDR=172.18.1.1' "$FPATH" ;then
+                rm -f "$FPATH"
+            fi
+        fi
+
+	# keep yum cache
+	sed -i -e 's/keepcache=0/keepcache=1/' /etc/yum.conf
+	sed -i -e 's/metadata_expire=7d/metadata_expire=never/' /etc/yum.repos.d/fedora.repo
+#	sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora.repo
+#	sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora-updates.repo
+
+	# use NM keyfile in place of ifcfg-rh XOs have this set already via OOB
+	sed -i -e 's/ifcfg-rh/keyfile/' /etc/NetworkManager/NetworkManager.conf
+
+        ## Prepare config files
+        CFG_TEMPLATES="rsyslog.conf motd.olpc sysctl.conf ssh/sshd_config
+        sysconfig/named sysconfig/init sysconfig/squid rssh.conf php.ini
+        httpd/conf.d/proxy_ajp.conf httpd/conf.d/ssl.conf"
+
+        for i in $CFG_TEMPLATES; do
+            cp -p $i.in $i
+        done
+
+        # Load new sysctl.conf settings
+        sysctl -p
+
+        #record the config file additions
+        etckeeper-if-selected 'Config files copied <file.in> to <file>'
+
+        # Work would be needed to get the XS components playing nice with SELinux, so
+        # disable it.
+        if selinuxenabled; then
+            setenforce 0
+            sed -i -e 's/^SELINUX=.*/SELINUX=disabled/' /etc/selinux/config
+        fi
+
+        echo "-y" > $DESTDIR/fsckoptions
+        # exit-hooks blasts school server into resolv.conf, use NM, and finese
+        #ln -sf $CFGDIR/etc/dhcp/dhclient-exit-hooks $DESTDIR/etc/dhcp
+        ln -sf $CFGDIR/etc/NetworkManager/dispatcher.d/wan-dev \
+                            $DESTDIR/etc/NetworkManager/dispatcher.d
+        ln -sf $CFGDIR/etc/httpd/conf.d/*.conf $DESTDIR/etc/httpd/conf.d
+        ln -sf $CFGDIR/etc/logrotate.d/* $DESTDIR/etc/logrotate.d
+        ln -sf $CFGDIR/etc/profile.d/* $DESTDIR/etc/profile.d
+
+        # sudo doesn't accept symlinks here
+        install -m 440 $CFGDIR/etc/sudoers.d/* $DESTDIR/etc/sudoers.d
+        install -m 440 $CFGDIR/etc/systemd/system/* $DESTDIR/etc/systemd/system
+
+        # run setup scripts belonging to other packages
+        #shopt -s nullglob
+        #for i in /etc/sysconfig/olpc-scripts/setup.d/*; do
+         #   [ -x $i ] && $i
+        #done
+        #shopt -u nullglob
+
+        etckeeper-if-selected "disabled selinux, scripts sourced"
+
+        # following packages are the core set of packages installed on all xs servers
+    	$YUM_CMD syck rssh mtd-utils acpid mlocate 2>&1 | tee -a $LOG
+        if [ $? -ne 0 ] ; then
+            echo "\n\nYum returned an error\n\n" | tee -a $LOG
+            exit $YUMERROR
+        fi
+
+        # make a non privileged user, and give her remote access
+        if [ ! `grep $DEFAULTUSER /etc/passwd` ]; then
+            adduser $DEFAULTUSER
+            echo "$DEFAULTPASSWORD" | passwd $DEFAULTUSER --stdin
+            #we've added apache to the admin group, so permit group access
+            #then to let apache config system, we'll add apache to sudoers on
+            #  the apply_changes script which will be written in /home/admin
+            chmod 770 /home/$DEFAULTUSER
+        fi
+
+        # we need a login for vnc with password that is not user changeable
+        if [ ! `grep $VNCUSER /etc/passwd` ]; then
+            adduser $VNCUSER
+            echo "$VNCPASSWORD" | passwd $VNCUSER --stdin
+            echo "alias passwd='echo \"NOT ALLOWED!. It will break VNC remote access\"' " >> /home/$VNCUSER/.bashrc
+        fi
+        sed -i -e 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+        systemctl enable sshd.service
+        systemctl restart sshd.service
+
+        #  setup NetworkManager -- turns off xo's wifi when second adapter is added, reinit masquerade
+        cp $CFGDIR/etc/NetworkManager/dispatcher.d/xs-net-device $DESTDIR/etc/NetworkManager/dispatcher.d
+        # Initialize the default LAN address
+        #   the syntax is "ip:<number of 1's in mask>:gateway:nameserver:"
+        mkdir -p /home/$DEFAULTUSER/etc/sysconfig/
+        echo "172.18.96.1:19:0.0.0.0;127.0.0.1;" > /home/$DEFAULTUSER/etc/sysconfig/xs_lan_ip
+        # Initialize the default WAN address
+        echo "DHCP" > /home/$DEFAULTUSER/etc/sysconfig/xs_wan_ip
+        # Initialize the default opendns ip address
+        echo "208.67.222.222;208.67.220.220;" > /home/$DEFAULTUSER/etc/sysconfig/xs_opendns_ip
+        chmod -R 770 /home/$DEFAULTUSER
+        chown -R $DEFAULTUSER:$DEFAULTUSER /home/$DEFAULTUSER
+
+        etckeeper-if-selected "after installing core packages"
+
+        popd
+
+    fi
+    echo "do first routine completed" | tee -a $LOG
+    date  2>&1 | tee -a $LOG
+
+}
+
+function do-first()
+(
+    do_first
+)
+
+function do-last()
+(
+    do_last
+)
+
+function do_last()
+{
+    etckeeper-if-selected 'School Server setup changed - do_last'
+    echo "do last executed" | tee -a $LOG
+    date | tee -a $LOG
+    if [ ! -e $MARKER ]; then
+        # require that olpc user enter a password to become root
+        sed -i -e '4s/^auth/#auth/' /etc/pam.d/su
+        # internally we use /etc/.git as marker for first config run --
+        #   --$ MARKER  is available externally
+        touch $MARKER
+        echo "XS configured; services should be active."
+    fi
+
+}
+
+# now source any files ending with .sh in config dir, allow pkgs to shadow these defs
+#for i in $CFGFUNCTIONS/*.sh ; do
+#    if [ -r "$i" ]; then
+#            . "$i" >/dev/null 2>&1
+#            echo "shell script $i in $CFGFUNCTIONS shadowed setup functions" 2>&1 | tee -a $LOG
+#    fi
+#done
