@@ -105,8 +105,8 @@ function  generate_directories()
         }
         '
     done
-    #echo  -e  "\tinstall -D -d \044(DESTDIR)usr/share/xs-config/sh.d" >>$MKDIR_MAKEFILE
-    echo  -e  "\tcp -rp ./plugins.d \044(DESTDIR)usr/share/xs-config/" >>$MKDIR_MAKEFILE
+    echo  -e  "\tinstall -D -d \044(DESTDIR)usr/share/xs-config/plugins.d" >>$MKDIR_MAKEFILE
+    echo  -e  "\tcp -rp * \044(DESTDIR)usr/share/xs-config/plugins.d" >>$MKDIR_MAKEFILE
     echo  -e  "\trm -rf \044(DESTDIR)usr/share/xs-config/plugins.d/*/files/" >>$MKDIR_MAKEFILE
 }
 
