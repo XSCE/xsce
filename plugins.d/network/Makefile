@@ -1,4 +1,5 @@
 install:
+
 	install -D files/resolv.conf.in  $(DESTDIR)/etc/resolv.conf.in
 	install -D files/ip6tables-config.in  $(DESTDIR)/etc/sysconfig/ip6tables-config.in
 	install -D files/iptables-config.in  $(DESTDIR)/etc/sysconfig/iptables-config.in

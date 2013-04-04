@@ -1,4 +1,5 @@
 install:
+
 	install -D files/proxy_ajp.conf.in  $(DESTDIR)/etc/httpd/conf.d/proxy_ajp.conf.in
 	install -D files/httpd-xs.conf.in  $(DESTDIR)/etc/httpd/conf/httpd-xs.conf.in
 	install -D files/php.ini.in  $(DESTDIR)/etc/php.ini.in

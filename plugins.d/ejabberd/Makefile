@@ -1,4 +1,5 @@
 install:
+
 	install -D files/ejabberd-xs.cfg.in  $(DESTDIR)/etc/ejabberd/ejabberd-xs.cfg.in
 	install -D files/ejabberd-xs  $(DESTDIR)/etc/init.d/ejabberd-xs
 	install -D files/ejabberd-xs  $(DESTDIR)/etc/sysconfig/ejabberd-xs

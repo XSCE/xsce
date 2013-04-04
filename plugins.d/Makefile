@@ -1,4 +1,5 @@
 install:
+
 	install -D -d  $(DESTDIR)etc/
 	install -D -d  $(DESTDIR)etc/pathagar/
 	install -D -d  $(DESTDIR)usr/
@@ -34,10 +35,6 @@ install:
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/html/top/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/html/top/en/
 	install -D -d  $(DESTDIR)etc/httpd/conf/
-	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/html/top/assets/
-	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/html/top/bin/
-	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/html/top/es/
-	install -D -d  $(DESTDIR)etc/squid/
 	install -D -d  $(DESTDIR)etc/ssh/
 	install -D -d  $(DESTDIR)etc/sysconfig/modules/
 	install -D -d  $(DESTDIR)etc/sysconfig/olpc-scripts/setup.d/
@@ -45,6 +42,10 @@ install:
 	install -D -d  $(DESTDIR)root/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/profile.d/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/yum.repos.d/
+	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/html/top/assets/
+	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/html/top/bin/
+	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/html/top/es/
+	install -D -d  $(DESTDIR)etc/squid/
 	install -D -d  $(DESTDIR)usr/lib/
 	install -D -d  $(DESTDIR)usr/lib/udev/
 	install -D -d  $(DESTDIR)usr/lib/udev/rules.d/
@@ -60,3 +61,6 @@ install:
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/etc/sysconfig/vnc/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/top/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/top/es/
+	install -D -d $(DESTDIR)usr/share/xs-config/plugins.d
+	cp -rp * $(DESTDIR)usr/share/xs-config/plugins.d
+	rm -rf $(DESTDIR)usr/share/xs-config/plugins.d/*/files/

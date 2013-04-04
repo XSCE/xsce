@@ -1,4 +1,5 @@
 install:
+
 	install -D files/hosts.in  $(DESTDIR)/etc/hosts.in
 	install -D files/motd.in  $(DESTDIR)/etc/motd.in
 	install -D files/motd.olpc.in  $(DESTDIR)/etc/motd.olpc.in

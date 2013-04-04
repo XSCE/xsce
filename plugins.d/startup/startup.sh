@@ -25,7 +25,7 @@
 #!/bin/bash
 #examble install script
 #source /usr/bin/xs-setup-functions
-#do-first
+#startup
 #httpd yes
 #do-last
 #===============================================================================
@@ -35,6 +35,7 @@ set -x -e -u
 
 DESTDIR=""
 CFGDIR=/usr/share/xs-config/cfg
+PLUGINDIR=/usr/share/xs-config/plugins.d
 CFGFUNCTIONS=/etc/sysconfig/olpc-scripts/functions
 MARKER=/.olpcxs-configured
 LOG=/var/log/xs-setup.log
@@ -49,7 +50,8 @@ ISXO=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
 YUMERROR=10
 YUM_CMD="yum -y install"
 
-function do_first()
+# old function name was do_first()
+function startup()
 {
     # for public demo, disable any functions that would change the machine state
     if [ -f /etc/sysconfig/xs-disable-config ]; then
@@ -193,12 +195,21 @@ function do_first()
         chmod -R 770 /home/$DEFAULTUSER
         chown -R $DEFAULTUSER:$DEFAULTUSER /home/$DEFAULTUSER
 
+#do all of the yum installs in a single operation
+        INSTALLTHESE=""
+        for mod in `ls $PLUGINDIR`; do
+	    if [ -d $PLUGINDIR/$mod/yum -a -f PLUGINDIR/$mod/yumenabled ];then
+                INSTALLTHESE=$INSTALLTHESE" "`ls -1 $PLUGINDIR/$mod/yum/`
+	    fi
+        done
+        $YUM_CMD $INSTALLTHESE
+
         etckeeper-if-selected "after installing core packages"
 
         popd
 
     fi
-    echo "do first routine completed" | tee -a $LOG
+    echo "startup routine completed" | tee -a $LOG
     date  2>&1 | tee -a $LOG
 
 }
@@ -234,11 +245,6 @@ function set-etckeeper()
 	esac
 }
 
-function do-first()
-(
-    do_first
-)
-
 function yum-etckeeper()
 {
 	case "$1" in
@@ -252,5 +258,26 @@ function yum-etckeeper()
 	esac
 }
 
+
+function do-last()
+(
+    do_last
+)
+
+function do_last()
+{
+    etckeeper-if-selected 'School Server setup changed - do_last'
+    echo "do last executed" | tee -a $LOG
+    date | tee -a $LOG
+    if [ ! -e $MARKER ]; then
+        # require that olpc user enter a password to become root
+        sed -i -e '4s/^auth/#auth/' /etc/pam.d/su
+        # internally we use /etc/.git as marker for first config run --
+        #   --$ MARKER  is available externally
+        touch $MARKER
+        echo "XS configured; services should be active."
+    fi
+
+}
 
 

@@ -1,4 +1,5 @@
 install:
+
 	install -D files/etc/systemd/system/vncserverweb.service  $(DESTDIR)/usr/share/xs-config/cfg/etc/systemd/system/
 	install -D files/etc/systemd/system/vncserver@.service  $(DESTDIR)/usr/share/xs-config/cfg/etc/systemd/system/
 	install -D files/etc/httpd/conf.d/novnc.conf  $(DESTDIR)/usr/share/xs-config/cfg/etc/httpd/conf.d/

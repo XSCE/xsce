@@ -1,4 +1,5 @@
 install:
+
 	install -D files/150px-Green_and_white_machine.jpg  $(DESTDIR)/usr/share/xs-config/cfg/html/top/assets/150px-Green_and_white_machine.jpg
 	install -D files/cropped-img_10932.jpg  $(DESTDIR)/usr/share/xs-config/cfg/html/top/assets/cropped-img_10932.jpg
 	install -D files/firewalllist  $(DESTDIR)/usr/share/xs-config/cfg/html/top/bin/firewalllist

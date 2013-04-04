@@ -1,4 +1,5 @@
 install:
+
 	install -D files/idmgr.conf.in  $(DESTDIR)/etc/idmgr.conf.in
 	install -D files/postgresql-1024m.conf  $(DESTDIR)/etc/pgsql-xs/postgresql-1024m.conf
 	install -D files/postgresql-2048m.conf  $(DESTDIR)/etc/pgsql-xs/postgresql-2048m.conf

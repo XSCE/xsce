@@ -29,7 +29,7 @@ function  generate_directories()
         cd $CURDIR
     done
 
-    echo "install:" >>$MKDIR_MAKEFILE
+    echo -e "install:\n" >>$MKDIR_MAKEFILE
 
     # now feed all of these files, or connectors, to gawk to find unique path names
     for manifest in $manlist; do
@@ -105,6 +105,9 @@ function  generate_directories()
         }
         '
     done
+    echo  -e  "\tinstall -D -d \044(DESTDIR)usr/share/xs-config/plugins.d" >>$MKDIR_MAKEFILE
+    echo  -e  "\tcp -rp * \044(DESTDIR)usr/share/xs-config/plugins.d" >>$MKDIR_MAKEFILE
+    echo  -e  "\trm -rf \044(DESTDIR)usr/share/xs-config/plugins.d/*/files/" >>$MKDIR_MAKEFILE
 }
 
 #=================================================================================
@@ -113,10 +116,14 @@ function make_makefile_for_plugin()
         cd $CURDIR
         cd ./plugins.d/$1/
         rm -f Makefile
-        echo "install:" >> Makefile
-        manifest_list=`cat ./$1.manifest`
+        echo -e "install:\n" >> Makefile
+        if [ -f ./$1.manifest ]; then
+            manifest_list=`cat ./$1.manifest`
+        else
+            manifest_list=""
+        fi
         for manifest_line in $manifest_list; do
-            echo "manifest line is $manifest_line"
+            #echo "manifest line is $manifest_line"
             echo $manifest_line | \
             gawk -v manifest_line=$manifest_line 'BEGIN {FS = "/"}
             {
@@ -125,6 +132,7 @@ function make_makefile_for_plugin()
                 if (parent == "") parent = $(NF-1)
                 connectors[parent]=manifest_line
 
+<<<<<<< HEAD
                 print("parent:" parent "manifest_line:" manifest_line)
                 # cycle through all the files
                 while ((getline line < "./find") > 0) {
@@ -140,17 +148,32 @@ function make_makefile_for_plugin()
                             print("writing")
                             write_makefile(line,full_path,"Makefile")
                         }
+=======
+            #print("parent:" parent "manifest_line:" manifest_line)
+            # cycle through all the files
+            while ((getline line < "./find") > 0) {
+                #print(line)
+                num = split(line,chunks,"/")
+                if (chunks[1] in connectors) {
+                    full_path = connectors[chunks[1]]
+                    for(i=2;i<num;i++){
+                        full_path = full_path chunks[i] "/"
+                    }
+                    #print("prefix:" connectors[chunks[1]] "loc:" line)
+                    if (! system("test -f ./files/" line)){
+                        #print("writing")
+                        write_makefile(line,full_path,"Makefile")
                     }
                 }
             }
 
-            function write_makefile(source, full_path, mkfile ){
-                 makef = sprintf("\tinstall -D files/%s  \044(DESTDIR)%s", source, full_path)
-                 cmd = sprintf("echo '\''%s'\'' >> %s", makef, mkfile)
-                    print(cmd "  " path)
-                 system(cmd)
-             }
-             '
+       function write_makefile(source, full_path, mkfile ){
+            makef = sprintf("\tinstall -D files/%s  \044(DESTDIR)%s", source, full_path)
+            cmd = sprintf("echo '\''%s'\'' >> %s", makef, mkfile)
+               #print(cmd "  " path)
+            system(cmd)
+        }
+            '
         done
         #clean up the "find" file created by generate Makefiles
         rm -f ./find
@@ -166,10 +189,10 @@ function dummy(){
             for (i=1; i<num; i++){
                 path = path ar[i] "/"
             }
-            makef = sprintf("\tinstall -D files/%s \044(DESTDIR)%s",ar[num],path )
+            makef = sprintf("    install -D files/%s \044(DESTDIR)%s",ar[num],path )
             cmd = sprintf("echo '\''%s'\'' >> ~/dextrose/xs-config/plugins.d/%s/Makefile",makef,pluginloc)
             system(cmd)
-            print(cmd)}'
+            #print(cmd)}'
         fi
         cd $curdir
 }
@@ -195,9 +218,14 @@ case "$1" in
 	;;
 "yum")
 # echo the yum modules in all the plugins
-        for mod in `ls plugins.d`; do
-                echo `ls -1 plugins.d/$mod/yum/`
+PLUGINDIR=/usr/share/xs-config/plugins.d
+        INSTALLTHESE=""
+        for mod in `ls $PLUGINDIR`; do
+	    if [ -d $PLUGINDIR/$mod ];then
+                INSTALLTHESE=$INSTALLTHESE" "`ls -1 plugins.d/$mod/yum/`
+	    fi
         done
+        echo $INSTALLTHESE
         ;;
 
 "functions")
@@ -263,11 +291,10 @@ case "$1" in
 	if [ $# -eq 1 ]; then
 		PLUGINS=`cat m_manifest`
 	fi
-    #cecho "about to generate_directories"
     generate_directories
-    echo "directories done, now do makefile for plugin"
+    #echo "directories done, now do makefile for plugin"
 	for plugin in $PLUGINS; do
-        echo "$plugin"
+        #echo "$plugin"
         make_makefile_for_plugin $plugin
     done
     ;;
@@ -297,7 +324,23 @@ case "$1" in
 "treediff")
     diff -r . ~/dextrose/linuxtree
     ;;
+"help")
+    gawk ' /^\".*)$/{
+            print $0;
+            flag="true";
+            while (flag == "true"){
+                getline
+                if (substr($0,1,1) == "#"){
+                    print $0;
+                }else{
+                    flag="false";
+                }
+            }
+      }' $0
+        
+    ;;
 *)
-	ls  plugins.d
+    echo -e "\nThe following functions are available in xsc_tools"
+    cat $0 | grep -e "^\".*)$"
 	;;
 esac
