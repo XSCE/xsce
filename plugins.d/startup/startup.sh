@@ -198,7 +198,7 @@ function startup()
 #do all of the yum installs in a single operation
         INSTALLTHESE=""
         for mod in `ls $PLUGINDIR`; do
-	    if [ -d $PLUGINDIR/$mod/yum -a -f PLUGINDIR/$mod/yumenabled ];then
+	    if [ -d $PLUGINDIR/$mod/yum -a -f $PLUGINDIR/$mod/yumenabled ];then
                 INSTALLTHESE=$INSTALLTHESE" "`ls -1 $PLUGINDIR/$mod/yum/`
 	    fi
         done
