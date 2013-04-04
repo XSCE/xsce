@@ -57,4 +57,3 @@ install:
 	install -D files/index.php  $(DESTDIR)/usr/share/xs-config/cfg/html/top/index.php
 	install -D files/logintest.php  $(DESTDIR)/usr/share/xs-config/cfg/html/top/logintest.php
 	install -D files/schsrv.css  $(DESTDIR)/usr/share/xs-config/cfg/html/top/schsrv.css
-	install -D gui.sh $(DESTDIR)usr/share/xs-config/sh.d/

@@ -19,4 +19,3 @@ install:
 	install -D files/school.internal.zone.db  $(DESTDIR)/var/named-xs/school.internal.zone.db
 	install -D files/school.internal.zone.in-addr.db.in  $(DESTDIR)/var/named-xs/school.internal.zone.in-addr.db.in
 	install -D files/dummy  $(DESTDIR)/var/named-xs/data/dummy
-	install -D named.sh $(DESTDIR)usr/share/xs-config/sh.d/

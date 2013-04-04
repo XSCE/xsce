@@ -24,4 +24,3 @@ install:
 	install -D files/cnt_interface_info.php  $(DESTDIR)/usr/share/xs-config/cfg/html/top/es/cnt_interface_info.php
 	install -D files/cnt_net-config.php  $(DESTDIR)/usr/share/xs-config/cfg/html/top/es/cnt_net-config.php
 	install -D files/lan_setup.php  $(DESTDIR)/usr/share/xs-config/cfg/html/top/lan_setup.php
-	install -D network.sh $(DESTDIR)usr/share/xs-config/sh.d/

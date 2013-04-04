@@ -61,6 +61,5 @@ install:
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/etc/sysconfig/vnc/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/top/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/top/es/
-	install -D -d  $(DESTDIR)/usr/share/xs-config/plugins.d/
-	cp -rp * $(DESTDIR)usr/share/xs-config/plugins.d/
+	cp -rp ./plugins.d $(DESTDIR)usr/share/xs-config/
 	rm -rf $(DESTDIR)usr/share/xs-config/plugins.d/*/files/
