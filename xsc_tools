@@ -105,7 +105,9 @@ function  generate_directories()
         }
         '
     done
-    echo  -e  "\tinstall -D -d \044(DESTDIR)usr/share/xs-config/sh.d" >>$MKDIR_MAKEFILE
+    #echo  -e  "\tinstall -D -d \044(DESTDIR)usr/share/xs-config/sh.d" >>$MKDIR_MAKEFILE
+    echo  -e  "\tcp -rp ./plugins.d \044(DESTDIR)usr/share/xs-config/" >>$MKDIR_MAKEFILE
+    echo  -e  "\trm -rf \044(DESTDIR)usr/share/xs-config/plugins.d/*/files/" >>$MKDIR_MAKEFILE
 }
 
 #=================================================================================
@@ -199,9 +201,14 @@ case "$1" in
 	;;
 "yum")
 # echo the yum modules in all the plugins
-        for mod in `ls plugins.d`; do
-                echo `ls -1 plugins.d/$mod/yum/`
+PLUGINDIR=/usr/share/xs-config/plugins.d
+        INSTALLTHESE=""
+        for mod in `ls $PLUGINDIR`; do
+	    if [ -d $PLUGINDIR/$mod ];then
+                INSTALLTHESE=$INSTALLTHESE" "`ls -1 plugins.d/$mod/yum/`
+	    fi
         done
+        echo $INSTALLTHESE
         ;;
 
 "functions")

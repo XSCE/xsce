@@ -1,13 +1,11 @@
 #!/bin/bash
 # replacement for monolithic function definitions
-FUNCTIONSDIR=/home/ghunt/dextrose/xs-config/
-        curdir=$FUNCTIONSDIR
-        #curdir=`pwd`
-        for mod in `ls modules.d`; do
-                cd modules.d/$mod
-                script=`ls -1 *.sh`
-                if [ ! -z $script ]; then
-                    source "./$script"
-                fi
-                cd $curdir
-        done
+FUNCTIONSDIR=/usr/share/xs-config/sh.d
+pushd $FUNCTIONSDIR
+for script in `find $FUNCTIONSDIR -maxdepth 1 -type file`
+        echo $script
+        if [ ! -z $script ]; then
+            source "$script"
+        fi
+done
+popd
