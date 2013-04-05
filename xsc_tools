@@ -324,6 +324,18 @@ PLUGINDIR=/usr/share/xs-config/plugins.d
 "treediff")
     diff -r . ~/dextrose/linuxtree
     ;;
+"index")
+PLUGINDIR=/usr/share/xs-config/plugins.d
+        FILELIST=""
+        for mod in `ls $PLUGINDIR`; do
+        echo $mod
+	    if [ -d $PLUGINDIR/$mod -a -f $PLUGINDIR/$mod/yumenabled ];then
+                FILELIST=$FILELIST" "`ls -1 $PLUGINDIR/$mod/files/`
+                echo $FILELIST
+	    fi
+        done
+        echo  $FILELIST
+        ;;
 "help")
     gawk ' /^\".*)$/{
             print $0;
