@@ -80,7 +80,6 @@ install:
 	@for D in $(PLUGINDIRLIST); do \
 		(cd $$D; echo $$D; $(MAKE)  $(MFLAGS) $(MYENV) install) \
 	done
-	install -D xs-setup-functions $(DESTDIR)usr/bin
 # use print-<macro> from command line to inspect its value
 print-%: ; @echo $* is $($*)
 # cause shell commands to output the rules being executed
