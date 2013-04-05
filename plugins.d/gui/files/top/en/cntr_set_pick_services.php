@@ -105,13 +105,13 @@ Check here if you have internet service and want the School Server to provide in
 ?>
   <input name="opendns"  type="checkbox"  value=""<?php echo $checked ?>  /></td>
 <td class="mS">
-Enable Domain Name Service content controls using OPENDNS (is mainteined for schools worldwide by specialists)</td></tr>
+Enable Domain Name Service content controls using OPENDNS (is mainteined for schools worldwide by specialists)<div class="red">(future release)</div></td></tr>
 <tr><td></td><td><div align="center" >Ip address of OPENDNS service: <input name="opendnsip" type="text" value="<?php echo $results ?>" /></div></td></tr>
 <tr><td>
 <?php if ($selected['dansguardian'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="dansguardian" type="checkbox"  value=""<?php echo $checked ?>  /></td><td class="mS">
 Install Dan's Guardian content filter (permits local control, requires setup, continued maintenance)
-</td></tr>
+<div class="red">(future release)</div></td></tr>
 
 <tr><td colspan="2"> 
 <h3>Internet Speedups</h3></td></tr><tr ><td></td><td class="mS">
@@ -119,10 +119,10 @@ Install Dan's Guardian content filter (permits local control, requires setup, co
   
 <?php if ($selected['squid'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="squid"  type="checkbox" value=""<?php echo $checked ?>  /></td><td class="mS">
-Enable local web page storage for later fast access<br /></td></tr><tr><td>
+Enable local web page storage for later fast access<div class="red">(future release)</div><br /></td></tr><tr><td>
 <?php if ($selected['named'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="named"  type="checkbox" value=""<?php echo $checked ?>  /></td><td class="mS">
-Enable local Domain Name storage for faster access
+Enable local Domain Name storage for faster access<div class="red">(future release)</div>
 </td></tr>
 </table>
 </div>

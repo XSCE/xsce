@@ -53,22 +53,22 @@ function toggleMenu(objID) {
 <?php if ($selected['register'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="register" type="checkbox" value=""<?php echo $checked ?> />
 </td><td class="mS">
-Register XO's and backup student Journals.
+Register XO's and backup student Journals.<div class="red">(future release)</div>
 </td></tr><tr><td>
 <?php if ($selected['activity_server'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="activity_server" type="checkbox"  value="" <?php echo $checked ?>/>
 </td><td class="mS">
-Serve Activities, input to server VIA Upload.
+Serve Activities, input to server VIA Upload.<div class="red">(future release)</div>
 </td></tr><tr><td>
 <?php if ($selected['moodle-xs'] == 'on') $checked = "CHECKED";  else $checked = "";?>
 <input name="moodle-xs" type="checkbox" value="" <?php echo $checked ?>/>
 </td><td class="mS">
-Moodle content and classroom management system.
+Moodle content and classroom management system.<div class="red">(future release)</div>
 </td></tr><tr><td>
 <?php if ($selected['xs-security'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="xs-security" type="checkbox" value=""<?php echo $checked ?>/>
 </td><td class="mS">
-Manage activation of XO leases, and security.
+Manage activation of XO leases, and security.<div class="red">(future release)</div>
 </td></tr><tr><td>
 <?php if ($selected['upload'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="upload" type="checkbox" value="" <?php echo $checked ?>/>
@@ -89,7 +89,7 @@ Uncheck to disable ip address assignments (dhcpd) if XS is joining an establishe
 <?php if ($selected['xs-acpowergaps'] == 'on') $checked = "CHECKED";  else $checked = "";?>
   <input name="xs-acpowergaps" type="checkbox"  value="" <?php echo $checked ?>/>
 </td><td class="mS">
-Enable Recording of AC power failures.
+Enable Recording of AC power failures.<div class="red">(future release)</div>
 </td></tr>
 </table>
 <?php if ( ! isset($_POST['token'])) { ?>

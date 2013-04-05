@@ -259,6 +259,11 @@ function yum-etckeeper()
 }
 
 
+function do-first()
+{
+    echo "do-first executed"
+}
+
 function do-last()
 (
     do_last

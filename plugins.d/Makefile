@@ -42,9 +42,11 @@ install:
 	install -D -d  $(DESTDIR)root/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/profile.d/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/yum.repos.d/
-	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/html/top/assets/
-	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/html/top/bin/
-	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/html/top/es/
+	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/top/
+	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/top/es/
+	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/top/en/
+	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/top/assets/
+	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/top/bin/
 	install -D -d  $(DESTDIR)etc/squid/
 	install -D -d  $(DESTDIR)usr/lib/
 	install -D -d  $(DESTDIR)usr/lib/udev/
@@ -53,14 +55,13 @@ install:
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/NetworkManager/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/NetworkManager/dispatcher.d/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/NetworkManager/system-connections/
+	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/html/top/es/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/etc/systemd/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/etc/systemd/system/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/etc/httpd/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/etc/httpd/conf.d/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/etc/sysconfig/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/etc/sysconfig/vnc/
-	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/top/
-	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/top/es/
 	install -D -d $(DESTDIR)usr/share/xs-config/plugins.d
 	cp -rp * $(DESTDIR)usr/share/xs-config/plugins.d
 	rm -rf $(DESTDIR)usr/share/xs-config/plugins.d/*/files/
