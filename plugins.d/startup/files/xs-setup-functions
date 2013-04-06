@@ -1,0 +1,16 @@
+#!/bin/bash
+# scan through all the plugins to pick up function definitions
+PLUGINDIR=/usr/share/xs-config/plugins.d
+for mod in `ls $PLUGINDIR`; do
+    if [ -d $PLUGINDIR/$mod ];then
+        pushd $PLUGINDIR/$mod
+        SCRIPTLIST=`ls -1 *.sh`
+        for script in $SCRIPTLIST;do
+            if [ ! -z $script ]; then
+                source "./$script"
+            fi
+        done
+        popd
+    fi
+done
+
