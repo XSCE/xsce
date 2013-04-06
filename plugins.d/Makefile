@@ -26,6 +26,7 @@ install:
 	install -D -d  $(DESTDIR)var/named-xs/data/
 	install -D -d  $(DESTDIR)etc/ejabberd/
 	install -D -d  $(DESTDIR)etc/init.d/
+	install -D -d  $(DESTDIR)/etc/init.d/
 	install -D -d  $(DESTDIR)usr/bin/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/sudoers.d/
 	install -D -d  $(DESTDIR)etc/httpd/
