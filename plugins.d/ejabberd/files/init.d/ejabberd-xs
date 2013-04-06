@@ -45,7 +45,8 @@ check_domain_configured() {
 	exit 1;
     fi
 
-    hostname=`hostname -f`
+    #hostname=`hostname -f`
+    hostname=`hostname `
     if [ "$hostname" == "localhost.localdomain" ]; then
          echo "Domain not configured yet" > /dev/stderr
     fi

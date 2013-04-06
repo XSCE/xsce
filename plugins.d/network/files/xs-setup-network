@@ -158,7 +158,8 @@ systemctl stop NetworkManager.service
 systemctl start NetworkManager.service
 
 short_host=`hostname -s`
-new_name=`hostname -f`
+#new_name=`hostname -f`
+new_name=`hostname `
 
 #  This is the suffix which original versions of modified files will have
 BACKUP_SUFFIX=old
