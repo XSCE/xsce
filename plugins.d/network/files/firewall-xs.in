@@ -4,11 +4,13 @@ IPTABLES=/usr/sbin/iptables
 #lan="eth1"
 LANIF=`route -n | grep "172.18.96" | gawk '{ print $8 }'`
 WANIF=`route -n | grep "UG" | gawk '{ print $8 }'`
-if [ ! "x$WANIF" == "x" ]; then
-	wan=$WANIF
+if [  "x$WANIF" == "x" ]; then
+#	wan=$WANIF
+    exit 1
 fi
-if [ ! "x$LANIF" == "x" ]; then
-	lan=$LANIF
+if [  "x$LANIF" == "x" ]; then
+#	lan=$LANIF
+    exit 1
 fi
 echo "Lan is $lan and WAN i $wan"
 #
@@ -45,3 +47,4 @@ fi
 
 # Enable routing.
 echo 1 > /proc/sys/net/ipv4/ip_forward
+exit 0

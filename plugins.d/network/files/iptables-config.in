@@ -6,8 +6,10 @@
 IPTABLES_DATA=/etc/sysconfig/iptables
 #xs-gen-iptables $IPTABLES_DATA
 # the following 2 lines moved to xs-setup-network
-#/etc/sysconfig/olpc-scripts/firewall-xs
-#iptables-save > $IPTABLES_DATA
+set +e; /etc/sysconfig/olpc-scripts/firewall-xs; set -e
+if [ $? -eq 0 ];then
+    iptables-save > $IPTABLES_DATA
+fi
 
 # Load additional iptables modules (nat helpers)
 #   Default: -none-

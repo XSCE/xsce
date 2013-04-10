@@ -18,9 +18,7 @@ function squid()
         # need to set up iptables to forward port 80 queries
         # the following script regenerates /etc/sysconfig/iptables
         cp /etc/sysconfig/olpc-scripts/firewall-xs.in /etc/sysconfig/olpc-scripts/firewall-xs
-        /etc/sysconfig/olpc-scripts/firewall-xs
-        iptables-save >/etc/sysconfig/iptables
-
+        systemctl restart iptables.service
         ;;
     "no")
         systemctl disable squid.service 2>&1 | tee -a $LOG
@@ -29,8 +27,6 @@ function squid()
         rm $SETUPSTATEDIR/squid
 
         # reinitialize the iptables to just use masqueradeing
-        /etc/sysconfig/olpc-scripts/firewall-xs
-        iptables-save >/etc/sysconfig/iptables
         systemctl restart iptables.service
         ;;
     esac

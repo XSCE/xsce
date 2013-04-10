@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash 
 #
 
 #  Copyright 2012, One Laptop per Child
@@ -43,6 +43,12 @@ done
 if [ -n "$opt_upgrade_only" ]; then
 	echo "$0: doing nothing, XS standard networking is not active."
 	exit 0
+fi
+
+# if NetworkManager is not yet set up, do nothing as each adapter comes up
+# following flag is set in systemd ExecStartPre=touch
+if [ ! -f /tmp/NetworkManager.issetup ]; then
+    exit 0
 fi
 
 # Determine the number of interfaces
@@ -188,3 +194,10 @@ echo "hostname = $short_host" | tee -a $LOG
 echo "FQDN = $new_name" | tee -a $LOG
 echo "LAN device $oth_iface using $ipaddr " | tee -a $LOG
 echo "gateway device $gw_iface using $wan_ip" | tee -a $LOG
+
+# the adapter names may have changed, so update the iptables
+IPTABLES_DATA=/etc/sysconfig/iptables
+set +e; /etc/sysconfig/olpc-scripts/firewall-xs; set -e
+if [ $? -eq 0 ];then
+    /usr/sbin/iptables-save > $IPTABLES_DATA
+fi
