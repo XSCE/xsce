@@ -239,6 +239,7 @@ LoadModule rewrite_module modules/mod_rewrite.so
 #LoadModule file_cache_module modules/mod_file_cache.so
 #LoadModule mem_cache_module modules/mod_mem_cache.so
 LoadModule cgi_module modules/mod_cgi.so
+LoadModule wsgi_module modules/mod_wsgi.so
 
 #
 # The following modules are not loaded by default:

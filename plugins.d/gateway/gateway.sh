@@ -10,16 +10,10 @@ function gateway()
         touch $SETUPSTATEDIR/gateway
         cp  $CFGDIR/etc/systemd/system/iptables.service $DESTDIR/etc/systemd/system
 
-        # systemd has a check for exist /etc/sysconfig/iptables - so ensure that it exists
-        # the following script regenerates /etc/sysconfig/iptables
-        /etc/sysconfig/olpc-scripts/firewall-xs
-        iptables-save >/etc/sysconfig/iptables
-
-
         systemctl enable iptables.service
-        #set +x; systemctl restart iptables.service; set -x
+        set +e; systemctl condrestart iptables.service; set -e
         systemctl enable ip6tables.service
-        #systemctl start ip6tables.service
+        set +e; systemctl condrestart ip6tables.service; set -e
         ;;
 	"no")
         # the gateway flag is used to control masquerading in iptables

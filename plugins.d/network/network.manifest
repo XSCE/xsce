@@ -1,5 +1,5 @@
 /etc/resolv.conf.in
-/etc/dhclient-hostname.conf.in
+/usr/share/xs-config/cfg/etc/dhclient-hostname.conf.in
 /etc/sysconfig/ip6tables-config.in
 /etc/sysconfig/iptables-config.in
 /etc/sysconfig/network.in

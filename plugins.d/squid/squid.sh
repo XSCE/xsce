@@ -13,7 +13,7 @@ function squid()
             etckeeper-if-selected 'xs-setup force-create httpcache flag'
         fi
         systemctl enable squid.service 2>&1 | tee -a $LOG
-        set +x; systemctl start squid.service 2>&1 | tee -a $LOG; set -x
+        set +e; systemctl start squid.service 2>&1 | tee -a $LOG; set -e
 
         # need to set up iptables to forward port 80 queries
         # the following script regenerates /etc/sysconfig/iptables
