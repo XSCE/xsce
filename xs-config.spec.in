@@ -139,7 +139,8 @@ fi
 #%config(noreplace) %{_sysconfdir}/init.d/no-fsck-questions
 %config(noreplace) %{_sysconfdir}/init.d/ejabberd-xs
 #systemd replacements
-%config(noreplace) %{_sysconfdir}/systemd/system/*.in
+%config(noreplace) %{_sysconfdir}/systemd/system/dhpcd.service
+%config(noreplace) %{_sysconfdir}/systemd/system/.in
 
 #Pg
 %config(noreplace) %{_sysconfdir}/pgsql-xs/p*.conf
