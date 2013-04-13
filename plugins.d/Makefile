@@ -25,13 +25,12 @@ install:
 	install -D -d  $(DESTDIR)var/named-xs/
 	install -D -d  $(DESTDIR)var/named-xs/data/
 	install -D -d  $(DESTDIR)etc/ejabberd/
-	install -D -d  $(DESTDIR)etc/init.d/
-	install -D -d  $(DESTDIR)/etc/init.d/
+	install -D -d  $(DESTDIR)usr/libexec/
+	install -D -d  $(DESTDIR)/usr/libexec/
 	install -D -d  $(DESTDIR)usr/bin/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/sudoers.d/
 	install -D -d  $(DESTDIR)etc/httpd/
 	install -D -d  $(DESTDIR)etc/httpd/conf.d/
-	install -D -d  $(DESTDIR)usr/libexec/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/html/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/html/top/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/html/top/en/

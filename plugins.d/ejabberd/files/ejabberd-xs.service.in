@@ -3,3 +3,6 @@
 .include /usr/lib/systemd/system/ejabberd.service
 [Service]
 EnvironmentFile=/etc/sysconfig/ejabberd-xs
+ExecStart=/usr/libexec/ejabberd start
+ExecStop=/usr/libexec/ejabberd stop
+PIDFile=/var/run/ejabberd/ejbberd.pid

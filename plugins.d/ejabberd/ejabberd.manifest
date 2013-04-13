@@ -1,5 +1,6 @@
 /etc/ejabberd/ejabberd-xs.cfg.in
-/etc/init.d/
+/etc/ejabberd/ejabberdctl.cfg.in
+/usr/libexec/
 /etc/sysconfig/ejabberd-xs
 /etc/sysconfig/olpc-scripts/domain_config.d/ejabberd
 /etc/systemd/system/ejabberd-xs.service.in
