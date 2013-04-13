@@ -113,6 +113,7 @@ fi
 %config(noreplace) %{_sysconfdir}/*.in
 %config(noreplace) %{_sysconfdir}/squid/squid-xs.conf.in
 %config(noreplace) %{_sysconfdir}/ejabberd/ejabberd-xs.cfg.in
+%config(noreplace) %{_sysconfdir}/ejabberd/ejabberdctl.cfg.in
 %config(noreplace) %{_sysconfdir}/httpd/conf/httpd-xs.conf.in
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/*.conf.in
 %config(noreplace) %{_sysconfdir}/pathagar/settings.py.in
@@ -137,7 +138,7 @@ fi
 %attr(770, named , named)  %dir /var/named-xs/data
 
 #%config(noreplace) %{_sysconfdir}/init.d/no-fsck-questions
-%config(noreplace) %{_sysconfdir}/init.d/ejabberd-xs
+%config(noreplace) %{_libexecdir}/ejabberd-xs
 #systemd replacements
 %config(noreplace) %{_sysconfdir}/systemd/system/dhcpd.service
 %config(noreplace) %{_sysconfdir}/systemd/system/*.in
