@@ -11,3 +11,6 @@ Type=oneshot
 ExecStartPre=/bin/touch /tmp/NetworkManager.issetup
 # 
 ExecStart=/usr/bin/xs-setup-network     
+
+[Install]
+WantedBy=multi-user.target

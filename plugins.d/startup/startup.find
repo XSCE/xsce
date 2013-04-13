@@ -1,1 +1,0 @@
-init.in bashrc_xs.sh motd.in media.repo sysctl.conf.in pcspkr.modules bootstrap-xo xs-apply-changes xs-setup xs-mkaccount cat-parts rsyslog.conf.in rssh.conf.in motd.olpc.in manifest prep-storage.sh xs-services-check sshd_config.in xs-setup-functions hosts.in

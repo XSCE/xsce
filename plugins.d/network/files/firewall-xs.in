@@ -5,13 +5,13 @@ IPTABLES=/usr/sbin/iptables
 LANIF=`route -n | grep "172.18.96" | gawk '{ print $8 }'`
 WANIF=`route -n | grep "UG" | gawk '{ print $8 }'`
 if [  "x$WANIF" == "x" ]; then
-#	wan=$WANIF
     exit 1
 fi
 if [  "x$LANIF" == "x" ]; then
-#	lan=$LANIF
     exit 1
 fi
+	lan=$LANIF
+	wan=$WANIF
 echo "Lan is $lan and WAN i $wan"
 #
 # delete all existing rules.

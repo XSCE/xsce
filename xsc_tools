@@ -159,8 +159,8 @@ function make_makefile_for_plugin()
             '
         done
         #clean up the "find" file created by generate Makefiles
-        rm -f ./find
         cd $CURDIR
+        rm -f ./plugins.d/$1/find
 }
 function dummy(){
         #echo `cat $plugin.manifest `
@@ -265,14 +265,15 @@ PLUGINDIR=/usr/share/xs-config/plugins.d
 "mkmake")
 # use contents of "plugins.d/files" to generate Makefiles in each plugin
     MKDIR_MAKEFILE=$CURDIR/$PLUGINS_DIR/Makefile
+	if [ $# -eq 1 ]; then
+        echo -e "\nusage: ./xsc_tools mkmake ["all"|<plugin name>]\n"
+        exit 0
+	fi
 	if [ $# -eq 2 -a $2 = "all" ]; then
 		PLUGINS=`find $PLUGINS_DIR/ -maxdepth 1 -type d | sed s:$PLUGINS_DIR/::`
     fi
 	if [ $# -eq 2 -a $2 != "all" ]; then
 		PLUGINS=$2
-	fi
-	if [ $# -eq 1 ]; then
-		PLUGINS=`cat m_manifest`
 	fi
     generate_directories
     #echo "directories done, now do makefile for plugin"
