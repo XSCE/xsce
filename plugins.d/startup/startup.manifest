@@ -1,6 +1,7 @@
 /etc/hosts.in
 /etc/motd.in
 /etc/motd.olpc.in
+/etc/rc.d/rc.local
 /etc/rssh.conf.in
 /etc/rsyslog.conf.in
 /etc/ssh/sshd_config.in

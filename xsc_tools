@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash 
 # tools to create, manage, simplify services and modules on XS server
 PLUGINS_DIR=plugins.d
 CHILD=`ls | grep plugins.d`
@@ -21,7 +21,7 @@ function  generate_directories()
     for plugin in `find $PLUGINS_DIR/ -maxdepth 1 -type d | sed s:$PLUGINS_DIR/::`; do
         cd plugins.d/$plugin
         #echo "$PWD/$plugin.manifest"
-        if [ -f ./$plugin.manifest ]; then
+        if [ -f "./$plugin.manifest" ]; then
             manlist+=" plugins.d/$plugin/$plugin.manifest"
             # make list of files for later use
             find ./files/ | sed s:^./files/:: > find
@@ -117,7 +117,7 @@ function make_makefile_for_plugin()
         cd ./plugins.d/$1/
         rm -f Makefile
         echo -e "install:\n" >> Makefile
-        if [ -f ./$1.manifest ]; then
+        if [ -f "./$1.manifest" ]; then
             manifest_list=`cat ./$1.manifest`
         else
             manifest_list=""
@@ -164,7 +164,7 @@ function make_makefile_for_plugin()
 }
 function dummy(){
         #echo `cat $plugin.manifest `
-        if [ -f $mod.manifest ]; then
+        if [ -f "$mod.manifest" ]; then
             cat $mod.manifest | gawk -v pluginloc=$mod '{
             ar[0] = ""
             num = split($0,ar,"/")
@@ -204,7 +204,7 @@ case "$1" in
 PLUGINDIR=/usr/share/xs-config/plugins.d
         INSTALLTHESE=""
         for mod in `ls $PLUGINDIR`; do
-	    if [ -d $PLUGINDIR/$mod ];then
+	    if [ -d "$PLUGINDIR/$mod" ];then
                 INSTALLTHESE=$INSTALLTHESE" "`ls -1 plugins.d/$mod/yum/`
 	    fi
         done

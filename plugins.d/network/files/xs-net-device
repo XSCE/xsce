@@ -24,10 +24,10 @@ ISXO=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
 # Determine the number of interfaces
 num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
 
-if [[ "$ISXO" == "1"]]; then
+if [[ "$ISXO" == "1" ]]; then
     if [[ "$1" == "eth2" && "$2" == "up" ]]; then
         # if the wan dongle adapter is coming up, we need to turn off the wifi
-        if [ -f /etc/sysconfig/xs_wan_device && /etc/sysconfig/xs_wan_device -eq "eth0" ]
+        if [ -f /etc/sysconfig/xs_wan_device && /etc/sysconfig/xs_wan_device -eq "eth0" ]; then
             #disable the XO wifi adapter when the second dongle is inserted
             #but first we need to disable autoconnect (the default) on the WAN wifi connection
             ESSID=`/usr/bin/iwconfig  2>/dev/null |gawk -F[\"] '/ESSID:/ {print $2}'`
@@ -49,7 +49,7 @@ autoconnect=false
     fi
     if [[ $1 == "eth2" && $2 == "down" ]]; then
         # if the wan adapter has changed, regerate the firewall masquerade
-        if [ -f /etc/sysconfig/xs_wan_device && /etc/sysconfig/xs_wan_device -eq "eth2" ]
+        if [ -f /etc/sysconfig/xs_wan_device && /etc/sysconfig/xs_wan_device -eq "eth2" ]; then
             #enable the wifi adapter when the second dongle is removed
             nmcli con up eth0
             echo "eth0" > /etc/sysconfig/xs_lan_device

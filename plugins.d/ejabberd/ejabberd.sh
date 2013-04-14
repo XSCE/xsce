@@ -16,6 +16,7 @@ function ejabberd()
 		        exit $YUMERROR
 		    fi
             touch $SETUPSTATEDIR/ejabberd
+            cp /etc/systemd/system/ejabberd-xs.service.in /etc/systemd/system/ejabberd-xs.service
             # and set it to autostart
             systemctl enable ejabberd-xs.service 2>&1 | tee -a $LOG
             

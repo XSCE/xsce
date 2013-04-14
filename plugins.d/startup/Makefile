@@ -3,6 +3,7 @@ install:
 	install -D files/hosts.in  $(DESTDIR)/etc/hosts.in
 	install -D files/motd.in  $(DESTDIR)/etc/motd.in
 	install -D files/motd.olpc.in  $(DESTDIR)/etc/motd.olpc.in
+	install -D files/rc.local  $(DESTDIR)/etc/rc.d/rc.local
 	install -D files/rssh.conf.in  $(DESTDIR)/etc/rssh.conf.in
 	install -D files/rsyslog.conf.in  $(DESTDIR)/etc/rsyslog.conf.in
 	install -D files/sshd_config.in  $(DESTDIR)/etc/ssh/sshd_config.in

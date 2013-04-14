@@ -1,0 +1,4 @@
+#!/bin/bash
+# this script is executed after all systemd startup has completed
+#
+xs-setup-network

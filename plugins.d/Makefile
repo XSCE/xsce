@@ -35,6 +35,7 @@ install:
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/html/top/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/html/top/en/
 	install -D -d  $(DESTDIR)etc/httpd/conf/
+	install -D -d  $(DESTDIR)etc/rc.d/
 	install -D -d  $(DESTDIR)etc/ssh/
 	install -D -d  $(DESTDIR)etc/sysconfig/modules/
 	install -D -d  $(DESTDIR)etc/sysconfig/olpc-scripts/setup.d/

@@ -53,14 +53,10 @@ fi
 
 # Determine the number of interfaces
 num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
-echo "running xs-setup-network on" | tee -a $LOG
-date  2>&1 | tee -a $LOG
+
 # Is this an XO
 is_xo=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
 echo "is_xo = $is_xo" | tee -a $LOG 
-CFG_TEMPLATES="sysconfig/dhcpd sysconfig/iptables-config sysconfig/ip6tables-config"
-CONFIG_LIST="/etc/hosts"
-UPLINK=`find /etc/NetworkManager/system-connections -maxdepth 1 -type f -name "*" -not -name static -not -name "Sugar *"`
 
 #new code to use NetworkManager to set up devices
 function write_nm_connection(){
@@ -76,33 +72,6 @@ function write_nm_connection(){
 
 #========================================================
 
-# all xo's have a wifi and a lo interface
-#if [[ $is_xo = "1" ]]; then
-#    num_ifaces=$(( $num_ifaces - 1 ))
-#   if [[ $num_ifaces  = 1 ]]; then
-#        ipaddr=ifconfig eth0| awk -F ' *|:' '/inet addr/{print $4}'
-#    fi
-#    if [[ $num_ifaces  > 1 ]]; then
-#        mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;}
-#            /^ *ether / { if (eth == "eth1:") print( $2);}'`
-#        write_nm_connection "static" "$mac" "eth1"
-#        ipaddr=172.18.96.1
-#    fi
-#    # if we have 2 ethernet dongles, lo, )
-#    if [[ $num_ifaces = 3 ]] ; then
-#        mac=`ifconfig | gawk 'BEGIN { eth="";} (/^.*: flags=/) {eth = $1;}
-#            /^ *ether / { if (eth == "eth2:") print( $2);}'`
-#        write_nm_connection "dhcp" "$mac" "eth2"
-#        echo "eth2" > /etc/sysconfig/xs_wan_device
-#    else
-#        echo "eth0" > /etc/sysconfig/xs_wan_device
-#	# based on observed created files
-#        echo "ignore-auto-dns=true" >> $UPLINK
-#    fi
-#else
-
-# NOT an XO 1/9/2013 TFM
-
 # If there is only one card it will be wan if there is a gateway otherwise it will be lan
 # If there are more than 2 cards, the last non-gateway one will be lan
 
@@ -117,7 +86,27 @@ for iface in $(ifconfig | gawk 'BEGIN{FS=":"}(/^.*: flags=/) {print( $1);}')
     fi
     done
 
-if [ -n $gw_iface ]; then
+#========================================================
+# 4/14/12 change to call this script at startup and when adapters come up
+#    then abort further processing if device names and mac numbers are unchanged
+last_wan_dev=`[ -f /etc/sysconfig/xs_wan_device ] && cat /etc/sysconfig/xs_wan_device`
+last_lan_dev=`[ -f /etc/sysconfig/xs_lan_device ] && cat /etc/sysconfig/xs_lan_device`
+last_wan_mac=`[ -f /etc/sysconfig/xs_wan_mac ] && cat /etc/sysconfig/xs_wan_mac`
+last_lan_mac=`[ -f /etc/sysconfig/xs_lan_mac ] && cat /etc/sysconfig/xs_lan_mac`
+if [ -n "$oth_iface" ] && [ "$oth_iface" = "$last_lan_dev" ];then
+    if [ -n "$gw_iface" ] && [ "$gw_iface" = "$last_wan_dev" ];then
+        wan_mac=`ifconfig "$wan_iface" | gawk '(/^ *ether /) {print( $2);}'`
+        lan_mac=`ifconfig "$oth_iface" | gawk '(/^ *ether /) {print( $2);}'`
+        if [ "$last_wan_mac" = "$wan_man" ] && [ "$last_lan_mac" = "$wan_mac" ];then
+            echo "devices and mac numbers identical. xs-setup-network aborted." >> $LOG
+            exit 0
+        fi
+    fi
+fi
+#========================================================
+
+UPLINK=`find /etc/NetworkManager/system-connections -maxdepth 1 -type f -name "*" -not -name static -not -name "Sugar *"`
+if [ -n "$gw_iface" ]; then
     wan_iface=$gw_iface
     wan_mac=`ifconfig $wan_iface | gawk '(/^ *ether /) {print( $2);}'`
     wan_ip=`ifconfig $wan_iface | gawk '(/netmask /) {print( $2);}'`
@@ -142,18 +131,20 @@ if [ -n $gw_iface ]; then
             done
         fi
     fi
-
     echo "$wan_iface" > /etc/sysconfig/xs_wan_device
+    echo "$wan_mac" > /etc/sysconfig/xs_wan_mac
 fi
 
 if [ -n $oth_iface ]; then
     oth_mac=`ifconfig $oth_iface | gawk '(/^ *ether /) {print( $2);}'`
     write_nm_connection "static" "$oth_mac" "$oth_iface"
     echo "$oth_iface" > /etc/sysconfig/xs_lan_device
+    echo "$oth_mac" > /etc/sysconfig/xs_lan_mac
     ipaddr=172.18.96.1
 fi
 
 pushd /etc
+CFG_TEMPLATES="sysconfig/dhcpd sysconfig/iptables-config sysconfig/ip6tables-config"
 for i in $CFG_TEMPLATES; do
 	cp -p $i.in $i
 	#etckeeper commit -m "Made from $i.in"
@@ -170,6 +161,7 @@ new_name=`hostname `
 #  This is the suffix which original versions of modified files will have
 BACKUP_SUFFIX=old
 
+CONFIG_LIST="/etc/hosts"
 for config in $CONFIG_LIST;
 do
     if [ -e $config.in ]; then
@@ -194,7 +186,8 @@ echo "hostname = $short_host" | tee -a $LOG
 echo "FQDN = $new_name" | tee -a $LOG
 echo "LAN device $oth_iface using $ipaddr " | tee -a $LOG
 echo "gateway device $gw_iface using $wan_ip" | tee -a $LOG
-
+mydate=`date`
+echo "completed the xs-setup-network script at $mydate" | -a $LOG
 # the adapter names may have changed, so update the iptables
 IPTABLES_DATA=/etc/sysconfig/iptables
 set +e; /etc/sysconfig/olpc-scripts/firewall-xs; set -e
