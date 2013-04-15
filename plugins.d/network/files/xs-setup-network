@@ -45,12 +45,6 @@ if [ -n "$opt_upgrade_only" ]; then
 	exit 0
 fi
 
-# if NetworkManager is not yet set up, do nothing as each adapter comes up
-# following flag is set in systemd ExecStartPre=touch
-if [ ! -f /tmp/NetworkManager.issetup ]; then
-    exit 0
-fi
-
 # Determine the number of interfaces
 num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
 
@@ -119,6 +113,8 @@ if [ -n "$gw_iface" ]; then
     if [ $is_xo == "1" ]; then
         if [ $gw_iface != "eth0" ]; then
             write_nm_connection "dhcp" "$wan_mac" "$wan_iface"
+            # if we have two dongles, disable the internal radio
+            sugar-control-panel -s radio off
         else
             for i in $UPLINK;
             do
@@ -129,6 +125,7 @@ if [ -n "$gw_iface" ]; then
                     echo "ignore-auto-dns=true already present for $i" | tee -a $LOG
                 fi
             done
+            sugar-control-panel -s radio on
         fi
     fi
     echo "$wan_iface" > /etc/sysconfig/xs_wan_device

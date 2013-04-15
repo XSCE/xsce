@@ -1,4 +1,6 @@
 #!/bin/bash
 # this script is executed after all systemd startup has completed
 #
+# give NetworkManager time to actually configure the adapters
+sleep 20
 xs-setup-network

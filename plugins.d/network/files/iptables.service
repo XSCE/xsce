@@ -2,15 +2,12 @@
 .include /usr/lib/systemd/system/iptables.service
 [Unit]
 # for OLPC XS, the masguerading is set up after eth devices are assigned
-After=NetworkManager.service
+Requires=NetworkManager.service
 
 [Service]
 Type=oneshot
 
-# set a flag showing that NetworkManager has completed its task
-ExecStartPre=/bin/touch /tmp/NetworkManager.issetup
-# 
-ExecStart=/usr/bin/xs-setup-network     
+ExecStart=/etc/sysconfig/iptables-config
 
 [Install]
 WantedBy=multi-user.target
