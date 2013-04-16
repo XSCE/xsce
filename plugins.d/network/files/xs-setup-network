@@ -1,6 +1,5 @@
 #!/bin/bash 
 #
-
 #  Copyright 2012, One Laptop per Child
 #  Author: Jerry Vonau, George Hunt
 #
@@ -52,12 +51,24 @@ num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
 is_xo=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
 echo "is_xo = $is_xo" | tee -a $LOG 
 
-#new code to use NetworkManager to set up devices
+function delete_eth0_connections 
+# removes any stored connection for wifi, (on an XO only)
+# the down side is that the software key will need to be entered again
+{
+    if [ -n "$1" ]; then
+        for connection in $1;do
+            if [ grep "802-11-wireless" $connection ]; then
+                rm -f $connecion
+            fi
+        done
+    fi
+}
+
+# use NetworkManager to set up devices
 function write_nm_connection(){
     # receives connection_filename, hwaddr,  device_name as parameters
     cp "/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/$1" \
         "/etc/NetworkManager/system-connections/$3-$1"
-    #removed -i to try to get rid of sed intermediate files 9/24/2012
     sed -i  "s/\@\@MAC\@\@/$2/" "/etc/NetworkManager/system-connections/$3-$1"
     sed -i  "s/\@\@DEVICE\@\@/$3/" "/etc/NetworkManager/system-connections/$3-$1"
     chmod 600 "/etc/NetworkManager/system-connections/$3-$1"
@@ -97,7 +108,7 @@ if [ -n "$oth_iface" ] && [ "$oth_iface" = "$last_lan_dev" ];then
         fi
     fi
 fi
-#========================================================
+# end 4/14/12========================================================
 
 UPLINK=`find /etc/NetworkManager/system-connections -maxdepth 1 -type f -name "*" -not -name static -not -name "Sugar *"`
 if [ -n "$gw_iface" ]; then
@@ -114,7 +125,7 @@ if [ -n "$gw_iface" ]; then
         if [ $gw_iface != "eth0" ]; then
             write_nm_connection "dhcp" "$wan_mac" "$wan_iface"
             # if we have two dongles, disable the internal radio
-            sugar-control-panel -s radio off
+            delete_eth0_connections $UPLINK
         else
             for i in $UPLINK;
             do
@@ -125,9 +136,12 @@ if [ -n "$gw_iface" ]; then
                     echo "ignore-auto-dns=true already present for $i" | tee -a $LOG
                 fi
             done
-            sugar-control-panel -s radio on
         fi
-    fi
+        # the dhclient attaches to the wan device, fixup may be necessaryi
+        if [ "$last_wan_dev" != "$wan_iface" ];then
+            xs-domain-config
+        fi
+    fi # end of dealing with is_xo
     echo "$wan_iface" > /etc/sysconfig/xs_wan_device
     echo "$wan_mac" > /etc/sysconfig/xs_wan_mac
 fi
@@ -184,7 +198,7 @@ echo "FQDN = $new_name" | tee -a $LOG
 echo "LAN device $oth_iface using $ipaddr " | tee -a $LOG
 echo "gateway device $gw_iface using $wan_ip" | tee -a $LOG
 mydate=`date`
-echo "completed the xs-setup-network script at $mydate" | -a $LOG
+echo "completed the xs-setup-network script at $mydate" | tee -a $LOG
 # the adapter names may have changed, so update the iptables
 IPTABLES_DATA=/etc/sysconfig/iptables
 set +e; /etc/sysconfig/olpc-scripts/firewall-xs; set -e
