@@ -78,11 +78,16 @@ EOF
 	# Rename the XO to be schoolserver.local
 	sed -i -e '/HOSTNAME=xo/d' /etc/sysconfig/network
 	echo "HOSTNAME=schoolserver.local" >> /etc/sysconfig/network
-        sed -i -e 's:NM_IGNORE_HOSTNAME_LOCALHOST=yes:NM_IGNORE_HOSTNAME_LOCALHOST=no:' /etc/sysconfig/network
+    sed -i -e 's:NM_IGNORE_HOSTNAME_LOCALHOST=yes:NM_IGNORE_HOSTNAME_LOCALHOST=no:' /etc/sysconfig/network
 
 	# XO release 12.1.0 makes /var/log  a tempfs -- server logs should persist
 	sed -i -e 's:vartmp:#vartmp:' /etc/fstab
 	sed -i -e 's:varlog:#varlog:' /etc/fstab
+
+    # Disable the graphical mode for the XO, diable X11, use memory for serving
+    rm /etc/systemd/system/default.target  # remove the link
+    ln -sf /lib/systemd/system/multi-user.target /etc/systemd/system/
+
 	echo "bootstrap-xo routine completed" | tee -a $LOG
 	date  2>&1 | tee -a $LOG
 	cp /var/log/yum.log /home/olpc/
@@ -96,6 +101,8 @@ EOF
     echo
 	read -p "Press [Enter] key to reboot"
 	echo "rebooting in 5 seconds"
+    echo
+    echo "The XO will reboot in 'text mode', with white letters on a dark screen"
 	sleep 5
 	reboot
     else

@@ -139,7 +139,7 @@ if [ -n "$gw_iface" ]; then
         fi
         # the dhclient attaches to the wan device, fixup may be necessary
         if [ "$last_wan_dev" != "$wan_iface" ];then
-            domain-name=`cat /etc/sysconfig/xs-domain-name`c
+            domain-name=`cat /etc/sysconfig/xs-domain-name`
             xs-domain-config "$domain-name"
         fi
     fi # end of dealing with is_xo

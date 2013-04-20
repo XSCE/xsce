@@ -18,7 +18,8 @@ function squid()
         # need to set up iptables to forward port 80 queries
         # the following script regenerates /etc/sysconfig/iptables
         cp /etc/sysconfig/olpc-scripts/firewall-xs.in /etc/sysconfig/olpc-scripts/firewall-xs
-        systemctl restart iptables.service
+        # don't error out if the iptables.service is not yet installed
+        set +e;systemctl restart iptables.service; set -e
         ;;
     "no")
         systemctl disable squid.service 2>&1 | tee -a $LOG
