@@ -15,7 +15,6 @@
 /usr/bin/xs-swapnics
 /usr/lib/udev/rules.d/10-olpc-net.rules
 /usr/share/xs-config/cfg/etc/dhcp/dhclient-exit-hooks
-/usr/share/xs-config/cfg/etc/NetworkManager/dispatcher.d/xs-net-device
 /usr/share/xs-config/cfg/etc/NetworkManager/system-connections/dhcp
 /usr/share/xs-config/cfg/etc/NetworkManager/system-connections/eth0-wireless
 /usr/share/xs-config/cfg/etc/NetworkManager/system-connections/eth0-wireless-lan

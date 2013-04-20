@@ -86,7 +86,7 @@ EOF
 
     # Disable the graphical mode for the XO, diable X11, use memory for serving
     rm /etc/systemd/system/default.target  # remove the link
-    ln -sf /lib/systemd/system/multi-user.target /etc/systemd/system/
+    ln -sf /lib/systemd/system/multi-user.target /etc/systemd/system/default.target
 
 	echo "bootstrap-xo routine completed" | tee -a $LOG
 	date  2>&1 | tee -a $LOG

@@ -2,6 +2,7 @@ function ejabberd()
 {
 	case "$1" in
 	"yes")
+       function disable {
             if [ -e /etc/ejabberd/ejabberd.pem ]; then
                 if [ -e /var/lib/ejabberd/spool ]; then
                     rm -rf /var/lib/ejabberd/spool
@@ -15,6 +16,7 @@ function ejabberd()
 		        echo "\n\nYum returned an error\n\n" | tee -a $LOG
 		        exit $YUMERROR
 		    fi
+     } #end of disable
             touch $SETUPSTATEDIR/ejabberd
             cp /etc/systemd/system/ejabberd-xs.service.in /etc/systemd/system/ejabberd-xs.service
             # and set it to autostart

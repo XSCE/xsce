@@ -17,7 +17,6 @@ install:
 	install -D files/xs-swapnics  $(DESTDIR)/usr/bin/xs-swapnics
 	install -D files/10-olpc-net.rules  $(DESTDIR)/usr/lib/udev/rules.d/10-olpc-net.rules
 	install -D files/dhclient-exit-hooks  $(DESTDIR)/usr/share/xs-config/cfg/etc/dhcp/dhclient-exit-hooks
-	install -D files/xs-net-device  $(DESTDIR)/usr/share/xs-config/cfg/etc/NetworkManager/dispatcher.d/xs-net-device
 	install -D files/dhcp  $(DESTDIR)/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/dhcp
 	install -D files/eth0-wireless  $(DESTDIR)/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/eth0-wireless
 	install -D files/eth0-wireless-lan  $(DESTDIR)/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/eth0-wireless-lan
