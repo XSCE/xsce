@@ -139,7 +139,7 @@ fi
 %attr(770, named , named)  %dir /var/named-xs/data
 
 #%config(noreplace) %{_sysconfdir}/init.d/no-fsck-questions
-%config(noreplace) %{_libexecdir}/ejabberd-xs
+%config(noreplace) %{_sysconfdir}/init.d/ejabberd-xs
 #systemd replacements
 %config(noreplace) %{_sysconfdir}/systemd/system/dhcpd.service
 %config(noreplace) %{_sysconfdir}/systemd/system/*.in

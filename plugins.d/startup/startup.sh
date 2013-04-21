@@ -141,8 +141,6 @@ function startup()
         echo "-y" > $DESTDIR/fsckoptions
         # exit-hooks blasts school server into resolv.conf, use NM, and finese
         #ln -sf $CFGDIR/etc/dhcp/dhclient-exit-hooks $DESTDIR/etc/dhcp
-        ln -sf $CFGDIR/etc/NetworkManager/dispatcher.d/wan-dev \
-                            $DESTDIR/etc/NetworkManager/dispatcher.d
         ln -sf $CFGDIR/etc/httpd/conf.d/*.conf $DESTDIR/etc/httpd/conf.d
         ln -sf $CFGDIR/etc/logrotate.d/* $DESTDIR/etc/logrotate.d
         ln -sf $CFGDIR/etc/profile.d/* $DESTDIR/etc/profile.d
@@ -183,7 +181,6 @@ function startup()
         systemctl restart sshd.service
 
         #  setup NetworkManager -- turns off xo's wifi when second adapter is added, reinit masquerade
-        cp $CFGDIR/etc/NetworkManager/dispatcher.d/xs-net-device $DESTDIR/etc/NetworkManager/dispatcher.d
         # Initialize the default LAN address
         #   the syntax is "ip:<number of 1's in mask>:gateway:nameserver:"
         mkdir -p /home/$DEFAULTUSER/etc/sysconfig/

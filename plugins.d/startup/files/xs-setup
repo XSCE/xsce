@@ -59,12 +59,24 @@ source /usr/bin/xs-setup-functions
 #do-first function has had its name changed to startup
 startup
 
-if [[ $num_ifaces < 3 && $ISXO = 1 ]]; then
+if [[ $num_ifaces < 4 && $ISXO = 1 ]]; then
+    # Try to figure out which interface is connected to a gateway
+    gw_iface=`route -n | awk '{if($4=="UG")print $8}'`
+    sendmessage=
+    if [ "gw_iface" == "eth1" ]; then
+        set +x
+        echo
+        echo  "====================================================================="
+        echo  "You are using a USB network adapter as a connection to the internet"
+        sendmessage="true"
+    fi
+fi
+if [[ $num_ifaces < 3 && $ISXO = 1 || -n $sendmessage ]]; then
     set +x
     echo
     echo  "====================================================================="
     echo  "No lan adapter was found. If you want the XS to act as a content filter"
-    echo  "   and a gateway to the internet, you need to stop now and add a second"
+    echo  "   and a gateway to the internet, you need to stop now and add another"
     echo  "   network adapter. If you add another adapter, at a later time, you must  "
     echo  "   rerun xs-setup."
     echo  "====================================================================="
@@ -91,9 +103,11 @@ if [[ $num_ifaces > 2 ]]; then
     xs-setup-network
     squid yes
     gateway yes
-    dhcpd yes
     touch /.olpcxs-net-configured
 fi
+    
+# local lan needs ip addresses
+dhcpd yes
 
 # Remote admin services
 httpd yes
