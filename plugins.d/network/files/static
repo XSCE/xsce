@@ -1,7 +1,7 @@
 
 [connection]
 id=@@DEVICE@@
-uuid=111-222
+uuid=@@UUID@@
 type=802-3-ethernet
 
 [ipv4]

@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 #
 #  Copyright 2012, One Laptop per Child
 #  Author: Jerry Vonau, George Hunt
@@ -49,9 +49,9 @@ num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
 
 # Is this an XO
 is_xo=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
-echo "is_xo = $is_xo" | tee -a $LOG 
+echo "is_xo = $is_xo" | tee -a $LOG
 
-function delete_eth0_connections 
+function delete_eth0_connections
 # removes any stored connection for wifi, (on an XO only)
 # the down side is that the software key will need to be entered again
 {
@@ -67,10 +67,12 @@ function delete_eth0_connections
 # use NetworkManager to set up devices
 function write_nm_connection(){
     # receives connection_filename, hwaddr,  device_name as parameters
+    new_uuid=`uuidgen`
     cp "/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/$1" \
         "/etc/NetworkManager/system-connections/$3-$1"
     sed -i  "s/\@\@MAC\@\@/$2/" "/etc/NetworkManager/system-connections/$3-$1"
     sed -i  "s/\@\@DEVICE\@\@/$3/" "/etc/NetworkManager/system-connections/$3-$1"
+    sed -i  "s/\@\@UUID\@\@/$new_uuid/" "/etc/NetworkManager/system-connections/$3-$1"
     chmod 600 "/etc/NetworkManager/system-connections/$3-$1"
     echo "write_nm_connection wrote $3-$1 with mac addr $2" | tee -a $LOG
 }
