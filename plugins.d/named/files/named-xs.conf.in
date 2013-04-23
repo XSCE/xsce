@@ -30,7 +30,8 @@ logging
  *      By default, SELinux policy does not allow named to modify the /var/named directory,
  *      so put the default debug log file in data/ :
  */
-        channel default_debug {
+        #channel default_debug {
+        channel null {
                 file "data/named.run";
                 severity dynamic;
         };
