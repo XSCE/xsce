@@ -19,17 +19,19 @@ function ejabberd()
      } #end of disable
             touch $SETUPSTATEDIR/ejabberd
             cp /etc/systemd/system/ejabberd-xs.service.in /etc/systemd/system/ejabberd-xs.service
+            chkconfig ejabberd-xs on
             # and set it to autostart
             systemctl enable ejabberd-xs.service 2>&1 | tee -a $LOG
             
             # the follwoing change to ejabbeerdctl tells to write a pid file
-            cp -f /etc/ejabberd/ejabberdctl.cfg.in /etc/ejabberd/ejabberdctl.cfg
+            #cp -f /etc/ejabberd/ejabberdctl.cfg.in /etc/ejabberd/ejabberdctl.cfg
             # create a place and permissions for pid file to be written
-            mkdir -p /var/run/ejabberd
-            chown ejabberd:ejabberd /var/run/ejabberd
+            #mkdir -p /var/run/ejabberd
+            #chown ejabberd:ejabberd /var/run/ejabberd
 
             echo "the following start command executes for a long time. Have a cup of coffee!"
-            systemctl start ejabberd-xs.service 2>&1 | tee -a $LOG
+            /etc/init.d/ejabberd-xs start
+            #systemctl start ejabberd-xs.service 2>&1 | tee -a $LOG
 		;;
 	"no")
             systemctl disable ejabberd.service 2>&1 | tee -a $LOG

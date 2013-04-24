@@ -4,7 +4,6 @@ function gateway()
 	"yes")
         cp /etc/sysconfig/olpc-scripts/iptables-xs.in /etc/sysconfig/olpc-scripts/iptables-xs
         cp /etc/sysconfig/olpc-scripts/ip6tables-xs.in /etc/sysconfig/olpc-scripts/ip6tables-xs
-        cp /etc/sysconfig/olpc-scripts/firewall-xs.in /etc/sysconfig/olpc-scripts/firewall-xs
         cp /etc/sysconfig/iptables-config.in /etc/sysconfig/iptables-config
 
         touch $SETUPSTATEDIR/gateway

@@ -316,10 +316,11 @@ PLUGINDIR=/usr/share/xs-config/plugins.d
     FILELIST=
     for mod in `ls -1 $PLUGINDIR`; do
         #NEWLIST=`find  "$PLUGINDIR/$mod/files/"`
-        NEWLIST=`ls -1 "$PLUGINDIR/$mod/files/"`
+        NEWLIST=`find "$PLUGINDIR/$mod/files/" | gawk 'BEGIN {FS="/"} {print($4,$2);}'`
+        echo -e "$NEWLIST"
         FILELIST="$FILELIST$NEWLIST"
     done
-    echo -e `echo -e "$FILELIST" | sort`
+    echo   `echo -e "$FILELIST" | sort`
     ;;
 #PLUGINDIR="plugins.d"
 #        FILELIST=
