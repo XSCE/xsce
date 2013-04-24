@@ -94,23 +94,12 @@ for iface in $(ifconfig | gawk 'BEGIN{FS=":"}(/^.*: flags=/) {print( $1);}')
     done
 
 #========================================================
-# 4/14/12 change to call this script at startup and when adapters come up
-#    then abort further processing if device names and mac numbers are unchanged
-last_wan_dev=`[ -f /etc/sysconfig/xs_wan_device ] && cat /etc/sysconfig/xs_wan_device`
-last_lan_dev=`[ -f /etc/sysconfig/xs_lan_device ] && cat /etc/sysconfig/xs_lan_device`
-last_wan_mac=`[ -f /etc/sysconfig/xs_wan_mac ] && cat /etc/sysconfig/xs_wan_mac`
-last_lan_mac=`[ -f /etc/sysconfig/xs_lan_mac ] && cat /etc/sysconfig/xs_lan_mac`
-if [ -n "$oth_iface" ] && [ "$oth_iface" = "$last_lan_dev" ];then
-    if [ -n "$gw_iface" ] && [ "$gw_iface" = "$last_wan_dev" ];then
-        wan_mac=`ifconfig "$wan_iface" | gawk '(/^ *ether /) {print( $2);}'`
-        lan_mac=`ifconfig "$oth_iface" | gawk '(/^ *ether /) {print( $2);}'`
-        if [ "$last_wan_mac" = "$wan_man" ] && [ "$last_lan_mac" = "$wan_mac" ];then
-            echo "devices and mac numbers identical. xs-setup-network aborted." >> $LOG
-            exit 0
-        fi
-    fi
+# 4/14/13   then abort further processing if device names and mac numbers are unchanged
+source /usr/share/xs-config/plugins/network.sh
+if [ ! is_network_changed ]; then
+    return 0
 fi
-# end 4/14/12========================================================
+# end 4/14/13========================================================
 
 UPLINK=`find /etc/NetworkManager/system-connections -maxdepth 1 -type f -name "*" -not -name static -not -name "Sugar *"`
 if [ -n "$gw_iface" ]; then

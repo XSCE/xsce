@@ -184,7 +184,10 @@ function dummy(){
 function extract_directory_list_from_files()
 # first get a list of connec
 {
-    FILELIST=`find .`
+	PLUGINS=`find $PLUGINS_DIR/ -maxdepth 1 -type d` 
+    for PLGIN in $PLUGINS; do
+        ls -1 $PLGIN/files/
+    done
 }
 #=================================================================================
 case "$1" in
@@ -309,17 +312,26 @@ PLUGINDIR=/usr/share/xs-config/plugins.d
     diff -r . ~/dextrose/linuxtree
     ;;
 "index")
-PLUGINDIR=/usr/share/xs-config/plugins.d
-        FILELIST=""
-        for mod in `ls $PLUGINDIR`; do
-        echo $mod
-	    if [ -d $PLUGINDIR/$mod -a -f $PLUGINDIR/$mod/yumenabled ];then
-                FILELIST=$FILELIST" "`ls -1 $PLUGINDIR/$mod/files/`
-                echo $FILELIST
-	    fi
-        done
-        echo  $FILELIST
-        ;;
+    PLUGINDIR="plugins.d"
+    FILELIST=
+    for mod in `ls -1 $PLUGINDIR`; do
+        #NEWLIST=`find  "$PLUGINDIR/$mod/files/"`
+        NEWLIST=`ls -1 "$PLUGINDIR/$mod/files/"`
+        FILELIST="$FILELIST$NEWLIST"
+    done
+    echo -e `echo -e "$FILELIST" | sort`
+    ;;
+#PLUGINDIR="plugins.d"
+#        FILELIST=
+        #for mod in `ls -d $PLUGINDIR`; do
+#        echo $mod
+	    #if [ -d "$PLUGINDIR/$mod" ] && [ -f "$PLUGINDIR/$mod/yumenabled" ]; then
+        #        NEWLIST=`ls -1 "$PLUGINDIR/$mod/files/"`
+        #        FILELIST="$FILELIST  $NEWLIST"
+        #        echo "$FILELIST"
+	    #fi
+        #done
+        #echo  $FILELIST
 "help")
     gawk ' /^\".*)$/{
             print $0;

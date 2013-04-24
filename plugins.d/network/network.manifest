@@ -3,7 +3,6 @@
 /etc/sysconfig/ip6tables-config.in
 /etc/sysconfig/iptables-config.in
 /etc/sysconfig/network.in
-/etc/sysconfig/olpc-scripts/firewall-xs.in
 /etc/sysconfig/olpc-scripts/ip6tables-xs.in
 /etc/sysconfig/olpc-scripts/iptables-xs.in
 /etc/sysconfig/olpc-scripts/resolv.conf.in

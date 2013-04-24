@@ -5,7 +5,6 @@ install:
 	install -D files/ip6tables-config.in  $(DESTDIR)/etc/sysconfig/ip6tables-config.in
 	install -D files/iptables-config.in  $(DESTDIR)/etc/sysconfig/iptables-config.in
 	install -D files/network.in  $(DESTDIR)/etc/sysconfig/network.in
-	install -D files/firewall-xs.in  $(DESTDIR)/etc/sysconfig/olpc-scripts/firewall-xs.in
 	install -D files/ip6tables-xs.in  $(DESTDIR)/etc/sysconfig/olpc-scripts/ip6tables-xs.in
 	install -D files/iptables-xs.in  $(DESTDIR)/etc/sysconfig/olpc-scripts/iptables-xs.in
 	install -D files/resolv.conf.in  $(DESTDIR)/etc/sysconfig/olpc-scripts/resolv.conf.in

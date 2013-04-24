@@ -1,68 +1,53 @@
-#!/usr/bin/python
+#!/bin/bash -x
+IPTABLES=/usr/sbin/iptables
+#wan="eth0"
+#lan="eth1"
+#LANIF=`route -n | gawk '/172.18.96/{ print $8 }'`
+#WANIF=`route -n | gawk '/UG/{ print $8 }'`
+LANIF=`cat /etc/sysconfig/xs_lan_device`
+WANIF=`cat /etc/sysconfig/xs_wan_device`
 
-"""We take one parameter: the path of the resulting iptables file.
+if [  "x$WANIF" == "x" ]; then
+    exit 1
+fi
+if [  "x$LANIF" == "x" ]; then
+    exit 1
+fi
+	lan=$LANIF
+	wan=$WANIF
+echo "Lan is $lan and WAN is $wan"
+#
+# delete all existing rules.
+#
+$IPTABLES -F
+$IPTABLES -t nat -F
+$IPTABLES -X
+/sbin/modprobe ip_tables
+/sbin/modprobe iptable_filter
+/sbin/modprobe ip_conntrack
+/sbin/modprobe iptable_nat
+# Always accept loopback traffic
+$IPTABLES -A INPUT -i lo -j ACCEPT
 
- - the template is assumed to be the same path, with a ".in" suffix
- - the file will be updated =atomically=
 
-"""
+# Allow established connections, and those not coming from the outside
+$IPTABLES -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A INPUT -m state --state NEW -i  $lan -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport ssh -m state --state NEW -i $wan -j ACCEPT
+$IPTABLES -A FORWARD -i $wan -o $lan -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-import re
-import os, os.path
-import logging
-import sys
-import tempfile
+# Allow outgoing connections from the LAN side.
+$IPTABLES -A FORWARD -i $lan -o $wan -j ACCEPT
 
+# Don't forward from the outside to the inside.
+$IPTABLES -A FORWARD -i $wan -o $lan -j DROP
+if [ -f /etc/sysconfig/olpc-scripts/setup.d/installed/gateway ] ; then
+    $IPTABLES -A POSTROUTING -t nat -o $wan -j MASQUERADE
+fi
+if [ -f /etc/sysconfig/xs_httpcache_on ]; then
+    $IPTABLES  -t nat  -A PREROUTING -i $lan -p tcp --dport 80 ! -d 172.18.96.1 -j DNAT --to 172.18.96.1:3128
+fi
 
-
-sysconfig_path = "/etc/sysconfig"
-
-if len(sys.argv) < 2:
-     sys.stderr.write("Need a filepath parameter\n")
-     exit(1)
-
-# will try and update it atomically
-output_path = sys.argv[1]
-
-# default
-lan = 'eth0'
-wan = 'eth1'
-
-wanconf_path = os.path.join(sysconfig_path, 'xs_wan_device')
-if os.path.exists(wanconf_path):
-     # if there is no file, use the default silently
-     try:
-          conf = wanconf_path
-          fh = open(conf)
-          fc = fh.readline().strip()
-          if fc != '':
-               wan = fc
-     except IOError:
-          logging.warning("Prolem reading " + wanconf_pathconf + " , assuming " + wan)
-
-proxyison_conf = os.path.join(sysconfig_path, 'xs_httpcache_on')
-if os.path.exists(proxyison_conf):
-     proxyison = True
-else:
-     proxyison = False
-
-#print("wan="+wan+" squid=%i" % squid)
-
-template = open(output_path + ".in")
-# write it as a tmpfile in the destination directory, for an atomic update
-(destfh, tmpfile) = tempfile.mkstemp(dir=os.path.dirname(output_path))
-for line in template:
-     if (re.match('@@SQUID@@', line)):
-          if proxyison:
-               os.write(destfh, '-A PREROUTING ! -i %s -p tcp --dport 80 -j REDIRECT --to-ports 3128\n' % wan)
-     else:
-          # line = line.rstrip()
-          line = re.sub(r'\@\@WAN\@\@', wan, line)
-          line = re.sub(r'\@\@LAN\@\@', lan, line)
-          os.write(destfh, line)
-
-os.close(destfh)
-
-# update atomically
-os.rename(tmpfile, output_path)
-
+# Enable routing.
+echo 1 > /proc/sys/net/ipv4/ip_forward
+exit 0
