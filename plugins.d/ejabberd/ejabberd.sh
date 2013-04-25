@@ -31,7 +31,7 @@ function ejabberd()
             # it turns out that /var/run is a tmpfs, so I created in init.d/ejabberd-xs
 
             # can get a reliable start if the following:
-            killall epmd
+            set +e;killall epmd;set -e
 
             echo "the following start command executes for a long time. Have a cup of coffee!"
             /etc/init.d/ejabberd-xs start 2>&1 | tee -a $LOG
