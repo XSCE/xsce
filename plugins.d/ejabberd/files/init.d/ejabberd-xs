@@ -5,7 +5,7 @@
 # chkconfig: - 40 60
 # description: ejabberd
 # processname: ejabberd
-# pidfile: /var/run/ejabberd.pid
+# pidfile: /var/run/ejabberd/ejabberd.pid
 
 ### BEGIN INIT INFO
 # Provides: ejabberd
@@ -26,6 +26,10 @@ fi
 if [ ! "$CONFIG_FILE" ]; then
 	CONFIG_FILE=/etc/ejabberd/ejabberd.cfg
 fi
+
+# /var/run is tmpfs in fc18, so need to create every time
+mkdir -p /var/run/ejabberd
+chown ejabberd:ejabberd /var/run/ejabberd
 
 # avoid using consolehelper, call ejabberdctl directly
 progctl=/usr/sbin/ejabberdctl

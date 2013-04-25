@@ -79,13 +79,13 @@ EOF
     tryname="schoolserver"
     if [ `avahi-browse -t _workstation._tcp | grep schoolserver` ]; then
         x=1
-        tryname="schoolserver$x"
+        tryname="schoolserver.$x"
         while [ $x -le 9 ]; do
             if [ ! `avahi-browse -t _workstation._tcp | grep "$tryname"` ]; then
                 break
             fi
             x=$(( "$x" + 1 ))
-            tryname="schoolserver$x"
+            tryname="schoolserver.$x"
         done
     else
         echo "no otherschoolservers found"
