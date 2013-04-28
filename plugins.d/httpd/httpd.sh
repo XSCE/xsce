@@ -2,8 +2,14 @@ function httpd()
 {
 	case "$1" in
 	"yes")
+        $YUM_CMD httpd mod_auth_pam php 2>&1 | tee -a $LOG
+            if [ $? -ne 0 ] ; then
+                echo "\n\nYum returned an error\n\n" | tee -a $LOG
+                exit $YUMERROR
+            fi
         touch $SETUPSTATEDIR/httpd
-        cp -p /etc/httpd/conf/httpd-xs.conf.in /etc/httpd/conf/httpd-xs.conf
+        cp -pf /etc/httpd/conf/httpd-xs.conf.in /etc/httpd/conf/httpd-xs.conf''
+
 		# Choose a config depending on memory
 		MEMSIZE=$(grep '^MemTotal' /proc/meminfo | grep -oP '\d+')
 		CONFMEM=256m
@@ -21,6 +27,14 @@ function httpd()
 		fi
 		#update the httpd.conf file with this information
 		sed -i -e "s/\@\@CONFMEM\@\@/MEM$CONFMEM/" /etc/httpd/conf/httpd-xs.conf
+
+        # if httpd version is 2.4.4, use new syntax for access control
+        if [ rpm -qa httpd | gawk 'BEGIN {FS="-"}{print($2);}' >= "2.4.4" ]; then
+            ln -fs "$CFGDIR/etc/httpd/conf.d/xs-2.4.conf /etc/httpd/conf.d/"
+        else
+            ln -fs "$CFGDIR/etc/httpd/conf.d/xs-2.2.conf /etc/httpd/conf.d/"
+        fi
+
 		etckeeper-if-selected "modified /etc/httpd/conf/httpd-xs.conf"
         systemctl start httpd.service 2>&1 | tee -a $LOG
 		systemctl enable httpd.service 2>&1 | tee -a $LOG
@@ -47,5 +61,3 @@ function httpd()
 		;;
 	esac
 }
-
-

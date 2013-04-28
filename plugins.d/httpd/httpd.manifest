@@ -3,5 +3,6 @@
 /etc/php.ini.in
 /etc/sysconfig/httpd.in
 /usr/bin/xs-httpcache
-/usr/share/xs-config/cfg/etc/httpd/conf.d/xs.conf
+/usr/share/xs-config/cfg/etc/httpd/conf.d/xs-2.4.conf
+/usr/share/xs-config/cfg/etc/httpd/conf.d/xs-2.2.conf
 /usr/share/xs-config/cfg/etc/sudoers.d/xs-http

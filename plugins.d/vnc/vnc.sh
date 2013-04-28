@@ -14,6 +14,13 @@ function vnc()
         cp -p /lib/systemd/system/vncserver\@.service /etc/systemd/system
         sed -i -e "s/<USER>/$VNCUSER/" /etc/systemd/system/vncserver\@.service
 
+        # if httpd version is 2.4.4, use new syntax for access control
+        if [ rpm -qa httpd | gawk 'BEGIN {FS="-"}{print($2);}' >= "2.4.4" ]; then
+            ln -fs "$CFGDIR/etc/httpd/conf.d/novnc-2.4.conf /etc/httpd/conf.d/"
+        else
+            ln -fs "$CFGDIR/etc/httpd/conf.d/novnc-2.2.conf /etc/httpd/conf.d/"
+        fi
+
         # start the websocket service (part of the novnc package)
        systemctl enable vncserverweb.service 2>&1 | tee -a $LOG
         mkdir -m 755 -p /home/$VNCUSER/.vnc
@@ -60,5 +67,3 @@ password = WebUtil.getQueryVar(\'password\', \'$VNCPASSWORD\');" /usr/share/novn
         ;;
 	esac
 }
-
-
