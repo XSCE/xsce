@@ -1,5 +1,6 @@
 #!/bin/bash
 # scan through all the plugins to pick up function definitions
+LOG=/var/log/xs-setup.log
 PLUGINDIR=/usr/share/xs-config/plugins.d
 for mod in `ls $PLUGINDIR`; do
     if [ -d $PLUGINDIR/$mod ];then

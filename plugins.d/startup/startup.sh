@@ -212,7 +212,7 @@ function startup()
 
 function etckeeper-if-selected()
 {
-    if [ -e $SETUPSTATEDIR/etckeeper && $# -gt 1 ]; then
+    if [ -e $SETUPSTATEDIR/etckeeper ] && [ $# -gt 1 ]; then
         set +e
         etckeeper commit -m $2
         set -e
