@@ -11,7 +11,7 @@ function is_network_changed
         if [ -n "$gw_iface" ] && [ "$gw_iface" = "$last_wan_dev" ];then
             wan_mac=`ifconfig "$wan_iface" | gawk '(/^ *ether /) {print( $2);}'`
             lan_mac=`ifconfig "$oth_iface" | gawk '(/^ *ether /) {print( $2);}'`
-            if [ "$last_wan_mac" = "$wan_man" ] && [ "$last_lan_mac" = "$wan_mac" ];then
+            if [ "$last_wan_mac" = "$wan_mac" ] && [ "$last_lan_mac" = "$lan_mac" ];then
                 echo "devices and mac numbers identical. xs-setup-network aborted." >> $LOG
                 exit 1 # return false, network is not changed
             fi
