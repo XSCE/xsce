@@ -2,5 +2,7 @@
 # this script is executed after all systemd startup has completed
 #
 # give NetworkManager time to actually configure the adapters
-sleep 20
-xs-setup-network
+#sleep 20
+## JV this puts nameserver 127.0.0.1 in /etc/resolv.conf before 
+## named is installed breaking dns
+#xs-setup-network
