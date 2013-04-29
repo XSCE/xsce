@@ -3,7 +3,7 @@ SERVICE_NAME=dhclient
 DHCLIENT_TEMPLATE="/usr/share/xs-config/cfg/etc/dhclient-hostname.conf.in"
 
 # find the current gateway 
-gw_iface=`route -n | awk '{if($4=="UG")print $8}'`
+wan_iface=`route -n | awk '{if($4=="UG")print $8}'`
 
 # reference installed hostname name by default
 . /etc/sysconfig/network
@@ -30,7 +30,9 @@ echo "changing FQDN to $xs_full_name"
 hostname $xs_full_name
 
 # clear any old config files
+set +e
 rm /etc/dhclient-*.conf
+set -e
 
 # replace the hostname in the dhclient interface file 
 if [ -e $DHCLIENT_TEMPLATE ]; then
@@ -53,6 +55,6 @@ systemctl start NetworkManager.service
 
 #donedns=`hostname -f` 
 donedns=`hostname ` 
-echo "FQDN is $donedns"
+echo "dhclient - FQDN is $donedns"
 
 exit 0
