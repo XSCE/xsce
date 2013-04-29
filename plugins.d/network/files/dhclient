@@ -42,7 +42,8 @@ else
     echo "WARNING: missing $DHCLIENT_TEMPLATE!" 
 fi
 
-systemctl stop NetworkManager.service
+# let have xs-setup-network restart networking
+# systemctl stop NetworkManager.service
 # change the config file
 sed -i -e '/HOSTNAME=/d' /etc/sysconfig/network
 echo "HOSTNAME=$xs_full_name " >> /etc/sysconfig/network
@@ -51,10 +52,10 @@ echo "HOSTNAME=$xs_full_name " >> /etc/sysconfig/network
 if [ -e /var/run/nm-dhclient-$wan_iface.conf ]; then
     rm /var/run/nm-dhclient-$wan_iface.conf
 fi
-systemctl start NetworkManager.service
+# systemctl start NetworkManager.service
 
 #donedns=`hostname -f` 
 donedns=`hostname ` 
-echo "dhclient - FQDN is $donedns"
+echo "dhclient - FQDN is $donedns" | tee -a /var/log/xs-setup.log
 
 exit 0
