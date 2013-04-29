@@ -73,6 +73,10 @@ function write_nm_connection(){
     sed -i  "s/\@\@MAC\@\@/$2/" "/etc/NetworkManager/system-connections/$3-$1"
     sed -i  "s/\@\@DEVICE\@\@/$3/" "/etc/NetworkManager/system-connections/$3-$1"
     sed -i  "s/\@\@UUID\@\@/$new_uuid/" "/etc/NetworkManager/system-connections/$3-$1"
+    if [ $1 = "static" ]; then
+        domain_name=`hostname -d`
+        sed -i  "s/@@DOMAIN@@/$domain_name/" "/etc/NetworkManager/system-connections/$3-$1"
+    fi
     chmod 600 "/etc/NetworkManager/system-connections/$3-$1"
     echo "write_nm_connection wrote $3-$1 with mac addr $2" | tee -a $LOG
 }
@@ -100,6 +104,13 @@ if [ ! is_network_changed ]; then
     return 0
 fi
 # end 4/14/13========================================================
+
+pushd /etc
+CFG_TEMPLATES="sysconfig/dhcpd sysconfig/iptables-config sysconfig/ip6tables-config"
+for i in $CFG_TEMPLATES; do
+	cp -p $i.in $i
+	#etckeeper commit -m "Made from $i.in"
+done
 
 UPLINK=`find /etc/NetworkManager/system-connections -maxdepth 1 -type f -name "*" -not -name static -not -name "Sugar *"`
 if [ -n "$gw_iface" ]; then
@@ -143,15 +154,8 @@ if [ -n $oth_iface ]; then
     echo "$oth_iface" > /etc/sysconfig/xs_lan_device
     echo "$oth_mac" > /etc/sysconfig/xs_lan_mac
     ipaddr=172.18.96.1
+    sed -i -e s/@@LAN_IF@@/$oth_iface/ /etc/sysconfig/dhcpd
 fi
-
-pushd /etc
-CFG_TEMPLATES="sysconfig/dhcpd sysconfig/iptables-config sysconfig/ip6tables-config"
-for i in $CFG_TEMPLATES; do
-	cp -p $i.in $i
-	#etckeeper commit -m "Made from $i.in"
-done
-sed -i -e s/@@LAN_IF@@/$oth_iface/ /etc/sysconfig/dhcpd
 
 systemctl stop NetworkManager.service
 systemctl start NetworkManager.service
