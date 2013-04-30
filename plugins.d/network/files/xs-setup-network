@@ -187,6 +187,10 @@ do
 done
 popd
 
+# the adapter names may have changed, so update the iptables
+/etc/sysconfig/iptables-config
+systemctl condrestart iptables.service
+
 echo "XS standard networking configured with" | tee -a $LOG
 echo "hostname = $short_host" | tee -a $LOG
 echo "FQDN = $new_name" | tee -a $LOG
@@ -194,9 +198,3 @@ echo "LAN device $oth_iface using $ipaddr " | tee -a $LOG
 echo "gateway device $gw_iface using $wan_ip" | tee -a $LOG
 mydate=`date`
 echo "completed the xs-setup-network script at $mydate" | tee -a $LOG
-# the adapter names may have changed, so update the iptables
-IPTABLES_DATA=/etc/sysconfig/iptables
-set +e; /etc/sysconfig/olpc-scripts/firewall-xs; set -e
-if [ $? -eq 0 ];then
-    /usr/sbin/iptables-save > $IPTABLES_DATA
-fi

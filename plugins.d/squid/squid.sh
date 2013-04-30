@@ -12,22 +12,19 @@ function squid()
             touch /etc/sysconfig/xs_httpcache_on
             etckeeper-if-selected 'xs-setup force-create httpcache flag'
         fi
+        /etc/sysconfig/iptables-config
+        systemctl condrestart iptables.service
         systemctl enable squid.service 2>&1 | tee -a $LOG
-        set +e; systemctl start squid.service 2>&1 | tee -a $LOG; set -e
-
-        xs-gen-iptables
+        set +e; systemctl condrestart squid.service 2>&1 | tee -a $LOG; set -e
         ;;
     "no")
         systemctl disable squid.service 2>&1 | tee -a $LOG
         systemctl stop squid.service 2>&1 | tee -a $LOG
         rm /etc/sysconfig/xs_httpcache_on
         rm $SETUPSTATEDIR/squid
-        xs-gen-iptables
-
+        /etc/sysconfig/iptables-config
         # reinitialize the iptables to just use masqueradeing
-        systemctl restart iptables.service
+        systemctl condrestart iptables.service
         ;;
     esac
 }
-
-

@@ -7,7 +7,8 @@ function gateway()
         cp /etc/sysconfig/iptables-config.in /etc/sysconfig/iptables-config
 
         touch $SETUPSTATEDIR/gateway
-        cp  $CFGDIR/etc/systemd/system/iptables.service $DESTDIR/etc/systemd/system
+#        cp  $CFGDIR/etc/systemd/system/iptables.service $DESTDIR/etc/systemd/system
+        /etc/sysconfig/iptables-config
 
         systemctl enable iptables.service
         set +e; systemctl condrestart iptables.service; set -e
@@ -22,5 +23,3 @@ function gateway()
         ;;
 	esac
 }
-
-
