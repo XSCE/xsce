@@ -44,6 +44,17 @@ if [ -n "$opt_upgrade_only" ]; then
 	exit 0
 fi
 
+# for public demo, disable any functions that would change the machine state
+if [ -f /etc/sysconfig/xs-disable-config ]; then
+    echo ""
+    echo "======================================================"
+    echo
+    echo "This public demonstration server cannot be configured remotely"
+    echo
+    echo "======================================================"
+    exit 0
+fi
+
 # Determine the number of interfaces
 num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
 

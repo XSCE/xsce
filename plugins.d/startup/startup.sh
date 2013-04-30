@@ -66,7 +66,7 @@ function startup()
     #things to do the first time -- only once
     if [ -e /home/olpc/xs-setup.log ]; then
 	mv /home/olpc/xs-setup.log /var/log/
-	mv /home/olpc/yum.log /var/log/FA
+	mv /home/olpc/yum.log /var/log/
     fi
 
     # init etckeeper and turn it off

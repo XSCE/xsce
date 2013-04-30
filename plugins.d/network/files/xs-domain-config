@@ -25,6 +25,17 @@ DOMAIN_CONFIG_DIR="/etc/sysconfig/olpc-scripts/domain_config.d/"
 SYSCONFIGDIR="/etc/sysconfig"
 LOG=/var/log/xs-setup.log
 
+# for public demo, disable any functions that would change the machine state
+if [ -f /etc/sysconfig/xs-disable-config ]; then
+    echo ""
+    echo "======================================================"
+    echo
+    echo "This public demonstration server cannot be configured remotely"
+    echo
+    echo "======================================================"
+    exit 0
+fi
+
 #  Check the number of arguments and print usage if abnormal
 if [ "$1" = '-h' -o $# -gt 1 ]; then
   echo "usage:  xs-domain-config [ <new_domain_name> ]"
