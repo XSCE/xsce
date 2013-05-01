@@ -30,10 +30,10 @@ function httpd()
 
         # if httpd version is 2.4.4, use new syntax for access control
         ### saw an error around this area while installing symlink not present 
-        if [ $(rpm -q httpd | grep fc17) ] 2>&1 | tee -a $LOG; then
-            ln -fs "$CFGDIR/etc/httpd/conf.d/xs-2.2.conf /etc/httpd/conf.d/" 2>&1 | tee -a $LOG
+        if [ $(rpm -q httpd | grep fc17) ]; then
+            ln -fs "$CFGDIR/etc/httpd/conf.d/xs-2.2.conf /etc/httpd/conf.d/xs-2.2.conf" 2>&1 | tee -a $LOG
         else
-            ln -fs "$CFGDIR/etc/httpd/conf.d/xs-2.4.conf /etc/httpd/conf.d/" 2>&1 | tee -a $LOG
+            ln -fs "$CFGDIR/etc/httpd/conf.d/xs-2.4.conf /etc/httpd/conf.d/xs-2.4.conf" 2>&1 | tee -a $LOG
         fi
 
 		etckeeper-if-selected "modified /etc/httpd/conf/httpd-xs.conf"

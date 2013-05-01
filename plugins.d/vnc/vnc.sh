@@ -24,9 +24,9 @@ function vnc()
 
         # if httpd version is 2.4.4, use new syntax for access control
         if [  $(rpm -q httpd | grep fc17) ]; then
-            ln -fs "$CFGDIR/etc/httpd/conf.d/novnc-2.2.conf /etc/httpd/conf.d/"
+            ln -fs "$CFGDIR/etc/httpd/conf.d/novnc-2.2.conf /etc/httpd/conf.d/novnc-2.2.conf"
         else
-            ln -fs "$CFGDIR/etc/httpd/conf.d/novnc-2.4.conf /etc/httpd/conf.d/"
+            ln -fs "$CFGDIR/etc/httpd/conf.d/novnc-2.4.conf /etc/httpd/conf.d/novnc-2.4.conf"
         fi
 
         # start the websocket service (part of the novnc package)
