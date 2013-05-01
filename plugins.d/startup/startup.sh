@@ -151,6 +151,87 @@ function startup()
 
 }
 
+function do_once()
+{
+    #things to do the first time -- only once
+    if [ -e $MARKER ]; then
+        echo "do_once exiting, marker exists" | tee -a $LOG
+        exit 0
+    fi
+
+    if [ -e /home/olpc/xs-setup.log ]; then
+	mv /home/olpc/xs-setup.log /var/log/
+	mv /home/olpc/yum.log /var/log/
+    fi
+
+    ###
+    ### CLEANUP XS 0.4 to XS 0.5
+    ###
+    # Remove old configs that are unambiguously old
+    OLDCONFIGS="/etc/sysconfig/network-scripts/ifcfg-dummy0
+    /etc/sysconfig/network-scripts/ifcfg-br0
+    /etc/sysconfig/network-scripts/ifcfg-br1
+    /etc/sysconfig/network-scripts/ifcfg-br2  "
+    for FPATH in $OLDCONFIGS; do
+        if [ -e "$FPATH" ];then
+            rm -f "$FPATH"
+        fi
+    done
+    # Remove ifcfg-ethX files that refer to libertas devices
+    # these have been replaced with wmeshX devices
+    for FPATH in /etc/sysconfig/network-scripts/ifcfg-eth*; do
+    # Here the implicit ls has incorporated $DESTDIR
+        if grep -q '^ESSID=\"school-mesh-' "$FPATH" ;then
+            rm -f "$FPATH"
+        fi
+    done
+    # remove eth1:1 if it's the 'school server master address'
+    FPATH="/etc/sysconfig/network-scripts/ifcfg-eth1:1"
+    if [ -e "$FPATH" ];then
+        if grep -q '^IPADDR=172.18.1.1' "$FPATH" ;then
+            rm -f "$FPATH"
+        fi
+    fi
+
+    # keep yum cache
+    sed -i -e 's/keepcache=0/keepcache=1/' /etc/yum.conf
+    sed -i -e 's/metadata_expire=7d/metadata_expire=never/' /etc/yum.repos.d/fedora.repo
+    #sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora.repo
+    #sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora-updates.repo
+
+    # use NM keyfile in place of ifcfg-rh XOs have this set already via OOB
+    sed -i -e 's/ifcfg-rh/keyfile/' /etc/NetworkManager/NetworkManager.conf
+
+    # Work would be needed to get the XS components playing nice with SELinux, so
+    # disable it.
+    if selinuxenabled; then
+        setenforce 0
+        sed -i -e 's/^SELINUX=.*/SELINUX=disabled/' /etc/selinux/config
+    fi
+    echo "-y" > $DESTDIR/fsckoptions
+    echo "do_once routine completed" | tee -a $LOG
+    date  2>&1 | tee -a $LOG
+}
+
+function get_enabled_plugins()
+{
+    source_file=`which xs-setup`
+    ## add sourcing external config file on usbkey
+    echo "using $source_file for enabled_plugins" | tee -a $LOG
+    wanted_mods=`cat $source_file | grep yes | awk '{print $1}'`
+    PLUGIN_LIST=
+    for plugin in $wanted_mods; do
+       if [ $(echo $plugin | grep \# ) ];
+       then
+           echo "plugin disabled $plugin" | tee -a $LOG
+       else
+           echo "$plugin"
+           PLUGIN_LIST="$PLUGIN_LIST $plugin" 
+       fi
+    done
+    echo "plugin list is $PLUGIN_LIST" | tee -a $LOG
+}
+
 function etckeeper-if-selected()
 {
     if [ -e $SETUPSTATEDIR/etckeeper ] && [ $# -gt 1 ]; then
