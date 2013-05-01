@@ -33,23 +33,6 @@
 # notes: need to systemctl unmask before systemctl enable
 set -x -e -u
 
-DESTDIR=""
-CFGDIR=/usr/share/xs-config/cfg
-PLUGINDIR=/usr/share/xs-config/plugins.d
-CFGFUNCTIONS=/etc/sysconfig/olpc-scripts/functions
-MARKER=/.olpcxs-configured
-LOG=/var/log/xs-setup.log
-POSTGRESSDIR=/library/pgsql-xs
-SETUPSTATEDIR=/etc/sysconfig/olpc-scripts/setup.d/installed
-DEFAULTUSER='admin'
-DEFAULTPASSWORD='12admin'
-VNCUSER='vnc'
-VNCPASSWORD='*vnc4u*'
-NCATPORT=29753
-ISXO=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
-YUMERROR=10
-YUM_CMD="yum -y install"
-
 # old function name was do_first()
 function startup()
 {
@@ -63,58 +46,11 @@ function startup()
         echo "======================================================"
         exit 0
     fi
-    #things to do the first time -- only once
-    if [ -e /home/olpc/xs-setup.log ]; then
-	mv /home/olpc/xs-setup.log /var/log/
-	mv /home/olpc/yum.log /var/log/
-    fi
 
     # init etckeeper and turn it off
     set-etckeeper yes
     yum-etckeeper no
     set-etckeeper no
-
-    ## Prepare etckeeper database
-    if [ ! -e $MARKER ]; then
-        pushd /etc
-
-        ###
-        ### CLEANUP XS 0.4 to XS 0.5
-        ###
-        # Remove old configs that are unambiguously old
-        OLDCONFIGS="/etc/sysconfig/network-scripts/ifcfg-dummy0
-                    /etc/sysconfig/network-scripts/ifcfg-br0
-                    /etc/sysconfig/network-scripts/ifcfg-br1
-                    /etc/sysconfig/network-scripts/ifcfg-br2  "
-        for FPATH in $OLDCONFIGS; do
-            if [ -e "${DESTDIR}$FPATH" ];then
-               rm -f "${DESTDIR}$FPATH"
-            fi
-        done
-        # Remove ifcfg-ethX files that refer to libertas devices
-        # these have been replaced with wmeshX devices
-        for FPATH in ${DESTDIR}/etc/sysconfig/network-scripts/ifcfg-eth*; do
-            # Here the implicit ls has incorporated $DESTDIR
-            if grep -q '^ESSID=\"school-mesh-' "$FPATH" ;then
-                rm -f "$FPATH"
-            fi
-        done
-        # remove eth1:1 if it's the 'school server master address'
-        FPATH="${DESTDIR}/etc/sysconfig/network-scripts/ifcfg-eth1:1"
-        if [ -e "$FPATH" ];then
-            if grep -q '^IPADDR=172.18.1.1' "$FPATH" ;then
-                rm -f "$FPATH"
-            fi
-        fi
-
-	# keep yum cache
-	sed -i -e 's/keepcache=0/keepcache=1/' /etc/yum.conf
-	sed -i -e 's/metadata_expire=7d/metadata_expire=never/' /etc/yum.repos.d/fedora.repo
-#	sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora.repo
-#	sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora-updates.repo
-
-	# use NM keyfile in place of ifcfg-rh XOs have this set already via OOB
-	sed -i -e 's/ifcfg-rh/keyfile/' /etc/NetworkManager/NetworkManager.conf
 
         ## Prepare config files
         CFG_TEMPLATES="rsyslog.conf motd.olpc sysctl.conf ssh/sshd_config
@@ -131,14 +67,6 @@ function startup()
         #record the config file additions
         etckeeper-if-selected 'Config files copied <file.in> to <file>'
 
-        # Work would be needed to get the XS components playing nice with SELinux, so
-        # disable it.
-        if selinuxenabled; then
-            setenforce 0
-            sed -i -e 's/^SELINUX=.*/SELINUX=disabled/' /etc/selinux/config
-        fi
-
-        echo "-y" > $DESTDIR/fsckoptions
         # exit-hooks blasts school server into resolv.conf, use NM, and finese
         #ln -sf $CFGDIR/etc/dhcp/dhclient-exit-hooks $DESTDIR/etc/dhcp
         ln -sf $CFGDIR/etc/logrotate.d/* $DESTDIR/etc/logrotate.d
@@ -168,13 +96,6 @@ function startup()
             #  the apply_changes script which will be written in /home/admin
             chmod 770 /home/$DEFAULTUSER
         fi
-
-        # we need a login for vnc with password that is not user changeable
-        if [ ! `grep $VNCUSER /etc/passwd` ]; then
-            adduser $VNCUSER
-            echo "$VNCPASSWORD" | passwd $VNCUSER --stdin
-            echo "alias passwd='echo \"NOT ALLOWED!. It will break VNC remote access\"' " >> /home/$VNCUSER/.bashrc
-        fi
         sed -i -e 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
         systemctl enable sshd.service
         systemctl restart sshd.service
@@ -192,9 +113,10 @@ function startup()
         chown -R $DEFAULTUSER:$DEFAULTUSER /home/$DEFAULTUSER
 
 #do all of the yum installs in a single operation
+        get_enabled_plugins
         INSTALLTHESE=""
-        for mod in `ls $PLUGINDIR`; do
-	    if [ -d $PLUGINDIR/$mod/yum -a -f $PLUGINDIR/$mod/yumenabled ];then
+        for mod in $PLUGIN_LIST; do
+	    if [ -d $PLUGINDIR/$mod/yum ];then
                 INSTALLTHESE=$INSTALLTHESE" "`ls -1 $PLUGINDIR/$mod/yum/`
 	    fi
         done
@@ -202,9 +124,6 @@ function startup()
 
         etckeeper-if-selected "after installing core packages"
 
-        popd
-
-    fi
     echo "startup routine completed" | tee -a $LOG
     date  2>&1 | tee -a $LOG
 

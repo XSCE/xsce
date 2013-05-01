@@ -67,6 +67,7 @@ echo '-y' > /fsckoptions
 source /usr/bin/xs-setup-functions
 
 # prep the XO
+do_once
 #do-first function has had its name changed to startup
 startup
 

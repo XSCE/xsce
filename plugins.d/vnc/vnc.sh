@@ -11,6 +11,14 @@ function vnc()
             exit $YUMERROR
         fi
         # or yum install x11vnc-javaviewers | tee -a $LOG
+
+        # we need a login for vnc with password that is not user changeable
+        if [ ! `grep $VNCUSER /etc/passwd` ]; then
+            adduser $VNCUSER
+            echo "$VNCPASSWORD" | passwd $VNCUSER --stdin
+            echo "alias passwd='echo \"NOT ALLOWED!. It will break VNC remote access\"' " >> /home/$VNCUSER/.bashrc
+        fi
+
         cp -p /lib/systemd/system/vncserver\@.service /etc/systemd/system
         sed -i -e "s/<USER>/$VNCUSER/" /etc/systemd/system/vncserver\@.service
 
