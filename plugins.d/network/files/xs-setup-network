@@ -112,6 +112,7 @@ for iface in $(ifconfig | gawk 'BEGIN{FS=":"}(/^.*: flags=/) {print( $1);}')
 # 4/14/13   then abort further processing if device names and mac numbers are unchanged
 source "$PLUGINDIR/network/network.sh"
 if [ ! is_network_changed ]; then
+    echo "xs-setup-network should not continue no changes detected" | tee -a $LOG
     return 0
 fi
 # end 4/14/13========================================================
@@ -123,7 +124,7 @@ for i in $CFG_TEMPLATES; do
 	#etckeeper commit -m "Made from $i.in"
 done
 
-UPLINK=`find /etc/NetworkManager/system-connections -maxdepth 1 -type f -name "*" -not -name static -not -name "Sugar *"`
+UPLINK=`find /etc/NetworkManager/system-connections -maxdepth 1 -type f -name "*" -not -name static* -not -name "Sugar *"`
 if [ -n "$gw_iface" ]; then
     wan_iface=$gw_iface
     wan_mac=`ifconfig $wan_iface | gawk '(/^ *ether /) {print( $2);}'`
@@ -135,7 +136,7 @@ if [ -n "$gw_iface" ]; then
     fi
 
     if [ $is_xo == "1" ]; then
-        if [ $gw_iface != "eth0" ]; then
+        if [ $wan_iface != "eth0" ]; then
             write_nm_connection "dhcp" "$wan_mac" "$wan_iface"
             # if we have two dongles, disable the internal radio
             delete_eth0_connections $UPLINK
@@ -167,7 +168,7 @@ if [ -n $oth_iface ]; then
     ipaddr=172.18.96.1
     sed -i -e s/@@LAN_IF@@/$oth_iface/ /etc/sysconfig/dhcpd
 else
-    ## need to have port open to lan via iptables
+    ## need to have ports open to lan via iptables
     ## if there is no $oth_iface then wan is lan
     echo "$wan_iface" > /etc/sysconfig/xs_lan_device
     echo "$wan_mac" > /etc/sysconfig/xs_lan_mac
