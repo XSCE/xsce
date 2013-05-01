@@ -115,12 +115,10 @@ if [[ $num_ifaces > 2 ]]; then
     xs-setup-network
     squid yes
     gateway yes
+    dhcpd yes
     touch /.olpcxs-net-configured
 fi
     
-# local lan needs ip addresses
-dhcpd yes
-
 # Remote admin services
 httpd yes
 #vnc yes
@@ -137,11 +135,11 @@ openvpn yes
 
 # optional services -- enabled now for testing
 #pathagar yes
-#avahi yes
-#dansguardian yes
+avahi yes
+dansguardian yes
 #ntop yes
 #nmon yes
-#upload yes
+upload yes
 #xo-admin yes
 
 # Finalize install
