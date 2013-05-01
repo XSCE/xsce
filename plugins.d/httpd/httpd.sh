@@ -29,10 +29,11 @@ function httpd()
 		sed -i -e "s/\@\@CONFMEM\@\@/MEM$CONFMEM/" /etc/httpd/conf/httpd-xs.conf
 
         # if httpd version is 2.4.4, use new syntax for access control
-        if [ rpm -qa httpd | gawk 'BEGIN {FS="-"}{print($2);}' >= "2.4.4" ]; then
-            ln -fs "$CFGDIR/etc/httpd/conf.d/xs-2.4.conf /etc/httpd/conf.d/"
+        ### saw an error around this area while installing symlink not present 
+        if [ rpm -qa httpd | gawk 'BEGIN {FS="-"}{print($2);}' >= "2.4.4" ] 2>&1 | tee -a $LOG; then
+            ln -fs "$CFGDIR/etc/httpd/conf.d/xs-2.4.conf /etc/httpd/conf.d/" 2>&1 | tee -a $LOG
         else
-            ln -fs "$CFGDIR/etc/httpd/conf.d/xs-2.2.conf /etc/httpd/conf.d/"
+            ln -fs "$CFGDIR/etc/httpd/conf.d/xs-2.2.conf /etc/httpd/conf.d/" 2>&1 | tee -a $LOG
         fi
 
 		etckeeper-if-selected "modified /etc/httpd/conf/httpd-xs.conf"
