@@ -33,6 +33,25 @@
 # notes: need to systemctl unmask before systemctl enable
 set -x -e -u
 
+DESTDIR=""
+CFGDIR=/usr/share/xs-config/cfg
+PLUGINDIR=/usr/share/xs-config/plugins.d
+CFGFUNCTIONS=/etc/sysconfig/olpc-scripts/functions
+MARKER=/.olpcxs-configured
+LOG=/var/log/xs-setup.log
+POSTGRESSDIR=/library/pgsql-xs
+SETUPSTATEDIR=/etc/sysconfig/olpc-scripts/setup.d/installed
+ISXO=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
+YUMERROR=10
+YUM_CMD="yum -y install"
+
+### we need to reference these in an external config file
+DEFAULTUSER='admin'
+DEFAULTPASSWORD='12admin'
+VNCUSER='vnc'
+VNCPASSWORD='*vnc4u*'
+NCATPORT=29753
+
 # old function name was do_first()
 function startup()
 {
@@ -52,14 +71,18 @@ function startup()
     yum-etckeeper no
     set-etckeeper no
 
-        ## Prepare config files
-        CFG_TEMPLATES="rsyslog.conf motd.olpc sysctl.conf ssh/sshd_config
-        sysconfig/named sysconfig/init sysconfig/squid rssh.conf php.ini
-        httpd/conf.d/proxy_ajp.conf httpd/conf.d/ssl.conf"
+    pushd /etc
 
-        for i in $CFG_TEMPLATES; do
-            cp -p $i.in $i
-        done
+    ## Prepare config files
+    CFG_TEMPLATES="rsyslog.conf motd.olpc sysctl.conf ssh/sshd_config
+    sysconfig/named sysconfig/init sysconfig/squid rssh.conf php.ini
+    httpd/conf.d/proxy_ajp.conf httpd/conf.d/ssl.conf"
+
+    for i in $CFG_TEMPLATES; do
+        cp -p $i.in $i
+    done
+
+    popd
 
         # Load new sysctl.conf settings
         sysctl -p
@@ -85,8 +108,6 @@ function startup()
 
         etckeeper-if-selected "disabled selinux, scripts sourced"
 
-        # following packages are the core set of packages installed on all xs servers
-
         # make a non privileged user, and give her remote access
         if [ ! `grep $DEFAULTUSER /etc/passwd` ]; then
             adduser $DEFAULTUSER
@@ -96,6 +117,7 @@ function startup()
             #  the apply_changes script which will be written in /home/admin
             chmod 770 /home/$DEFAULTUSER
         fi
+	### we should just change the config file.
         sed -i -e 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
         systemctl enable sshd.service
         systemctl restart sshd.service
@@ -112,18 +134,18 @@ function startup()
         chmod -R 770 /home/$DEFAULTUSER
         chown -R $DEFAULTUSER:$DEFAULTUSER /home/$DEFAULTUSER
 
-#do all of the yum installs in a single operation
-        get_enabled_plugins
-        INSTALLTHESE=""
-        for mod in $PLUGIN_LIST; do
-	    if [ -d $PLUGINDIR/$mod/yum ];then
-                INSTALLTHESE=$INSTALLTHESE" "`ls -1 $PLUGINDIR/$mod/yum/`
-	    fi
-        done
-        $YUM_CMD $INSTALLTHESE
+    #do all of the yum installs in a single operation
+    get_enabled_plugins
+    INSTALLTHESE=""
+    for mod in $PLUGIN_LIST; do
+	if [ -d $PLUGINDIR/$mod/yum ];then
+            INSTALLTHESE=$INSTALLTHESE" "`ls $PLUGINDIR/$mod/yum/`
+	fi
+    done
+    echo "installing rpms: $INSTALLTHESE" | tee -a $LOG
+    $YUM_CMD $INSTALLTHESE | tee -a $LOG
 
-        etckeeper-if-selected "after installing core packages"
-
+    etckeeper-if-selected "after installing core packages"
     echo "startup routine completed" | tee -a $LOG
     date  2>&1 | tee -a $LOG
 

@@ -1,22 +1,9 @@
 #!/bin/bash
 # scan through all the plugins to pick up function definitions
 
-DESTDIR=""
-CFGDIR=/usr/share/xs-config/cfg
 PLUGINDIR=/usr/share/xs-config/plugins.d
-CFGFUNCTIONS=/etc/sysconfig/olpc-scripts/functions
-MARKER=/.olpcxs-configured
 LOG=/var/log/xs-setup.log
-POSTGRESSDIR=/library/pgsql-xs
-SETUPSTATEDIR=/etc/sysconfig/olpc-scripts/setup.d/installed
-DEFAULTUSER='admin'
-DEFAULTPASSWORD='12admin'
-VNCUSER='vnc'
-VNCPASSWORD='*vnc4u*'
-NCATPORT=29753
-ISXO=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
-YUMERROR=10
-YUM_CMD="yum -y install"
+MARKER=/.olpcxs-configured
 
 function do_once()
 {
@@ -31,8 +18,6 @@ function do_once()
 	mv /home/olpc/yum.log /var/log/
     fi
 
-    pushd /etc
-
     ###
     ### CLEANUP XS 0.4 to XS 0.5
     ###
@@ -42,26 +27,25 @@ function do_once()
     /etc/sysconfig/network-scripts/ifcfg-br1
     /etc/sysconfig/network-scripts/ifcfg-br2  "
     for FPATH in $OLDCONFIGS; do
-        if [ -e "${DESTDIR}$FPATH" ];then
-            rm -f "${DESTDIR}$FPATH"
+        if [ -e "$FPATH" ];then
+            rm -f "$FPATH"
         fi
     done
     # Remove ifcfg-ethX files that refer to libertas devices
     # these have been replaced with wmeshX devices
-    for FPATH in ${DESTDIR}/etc/sysconfig/network-scripts/ifcfg-eth*; do
+    for FPATH in /etc/sysconfig/network-scripts/ifcfg-eth*; do
     # Here the implicit ls has incorporated $DESTDIR
         if grep -q '^ESSID=\"school-mesh-' "$FPATH" ;then
             rm -f "$FPATH"
         fi
     done
     # remove eth1:1 if it's the 'school server master address'
-    FPATH="${DESTDIR}/etc/sysconfig/network-scripts/ifcfg-eth1:1"
+    FPATH="/etc/sysconfig/network-scripts/ifcfg-eth1:1"
     if [ -e "$FPATH" ];then
         if grep -q '^IPADDR=172.18.1.1' "$FPATH" ;then
             rm -f "$FPATH"
         fi
     fi
-    popd
 
     # keep yum cache
     sed -i -e 's/keepcache=0/keepcache=1/' /etc/yum.conf
