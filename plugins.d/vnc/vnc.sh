@@ -23,7 +23,7 @@ function vnc()
         sed -i -e "s/<USER>/$VNCUSER/" /etc/systemd/system/vncserver\@.service
 
         # if httpd version is 2.4.4, use new syntax for access control
-        if [ rpm -q httpd | grep fc17 ]; then
+        if [  $(rpm -q httpd | grep fc17) ]; then
             ln -fs "$CFGDIR/etc/httpd/conf.d/novnc-2.2.conf /etc/httpd/conf.d/"
         else
             ln -fs "$CFGDIR/etc/httpd/conf.d/novnc-2.4.conf /etc/httpd/conf.d/"
