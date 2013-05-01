@@ -158,9 +158,8 @@ function do_once()
     #things to do the first time -- only once
     if [ -e $MARKER ]; then
         echo "do_once exiting, marker exists" | tee -a $LOG
-        exit 0
-    fi
-
+    else
+        ### fix the indenting later  
     if [ -e /home/olpc/xs-setup.log ]; then
 	mv /home/olpc/xs-setup.log /var/log/
 	mv /home/olpc/yum.log /var/log/
@@ -213,6 +212,7 @@ function do_once()
     echo "-y" > $DESTDIR/fsckoptions
     echo "do_once routine completed" | tee -a $LOG
     date  2>&1 | tee -a $LOG
+    fi
 }
 
 function get_enabled_plugins()
