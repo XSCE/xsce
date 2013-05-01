@@ -18,8 +18,8 @@ function vnc()
             echo "$VNCPASSWORD" | passwd $VNCUSER --stdin
             echo "alias passwd='echo \"NOT ALLOWED!. It will break VNC remote access\"' " >> /home/$VNCUSER/.bashrc
         fi
-
-        cp -p /lib/systemd/system/vncserver\@.service /etc/systemd/system
+        # cp -p /lib/systemd/system/vncserver\@.service /etc/systemd/system  
+        install -m 440 $CFGDIR/etc/systemd/system/vncserver\@.service $DESTDIR/etc/systemd/system
         sed -i -e "s/<USER>/$VNCUSER/" /etc/systemd/system/vncserver\@.service
 
         # if httpd version is 2.4.4, use new syntax for access control

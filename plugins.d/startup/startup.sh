@@ -97,7 +97,9 @@ function startup()
 
         # sudo doesn't accept symlinks here
         install -m 440 $CFGDIR/etc/sudoers.d/* $DESTDIR/etc/sudoers.d
-        install -m 440 $CFGDIR/etc/systemd/system/* $DESTDIR/etc/systemd/system
+
+        # let not use wildcards for multiple services   
+        #install -m 440 $CFGDIR/etc/systemd/system/* $DESTDIR/etc/systemd/system
 
         # run setup scripts belonging to other packages
         #shopt -s nullglob

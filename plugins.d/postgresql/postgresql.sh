@@ -8,10 +8,11 @@ function postgresql()
                 exit $YUMERROR
             fi
             touch $SETUPSTATEDIR/postgresql
-        cp -f $CFGDIR/etc/systemd/system/postgresql-xs.service \
-            $DESTDIR/lib/systemd/system/
-        # systemctl does not enable by linking a link, hence above cp
-		systemctl enable postgresql-xs.service 2>&1 | tee -a $LOG
+            install -m 440 $CFGDIR/etc/systemd/system/postgresql-xs.service $DESTDIR/etc/systemd/system
+            #cp -f $CFGDIR/etc/systemd/system/postgresql-xs.service \
+            #$DESTDIR/lib/systemd/system/
+            # systemctl does not enable by linking a link, hence above cp
+            systemctl enable postgresql-xs.service 2>&1 | tee -a $LOG
 
 		# Pg - prime the DB if needed.
 		if [ ! -e ${POSTGRESSDIR}/PG_VERSION ];then
