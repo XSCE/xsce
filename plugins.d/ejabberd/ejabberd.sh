@@ -37,6 +37,7 @@ function ejabberd()
             /etc/init.d/ejabberd-xs start 2>&1 | tee -a $LOG
 
             #systemctl start ejabberd-xs.service 2>&1 | tee -a $LOG
+            xs-ejabberd-srg
 		;;
 	"no")
             systemctl disable ejabberd.service 2>&1 | tee -a $LOG
