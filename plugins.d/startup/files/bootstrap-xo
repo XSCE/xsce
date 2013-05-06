@@ -20,10 +20,10 @@ then
 	    rm /usr/lib/udev/rules.d/70-olpc-net.rules
 	fi
 
-    # NM plugin need to be specified for it to manage deveces
-    echo "plugins=keyfile" >> /etc/NetworkManager/NetworkManager.conf
+        # NM plugin need to be specified for it to manage deveces
+        echo "plugins=keyfile" >> /etc/NetworkManager/NetworkManager.conf
 
-    cat << EOF > /etc/NetworkManager/system-connections/"Sugar Modem Connection"
+        cat << EOF > /etc/NetworkManager/system-connections/"Sugar Modem Connection"
 
 [connection]
 id=Sugar Modem Connection
@@ -60,64 +60,101 @@ EOF
 	# copy .bashrc to /root
 	cp -p /home/olpc/.bashrc /root
 
-    # stateless linux rwtab file creates tmpfs that is too small installs
-    sed -i -e '/^RW_OPTIONS/ c\
-    RW_OPTIONS="-o size=4M -o nr_inodes=2048"' /etc/sysconfig/readonly-root
+        # stateless linux rwtab file creates tmpfs that is too small installs
+        sed -i -e '/^RW_OPTIONS/ c\
+        RW_OPTIONS="-o size=4M -o nr_inodes=2048"' /etc/sysconfig/readonly-root
 
 	# Keep docs when installing packages
 	sed -i -e  's/%_excludedocs 1/%_excludedocs 0/' /etc/rpm/macros.imgcreate
 
-	yum -y install man-pages man-db man 2>&1 | tee -a $LOG
+        yum_cmd="yum -y"
+        for parts in `ls /dev/sd*`;do
+            usbkey=`findmnt $parts`
+            if [ -d $usbkey/xs-repo ];then
+                cat >> EOF < /tmp/yum.conf
+[main]
+cachedir=/var/cache/yum
+keepcache=1
+exactarch=1
+obsoletes=1
+gpgcheck=0
+installonly_limit=3
+yum.repos.d=/tmp
+
+#  This is the default, if you make this bigger yum won't see if the metadata
+# is newer on the remote and so you'll "gain" the bandwidth of not having to
+# download the new metadata and "pay" for it by yum not having correct
+# information.
+#  It is esp. important, to have correct metadata, for distributions like
+# Fedora which don't keep old packages around. If you don't like this checking
+# interupting your command line usage, it's much better to have something
+# manually check the metadata once an hour (yum-updatesd will do this).
+# metadata_expire=90m
+
+# PUT YOUR REPOS HERE OR IN separate files named file.repo
+# in /etc/yum.repos.d
+
+[usb-media]
+name=usb-media
+baseurl=file:///$usbkey/xs-repo/xs-repo/
+enabled=1
+gpgcheck=0
+cost=100
+
+EOF
+                $yum_cmd="yum -c /tmp/yum.conf -y"
+            fi
+        done
+
+	$yum_cmd install man-pages man-db man 2>&1 | tee -a $LOG
 
 	# re-install these packages to pickup missing docs
-	yum -y reinstall $FIX_RPMS 2>&1 | tee -a $LOG
+	$yum_cmd reinstall $FIX_RPMS 2>&1 | tee -a $LOG
 
 	# install xs-config
-	yum -y install xs-config 2>&1 | tee -a $LOG
+	$yum_cmd install xs-config 2>&1 | tee -a $LOG
 
-    # check for other schoolservers on the local network
-    tryname="schoolserver"
-    if [ `avahi-browse -t _workstation._tcp | grep schoolserver` ]; then
-        x=1
-        tryname="schoolserver.$x"
-        while [ $x -le 9 ]; do
-            if [ ! `avahi-browse -t _workstation._tcp | grep "$tryname"` ]; then
-                break
-            fi
-            x=$(( "$x" + 1 ))
+        # check for other schoolservers on the local network
+        tryname="schoolserver"
+        if [ `avahi-browse -t _workstation._tcp | grep schoolserver` ]; then
+            x=1
             tryname="schoolserver.$x"
-        done
-    else
-        echo "no otherschoolservers found"
-    fi
+            while [ $x -le 9 ]; do
+                if [ ! `avahi-browse -t _workstation._tcp | grep "$tryname"` ]; then
+                    break
+                fi
+                x=$(( "$x" + 1 ))
+                tryname="schoolserver.$x"
+            done
+        else
+            echo "no otherschoolservers found"
+        fi
 	# Rename the XO to be schoolserver.local
 	sed -i -e '/HOSTNAME=xo/d' /etc/sysconfig/network
 	echo "HOSTNAME=$tryname.local" >> /etc/sysconfig/network
-    sed -i -e 's:NM_IGNORE_HOSTNAME_LOCALHOST=yes:NM_IGNORE_HOSTNAME_LOCALHOST=no:' /etc/sysconfig/network
+        sed -i -e 's:NM_IGNORE_HOSTNAME_LOCALHOST=yes:NM_IGNORE_HOSTNAME_LOCALHOST=no:' /etc/sysconfig/network
 
 	# XO release 12.1.0 makes /var/log  a tempfs -- server logs should persist
 	sed -i -e 's:vartmp:#vartmp:' /etc/fstab
 	sed -i -e 's:varlog:#varlog:' /etc/fstab
 
-    # Disable the graphical mode for the XO, diable X11, use memory for serving
-    rm /etc/systemd/system/default.target  # remove the link
-    ln -sf /lib/systemd/system/multi-user.target /etc/systemd/system/default.target
+        # Disable the graphical mode for the XO, diable X11, use memory for serving
+        rm /etc/systemd/system/default.target  # remove the link
+        ln -sf /lib/systemd/system/multi-user.target /etc/systemd/system/default.target
 
 	echo "bootstrap-xo routine completed" | tee -a $LOG
 	date  2>&1 | tee -a $LOG
 	cp /var/log/yum.log /home/olpc/
-    set +x
-    echo
-    echo "================================================================="
-	echo "The setup program must reboot before additional setup can proceed"
-    echo
+        set +x
+        echo
+        echo "================================================================="
+        echo "The setup program must reboot before additional setup can proceed"
+        echo "The XO will reboot in 'text mode', with white letters on a dark screen"
 	echo "Next step is to run 'xs-setup' when rebooted"
-    echo "================================================================="
-    echo
+        echo "================================================================="
+        echo
 	read -p "Press [Enter] key to reboot"
 	echo "rebooting in 5 seconds"
-    echo
-    echo "The XO will reboot in 'text mode', with white letters on a dark screen"
 	sleep 5
 	reboot
     else
