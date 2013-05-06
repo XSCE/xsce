@@ -69,7 +69,7 @@ EOF
 
         yum_cmd="yum -y"
         for parts in `ls /dev/sd*`;do
-            usbkey=`findmnt $parts`
+            usbkey=`findmnt -S $parts`
             if [ -d $usbkey/xs-repo ];then
                 cat >> EOF < /tmp/yum.conf
 [main]
