@@ -52,6 +52,46 @@ VNCUSER='vnc'
 VNCPASSWORD='*vnc4u*'
 NCATPORT=29753
 
+function get_usb_repo()
+{
+    for usb in `ls /media`;do
+        if [ -d /media/$usb/xs-repo ];then
+            cat >> EOF < /tmp/yum.conf
+[main]
+cachedir=/var/cache/yum
+keepcache=1
+exactarch=1
+obsoletes=1
+gpgcheck=0
+installonly_limit=3
+yum.repos.d=/tmp
+
+#  This is the default, if you make this bigger yum won't see if the metadata
+# is newer on the remote and so you'll "gain" the bandwidth of not having to
+# download the new metadata and "pay" for it by yum not having correct
+# information.
+#  It is esp. important, to have correct metadata, for distributions like
+# Fedora which don't keep old packages around. If you don't like this checking
+# interupting your command line usage, it's much better to have something
+# manually check the metadata once an hour (yum-updatesd will do this).
+# metadata_expire=90m
+
+# PUT YOUR REPOS HERE OR IN separate files named file.repo
+# in /etc/yum.repos.d
+
+[usb-media]
+name=usb-media
+baseurl=file:///media/$usb/xs-repo/
+enabled=1
+gpgcheck=0
+cost=100
+
+EOF
+            YUM_CMD="yum -c /tmp/yum.conf -y install"
+        fi
+    done
+}
+
 # old function name was do_first()
 function startup()
 {
@@ -138,6 +178,7 @@ function startup()
 
     #do all of the yum installs in a single operation
     get_enabled_plugins
+    get_usb_repo
     INSTALLTHESE=""
     for mod in $PLUGIN_LIST; do
 	if [ -d $PLUGINDIR/$mod/yum ];then

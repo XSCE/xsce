@@ -1,6 +1,6 @@
 [usb-media]
 name=usb-media
 baseurl=file:///
-enabled=1
+enabled=0
 gpgcheck=0
 cost=100
