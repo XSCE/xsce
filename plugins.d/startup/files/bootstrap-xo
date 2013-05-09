@@ -79,7 +79,7 @@ exactarch=1
 obsoletes=1
 gpgcheck=0
 installonly_limit=3
-yum.repos.d=/tmp
+#yum.repos.d=/tmp
 
 #  This is the default, if you make this bigger yum won't see if the metadata
 # is newer on the remote and so you'll "gain" the bandwidth of not having to
@@ -102,7 +102,7 @@ gpgcheck=0
 cost=100
 
 EOF
-                $yum_cmd="yum -c /tmp/yum.conf -y"
+                yum_cmd="yum -c /tmp/yum.conf -y"
             fi
         done
 
