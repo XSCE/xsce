@@ -69,9 +69,11 @@ EOF
 
         yum_cmd="yum -y"
         for parts in `ls /dev/sd*`;do
+          if [ x$part != 'x' ]
             usbkey=`findmnt -n -o TARGET -S $parts`
             if [ -d $usbkey/xs-repo ];then
                 cat >> EOF < /tmp/yum.conf
+             
 [main]
 cachedir=/var/cache/yum
 keepcache=1
@@ -104,6 +106,7 @@ cost=100
 EOF
                 yum_cmd="yum -c /tmp/yum.conf -y"
             fi
+          fi  
         done
 
 	$yum_cmd install man-pages man-db man 2>&1 | tee -a $LOG
@@ -116,11 +119,11 @@ EOF
 
         # check for other schoolservers on the local network
         tryname="schoolserver"
-        if [ `avahi-browse -t _workstation._tcp | grep schoolserver` ]; then
+        if [[ `avahi-browse -t _workstation._tcp | grep schoolserver` ]]; then
             x=1
             tryname="schoolserver.$x"
             while [ $x -le 9 ]; do
-                if [ ! `avahi-browse -t _workstation._tcp | grep "$tryname"` ]; then
+                if [[ ! `avahi-browse -t _workstation._tcp | grep "$tryname"` ]]; then
                     break
                 fi
                 x=$(( "$x" + 1 ))
@@ -129,6 +132,7 @@ EOF
         else
             echo "no otherschoolservers found"
         fi
+      
 	# Rename the XO to be schoolserver.local
 	sed -i -e '/HOSTNAME=xo/d' /etc/sysconfig/network
     echo $tryname.local > /etc/hostname
