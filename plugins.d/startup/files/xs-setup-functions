@@ -2,7 +2,7 @@
 # scan through all the plugins to pick up function definitions
 
 PLUGINDIR=/usr/share/xs-config/plugins.d
-export $PLUGINDIR
+export PLUGINDIR
 LOG=/var/log/xs-setup.log
 MARKER=/.olpcxs-configured
 
