@@ -47,6 +47,7 @@ fi
 # change the config file
 sed -i -e '/HOSTNAME=/d' /etc/sysconfig/network
 echo "HOSTNAME=$xs_full_name " >> /etc/sysconfig/network
+echo $xs_full_name  > /etc/hostname
 
 # kill the old lease file that has old hostname
 if [ -e /var/run/nm-dhclient-$wan_iface.conf ]; then

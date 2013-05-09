@@ -131,6 +131,7 @@ EOF
         fi
 	# Rename the XO to be schoolserver.local
 	sed -i -e '/HOSTNAME=xo/d' /etc/sysconfig/network
+    echo $tryname.local > /etc/hostname
 	echo "HOSTNAME=$tryname.local" >> /etc/sysconfig/network
         sed -i -e 's:NM_IGNORE_HOSTNAME_LOCALHOST=yes:NM_IGNORE_HOSTNAME_LOCALHOST=no:' /etc/sysconfig/network
 
