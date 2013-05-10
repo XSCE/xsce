@@ -55,16 +55,16 @@ NCATPORT=29753
 function get_usb_repo()
 {
     for usb in `ls /media`;do
-        if [ -d /media/$usb/xs-repo ];then
+        if [ -d /media/$usb/xs-repo/metadata ];then
             cat >> EOF < /tmp/yum.conf
 [main]
-cachedir=/var/cache/yum
+cachedir=/var/cache/yum/$basearch/$releasever
 keepcache=1
 exactarch=1
 obsoletes=1
 gpgcheck=0
 installonly_limit=3
-yum.repos.d=/tmp
+#yum.repos.d=/tmp
 
 #  This is the default, if you make this bigger yum won't see if the metadata
 # is newer on the remote and so you'll "gain" the bandwidth of not having to
@@ -81,7 +81,7 @@ yum.repos.d=/tmp
 
 [usb-media]
 name=usb-media
-baseurl=file:///media/$usb/xs-repo/
+baseurl=file:///media/$usb/xs-repo/$basearch/$releasever
 enabled=1
 gpgcheck=0
 cost=100
@@ -90,6 +90,28 @@ EOF
             YUM_CMD="yum -c /tmp/yum.conf -y install"
         fi
     done
+}
+
+function create-usb-repo2()
+{
+        for parts in `ls /dev/sd*` 2>&1 > /dev/null; do
+          if [ x$part != 'x' ];then
+            usbkey=`findmnt -n -o TARGET -S $parts`
+	    if [ ! -d $usbkey/xs-repo ];then
+		mkdir -p $usbkey/xs-repo
+	    fi
+	  fi
+	done
+
+	ARCH=`ls /var/cache/yum`
+	RELEASEVER=`ls /var/cache/yum/$ARCH`
+	if [ -d $usbkey/xs-repo ];then
+	    cp -a /var/cache/yum/* $usbkey/xs-repo/
+	    createrepo /media/$usb/xs-repo/$ARCH/$RELEASEVER
+
+	    ##### enable once proven to work #####  JV
+	    # yum clean cache
+	fi
 }
 
 # old function name was do_first()

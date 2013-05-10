@@ -108,12 +108,6 @@ EOF
           fi  
 	done
 
-	if [ ! -d $usbmnt/yumcache ]; then
-	    mkdir $usbmnt/yumcache
-	fi
-
-	mount --bind /var/cache/yum $usbmnt/yumcache
-
 	$yum_cmd install man-pages man-db man 2>&1 | tee -a $LOG
 
 	# re-install these packages to pickup missing docs
