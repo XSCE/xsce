@@ -107,7 +107,7 @@ function create-usb-repo2()
 	RELEASEVER=`ls /var/cache/yum/$ARCH`
 	if [ -d $usbkey/xs-repo ];then
 	    cp -a /var/cache/yum/* $usbkey/xs-repo/
-	    createrepo /media/$usb/xs-repo/$ARCH/$RELEASEVER
+	    createrepo $usbkey/xs-repo/$ARCH/$RELEASEVER
 
 	    ##### enable once proven to work #####  JV
 	    # yum clean cache
