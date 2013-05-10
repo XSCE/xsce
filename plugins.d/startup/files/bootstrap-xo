@@ -70,11 +70,11 @@ EOF
         for parts in `ls /dev/sd*1`; do
           if [ x$parts != 'x' ];then
             usbkey=`findmnt -n -o TARGET -S $parts`
-            if [ -d $usbkey/xs-repo/metadata ];then
-                cat >> EOF < /tmp/yum.conf
+            if [ -d $usbkey/xs-repo/ ];then
+                cat << EOF > /tmp/yum.conf
              
 [main]
-cachedir=/var/cache/yum/$basearch/$releasever
+cachedir=/var/cache/yum/\$basearch/\$releasever
 keepcache=1
 exactarch=1
 obsoletes=1
@@ -97,7 +97,7 @@ installonly_limit=3
 
 [usb-media]
 name=usb-media
-baseurl=file:///$usbkey/xs-repo/$basearch/$releasever
+baseurl=file://$usbkey/xs-repo/\$basearch/\$releasever
 enabled=1
 gpgcheck=0
 cost=100
