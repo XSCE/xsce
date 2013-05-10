@@ -54,8 +54,8 @@ NCATPORT=29753
 
 function get_usb_repo()
 {
-    for usb in `ls /media`;do
-        if [ -d /media/$usb/xs-repo ];then
+    for usb in `ls /mnt`;do
+        if [ -d /mnt/$usb/xs-repo ];then
             cat << EOF > /tmp/yum.conf
 [main]
 cachedir=/var/cache/yum/\$basearch/\$releasever
@@ -81,7 +81,7 @@ installonly_limit=3
 
 [usb-media]
 name=usb-media
-baseurl=file://media/$usb/xs-repo/\$basearch/\$releasever
+baseurl=file://mnt/$usb/xs-repo/\$basearch/\$releasever
 enabled=1
 gpgcheck=0
 cost=100
