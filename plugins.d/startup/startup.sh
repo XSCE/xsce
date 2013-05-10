@@ -81,7 +81,7 @@ installonly_limit=3
 
 [usb-media]
 name=usb-media
-baseurl=file://mnt/$usb/xs-repo/\$basearch/\$releasever
+baseurl=file:///mnt/$usb/xs-repo/\$basearch/\$releasever
 enabled=1
 gpgcheck=0
 cost=100
