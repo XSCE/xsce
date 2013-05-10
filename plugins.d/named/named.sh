@@ -7,7 +7,7 @@ function named()
         # if xs data files are installed before bind, named user doesn't exist,
         # and group ownership is set to root, which user named cannot read
         if [ -d /var/named-xs ]; then
-            chgrp -R named /var/named-xs
+            chown -R named /var/named-xs
         fi
         systemctl enable named.service 2>&1 | tee -a $LOG
         systemctl start named.service 2>&1 | tee -a $LOG
