@@ -116,7 +116,16 @@ EOF
 	# install xs-config
 	$yum_cmd install xs-config 2>&1 | tee -a $LOG
 
-	umount $usbmnt/yumcache
+	# fix usbmount as /media is on tmpfs use /mnt instead
+	mkdir -p /mnt/usb0
+	mkdir /mnt/usb1
+	mkdir /mnt/usb2
+	mkdir /mnt/usb3
+	mkdir /mnt/usb4
+	mkdir /mnt/usb5
+	mkdir /mnt/usb6
+	mkdir /mnt/usb7
+        sed -i -e 's:media:mnt:' /etc/usbmount/usbmount.conf
 
         # check for other schoolservers on the local network
         tryname="schoolserver"
