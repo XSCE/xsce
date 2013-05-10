@@ -94,7 +94,7 @@ EOF
 
 function create-usb-repo2()
 {
-        for parts in `ls /dev/sd*` 2>&1 > /dev/null; do
+        for parts in `ls /dev/sd* 2>&1 > /dev/null`; do
           if [ x$part != 'x' ];then
             usbkey=`findmnt -n -o TARGET -S $parts`
 	    if [ ! -d $usbkey/xs-repo ];then

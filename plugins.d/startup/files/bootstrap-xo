@@ -67,7 +67,7 @@ EOF
 	sed -i -e  's/%_excludedocs 1/%_excludedocs 0/' /etc/rpm/macros.imgcreate
 
         yum_cmd="yum -y"
-        for parts in `ls /dev/sd*` 2>&1 > /dev/null; do
+        for parts in `ls /dev/sd* 2>&1 > /dev/null`; do
           if [ x$part != 'x' ];then
             usbkey=`findmnt -n -o TARGET -S $parts`
             if [ -d $usbkey/xs-repo/metadata ];then
