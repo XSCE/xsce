@@ -10,7 +10,6 @@ then
     # there are files open in the tempfs /var/log -- so we cannot just unmount it
     # we need to disable tempfs and then start up again on a /var/log directory
     # that persists
-#    set +e; err=`grep -e "#varlog" /etc/fstab`; set -e;
     err=`cat /etc/fstab | grep -e "#varlog"`
     if [ "x$err" = "x" ]; then
 	echo "bootstrap-xo routine started" | tee -a $LOG
@@ -68,14 +67,14 @@ EOF
 	sed -i -e  's/%_excludedocs 1/%_excludedocs 0/' /etc/rpm/macros.imgcreate
 
         yum_cmd="yum -y"
-        for parts in `ls /dev/sd*`;do
+        for parts in `ls /dev/sd*` 2>&1 > /dev/null; do
           if [ x$part != 'x' ];then
             usbkey=`findmnt -n -o TARGET -S $parts`
-            if [ -d $usbkey/xs-repo ];then
+            if [ -d $usbkey/xs-repo/metadata ];then
                 cat >> EOF < /tmp/yum.conf
              
 [main]
-cachedir=/var/cache/yum
+cachedir=/var/cache/yum/$basearch/$releasever
 keepcache=1
 exactarch=1
 obsoletes=1
@@ -98,7 +97,7 @@ installonly_limit=3
 
 [usb-media]
 name=usb-media
-baseurl=file:///$usbkey/xs-repo/xs-repo/
+baseurl=file:///$usbkey/xs-repo/$basearch/$releasever
 enabled=1
 gpgcheck=0
 cost=100
@@ -107,7 +106,13 @@ EOF
                 yum_cmd="yum -c /tmp/yum.conf -y"
             fi
           fi  
-        done
+	done
+
+	if [ ! -d $usbmnt/yumcache ]; then
+	    mkdir $usbmnt/yumcache
+	fi
+
+	mount --bind /var/cache/yum $usbmnt/yumcache
 
 	$yum_cmd install man-pages man-db man 2>&1 | tee -a $LOG
 
@@ -116,6 +121,8 @@ EOF
 
 	# install xs-config
 	$yum_cmd install xs-config 2>&1 | tee -a $LOG
+
+	umount $usbmnt/yumcache
 
         # check for other schoolservers on the local network
         tryname="schoolserver"
@@ -135,7 +142,7 @@ EOF
       
 	# Rename the XO to be schoolserver.local
 	sed -i -e '/HOSTNAME=xo/d' /etc/sysconfig/network
-    echo $tryname.local > /etc/hostname
+	echo $tryname.local > /etc/hostname
 	echo "HOSTNAME=$tryname.local" >> /etc/sysconfig/network
         sed -i -e 's:NM_IGNORE_HOSTNAME_LOCALHOST=yes:NM_IGNORE_HOSTNAME_LOCALHOST=no:' /etc/sysconfig/network
 
