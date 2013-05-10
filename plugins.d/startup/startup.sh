@@ -177,9 +177,12 @@ function startup()
         chown -R $DEFAULTUSER:$DEFAULTUSER /home/$DEFAULTUSER
 
     # disable the installation of ejabberd from fedora-updates
-    sed ' /^gpgcheck/ a\
+    if [ -f /etc/yum.repos.d/fedora-updates.repo ] && \
+        [ ! `grep exclude=ejabberd /etc/yum.repos.d/fedora-updates.repo` ];then
+        sed ' /^gpgcheck/ a\
 exclude=ejabberd
 ' /etc/yum.repos.d/fedora-updates.repo
+    fi
 
     #do all of the yum installs in a single operation
     get_enabled_plugins
