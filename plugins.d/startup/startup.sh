@@ -179,7 +179,7 @@ function startup()
     # disable the installation of ejabberd from fedora-updates
     sed ' /^gpgcheck/ a\
 exclude=ejabberd
-'
+' /etc/yum.repos.d/fedora-updates.repo
 
     #do all of the yum installs in a single operation
     get_enabled_plugins
