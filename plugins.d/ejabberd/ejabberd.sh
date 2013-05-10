@@ -2,7 +2,6 @@ function ejabberd()
 {
 	case "$1" in
 	"yes")
-       function disable {
             if [ -e /etc/ejabberd/ejabberd.pem ]; then
                 if [ -e /var/lib/ejabberd/spool ]; then
                     rm -rf /var/lib/ejabberd/spool
@@ -10,13 +9,12 @@ function ejabberd()
                 rm -f /etc/ejabberd/ejabberd.pem
                 yum -y reinstall ejabberd 2>&1 | tee -a $LOG
             else
-                yum -y reinstall ejabberd 2>&1 | tee -a $LOG
+                yum -y install ejabberd 2>&1 | tee -a $LOG
 		    fi
             if [ $? -ne 0 ] ; then
 		        echo "\n\nYum returned an error\n\n" | tee -a $LOG
 		        exit $YUMERROR
 		    fi
-     } #end of disable
             touch $SETUPSTATEDIR/ejabberd
             chkconfig ejabberd-xs on
             # and set it to autostart
@@ -31,7 +29,9 @@ function ejabberd()
             # it turns out that /var/run is a tmpfs, so I created in init.d/ejabberd-xs
 
             # can get a reliable start if the following:
-            set +e;killall epmd;set -e
+            set +e;
+            killall beam
+            killall epmd;set -e
 
             echo "the following start command executes for a long time. Have a cup of coffee!"
             /etc/init.d/ejabberd-xs start 2>&1 | tee -a $LOG
@@ -40,6 +40,9 @@ function ejabberd()
             xs-ejabberd-srg
 		;;
 	"no")
+            set +e;
+            killall beam
+            killall epmd;set -e
             systemctl disable ejabberd.service 2>&1 | tee -a $LOG
             systemctl stop ejabberd.service 2>&1 | tee -a $LOG
             rm $SETUPSTATEDIR/ejabberd
