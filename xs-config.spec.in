@@ -10,6 +10,7 @@ Requires: authconfig
 #Requires: bind
 Requires: initscripts
 Requires: iptables
+Requires: net-tools
 Requires: module-init-tools
 Requires: nscd
 Requires: nss

@@ -16,7 +16,7 @@ function activity-server()
         ln -sf /usr/share/xs-config/cfg/html/top/en/cntr_upl_activity.php \
                     /var/www/html/upload_activity.php
         # patch .var multiview which seems to be broken
-        ln -sf index.html.DEFAULT index.html
+        ln -sf /library/xs-activity-server/activities/index.html.DEFAULT /library/xs-activity-server/activities/index.html
         
         touch $SETUPSTATEDIR/activity-server
         ;;
