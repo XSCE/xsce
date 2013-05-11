@@ -114,6 +114,17 @@ function create-usb-repo2()
 	fi
 }
 
+# for the XO-1, we need to have sd card, and to turn off X11 windows
+function have_sd_card {
+
+}
+function setup_sd_card {
+}
+function setup_swap_file {
+     
+}
+
+
 # old function name was do_first()
 function startup()
 {

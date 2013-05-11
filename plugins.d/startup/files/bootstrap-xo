@@ -1,16 +1,6 @@
 #!/bin/bash
 # undo some XO specific changes done by OOB while creating the image
 
-# for the XO-1, we need to have sd card, and to turn off X11 windows
-function have_sd_card {
-
-}
-function setup_sd_card {
-}
-function setup_swap_file {
-     
-}
-
 ISXO=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
 FIX_RPMS="sed libidn grep which util-linux wget gnupg2 groff gnash"
 LOG=/home/olpc/xs-setup.log
