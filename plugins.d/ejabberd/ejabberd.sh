@@ -35,9 +35,6 @@ function ejabberd()
 
             echo "the following start command executes for a long time. Have a cup of coffee!"
             /etc/init.d/ejabberd-xs start 2>&1 | tee -a $LOG
-
-            #systemctl start ejabberd-xs.service 2>&1 | tee -a $LOG
-            xs-ejabberd-srg
 		;;
 	"no")
             systemctl disable ejabberd.service 2>&1 | tee -a $LOG

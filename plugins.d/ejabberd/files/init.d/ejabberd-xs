@@ -162,7 +162,8 @@ start() {
 
 	# Ignore the return val of setup_online_srg
 	# ==> startup even if the SRG setup had errors.
-#	setup_online_srg
+    set +e;
+    setup_online_srg
 
         return $RETVAL
 }
