@@ -26,6 +26,7 @@ Requires: logrotate
 Requires: xml-common
 Requires: etckeeper
 Requires: make
+Requires: createrepo
 Requires: usbmount
 #Requires: dhcp
 Requires: avahi
