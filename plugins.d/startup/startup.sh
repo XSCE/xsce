@@ -96,10 +96,13 @@ function create-usb-repo2()
 {
         for parts in `ls /dev/sd*1`; do
           if [ x$parts != 'x' ];then
+           maybe=`ls -la /sys/class/block/ | grep $parts | grep usb`
+           if [ x$maybe != 'x' ];then
             usbkey=`findmnt -n -o TARGET -S $parts`
-	    if [ ! -d $usbkey/xs-repo ];then
+	    if [[ ! -d $usbkey/xs-repo -a ! -d $usbkey/library ]];then
 		mkdir -p $usbkey/xs-repo
 	    fi
+           fi
 	  fi
 	done
 
