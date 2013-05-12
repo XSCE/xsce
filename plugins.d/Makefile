@@ -9,9 +9,9 @@ install:
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/httpd/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/httpd/conf.d/
-	install -D -d  $(DESTDIR)etc/sysconfig/
-	install -D -d  $(DESTDIR)etc/sysconfig/stats/
+	install -D -d  $(DESTDIR)etc/stats/
 	install -D -d  $(DESTDIR)etc/pgsql-xs/
+	install -D -d  $(DESTDIR)etc/sysconfig/
 	install -D -d  $(DESTDIR)etc/sysconfig/pgsql/
 	install -D -d  $(DESTDIR)library/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/systemd/

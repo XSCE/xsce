@@ -1,3 +1,3 @@
 install:
 
-	install -D files/sugar-stats.conf.in  $(DESTDIR)/etc/sysconfig/stats/sugar-stats.conf.in
+	install -D files/sugar-stats.conf.in  $(DESTDIR)/etc/stats/sugar-stats.conf.in
