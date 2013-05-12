@@ -3,7 +3,7 @@
 /etc/pgsql-xs/postgresql-2048m.conf
 /etc/pgsql-xs/postgresql-256m.conf
 /etc/pgsql-xs/postgresql-512m.conf
-/library/pgsql-xs
+/library/pgsql-xs/
 /etc/sysconfig/pgsql/pgsql-xs
 /usr/share/xs-config/cfg/etc/systemd/system/postgresql-xs.service
 /usr/share/xs-config/cfg/library/pgsql-xs/pg_hba.conf
