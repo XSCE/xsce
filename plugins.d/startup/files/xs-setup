@@ -130,7 +130,7 @@ ejabberd yes
 #xs-security yes
 idmgr yes
 postgresql yes
-moodle-xs yes
+moodle yes
 activity-server yes
 openvpn yes
 #puppet yes
