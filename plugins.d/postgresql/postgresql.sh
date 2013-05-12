@@ -18,7 +18,9 @@ function postgresql()
 		if [ ! -e ${POSTGRESSDIR}/PG_VERSION ];then
             # /etc/init.d/pgsql-xs initdb -- this was used before systemd
             # postgresql-setup initdb need to move this edit upstream FIXME
-            mkdir -p /library/pgsql-xs
+            if [ ! -d /library/pgsql-xs ];then
+                mkdir -p /library/pgsql-xs
+            fi
             chown -R postgres:postgres /library/pgsql-xs/
             sed -i -e "s/--auth='ident'\"/--auth='ident' --encoding='UTF8'\"/" \
                                     /usr/bin/postgresql-setup
