@@ -220,7 +220,9 @@ exclude=ejabberd
     #do all of the yum installs in a single operation
     get_enabled_plugins
     get_usb_repo
-    INSTALLTHESE=""
+
+    # always install the following
+    INSTALLTHESE="rsyck rssh mtd-utils acpid mlocate"
     for mod in $PLUGIN_LIST; do
 	if [ -d $PLUGINDIR/$mod/yum ];then
             INSTALLTHESE=$INSTALLTHESE" "`ls $PLUGINDIR/$mod/yum/`
@@ -244,7 +246,9 @@ function do_once()
         ### fix the indenting later  
     if [ -e /home/olpc/xs-setup.log ]; then
 	mv /home/olpc/xs-setup.log /var/log/
+    set +e
 	mv /home/olpc/yum.log /var/log/
+    set -e
     fi
 
     ###
