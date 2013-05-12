@@ -117,7 +117,6 @@ fi
 %config(noreplace) %{_sysconfdir}/httpd/conf/httpd-xs.conf.in
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/*.conf.in
 %config(noreplace) %{_sysconfdir}/pathagar/settings.py.in
-%config(noreplace) %{_sysconfdir}/stats/sugar-stats.conf.in
 
 %config(noreplace) %{_sysconfdir}/sysconfig/olpc-scripts/
 %config(noreplace) %{_sysconfdir}/sysconfig/modules/*.modules
