@@ -2,12 +2,14 @@ function httpd()
 {
 	case "$1" in
 	"yes")
-        $YUM_CMD httpd mod_auth_pam php 2>&1 | tee -a $LOG
+        $YUM_CMD httpd  php 2>&1 | tee -a $LOG
             if [ $? -ne 0 ] ; then
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
                 exit $YUMERROR
             fi
         touch $SETUPSTATEDIR/httpd
+        HTTPDVER=`rpm -qi httpd|gawk '/Version/{print $3}'`
+        export HTTPDVER
         cp -pf /etc/httpd/conf/httpd-xs.conf.in /etc/httpd/conf/httpd-xs.conf''
 
 		# Choose a config depending on memory

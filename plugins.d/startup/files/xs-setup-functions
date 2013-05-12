@@ -5,8 +5,6 @@ PLUGINDIR=/usr/share/xs-config/plugins.d
 export PLUGINDIR
 LOG=/var/log/xs-setup.log
 MARKER=/.olpcxs-configured
-HTTPDVER=`rpm -qi httpd|gawk '/Version/{print $3}`
-export HTTPDVER
 
 for mod in `ls $PLUGINDIR`; do
     if [ -d $PLUGINDIR/$mod ];then
