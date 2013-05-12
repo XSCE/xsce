@@ -1,2 +1,2 @@
-/etc/sysconfig/sugar-stats.conf
+/etc/sysconfig/sugar-stats.conf.in
 
