@@ -129,8 +129,8 @@ httpd yes
 ejabberd yes
 #xs-security yes
 idmgr yes
-#postgresql yes
-#moodle-xs yes
+postgresql yes
+moodle-xs yes
 activity-server yes
 openvpn yes
 #puppet yes
