@@ -149,7 +149,7 @@ fi
 %config(noreplace) %{_sysconfdir}/pgsql-xs/p*.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/pgsql/pgsql-xs
 #%{_sysconfdir}/init.d/pgsql-xs
-%/library/pgsql-xs/dummy
+/library/pgsql-xs/dummy
 %attr(700, postgres, postgres)   %dir /library/pgsql-xs
 %config(noreplace) /root/xs-apply-changes
 
