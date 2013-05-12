@@ -116,13 +116,13 @@ function create-usb-repo2()
 
 # for the XO-1, we need to have sd card, and to turn off X11 windows
 function have_sd_card {
-
+    BLKDEVS=`ls  "/dev/mmcblk1*"`
 }
-function setup_sd_card {
-}
-function setup_swap_file {
+#function setup_sd_card {
+#}
+#function setup_swap_file {
      
-}
+#}
 
 
 # old function name was do_first()
@@ -381,6 +381,8 @@ function do_last()
     echo "do last executed" | tee -a $LOG
     date | tee -a $LOG
     if [ ! -e $MARKER ]; then
+        # mlocate needs to be initialized with all the new files
+        updatedb
         # require that olpc user enter a password to become root
         sed -i -e '4s/^auth/#auth/' /etc/pam.d/su
         # internally we use /etc/.git as marker for first config run --

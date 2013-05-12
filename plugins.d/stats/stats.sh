@@ -22,6 +22,7 @@ function stats {
     "no")
         rm $SETUPSTATEDIR/stats
         ;;
+    esac
 }
 
 
