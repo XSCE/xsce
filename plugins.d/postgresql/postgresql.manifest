@@ -4,6 +4,5 @@
 /etc/pgsql-xs/postgresql-256m.conf
 /etc/pgsql-xs/postgresql-512m.conf
 /etc/sysconfig/pgsql/pgsql-xs
-/library/pgsql-xs
 /usr/share/xs-config/cfg/etc/systemd/system/postgresql-xs.service
 /usr/share/xs-config/cfg/library/pgsql-xs/pg_hba.conf
