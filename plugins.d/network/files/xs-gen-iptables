@@ -42,6 +42,7 @@ if [ -f /etc/sysconfig/olpc-scripts/setup.d/installed/gateway ] ; then
 
     # Don't forward from the outside to the inside.
     $IPTABLES -A FORWARD -i $wan -o $lan -j DROP
+    $IPTABLES -A INPUT -i $wan -j DROP
 fi
 if [ -f /etc/sysconfig/xs_httpcache_on ]; then
     $IPTABLES  -t nat  -A PREROUTING -i $lan -p tcp --dport 80 ! -d 172.18.96.1 -j DNAT --to 172.18.96.1:3128
