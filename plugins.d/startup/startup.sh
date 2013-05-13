@@ -226,7 +226,7 @@ exclude=ejabberd
     get_usb_repo
 
     # always install the following
-    INSTALLTHESE="rsyck rssh mtd-utils acpid mlocate"
+    INSTALLTHESE="syck rssh mtd-utils acpid mlocate"
     for mod in $PLUGIN_LIST; do
 	if [ -d $PLUGINDIR/$mod/yum ];then
             INSTALLTHESE=$INSTALLTHESE" "`ls $PLUGINDIR/$mod/yum/`
