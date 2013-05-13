@@ -1,21 +1,21 @@
 #!/bin/bash
 # scan through all the plugins to pick up function definitions
 
-PLUGINDIR=/usr/share/xs-config/plugins.d
-export PLUGINDIR
+#PLUGINDIR=/usr/share/xs-config/plugins.d
+#export PLUGINDIR
 LOG=/var/log/xs-setup.log
-HTTPDVER=`rpm -qi httpd|gawk '/Version/{print $3}'`
-export HTTPDVER
+#HTTPDVER=`rpm -qi httpd|gawk '/Version/{print $3}'`
+#export HTTPDVER
 
-XO=`cat /proc/device-tree/mfg-data/MN` 
-if [ -z $XO ]; then
-    XOTYPE=$XO
-else
-    XOTYPE=""
-fi
-export XOTYPE
+#XO=`cat /proc/device-tree/mfg-data/MN` 
+#if [ -z $XO ]; then
+#    XOTYPE=$XO
+#else
+#    XOTYPE=""
+#fi
+#export XOTYPE
 
-MARKER=/.olpcxs-configured
+#MARKER=/.olpcxs-configured
 
 for mod in `ls $PLUGINDIR`; do
     if [ -d $PLUGINDIR/$mod ];then
@@ -29,4 +29,3 @@ for mod in `ls $PLUGINDIR`; do
         popd
     fi
 done
-

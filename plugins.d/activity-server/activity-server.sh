@@ -8,7 +8,8 @@ function activity-server()
                 exit $YUMERROR
             fi
         # if this is the new apache 2.4, add the wierd permission
-        if [ ! `rpm -q fedora-release | grep 17` ]; then
+        test_ver=`rpm -q fedora-release | grep fc17`
+        if [ -z $test_ver ]; then
             sed -i '/Options/ a\
             Require all granted
             ' /etc/httpd/conf.d/xs-activity-server.conf
