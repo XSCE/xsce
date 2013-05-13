@@ -20,11 +20,12 @@ function postgresql()
             # postgresql-setup initdb need to move this edit upstream FIXME
             if ! [ -d /library/pgsql-xs ];then
                 mkdir -p /library/pgsql-xs
-            fi
                 chown -R postgres:postgres /library/pgsql-xs/
+                chmod  700 /library/pgsql-xs
                 sed -i -e "s/--auth='ident'\"/--auth='ident' --encoding='UTF8'\"/" \
                                     /usr/bin/postgresql-setup
                 /usr/bin/postgresql-setup  initdb postgresql-xs
+            fi
                 sed -i -e '
                 /^#standard_conforming_strings/ c\
     standard_conforming_strings = off
