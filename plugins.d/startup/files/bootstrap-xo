@@ -4,6 +4,7 @@
 ISXO=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
 FIX_RPMS="sed libidn grep which util-linux wget gnupg2 groff gnash"
 LOG=/home/olpc/xs-setup.log
+FEDORA=`rpm -q fedora-release|gawk 'BEGIN {FS="-";}{print $3}'`
 
 if [ $ISXO = "1" ]
 then

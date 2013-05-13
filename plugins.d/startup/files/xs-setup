@@ -143,6 +143,7 @@ dansguardian yes
 #nmon yes
 upload yes
 #xo-admin yes
+stats yes
 
 # Finalize install
 yum-etckeeper yes
