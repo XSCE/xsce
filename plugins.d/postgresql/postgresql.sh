@@ -24,6 +24,7 @@ function postgresql()
                 chown -R postgres:postgres /library/pgsql-xs/
                 sed -i -e "s/--auth='ident'\"/--auth='ident' --encoding='UTF8'\"/" \
                                     /usr/bin/postgresql-setup
+                /usr/bin/postgresql-setup  initdb postgresql-xs
                 sed -i -e '
                 /^#standard_conforming_strings/ c\
     standard_conforming_strings = off
@@ -32,7 +33,6 @@ function postgresql()
                 /^#backslash_quote/ c\
     backslash_quote = on
                 ' /library/pgsql-xs/postgresql.conf
-                /usr/bin/postgresql-setup  initdb postgresql-xs
 		fi
 
 		# and set it to autostart
