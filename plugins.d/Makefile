@@ -12,7 +12,6 @@ install:
 	install -D -d  $(DESTDIR)etc/pgsql-xs/
 	install -D -d  $(DESTDIR)etc/sysconfig/
 	install -D -d  $(DESTDIR)etc/sysconfig/pgsql/
-	install -D -d  $(DESTDIR)library/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/systemd/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/systemd/system/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/library/
