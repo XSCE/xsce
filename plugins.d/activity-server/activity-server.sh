@@ -8,7 +8,7 @@ function activity-server()
                 exit $YUMERROR
             fi
         # if this is the new apache 2.4, add the wierd permission
-        if [ "$HTTPDVER" => "2.4"]; then
+        if [ "$HTTPDVER" >= "2.4"]; then
             sed -i '/Options/ a\
             Require all granted
             ' /etc/httpd/conf.d/xs-activity-server.conf
