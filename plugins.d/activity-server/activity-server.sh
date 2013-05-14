@@ -7,13 +7,6 @@ function activity-server()
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
                 exit $YUMERROR
             fi
-        # if this is the new apache 2.4, add the wierd permission
-        if [ ! `rpm -q fedora-release | grep 17` ]; then
-            sed -i '/Options/ a\
-            Require all granted
-            ' /etc/httpd/conf.d/xs-activity-server.conf
-        fi
-             
         #execute the setup script
         /etc/sysconfig/olpc-scripts/setup.d/xs-activity-server
         # permit apache to perform the upload task,
@@ -25,6 +18,13 @@ function activity-server()
         # patch .var multiview which seems to be broken
         ln -sf /library/xs-activity-server/activities/index.html.DEFAULT /library/xs-activity-server/activities/index.html
         
+        # if this is the new apache 2.4, add the wierd permission
+        if [ ! `rpm -q fedora-release | grep 17` ]; then
+            sed -i '/Options/ a\
+            Require all granted
+            ' /etc/httpd/conf.d/xs-activity-server.conf
+        fi
+             
         touch $SETUPSTATEDIR/activity-server
         ;;
     "no")
