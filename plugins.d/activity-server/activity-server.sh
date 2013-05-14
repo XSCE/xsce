@@ -7,6 +7,7 @@ function activity-server()
                 echo "\n\nYum returned an error\n\n" | tee -a $LOG
                 exit $YUMERROR
             fi
+
         #execute the setup script
         /etc/sysconfig/olpc-scripts/setup.d/xs-activity-server
         # permit apache to perform the upload task,
