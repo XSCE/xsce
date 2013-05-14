@@ -153,3 +153,9 @@ do-last
 echo "XS configured; ready to reboot and use."
 #echo "please check the configured services below"
 #xs-services-check
+
+echo "rebooting in 10 seconds"
+sleep 10
+reboot
+
+
