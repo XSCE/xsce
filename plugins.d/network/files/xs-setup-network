@@ -18,8 +18,11 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# Parse options
+SYSCONFIGDIR="/etc/sysconfig"
 LOG=/var/log/xs-setup.log
+
+# Parse options
+
 opt_upgrade_only=
 if ! options=$(getopt -o u -l upgrade-only -- "$@"); then
 	exit 1
