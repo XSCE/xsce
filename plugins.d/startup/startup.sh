@@ -106,6 +106,8 @@ function create-usb-repo2()
 	    if ! [ -z "$maybe" ];then
 		usbkey=`findmnt -n -o TARGET -S $parts`
 		if [ -d $usbkey/xs-repo -a ! -d $usbkey/library ];then
+		    mkdir -p $usbkey/xs-repo/$ARCH/$RELEASEVER/local
+		    yumdownloader xs-config-xo --destdir=$usbkey/xs-repo/$ARCH/$RELEASEVER/local
 		    createrepo $usbkey/xs-repo/$ARCH/$RELEASEVER
 		    sleep 2
 		    sync
