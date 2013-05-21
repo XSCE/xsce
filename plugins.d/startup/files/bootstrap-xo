@@ -68,12 +68,19 @@ EOF
 	sed -i -e  's/%_excludedocs 1/%_excludedocs 0/' /etc/rpm/macros.imgcreate
 
         yum_cmd="yum -y"
+
+        usbkey=""
         for parts in `ls /dev/sd*1`; do
-          if [ x$parts != 'x' ];then
-            usbkey=`findmnt -n -o TARGET -S $parts`
-            if [ -d $usbkey/xs-repo/ ];then
-                cat << EOF > /tmp/yum.conf
-             
+            if [ x$parts != 'x' ];then
+                maybe=`ls -la /sys/class/block/ | grep usb | gawk '{print 9}'`
+                if ! [ -z "$maybe" ];then
+                    usbkey=`findmnt -n -o TARGET -S $parts`
+		    if [ ! -d $usbkey/xs-repo/  -a ! -d $usbkey/library ];then
+			mkdir $usbkey/xs-repo
+		    fi
+		    mount --bind $usbkey/xs-repo /var/cache/yum
+		    cat << EOF > /tmp/yum.conf
+
 [main]
 cachedir=/var/cache/yum/\$basearch/\$releasever
 keepcache=1
@@ -104,9 +111,9 @@ gpgcheck=0
 cost=100
 
 EOF
-                yum_cmd="yum -c /tmp/yum.conf -y"
-            fi
-          fi  
+		    yum_cmd="yum -c /tmp/yum.conf -y"
+		fi
+	    fi  
 	done
 
 	$yum_cmd install man-pages man-db man 2>&1 | tee -a $LOG
@@ -126,7 +133,7 @@ EOF
 	mkdir /mnt/usb5
 	mkdir /mnt/usb6
 	mkdir /mnt/usb7
-        sed -i -e 's:media:mnt:' /etc/usbmount/usbmount.conf
+        sed -i -e 's:media:mnt:g' /etc/usbmount/usbmount.conf
 
         # check for other schoolservers on the local network
         tryname="schoolserver"

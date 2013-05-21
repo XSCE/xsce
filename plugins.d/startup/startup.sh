@@ -56,6 +56,7 @@ function get_usb_repo()
 {
     for usb in `ls /mnt`;do
         if [ -d /mnt/$usb/xs-repo ];then
+	    mount --bind /mnt/$usb/xs-repo /var/cache/yum
             cat << EOF > /tmp/yum.conf
 [main]
 cachedir=/var/cache/yum/\$basearch/\$releasever
@@ -94,28 +95,23 @@ EOF
 
 function create-usb-repo2()
 {
-        usbkey=""
-        for parts in `ls /dev/sd*1`; do
-          if [ x$parts != 'x' ];then
-           maybe=`ls -la /sys/class/block/ | grep usb | gawk '{print 9}'`
-           if ! [ -z "$maybe" ];then
-            usbkey=`findmnt -n -o TARGET -S $parts`
-	    if [ ! -d $usbkey/xs-repo -a ! -d $usbkey/library ];then
-		mkdir -p $usbkey/xs-repo
+    ARCH=`ls /var/cache/yum`
+    RELEASEVER=`ls /var/cache/yum/$ARCH`
+    usbkey=""
+    for parts in `ls /dev/sd*1`; do
+	if [ x$parts != 'x' ];then
+	    maybe=`ls -la /sys/class/block/ | grep usb | gawk '{print 9}'`
+	    if ! [ -z "$maybe" ];then
+		usbkey=`findmnt -n -o TARGET -S $parts`
+		if [ -d $usbkey/xs-repo -a ! -d $usbkey/library ];then
+		    createrepo $usbkey/xs-repo/$ARCH/$RELEASEVER
+		    sleep 2
+		    sync
+		    umount /var/cache/yum
+		fi
 	    fi
-           fi
-	  fi
-	done
-
-	ARCH=`ls /var/cache/yum`
-	RELEASEVER=`ls /var/cache/yum/$ARCH`
-	if [ -d $usbkey/xs-repo ];then
-	    cp -a /var/cache/yum/* $usbkey/xs-repo/
-	    createrepo $usbkey/xs-repo/$ARCH/$RELEASEVER
-
-	    ##### enable once proven to work #####  JV
-	    # yum clean cache
 	fi
+    done
 }
 
 # for the XO-1, we need to have sd card, and to turn off X11 windows
@@ -223,7 +219,6 @@ exclude=ejabberd
 
     #do all of the yum installs in a single operation
     get_enabled_plugins
-    get_usb_repo
 
     # always install the following
     INSTALLTHESE="syck rssh mtd-utils acpid mlocate"
