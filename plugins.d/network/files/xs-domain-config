@@ -55,10 +55,11 @@ if [ -n "$new_domain_name" ];then
     echo $new_domain_name > "$SYSCONFIGDIR/xs_domain_name"
 else
     if [ -e "$SYSCONFIGDIR/xs_domain_name" ];then
-	new_domain_name=`cat "$SYSCONFIGDIR/xs_domain_name"`
+			new_domain_name=`cat "$SYSCONFIGDIR/xs_domain_name"`
     else
-	echo "Using default domain name"
-	new_domain_name="local"
+			echo "Using default domain name"
+			new_domain_name="local"
+			echo $new_domain_name > "$SYSCONFIGDIR/xs_domain_name"
     fi
 fi
 echo "Setting the base domain name to $new_domain_name" | tee -a $LOG
