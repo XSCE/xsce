@@ -99,6 +99,10 @@ function create-usb-repo2()
 {
     ARCH=`ls /var/cache/yum`
     RELEASEVER=`ls /var/cache/yum/$ARCH`
+    u_mnt=`mount | grep var/cache/yum`
+    if ! [ -z "$u_mnt" ];then
+	umount /var/cache/yum
+    fi
     usbkey=""
     for parts in `ls /dev/sd*1`; do
 	if [ x$parts != 'x' ];then
@@ -107,11 +111,11 @@ function create-usb-repo2()
 		usbkey=`findmnt -n -o TARGET -S $parts`
 		if [ -d $usbkey/xs-repo -a ! -d $usbkey/library ];then
 		    mkdir -p $usbkey/xs-repo/$ARCH/$RELEASEVER/local
-		    yumdownloader xs-config-xo --destdir=$usbkey/xs-repo/$ARCH/$RELEASEVER/local
+		    yumdownloader --destdir=$usbkey/xs-repo/$ARCH/$RELEASEVER/local xs-config-xo
 		    createrepo $usbkey/xs-repo/$ARCH/$RELEASEVER
 		    sleep 2
 		    sync
-		    umount /var/cache/yum
+		    umount $usbkey
 		fi
 	    fi
 	fi
