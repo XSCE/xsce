@@ -7,9 +7,9 @@ function ejabberd()
                     rm -rf /var/lib/ejabberd/spool
                 fi
                 rm -f /etc/ejabberd/ejabberd.pem
-                yum -y reinstall ejabberd 2>&1 | tee -a $LOG
+                $YUM_REINSTALL ejabberd 2>&1 | tee -a $LOG
             else
-                yum -y install ejabberd 2>&1 | tee -a $LOG
+                $YUM_CMD ejabberd 2>&1 | tee -a $LOG
 		    fi
             if [ $? -ne 0 ] ; then
 		        echo "\n\nYum returned an error\n\n" | tee -a $LOG

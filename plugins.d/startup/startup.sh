@@ -44,6 +44,7 @@ SETUPSTATEDIR=/etc/sysconfig/olpc-scripts/setup.d/installed
 ISXO=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
 YUMERROR=10
 YUM_CMD="yum -y install"
+YUM_REINSTALL="yum -y reinstall"
 
 ### we need to reference these in an external config file
 DEFAULTUSER='admin'
@@ -89,6 +90,7 @@ cost=100
 
 EOF
             YUM_CMD="yum -c /tmp/yum.conf -y install"
+            YUM_REINSTALL="yum -c /tmp/yum.conf -y reinstall"
         fi
     done
 }
