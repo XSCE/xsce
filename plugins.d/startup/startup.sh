@@ -120,6 +120,7 @@ function create-usb-repo2()
 	    fi
 	fi
     done
+    exit 0
 }
 
 # for the XO-1, we need to have sd card, and to turn off X11 windows
