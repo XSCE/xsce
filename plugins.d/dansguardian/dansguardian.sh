@@ -12,10 +12,11 @@ function dansguardian()
         #execute the setup script
         #Update squid conf
         #save backup
+        systemctl stop squid.service
         cp /etc/squid/squid-xs.conf /etc/squid-xs.conf.bkp.`date +%s`
         sed -i 's/http_port 0.0.0.0:3128 transparent/http_port 0.0.0.0:3130/g' /etc/squid/squid-xs.conf
         sed -i 's/#acl localhost/acl localhost/' /etc/squid/squid-xs.conf
-        systemctl restart squid.service
+        systemctl start squid.service
 
         #Update dansguardian conf
         cp /etc/dansguardian/dansguardian.conf /etc/dansguardian/dansguardian.conf.bkp.`date +%s`
