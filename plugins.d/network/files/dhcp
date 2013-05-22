@@ -7,9 +7,7 @@ timestamp=1348017380
 
 [ipv4]
 method=auto
-# the following breaks connection to repos during install process
-# NM watches this file, and overwrites resolv.conf with nil
-# ignore-auto-dns=true
+ignore-auto-dns=true
 
 [802-3-ethernet]
 duplex=full
