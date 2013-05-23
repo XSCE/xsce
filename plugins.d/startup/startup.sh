@@ -105,7 +105,7 @@ function create-usb-repo2()
     then
 	umount /var/cache/yum | tee -a $LOG
 	usbkey=""
-	for parts in `ls /dev/sd*1` 2&>1 | tee -a $LOG
+	for parts in `ls /dev/sd*1` | tee -a $LOG
 	do
 	    if [ x$parts != 'x' ] | tee -a $LOG
 	    then
