@@ -110,17 +110,17 @@ function create-usb-repo2()
 	    if ! [ -z "$maybe" ];then
 		usbkey=`findmnt -n -o TARGET -S $parts`
 		if [ -d $usbkey/xs-repo -a ! -d $usbkey/library ];then
-		    mkdir -p $usbkey/xs-repo/$ARCH/$RELEASEVER/local
-		    yumdownloader --destdir=$usbkey/xs-repo/$ARCH/$RELEASEVER/local xs-config-xo
-		    createrepo $usbkey/xs-repo/$ARCH/$RELEASEVER
+		    mkdir -p $usbkey/xs-repo/$ARCH/$RELEASEVER/local | tee -a $LOG
+		    yumdownloader --destdir=$usbkey/xs-repo/$ARCH/$RELEASEVER/local xs-config-xo | tee -a $LOG
+		    createrepo $usbkey/xs-repo/$ARCH/$RELEASEVER | tee -a $LOG
 		    sleep 2
 		    sync
-		    umount $usbkey
+		    umount $usbkey | tee -a $LOG
 		fi
 	    fi
 	fi
     done
-    exit 0
+    echo "leaving create-usb-repo2" | tee -a $LOG
 }
 
 # for the XO-1, we need to have sd card, and to turn off X11 windows
@@ -396,7 +396,8 @@ function do_last()
         # internally we use /etc/.git as marker for first config run --
         #   --$ MARKER  is available externally
         touch $MARKER
-        echo "XS configured; services should be active."
+        echo "XS configured; services should be active." | tee -a $LOG
+    else
+	echo "XS configured do last already executed - marker present."	| tee -a $LOG
     fi
-
 }
