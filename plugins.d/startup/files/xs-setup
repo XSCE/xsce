@@ -68,7 +68,7 @@ source /usr/bin/xs-setup-functions
 
 # prep the XO
 do_once
-get_usb_repo
+#get_usb_repo
 
 #do-first function has had its name changed to startup
 startup
