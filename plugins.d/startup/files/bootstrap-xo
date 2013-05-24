@@ -85,7 +85,7 @@ EOF
 		    # and confirms available repos
 		    $yum_cmd repolist
 		    # confirm we have a repo to use
-		    if [ -d /var/cache/yum/$XSARCH/$FEDORA/metadata ]
+		    if [ -d /var/cache/yum/$XSARCH/$FEDORA/metadata ];then
 			# the sub-directories hold online-repo cache
 			# we use the top level to hold the offline repo 
 			# sum of all the cached rpms held
