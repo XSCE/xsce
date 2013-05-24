@@ -138,7 +138,7 @@ openvpn yes
 # optional services -- enabled now for testing
 #pathagar yes
 avahi yes
-dansguardian yes
+#dansguardian yes
 #ntop yes
 #nmon yes
 upload yes
