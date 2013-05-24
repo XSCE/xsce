@@ -5,6 +5,7 @@ ISXO=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
 FIX_RPMS="sed libidn grep which util-linux wget gnupg2 groff gnash"
 LOG=/home/olpc/xs-setup.log
 FEDORA=`rpm -q fedora-release|gawk 'BEGIN {FS="-";}{print $3}'`
+XSARCH=`uname -i`
 
 if [ $ISXO = "1" ]
 then
@@ -76,12 +77,23 @@ EOF
                 if ! [ -z "$maybe" ];then
                     usbkey=`findmnt -n -o TARGET -S $parts`
 		    if [ ! -d $usbkey/xs-repo/  -a ! -d $usbkey/library ];then
-			mkdir $usbkey/xs-repo
+			mkdir $usbkey/xs-repo			
 		    fi
 		    mount --bind $usbkey/xs-repo /var/cache/yum
-		    cat << EOF > /tmp/yum.conf
+		    # ensures $XSARCH/$FEDORA on fresh usbkey
+		    # update the online metadata from previous runs
+		    # and confirms available repos
+		    $yum_cmd repolist
+		    # confirm we have a repo to use
+		    if [ -d /var/cache/yum/$XSARCH/$FEDORA/metadata ]
+			# the sub-directories hold online-repo cache
+			# we use the top level to hold the offline repo 
+			# sum of all the cached rpms held
+			yum_cmd="yum -c /tmp/yum.conf -y"
+			cat << EOF > /tmp/yum.conf
 
 [main]
+# this is inside yum where basearch releasever are detected.
 cachedir=/var/cache/yum/\$basearch/\$releasever
 keepcache=1
 exactarch=1
@@ -111,7 +123,7 @@ gpgcheck=0
 cost=100
 
 EOF
-		    yum_cmd="yum -c /tmp/yum.conf -y"
+		    fi
 		fi
 	    fi  
 	done
