@@ -97,29 +97,31 @@ EOF
 
 function create-usb-repo2()
 {
+    echo "starting create-usb-repo2" | tee -a $LOG
     ARCH=`ls /var/cache/yum`
     RELEASEVER=`ls /var/cache/yum/$ARCH`
-    u_mnt=`mount | grep var/cache/yum`
-    if ! [ -z "$u_mnt" ];then
-	umount /var/cache/yum
-    fi
-    usbkey=""
-    for parts in `ls /dev/sd*1`; do
-	if [ x$parts != 'x' ];then
-	    maybe=`ls -la /sys/class/block/ | grep usb | gawk '{print 9}'`
-	    if ! [ -z "$maybe" ];then
-		usbkey=`findmnt -n -o TARGET -S $parts`
-		if [ -d $usbkey/xs-repo -a ! -d $usbkey/library ];then
-		    mkdir -p $usbkey/xs-repo/$ARCH/$RELEASEVER/local
-		    yumdownloader --destdir=$usbkey/xs-repo/$ARCH/$RELEASEVER/local xs-config-xo
-		    createrepo $usbkey/xs-repo/$ARCH/$RELEASEVER
-		    sleep 2
-		    sync
-		    umount $usbkey
-		fi
+    u_mnt="`mount | grep var/cache/yum | gawk '{print $1}'`"
+    echo "VAR-u_mnt is $u_mnt"
+    if ! [ -z $u_mnt ]; then
+	umount /var/cache/yum | tee -a $LOG
+	if [ x$u_mnt != 'x' ]; then
+	    usbkey=$(findmnt -n -o TARGET -S $u_mnt)
+	    echo "found $usbkey"
+	    if [ -d $usbkey/xs-repo -a ! -d $usbkey/library ]; then
+		mkdir -p $usbkey/xs-repo/$ARCH/$RELEASEVER/local | tee -a $LOG
+		yumdownloader --destdir=$usbkey/xs-repo/$ARCH/$RELEASEVER/local xs-config* | tee -a $LOG
+		createrepo $usbkey/xs-repo/$ARCH/$RELEASEVER | tee -a $LOG
+		sleep 2
+		sync
+		umount $usbkey | tee -a $LOG
 	    fi
+	else
+	    echo "INFO No external media found" | tee -a $LOG
 	fi
-    done
+    else
+	echo "INFO /var/cache/yum is not mounted" | tee -a $LOG
+    fi
+    echo "leaving create-usb-repo2" | tee -a $LOG
 }
 
 # for the XO-1, we need to have sd card, and to turn off X11 windows
@@ -395,7 +397,8 @@ function do_last()
         # internally we use /etc/.git as marker for first config run --
         #   --$ MARKER  is available externally
         touch $MARKER
-        echo "XS configured; services should be active."
+        echo "XS configured; services should be active." | tee -a $LOG
+    else
+	echo "XS configured do last already executed - marker present."	| tee -a $LOG
     fi
-
 }
