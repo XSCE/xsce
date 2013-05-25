@@ -85,6 +85,7 @@ EOF
 		    # and confirms available repos
 		    $yum_cmd repolist
 		    # confirm we have a repo to use
+		    echo "looking for /var/cache/yum/$XSARCH/$FEDORA/metadata" | tee -a $LOG
 		    if [ -d /var/cache/yum/$XSARCH/$FEDORA/metadata ];then
 			# the sub-directories hold online-repo cache
 			# we use the top level to hold the offline repo 
@@ -95,11 +96,13 @@ EOF
 [main]
 # this is inside yum where basearch releasever are detected.
 cachedir=/var/cache/yum/\$basearch/\$releasever
+logfile=/home/olpc/yum.log
 keepcache=1
 exactarch=1
 obsoletes=1
 gpgcheck=0
 installonly_limit=3
+
 #yum.repos.d=/tmp
 
 #  This is the default, if you make this bigger yum won't see if the metadata
@@ -123,9 +126,14 @@ gpgcheck=0
 cost=100
 
 EOF
+		    else
+			echo "repo metadata not found - skipping repo use" | tee -a $LOG
 		    fi
+		    echo "using <usbkey>/xs-repo for cache" | tee -a $LOG
+		else
+		    echo "no usbkey to use - skipping"
 		fi
-	    fi  
+	    fi
 	done
 
 	$yum_cmd install man-pages man-db man 2>&1 | tee -a $LOG
@@ -177,9 +185,11 @@ EOF
         rm /etc/systemd/system/default.target  # remove the link
         ln -sf /lib/systemd/system/multi-user.target /etc/systemd/system/default.target
 
+	if [ -e /var/log/yum.log ];then
+	    cp /var/log/yum.log /home/olpc/
+	fi
 	echo "bootstrap-xo routine completed" | tee -a $LOG
 	date  2>&1 | tee -a $LOG
-	cp /var/log/yum.log /home/olpc/
         set +x
         echo
         echo "================================================================="
