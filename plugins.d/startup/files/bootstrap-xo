@@ -79,6 +79,7 @@ EOF
 		    if [ ! -d $usbkey/xs-repo/  -a ! -d $usbkey/library ];then
 			mkdir $usbkey/xs-repo			
 		    fi
+		    echo "INFO using <usbkey>/xs-repo for yum cache" | tee -a $LOG
 		    mount --bind $usbkey/xs-repo /var/cache/yum
 		    # ensures $XSARCH/$FEDORA on fresh usbkey
 		    # update the online metadata from previous runs
@@ -90,7 +91,6 @@ EOF
 			XSARCH=armhfp
 		    fi
 		    # confirm we have a repo to use
-		    echo "looking for /var/cache/yum/$XSARCH/$FEDORA/metadata" | tee -a $LOG
 		    if [ -d /var/cache/yum/$XSARCH/$FEDORA/repodata ];then
 			# the sub-directories hold online-repo cache
 			# we use the top level to hold the offline repo 
@@ -131,12 +131,12 @@ gpgcheck=0
 cost=100
 
 EOF
+			echo "FOUND /var/cache/yum/$XSARCH/$FEDORA/metadata" | tee -a $LOG
 		    else
-			echo "repo metadata not found - skipping repo use" | tee -a $LOG
+			echo "INFO repo metadata not found - skipping repo use" | tee -a $LOG
 		    fi
-		    echo "using <usbkey>/xs-repo for cache" | tee -a $LOG
 		else
-		    echo "no usbkey to use - skipping"
+		    echo "INFO no usbkey to use - skipping"
 		fi
 	    fi
 	done

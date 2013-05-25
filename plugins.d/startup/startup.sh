@@ -59,9 +59,10 @@ function get_usb_repo()
 {
     for usb in `ls /mnt`;do
         if [ -d /mnt/$usb/xs-repo ];then
+	    echo "INFO using <usbkey>/xs-repo for yum cache" | tee -a $LOG
 	    mount --bind /mnt/$usb/xs-repo /var/cache/yum
 	    # convert uname -i to match what yum uses
-	    if [ $XSARCH = "armv7hl" ];then
+	    if [ $XSARCH = "armv7l" ];then
 		XSARCH=armhfp
 	    fi
             if [ -d /mnt/$usb/xs-repo/$XSARCH/$FEDORA/repodata ];then
@@ -98,11 +99,12 @@ gpgcheck=0
 cost=100
 
 EOF
+		echo "FOUND /var/cache/yum/$XSARCH/$FEDORA/metadata" | tee -a $LOG
 	    else
-		echo "INFO metadata not found"| tee -a $LOG
+		echo "INFO metadata not found - skipping repo use"| tee -a $LOG
 	    fi
 	else
-	    echo "INFO usbkey xs-repo not found"| tee -a $LOG
+	    echo "INFO usbkey xs-repo not found - skipping"| tee -a $LOG
         fi
     done
 }
