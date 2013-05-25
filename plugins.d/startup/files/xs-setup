@@ -68,7 +68,7 @@ source /usr/bin/xs-setup-functions
 
 # prep the XO
 do_once
-#get_usb_repo
+get_usb_repo
 
 #do-first function has had its name changed to startup
 startup
@@ -137,12 +137,16 @@ openvpn yes
 
 # optional services -- enabled now for testing
 #pathagar yes
+
+# needs work
 avahi yes
-#dansguardian yes
+
+dansguardian yes
 #ntop yes
 #nmon yes
 upload yes
 #xo-admin yes
+	
 #stats yes
 
 # Finalize install
