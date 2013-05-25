@@ -60,6 +60,10 @@ function get_usb_repo()
     for usb in `ls /mnt`;do
         if [ -d /mnt/$usb/xs-repo ];then
 	    mount --bind /mnt/$usb/xs-repo /var/cache/yum
+	    # convert uname -i to match what yum uses
+	    if [ $XSARCH = "armv7hl" ];then
+		XSARCH=armhfp
+	    fi
             if [ -d /mnt/$usb/xs-repo/$XSARCH/$FEDORA/metadata ];then
 		YUM_CMD="yum -c /tmp/yum.conf -y install"
 		YUM_REINSTALL="yum -c /tmp/yum.conf -y reinstall"
