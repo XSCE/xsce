@@ -86,7 +86,7 @@ EOF
 		    $yum_cmd repolist
 
 		    # convert uname -i to match what yum uses
-		    if [ $XSARCH = "armv7hl" ];then
+		    if [ $XSARCH = "armv7l" ];then
 			XSARCH=armhfp
 		    fi
 		    # confirm we have a repo to use
