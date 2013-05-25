@@ -136,9 +136,6 @@ EOF
 	# install xs-config
 	$yum_cmd install xs-config 2>&1 | tee -a $LOG
 
-	# create off-line repo for 2nd stage xs-setup
-	createrepo /var/cache/yum/$XSARCH/$FEDORA/
-
 	# fix usbmount as /media is on tmpfs use /mnt instead
 	mkdir -p /mnt/usb0
 	mkdir /mnt/usb1
