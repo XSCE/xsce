@@ -64,7 +64,7 @@ function get_usb_repo()
 	    if [ $XSARCH = "armv7hl" ];then
 		XSARCH=armhfp
 	    fi
-            if [ -d /mnt/$usb/xs-repo/$XSARCH/$FEDORA/metadata ];then
+            if [ -d /mnt/$usb/xs-repo/$XSARCH/$FEDORA/repodata ];then
 		YUM_CMD="yum -c /tmp/yum.conf -y install"
 		YUM_REINSTALL="yum -c /tmp/yum.conf -y reinstall"
 		cat << EOF > /tmp/yum.conf

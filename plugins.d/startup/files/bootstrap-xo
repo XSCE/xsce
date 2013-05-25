@@ -91,7 +91,7 @@ EOF
 		    fi
 		    # confirm we have a repo to use
 		    echo "looking for /var/cache/yum/$XSARCH/$FEDORA/metadata" | tee -a $LOG
-		    if [ -d /var/cache/yum/$XSARCH/$FEDORA/metadata ];then
+		    if [ -d /var/cache/yum/$XSARCH/$FEDORA/repodata ];then
 			# the sub-directories hold online-repo cache
 			# we use the top level to hold the offline repo 
 			# sum of all the cached rpms held
