@@ -49,7 +49,7 @@ function httpd()
         echo $is32or64bit
         if [[ "$is32or64bit" = "x86_64" ]]; then
           echo "is 64"
-          ln -s /usr/lib64/php /usr/lib/php
+          ln -sf /usr/lib64/php /usr/lib/php
         fi
 
         systemctl start httpd.service 2>&1 | tee -a $LOG
