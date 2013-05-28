@@ -64,6 +64,7 @@ EOF
         # stateless linux rwtab file creates tmpfs that is too small installs
         sed -i -e '/^RW_OPTIONS/ c\
         RW_OPTIONS="-o size=4M -o nr_inodes=2048"' /etc/sysconfig/readonly-root
+        sed -i -e '/^empty.*\/var\/lib\/dhcpd/ d' /etc/rwtab
 
 	# Keep docs when installing packages
 	sed -i -e  's/%_excludedocs 1/%_excludedocs 0/' /etc/rpm/macros.imgcreate
