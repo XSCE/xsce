@@ -173,5 +173,5 @@ fi
 
 %files ts
 %{_bindir}/bootstrap-ts
-%{_sysconfdir}/dhcpd/dhcp-ts.conf.in
+%{_sysconfdir}/dhcpd/dhcpd-ts.conf.in
 %{_sysconfdir}/hostapd/hostapd.conf.in
