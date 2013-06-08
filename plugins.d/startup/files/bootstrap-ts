@@ -1,0 +1,11 @@
+#!/bin/bash
+# initialization specific to Trimslice hardware
+
+FEDORA=`rpm -q fedora-release|gawk 'BEGIN {FS="-";}{print $3}'`
+XSARCH=`uname -i`
+
+# load avahi so that the wan ip address can be discovered
+# load dhcpd and attach it to the wifi adapter, so that it can be administered headless
+`
+        yum_cmd="yum -y"
+        $yum_cmd install avahi dhcpd hostapd

@@ -164,3 +164,8 @@ fi
 %{_bindir}/bootstrap-xo
 %{_bindir}/prep-storage.sh
 %{_libdir}/udev/rules.d/10-olpc-net.rules
+
+%files ts
+%{_bindir}/bootstrap-ts
+%{_sysconfdir}/dhcpd/dhcp-ts.conf.in
+%{_sysconfdir}/hostapd/hostapd.conf.in

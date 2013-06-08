@@ -5,12 +5,15 @@
 /etc/rssh.conf.in
 /etc/rsyslog.conf.in
 /etc/ssh/sshd_config.in
+/etc/dhcp/dhcpd-ts.conf.in
+/etc/hostapd/hostapd.conf.in
 /etc/sysconfig/init.in
 /etc/sysconfig/modules/pcspkr.modules
 /etc/sysconfig/olpc-scripts/setup.d/installed/dummy
 /etc/sysctl.conf.in
 /root/xs-apply-changes
 /usr/bin/bootstrap-xo
+/usr/bin/bootstrap-ts
 /usr/bin/cat-parts
 /usr/bin/prep-storage.sh
 /usr/bin/xs-mkaccount
