@@ -67,6 +67,12 @@ Summary: Bootstraper for running OLPC XS School server on an XO.
 %description xo
 Bootstraper for running OLPC XS School server on an XO.
 
+%package ts
+Summary: Bootstraper for running OLPC XS School server on an trimslice.
+
+%description ts
+Bootstraper for running OLPC XS School server on an trimslice.
+
 %prep
 %setup
 %install
