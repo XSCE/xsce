@@ -7,6 +7,7 @@
 /etc/ssh/sshd_config.in
 /etc/dhcp/dhcpd-ts.conf.in
 /etc/hostapd/hostapd.conf.in
+/etc/avahi/avahi-daemon.conf.in
 /etc/sysconfig/init.in
 /etc/sysconfig/modules/pcspkr.modules
 /etc/sysconfig/olpc-scripts/setup.d/installed/dummy

@@ -175,3 +175,5 @@ fi
 %{_bindir}/bootstrap-ts
 %{_sysconfdir}/dhcp/dhcpd-ts.conf.in
 %{_sysconfdir}/hostapd/hostapd.conf.in
+%{_sysconfdir}/avahi/avahi-daemon.conf.in
+

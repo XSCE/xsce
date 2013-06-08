@@ -9,6 +9,7 @@ install:
 	install -D files/sshd_config.in  $(DESTDIR)/etc/ssh/sshd_config.in
 	install -D files/dhcpd-ts.conf.in  $(DESTDIR)/etc/dhcp/dhcpd-ts.conf.in
 	install -D files/hostapd.conf.in  $(DESTDIR)/etc/hostapd/hostapd.conf.in
+	install -D files/avahi-daemon.conf.in  $(DESTDIR)/etc/avahi/avahi-daemon.conf.in
 	install -D files/init.in  $(DESTDIR)/etc/sysconfig/init.in
 	install -D files/pcspkr.modules  $(DESTDIR)/etc/sysconfig/modules/pcspkr.modules
 	install -D files/sysctl.conf.in  $(DESTDIR)/etc/sysctl.conf.in

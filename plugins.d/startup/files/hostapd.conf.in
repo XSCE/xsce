@@ -31,8 +31,7 @@ ignore_broadcast_ssid=0
 #wpa_passphrase=YourPassPhrase
 
 # Most modern wireless drivers in the kernel need driver=nl80211
-#driver=nl80211
-driver=rt2800usb
+driver=nl80211
 # Customize these for your local configuration...
 interface=wlan0
 hw_mode=g

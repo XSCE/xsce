@@ -39,6 +39,7 @@ install:
 	install -D -d  $(DESTDIR)etc/ssh/
 	install -D -d  $(DESTDIR)etc/dhcp/
 	install -D -d  $(DESTDIR)etc/hostapd/
+	install -D -d  $(DESTDIR)etc/avahi/
 	install -D -d  $(DESTDIR)etc/sysconfig/modules/
 	install -D -d  $(DESTDIR)etc/sysconfig/olpc-scripts/setup.d/
 	install -D -d  $(DESTDIR)etc/sysconfig/olpc-scripts/setup.d/installed/
