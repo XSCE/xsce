@@ -9,7 +9,7 @@ XSARCH=`uname -i`
  
 # bring in packages unique to trimslice install
 yum_cmd="yum -y install "
-$yum_cmd  avahi dhcpd hostapd xs-config
+$yum_cmd  audit avahi dhcpd hostapd xs-config
 
 # assign an ip address to the wifi hardware
 ifconfig wlan0 172.18.96.1
@@ -22,6 +22,8 @@ systemctl disable firewalld.service
 #+ so that it can be administered headless
 sed -i  "s/@@BASEDNSNAME@@/local/" /etc/dhcp/dhcpd-ts.conf.in > \
         /etc/dhcp/dhcpd.conf
+sed -i  "s/@@LAN_IF@@/wlan0/" /etc/sysconfig/dhcpd.in > \
+        /etc/sysconfig/dhcpd
 systemctl enable dhcpd.service
 systemctl start dhcpd.service
 
