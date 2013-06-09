@@ -26,7 +26,7 @@ systemctl enable dhcpd.service
 systemctl start dhcpd.service
 
 # load avahi so that the wan ip address can be discovered
-cp /etc/avahi/avahi.conf.in /etc/avahi/avahi.conf
+cp /etc/avahi/avahi-daemon.conf.in /etc/avahi/avahi-daemon.conf
 
 # Access Point host software
 systemctl enable hostapd.service
