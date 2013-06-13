@@ -1,0 +1,7 @@
+- hosts: 127.0.0.1
+  user: root
+  connection: local
+  tasks:
+    - include: tasks/install-xs.yml
+    - include: tasks/idmgr.yml
+

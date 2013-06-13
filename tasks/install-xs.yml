@@ -1,0 +1,9 @@
+- name: Install xs repo
+  get_url: url=http://xsce.activitycentral.com/repos/xsce-release.repo dest=/etc/yum.repos.d/
+- name: Install packages
+  yum: name=xs-config
+       state=latest
+- name: Disable xs-setup questions
+  shell: sed -i 's/read\ resp/resp=y/g' /usr/bin/xs-setup
+- name: Run xs-setup
+  shell: xs-setup

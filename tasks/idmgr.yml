@@ -1,0 +1,11 @@
+- name: run ansible facts
+  xsce_facts:
+- name: Install idmgr package
+  yum: name=idmgr
+      state=installed
+- name: Configure idmgr 
+  template: src=files/idmgr/idmgr.conf.j2
+            dest=/etc/idmgr.conf
+            owner=root
+            group=root
+            mode=0644
