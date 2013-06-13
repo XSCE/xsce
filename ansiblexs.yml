@@ -1,11 +1,16 @@
 - hosts: 127.0.0.1
   user: root
   connection: local
+  vars:
+  - watchdog: [ sshd,idmgr,ejabberd,httpd,postgresql,squid ]
   tasks:
     - name: run ansible facts
       xsce_facts:
 
 #    - include: tasks/install-xs.yml
-#    - include: tasks/idmgr.yml
-    - include: tasks/network.yml
-
+    - include: tasks/idmgr.yml
+    - include: tasks/monit.yml
+#    - include: tasks/network.yml
+#    - include: tasks/sysctl.yml
+#    - include: tasks/named.yml
+#    - include: tasks/dhcpd.yml
