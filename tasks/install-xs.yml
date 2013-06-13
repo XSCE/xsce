@@ -3,7 +3,10 @@
 - name: Install packages
   yum: name=xs-config
        state=latest
+  register: xsce_update
 - name: Disable xs-setup questions
   shell: sed -i 's/read\ resp/resp=y/g' /usr/bin/xs-setup
+  only_if: ${xsce_update.changed}
 - name: Run xs-setup
   shell: xs-setup
+  only_if: ${xsce_update.changed}

@@ -2,6 +2,10 @@
   user: root
   connection: local
   tasks:
-    - include: tasks/install-xs.yml
-    - include: tasks/idmgr.yml
+    - name: run ansible facts
+      xsce_facts:
+
+#    - include: tasks/install-xs.yml
+#    - include: tasks/idmgr.yml
+    - include: tasks/network.yml
 
