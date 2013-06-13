@@ -1,0 +1,9 @@
+- name: Install dhcp package
+  yum: name=dhcp
+      state=installed
+- name: Configure idmgr 
+  template: src=files/etc/dhcpd.conf.j2
+            dest=/etc/test-dhcpd.conf
+            owner=root
+            group=root
+            mode=0644
