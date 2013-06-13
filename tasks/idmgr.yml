@@ -7,3 +7,13 @@
             owner=root
             group=root
             mode=0644
+- name: Create systemd service file
+  copy: src=files/idmgr/idmgr.service
+        dest=/etc/systemd/system/idmgr.service
+        owner=root
+        group=root
+        mode=0644
+- name: Enable idmgr service
+  service: name=idmgr
+           enabled=yes
+           state=started
