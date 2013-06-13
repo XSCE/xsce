@@ -1,0 +1,9 @@
+- name: Install idmgr package
+  yum: name=bind
+      state=installed
+- name: Configure idmgr 
+  template: src=files/etc/named.conf.j2
+            dest=/etc/test-named.conf
+            owner=root
+            group=root
+            mode=0644
