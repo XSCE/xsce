@@ -11,7 +11,16 @@
    - { src: 'dhcp/dhcpd-xs.conf.j2', dest: '/etc/dhcpd-xs.conf' }
    - { src: 'dhcp/dhcpd-env.j2' , dest: '/etc/sysconfig/dhcpd' }
    - { src: 'dhcp/dhcpd.service', dest: '/etc/systemd/system/dhcpd.service' }
+- name: Create dhcpd needed files
+  command: touch /var/lib/dhcpd/dhcpd.leases
+           creates=/var/lib/dhcpd/dhcpd.leases
+- name: Check leases permissions
+  file: path=/var/lib/dhcpd/dhcpd.leases
+        owner=dhcpd
+        group=dhcpd
+        mode=0644
+        state=file
+
 - name: Enable dhcpd service
   service: name=dhcpd 
-           state=restarted
            enabled=yes
