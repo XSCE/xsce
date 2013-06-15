@@ -26,7 +26,7 @@ do
 	if [ -e $config ]; then
 	    mv $config $config.$BACKUP_SUFFIX
 	fi
-	sed -e s/@@BASEDNSNAME@@/$new_name/ $config.in > $config ;
+	sed -e s/{{ xsce_short_hostname }}/$new_name/ $config.in > $config ;
     else
 	echo WARNING: Skipped $config - template file is missing!
     fi
