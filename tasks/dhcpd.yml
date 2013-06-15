@@ -1,9 +1,17 @@
-- name: Install dhcp package
-  yum: name=dhcp
-      state=installed
-- name: Configure idmgr 
-  template: src=files/etc/dhcpd.conf.j2
-            dest=/etc/test-dhcpd.conf
+#- name: Install dhcp package
+#  yum: name=dhcp
+#      state=installed
+- name: Configure dhcpd
+  template: src=${item.src}
+            dest=${item.dest}
             owner=root
             group=root
             mode=0644
+  with_items:
+   - { src: 'dhcp/dhcpd-xs.conf.j2', dest: '/etc/dhcpd-xs.conf' }
+   - { src: 'dhcp/dhcpd-env.j2' , dest: '/etc/sysconfig/dhcpd' }
+   - { src: 'dhcp/dhcpd.service', dest: '/etc/systemd/system/dhcpd.service' }
+- name: Enable dhcpd service
+  service: name=dhcpd 
+           state=restarted
+           enabled=yes
