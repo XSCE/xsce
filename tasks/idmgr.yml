@@ -1,17 +1,44 @@
-- name: Install idmgr package
-  yum: name=idmgr
-      state=installed
-- name: Configure idmgr 
-  template: src=files/idmgr/idmgr.conf.j2
-            dest=/etc/idmgr.conf
+- name: Install idmgr packages
+  yum: name=${item}
+       state=installed
+  with_items:
+   - ds-backup-server
+   - idmgr
+   - xinetd
+   - xs-rsync
+- name: Configure idmgr
+  template: src=${item.src}
+            dest=${item.dest}
             owner=root
             group=root
             mode=0644
   with_items:
-   - { src: 'idmgr/idmgr.conf.j2', dest: '/etc/idmgr.conf' }
-   - { src: 'idmgr/idmgr.service', dest: '/etc/systemd/system/idmgr.service' }
+    - { src: 'idmgr/idmgr', dest: '/etc/idmgr.conf' }
+    - { src: 'idmgr/idmgr.service.j2', dest: '/etc/systemd/system/idmgr.service' }
 
+- name: Configure ds-backup
+  file: src=${item.src}
+        dest=${item.dest}
+        owner=root
+        state=link
+  with_items:
+    - { src: '/usr/share/ds-backup/apache-ds-backup.conf', dest: '/etc/httpd/conf.d/050-ds-backup.conf'}
+    - { src: '/usr/share/ds-backup/cron-ds-backup-server.conf', dest: '/etc/cron.d/ds-backup-server.conf' }
+- name: Configure ds-backup incrond task
+  file: src=templates/ds-backup/incron-ds-backup.conf
+        dest=/etc/incron.d/ds-backup.conf
+        owner=root
+        group=root
+        mode=0644
+        state=file
 - name: Enable idmgr service
-  service: name=idmgr
+  service: name=$item
            enabled=yes
            state=started
+  with_items:
+    - idmgr
+    - xinetd
+- name: Configure idmgr sqlite db
+  command: /etc/sysconfig/olpc-scripts/setup.d/idmgr
+           creates=/home/idmgr/identity.db
+
