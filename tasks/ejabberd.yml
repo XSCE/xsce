@@ -1,0 +1,24 @@
+#- name: Install ejabberd packages
+#  yum: name=${item}
+#       state=installed
+#  with_items:
+#   - ejabberd
+- name: Configure ejabberd
+  template: src=${item.src}
+            dest=${item.dest}
+            owner=root
+            group=root
+            mode=0644
+  with_items:
+    - { src: 'ejabberd/ejabberd-xs.cfg.j2', dest: '/etc/ejabberd/ejabberd-xs.cfg' }
+    - { src: 'ejabberd/popo.j2', dest: '/etc/ejabberd/ejabberd-xs.cfg' }
+    - { src: 'ejabberd/ejabberd-xs.init', dest: '/etc/init.d/ejabberd-xs' }
+    - { src: 'ejabberd/ejabberd-xs', dest: '/etc/sysconfig/ejabberd-xs' }
+    - { src: 'ejabberd/ejabberd', dest: '/etc/sysconfig/olpc-scripts/domain_config.d/ejabberd' }
+    - { src: 'ejabberd/ejabberd-xs.service.j2', dest: '/etc/systemd/system/ejabberd-xs.service' }
+    - { src: 'ejabberd/xs-ejabberd-srg', dest: '/usr/bin/xs-ejabberd-srg' }
+    - { src: 'ejabberd/10-ejabberdmoodle', dest: '/usr/share/xs-config/cfg/etc/sudoers.d/10-ejabberdmoodle' }
+
+- name: Enable ejabberd service
+  service: name=ejabberd-xs
+           enabled=yes
