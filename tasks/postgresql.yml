@@ -52,4 +52,3 @@
   service: name=postgresql-xs
            enabled=yes
            state=started 
-#TODO: Use different configuration based on memory avaliable
