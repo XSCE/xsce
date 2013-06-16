@@ -6,7 +6,7 @@
   vars_files:
   - vars/default_vars.yml
   tasks:
-     - include: tasks/pathagar.yml
+#     - include: tasks/pathagar.yml
 #     - include: tasks/xsce-facts.yml
 #     - name: Test template
 #       template: src=test.j2
@@ -22,3 +22,5 @@
 #    - include: tasks/avahi.yml
 #    - include: tasks/ejabberd.yml
 #    - include: tasks/postgresql.yml
+    - include: tasks/xo.yml
+      when: ansible_distribution_version == "13"
