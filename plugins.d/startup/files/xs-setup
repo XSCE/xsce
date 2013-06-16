@@ -85,7 +85,7 @@ if [[ $num_ifaces < 4 && $ISXO = 1 ]]; then
         sendmessage="true"
     fi
 fi
-if [[ $num_ifaces < 3 && $ISXO = 1 ] || [ ! -z $sendmessage ]]; then
+if [ $num_ifaces < 3 && $ISXO = 1 ] || [ ! -z $sendmessage ]; then
     set +x
     echo
     echo  "====================================================================="
