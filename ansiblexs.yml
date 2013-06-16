@@ -3,14 +3,22 @@
   connection: local
   vars:
   - watchdog: [ sshd,idmgr,ejabberd,httpd,postgresql,squid ]
+  vars_files:
+  - vars/default_vars.yml
   tasks:
-    - name: run ansible facts
-      xsce_facts:
+     - include: tasks/pathagar.yml
+#     - include: tasks/xsce-facts.yml
+#     - name: Test template
+#       template: src=test.j2
+#                dest=/tmp/varsdebug
 
 #    - include: tasks/install-xs.yml
-    - include: tasks/idmgr.yml
-    - include: tasks/monit.yml
+#    - include: tasks/idmgr.yml
+#    - include: tasks/dhcpd.yml
+#    - include: tasks/monit.yml
 #    - include: tasks/network.yml
 #    - include: tasks/sysctl.yml
 #    - include: tasks/named.yml
-#    - include: tasks/dhcpd.yml
+#    - include: tasks/avahi.yml
+#    - include: tasks/ejabberd.yml
+#    - include: tasks/postgresql.yml
