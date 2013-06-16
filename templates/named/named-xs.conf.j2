@@ -63,7 +63,7 @@ view "localhost_resolver"
 	include "/var/named-xs/named.rfc1912.zones";
 
 	/* and these are the local subnet names  */
-	zone "{{ xsce_short_hostname }}" in {
+	zone "{{ ansible_domain }}" in {
 		type master;
 		file "school.internal.zone.db";
 		allow-update {127.0.0.1; };
@@ -84,7 +84,7 @@ view "internal"
 	// These are your "authoritative" internal zones, and would probably
 	// also be included in the "localhost_resolver" view above :
 
-	zone "{{ xsce_short_hostname }}" {
+	zone "{{ ansible_domain }}" {
 		type master;
 		file "school.internal.zone.db";
 		allow-update {127.0.0.1; };
@@ -122,7 +122,7 @@ view "external"
         // These are your "authoritative" external zones, and would probably
         // also be included in the "localhost_resolver" view above :
 
-        zone "{{ xsce_short_hostname }}" {
+        zone "{{ ansible_domain }}" {
                 type master;
                 file "school.external.zone.db";
                 allow-update {127.0.0.1; };
