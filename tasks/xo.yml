@@ -15,6 +15,18 @@
             option=keepcache
             value=1
 
+- name: Keep docs wheninstalling packages
+  lineinfile: dest=/etc/rpm/macros.imgcreate
+              regexp='^%_excludedocs'
+              line='%_excludedocs 0'
+              state=present
+
+- name: Keep docs wheninstalling packages
+  lineinfile: dest=/etc/rpm/macros.imgcreate
+              regexp='^%_excludedocs'
+              line='%_excludedocs 0'
+              state=present
+
 - name: Configure networkmanager plugin
   ini_file: dest=/etc/NetworkManager/NetworkManager.conf
             section=main
@@ -27,4 +39,14 @@
             owner=root
             group=root
             mode=0600
+
+- name: Create bigger rwtab
+  lineinfile: dest=/etc/sysconfig/readonly-root
+              regexp='^RW_OPTIONS'
+              line='RW_OPTIONS="-o size=4M -o nr_inodes=2048"'
+              state=present
+- name: Remove dhcpd entry from /etc/rwtab
+  lineinfile: dest=/etc/rwtab
+              regexp='^empty.*/var/lib/dhcpd'
+              state=absent
 
