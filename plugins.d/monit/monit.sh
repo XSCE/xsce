@@ -26,7 +26,7 @@ function monit()
         ;;
 	"no")
 		systemctl disable monit 2>&1 | tee -a $LOG
-	        rm $SETUPSTATEDIR/idmgr
+	        rm $SETUPSTATEDIR/monit
         ;;
 	esac
 }
