@@ -23,6 +23,26 @@ function warn()
     shutdown now
 }
 
+function wait()
+{
+    echo "######################################################"
+    echo ""
+    echo ""
+    echo "WARNING external SD-card cannot be unmounted. This may"
+    echo "be a timing issue or because you are not root. Please wait"
+    echo "for 5 minutes to shut down, and run 'prep-storage.sh' again"
+    echo ""
+    echo ""
+    echo "#####################################################"
+    echo ""
+    read -p "Press [Enter] key to shutdown"
+    echo ""
+    echo ""
+    echo "shutting down in 5 seconds"
+    sleep 5
+    shutdown now
+}
+
 function unsupported()
 {
     echo "#####################################################"
@@ -103,6 +123,20 @@ if ! [ -d $MEDIAMNT ]; then
     echo "making mountpoint /library"
     mkdir $MEDIAMNT
 fi
+
+# add this code to check if SD card can be unmounted (bug 4025)
+    if [ "$(id -u)" != 0 ]; then
+        echo "This script must be run as root"
+        exit 1
+    fi
+    MNT=`mount | grep mmcblk0p1 | awk '{print $3}'`
+    echo "unmounting $MNT"
+    if [ x$MNT != x ]; then
+        umount $MNT
+        if [ ! $? -eq 0 ];then
+            wait
+        fi
+    fi
 
 get_devices
 DEVS=`echo $FOUNDDEVS | wc | awk '{print $1}'`
