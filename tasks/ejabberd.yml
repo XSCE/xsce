@@ -1,8 +1,8 @@
-#- name: Install ejabberd packages
-#  yum: name=${item}
-#       state=installed
-#  with_items:
-#   - ejabberd
+- name: Install ejabberd packages
+  yum: name=${item}
+       state=installed
+  with_items:
+   - ejabberd
 - name: Configure ejabberd
   template: src=${item.src}
             dest=${item.dest}

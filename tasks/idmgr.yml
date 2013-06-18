@@ -15,7 +15,10 @@
   with_items:
     - { src: 'idmgr/idmgr', dest: '/etc/idmgr.conf' }
     - { src: 'idmgr/idmgr.service.j2', dest: '/etc/systemd/system/idmgr.service' }
-
+- name: Create idmgr init script
+  command: cp /etc/init.d/idmgr /usr/libexec/idmgr.init
+          creates=/usr/libexec/idmgr.init
+      
 - name: Configure ds-backup
   command: /etc/sysconfig/olpc-scripts/setup.d/ds-backup
           creates=/etc/incron.d/ds-backup.conf

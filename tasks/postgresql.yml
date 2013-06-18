@@ -1,9 +1,9 @@
-#- name: Install postgresql packages
-#  yum: name=$item
-#       state=present
-#  with_items:
-#    - postgresql
-#    - postgresql-server
+- name: Install postgresql packages
+  yum: name=$item
+       state=present
+  with_items:
+    - postgresql
+    - postgresql-server
 
 - name: Create postgresql-xs systemd service
   template: src=postgresql/postgresql-xs.service
