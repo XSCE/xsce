@@ -10,7 +10,7 @@ ISTRIMSLICE=1  # we need to set up AP mode in xs-setup-network
  
 # bring in packages unique to trimslice install
 yum_cmd="yum -y install "
-$yum_cmd  audit avahi dhcpd hostapd xs-config
+$yum_cmd  audit avahi dhcpd hostapd xs-config usbmount
 
 # assign an ip address to the wifi hardware
 ifconfig wlan0 172.18.96.1
@@ -66,8 +66,40 @@ DEVICE=wlan0
 ONBOOT=yes
 NETMASK=255.255.224.0
 IPADDR=172.18.96.1
-NM_CONTROLLED=no
+NM_CONTROLLED=yes
 EOF
+
+# fix usbmount as /media is on tmpfs use /mnt instead
+#  maybe we should move this out of bootstrap and into startup -gh
+#  we need -p in order to re-execute this code
+mkdir -p /mnt/usb0
+mkdir -p /mnt/usb1
+mkdir -p /mnt/usb2
+mkdir -p /mnt/usb3
+mkdir -p /mnt/usb4
+mkdir -p /mnt/usb5
+mkdir -p /mnt/usb6
+mkdir -p /mnt/usb7
+sed -i -e 's:media:mnt:g' /etc/usbmount/usbmount.conf
+
+# check for other schoolservers on the local network
+tryname="schoolserver"
+if [[ `avahi-browse -t _workstation._tcp | grep schoolserver` ]]; then
+    x=1
+    tryname="schoolserver.$x"
+    while [ $x -le 9 ]; do
+        if [[ ! `avahi-browse -t _workstation._tcp | grep "$tryname"` ]]; then
+            break
+        fi
+        x=$(( "$x" + 1 ))
+        tryname="schoolserver.$x"
+    done
+else
+    echo "no otherschoolservers found"
+fi
+
+echo $tryname.local > /etc/hostname
+echo "HOSTNAME=$tryname.local" >> /etc/sysconfig/network
 
 # xs-setup not written to protect from uninitialized variables
 set +u
