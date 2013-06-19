@@ -16,12 +16,22 @@
     - { src: 'ejabberd/ejabberd-xs.service.j2', dest: '/etc/systemd/system/ejabberd-xs.service' }
     - { src: 'ejabberd/xs-ejabberd-srg', dest: '/usr/bin/xs-ejabberd-srg' }
     - { src: 'ejabberd/10-ejabberdmoodle', dest: '/usr/share/xs-config/cfg/etc/sudoers.d/10-ejabberdmoodle' }
-- name: Set permissions for init script
-  copy: src=templates/ejabberd/ejabberd-xs.init
-        dest=/etc/init.d/ejabberd-xs
-        owner=root
-        group=root
-        mode=0755
+
+- name: Configure ejabberd init scripts
+  template: src=${item.src}
+            dest=${item.dest}
+            owner=root
+            group=root
+            mode=0755755
+  with_items:
+    - { src: 'ejabberd/ejabberd-xs.init', dest: '/etc/init.d/ejabberd-xs' }
+    - { src: 'ejabberd/ejabberd-xs.init', dest: '/usr/libexec/ejabberd-xs' }
+
+- name: Create ejabberd pem file
+  command: openssl req -new -x509 -days 36500 -nodes -out /etc/ejabberd/ejabberd.pem -keyout /etc/ejabberd/ejabberd.pem -subj "/C=US/ST=Oregon/L=Portland/O=${ansible_fqdn}/OU=${ansible_hostname}/CN=ejabberd"
+         creates=/etc/ejabberd/ejabberd.pem
+   
 - name: Enable ejabberd service
   service: name=ejabberd-xs
            enabled=yes
+           state=started
