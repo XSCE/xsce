@@ -147,7 +147,7 @@ dansguardian yes
 upload yes
 #xo-admin yes
 	
-#stats yes
+stats yes
 
 # Finalize install
 yum-etckeeper yes
