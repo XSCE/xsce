@@ -2,6 +2,9 @@
   service: name=firewalld
            enabled=no
            state=stopped
+- name: Install iptables service package
+  yum: name=iptables-services
+       state=installed
 - name: Install iptables services
   template: src=${item.src}
             dest=${item.dest}
