@@ -98,6 +98,20 @@ else
     echo "no otherschoolservers found"
 fi
 
+if [ ! `grep "ifconfig wlan0" /etc/rc.d/rc.local` ]; then
+    cat << EOF >> /etc/rc.d/rc.local
+
+# the following lines configure wifi Access Point
+ifconfig wlan0 17.18.96.1
+systemctl restart dhcpd.service
+systemctl restart named.service
+systemctl restart hostapd.service
+
+# end of wifi Access Point config
+
+EOF
+fi
+
 echo $tryname.local > /etc/hostname
 echo "HOSTNAME=$tryname.local" >> /etc/sysconfig/network
 
