@@ -102,7 +102,7 @@ if [ ! `grep "ifconfig wlan0" /etc/rc.d/rc.local` ]; then
     cat << EOF >> /etc/rc.d/rc.local
 
 # the following lines configure wifi Access Point
-ifconfig wlan0 17.18.96.1
+ifconfig wlan0 172.18.96.1
 systemctl restart dhcpd.service
 systemctl restart named.service
 systemctl restart hostapd.service
