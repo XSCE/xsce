@@ -15,7 +15,7 @@ else
     cmd=$1
 fi
 case $cmd in
-"start" || "yes" || "on")
+"start" | "yes" | "on")
 # load TUN/TAP kernel module
     modprobe tun
 
@@ -37,7 +37,7 @@ case $cmd in
 	fi
 
     ;;
-"stop" || "no" || "off")
+"stop" | "no" | "off")
     killall openvpn
     ;;
 "status")
