@@ -26,5 +26,5 @@
 </div><!-- #main -->
 </div><!-- #wrapper -->
 </BODY>
-
+<script type="text/javascript" src="incl/xs-portal.js"></script>
 </HTML>
