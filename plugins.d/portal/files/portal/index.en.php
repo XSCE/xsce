@@ -17,7 +17,9 @@
 <br><h2>Interesting Things You Can Do Here:</h2>
 
 <?php service_link("pathagar", "Read Books on Pathagar", "Pathagar is a Book Server that contains a local collection of books that you can read without downloading them from the internet."); ?>
-<?php iiab_link("Internet In A Box", "Internet-in-a-Box is a copy of some of the most important material on the internet, such as the Wikipedia, stored locally where you can reach it easily."); ?>
+<?php iiab_link("Internet In A Box", 
+                "Internet-in-a-Box is a copy of some of the most important material on the internet, such as the Wikipedia, stored locally where you can reach it easily.",
+                "Searching for Internet In A Box"); ?>
 <?php service_link("moodle-xs", "Moodle Home Page", "Moodle is a collection of lessons and study materials organized to help you learn many fascinating things."); ?>
 <?php service_link("upload", "Upload Files", "From this link you can upload various files such as images and activities"); ?>
 <?php service_link("activity-server", "Download an Activity", "You can add a new activity to your XO from this link."); ?>
