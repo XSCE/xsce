@@ -149,6 +149,8 @@ upload yes
 	
 #stats yes
 
+#Enable software watchdog
+monit yes
 # Finalize install
 yum-etckeeper yes
 create-usb-repo2

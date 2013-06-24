@@ -154,6 +154,7 @@ fi
 
 #monit
 %config(noreplace) %{_prefix}/share/xs-config/cfg/etc/monit.d/*
+%config(noreplace) %{_sysconfdir}/monitrc.in
 
 %{_bindir}/cat-parts
 %{_bindir}/xs-*

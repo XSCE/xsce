@@ -1,3 +1,4 @@
+/etc/monitrc.in
 /usr/share/xs-config/cfg/etc/monit.d/httpd
 /usr/share/xs-config/cfg/etc/monit.d/ejabberd
 /usr/share/xs-config/cfg/etc/monit.d/sshd

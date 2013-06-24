@@ -10,6 +10,7 @@ function monit()
 
             touch $SETUPSTATEDIR/monit
 	    #sshd is always enabled
+	    cp -f /etc/monitrc.in /etc/monitrc
             ln -sf /usr/share/xs-config/cfg/etc/monit.d/sshd /etc/monit.d/sshd
 
 	    for i in ejabberd httpd squid idmgr postgresql
