@@ -152,6 +152,9 @@ fi
 #%attr(700, postgres, postgres)   %dir /library/pgsql-xs
 %config(noreplace) /root/xs-apply-changes
 
+#monit
+%config(noreplace) %{_prefix}/share/xs-config/cfg/etc/monit.d/*
+
 %{_bindir}/cat-parts
 %{_bindir}/xs-*
 %{_libexecdir}/moodle-xs-init

@@ -63,5 +63,7 @@ install:
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/etc/sysconfig/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/etc/sysconfig/vnc/
 	install -D -d $(DESTDIR)usr/share/xs-config/plugins.d
+	install -D -d $(DESTDIR)usr/share/xs-config/cfg/etc/monit.d/
+
 	cp -rp * $(DESTDIR)usr/share/xs-config/plugins.d
 	rm -rf $(DESTDIR)usr/share/xs-config/plugins.d/*/files/
