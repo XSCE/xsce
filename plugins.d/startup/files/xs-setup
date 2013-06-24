@@ -125,6 +125,9 @@ fi
 httpd yes
 #vnc yes
 
+# Portal
+portal yes
+
 # Core services offered
 ejabberd yes
 #xs-security yes
