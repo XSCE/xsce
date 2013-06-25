@@ -150,7 +150,7 @@ dansguardian yes
 upload yes
 #xo-admin yes
 	
-#stats yes
+stats yes
 
 #Enable software watchdog
 monit yes
