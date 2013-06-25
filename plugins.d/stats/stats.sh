@@ -10,8 +10,11 @@ function stats {
         touch $SETUPSTATEDIR/stats
         mkdir -p /library/sugar-stats/rrd
         mkdir -p /library/sugar-stats/log
+        cp -f /etc/systemd/system/sugar-stats-server.service.in \
+              /etc/systemd/system/sugar-stats-server.service
 	chown sugar-stats.sugar-stats /library/sugar-stats -R
-        cp /etc/sugar-stats.conf.in /etc/sugar-stats.conf
+        cp -f /etc/sugar-stats.conf.in /etc/sugar-stats.conf
+        systemctl enable sugar-stats-server
 #        if [ ! -e /home/admin/openssl/server.key ]; then
 #            openssl genrsa -des3 -out /home/admin/openssl/server.key 1024
 #            cp /home/admin/openssl/server.key /home/admin/openssl/server.key.org
@@ -21,6 +24,7 @@ function stats {
         ;;
 
     "no")
+        systemctl disable sugar-stats-server
         rm $SETUPSTATEDIR/stats
         ;;
     esac
