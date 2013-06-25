@@ -67,6 +67,12 @@ Summary: Bootstraper for running OLPC XS School server on an XO.
 %description xo
 Bootstraper for running OLPC XS School server on an XO.
 
+%package ts
+Summary: Bootstraper for running OLPC XS School server on an trimslice.
+
+%description ts
+Bootstraper for running OLPC XS School server on an trimslice.
+
 %prep
 %setup
 %install
@@ -168,3 +174,10 @@ fi
 %{_bindir}/bootstrap-xo
 %{_bindir}/prep-storage.sh
 %{_libdir}/udev/rules.d/10-olpc-net.rules
+
+%files ts
+%{_bindir}/bootstrap-ts
+%{_sysconfdir}/dhcp/dhcpd-ts.conf.in
+%{_sysconfdir}/hostapd/hostapd.conf.in
+%{_sysconfdir}/avahi/avahi-daemon.conf.in
+
