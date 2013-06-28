@@ -158,6 +158,9 @@ fi
 #%attr(700, postgres, postgres)   %dir /library/pgsql-xs
 %config(noreplace) /root/xs-apply-changes
 
+#dansguardian
+%config(noreplace) %{_sysconfdir}/dansguardian/dansguardian.conf.in
+
 #monit
 %config(noreplace) %{_prefix}/share/xs-config/cfg/etc/monit.d/*
 %config(noreplace) %{_sysconfdir}/monitrc.in

@@ -20,6 +20,7 @@ install:
 	install -D -d  $(DESTDIR)etc/sysconfig/olpc-scripts/domain_config.d/
 	install -D -d  $(DESTDIR)etc/systemd/
 	install -D -d  $(DESTDIR)etc/systemd/system/
+	install -D -d  $(DESTDIR)etc/dansguardian/
 	install -D -d  $(DESTDIR)var/
 	install -D -d  $(DESTDIR)var/named-xs/
 	install -D -d  $(DESTDIR)var/named-xs/data/
