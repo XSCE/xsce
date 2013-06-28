@@ -348,7 +348,7 @@ maxcontentfilecachescansize = 20000
 # File cache dir
 # Where DG will download files to be scanned if too large for the
 # RAM cache.
-filecachedir = '/tmp'
+filecachedir = '/library/dansguardian'
 
 
 
