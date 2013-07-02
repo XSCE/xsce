@@ -1,5 +1,5 @@
 #  This is a configuration file for the OLPC idmgr
 #  See http://wiki.laptop.org/go/School_Identity_Manager
-BACKUP={{ ansible_fqdn }}
-PRESENCE={{ ansible_fqdn }}
+BACKUP={{ ansible_fqdn }}.local
+PRESENCE={{ ansible_fqdn }}.local
 BIND_ADDRESS=0.0.0.0
