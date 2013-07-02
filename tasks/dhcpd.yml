@@ -6,11 +6,11 @@
             dest=${item.dest}
             owner=root
             group=root
-            mode=0644
+            mode=${item.mode}
   with_items:
-   - { src: 'dhcp/dhcpd-xs.conf.j2', dest: '/etc/dhcpd-xs.conf' }
-   - { src: 'dhcp/dhcpd-env.j2' , dest: '/etc/sysconfig/dhcpd' }
-   - { src: 'dhcp/dhcpd.service', dest: '/etc/systemd/system/dhcpd.service' }
+   - { src: 'dhcp/dhcpd-xs.conf.j2', dest: '/etc/dhcpd-xs.conf', mode: '0644' }
+   - { src: 'dhcp/dhcpd-env.j2' , dest: '/etc/sysconfig/dhcpd' , mode: '0755' }
+   - { src: 'dhcp/dhcpd.service', dest: '/etc/systemd/system/dhcpd.service', mode: '0755' }
 - name: Create dhcpd needed files
   command: touch /var/lib/dhcpd/dhcpd.leases
            creates=/var/lib/dhcpd/dhcpd.leases
