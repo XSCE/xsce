@@ -1,0 +1,9 @@
+#Interfaces
+wan_if: 2
+lan_if: 1
+
+#Services
+services:
+  - name: idmgr
+    enabled: yes
+    
