@@ -6,9 +6,6 @@
        state=installed
   register: xsce_update
 
-- name: Create xsce domain file
-  shell: echo local > /etc/sysconfig/xs_domain_name
-        creates=/etc/sysconfig/xsce/domain
 - name: Create /library
   file: path=/library
         owner=root
@@ -16,9 +13,6 @@
         mode=0755
         state=directory
 
-#- name: Disable xs-setup questions
-#  shell: sed -i 's/read\ resp/resp=y/g' /usr/bin/xs-setup
-#  only_if: ${xsce_update.changed}
 #- name: Run xs-setup
 #  shell: xs-setup
-#  only_if: ${xsce_update.changed}
+#  creates: /.olpcxs-configured
