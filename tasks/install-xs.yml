@@ -3,7 +3,7 @@
 
 - name: Install packages
   yum: name=xs-config
-       state=latest
+       state=installed
   register: xsce_update
 
 - name: Create xsce domain file
