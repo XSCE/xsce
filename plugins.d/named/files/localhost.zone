@@ -9,4 +9,3 @@ $TTL	86400
 	        IN NS		@
 	 	IN A		127.0.0.1
 		IN AAAA		::1
-
