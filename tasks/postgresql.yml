@@ -37,7 +37,7 @@
             owner=postgres
             group=postgres
             mode=0640
-  when: ansible_memtotal_mb < 2000
+  when: ansible_memtotal_mb > 1000 and ansible_memtotal_mb < 2000
 - name: Configure postgres (2048mb)
   template: src=postgresql/postgresql-512m.conf
             dest=/library/pgsql-xs/postgresql.conf
