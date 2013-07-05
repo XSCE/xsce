@@ -10,4 +10,3 @@ presence	IN	CNAME	schoolserver
 xs		IN	CNAME	schoolserver
 library		IN	CNAME	schoolserver
 conference.schoolserver	IN	CNAME	schoolserver
-

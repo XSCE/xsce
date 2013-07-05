@@ -6,8 +6,8 @@
   vars_files:
   - vars/default_vars.yml
   tasks:
-    - include: tasks/xo.yml
-      when: ansible_distribution_version == "13"
+#    - include: tasks/xo.yml
+#      when: ansible_distribution_version == "13"
     - include: tasks/install-xs.yml
     - include: tasks/idmgr.yml
     - include: tasks/dhcpd.yml

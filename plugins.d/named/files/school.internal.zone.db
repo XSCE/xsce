@@ -22,4 +22,3 @@ escuela         IN      CNAME       school
 
 ; de - schule
 schule          IN      CNAME       school
-
