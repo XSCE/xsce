@@ -8,7 +8,7 @@ function ansible()
                 exit $YUMERROR
             fi
 	    chmod 755 /usr/bin/xs-runansible
-	    /usr/bin/xs-runansible
+	    #/usr/bin/xs-runansible
             touch $SETUPSTATEDIR/ansible
         ;;
 	"no")
