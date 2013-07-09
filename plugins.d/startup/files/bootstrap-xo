@@ -6,6 +6,7 @@ FIX_RPMS="sed libidn grep which util-linux wget gnupg2 groff gnash"
 LOG=/home/olpc/xs-setup.log
 FEDORA=`rpm -q fedora-release|gawk 'BEGIN {FS="-";}{print $3}'`
 XSARCH=`uname -i`
+NO_REBOOT=0
 
 if [ $ISXO = "1" ]
 then
@@ -14,6 +15,16 @@ then
     # that persists
     err=`cat /etc/fstab | grep -e "#varlog"`
     if [ "x$err" = "x" ]; then
+        while [ $# -gt 0 ]; do
+	    case $1 in
+		--no-reboot) NO_REBOOT=1 ;;
+		(--) shift; break;;
+		(-*) echo "$0: error - unrecognized option $1" >&2; exit 1;;
+	        (*) break;;
+	    esac
+	    shift
+        done
+
 	echo "bootstrap-xo routine started" | tee -a $LOG
 	date  2>&1 | tee -a $LOG
 	# use the supplied 10-olpc-net.rules remove the 70-olpc-net.rules
@@ -196,6 +207,11 @@ EOF
 	fi
 	echo "bootstrap-xo routine completed" | tee -a $LOG
 	date  2>&1 | tee -a $LOG
+	if [ $NO_REBOOT -eq 1 ]; then
+	    echo "no-reboot used on cmdline " | tee -a $LOG
+	    exit 0
+	fi
+
         set +x
         echo
         echo "================================================================="
