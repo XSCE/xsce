@@ -309,7 +309,7 @@ function do_once()
 
     # keep yum cache
     sed -i -e 's/keepcache=0/keepcache=1/' /etc/yum.conf
-    if [ -f etc/yum.repos.d/fedora.rep ]; then  # rpi uses pidora repo name
+    if [ -f /etc/yum.repos.d/fedora.repo ]; then  # rpi uses pidora repo name
         sed -i -e 's/metadata_expire=7d/metadata_expire=never/' /etc/yum.repos.d/fedora.repo
     fi
     #sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora.repo
