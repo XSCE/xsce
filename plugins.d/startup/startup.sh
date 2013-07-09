@@ -114,11 +114,11 @@ function create-usb-repo2()
     echo "starting create-usb-repo2" | tee -a $LOG
     ARCH=`ls /var/cache/yum`
     RELEASEVER=`ls /var/cache/yum/$ARCH`
-    u_mnt="`mount | grep var/cache/yum | gawk '{print $1}'`"
+    u_mnt=`mount | grep var/cache/yum | gawk '{print $1}' | gawk '{print $1}'`
     echo "VAR-u_mnt is $u_mnt"
     if ! [ -z $u_mnt ]; then
 	umount /var/cache/yum | tee -a $LOG
-	if [ x$u_mnt != 'x' ]; then
+	if [ x$u_mnt != x ]; then
 	    usbkey=$(findmnt -n -o TARGET -S $u_mnt)
 	    echo "found $usbkey"
 	    if [ -d $usbkey/xs-repo -a ! -d $usbkey/library ]; then
