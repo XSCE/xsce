@@ -1,5 +1,5 @@
 PATHAGARUSER=pathagar
-PATHPASSWORD="(/koob)"
+PATHPASSWORD="revreskoob"  # bookserver spelled backwards
 function pathagar()
 {
 	case "$1" in
@@ -39,7 +39,7 @@ function pathagar()
         fi
         sed -i -e 's/^local.*/local    all    all    trust/' \
                 /library/pgsql-xs/pg_hba.conf
-        sed -i -e 's/^host.*/host     all    127.0.0.1/32   trust/'\
+        sed -i -e 's/^host.*127.*/host     all    all    127.0.0.1\/32   trust/'\
                 /library/pgsql-xs/pg_hba.conf
         systemctl restart postgresql-xs.service
 
@@ -52,12 +52,12 @@ function pathagar()
             ln -s /etc/pathagar/settings.py .
             export "DJANGO_SETTINGS_MODULE=pathagar.settings"
 
-            # create a Django admin user
-            echo "from django.contrib.auth.models import User; \
+            # create a Django admin user -- first create a command string
+            CMD="from django.contrib.auth.models import User; \
                 User.objects.create_superuser\
-                (\'$PATHAGARUSER\', \'$PATHAGARUSER@schoolserver.local\',\
-                 \'$PATHPASSWORD\')" | \
-                su - $PATHAGARUSER -c "$SITE/pathagar/manage.py shell"
+                ('$PATHAGARUSER', '$PATHAGARUSER@schoolserver.local',\
+                 '$PATHPASSWORD')"
+                echo "$CMD" | su - "$PATHAGARUSER" -c "$SITE/pathagar/manage.py shell"
 
             su - $PATHAGARUSER -c "django-admin syncdb --noinput --traceback \
                 --settings=pathagar.settings"
