@@ -152,6 +152,10 @@ upload yes
 	
 stats yes
 
+#Install ansible rpm
+#playbooks can be applied using xs-runansible
+ansible yes
+
 #Enable software watchdog
 monit yes
 # Finalize install
