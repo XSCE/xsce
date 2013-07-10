@@ -112,12 +112,7 @@ EOF
 function create-usb-repo2()
 {
     echo "starting create-usb-repo2" | tee -a $LOG
-    if [ $XSARCH = "armv7l" ];then
-        ARCH=armhfp
-    else
-        ARCH=i386
-    fi
-    RELEASEVER=`ls /var/cache/yum/$ARCH`
+    RELEASEVER=`ls /var/cache/yum/$XSARCH`
     u_mnt=`mount | grep var/cache/yum | gawk '{print $1}' | gawk '{print $1}'`
     echo "VAR-u_mnt is $u_mnt"
     if ! [ -z $u_mnt ]; then
