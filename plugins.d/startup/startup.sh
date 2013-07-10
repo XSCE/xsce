@@ -62,10 +62,13 @@ function get_usb_repo()
 	    echo "INFO using <usbkey>/xs-repo for yum cache" | tee -a $LOG
 	    mount --bind /mnt/$usb/xs-repo /var/cache/yum
 	    # convert uname -i to match what yum uses
+	    # might need to converet to using case for x64 i386 if affected
 	    if [ $XSARCH = "armv7l" ];then
-		XSARCH=armhfp
+		YUM_ARCH=armhfp
+	    else
+		YUM_ARCH=$XSARCH
 	    fi
-            if [ -d /mnt/$usb/xs-repo/$XSARCH/$FEDORA/repodata ];then
+            if [ -d /mnt/$usb/xs-repo/$YUM_ARCH/$FEDORA/repodata ];then
 		YUM_CMD="yum -c /tmp/yum.conf -y install"
 		YUM_REINSTALL="yum -c /tmp/yum.conf -y reinstall"
 		cat << EOF > /tmp/yum.conf
@@ -99,7 +102,7 @@ gpgcheck=0
 cost=100
 
 EOF
-		echo "FOUND /var/cache/yum/$XSARCH/$FEDORA/metadata" | tee -a $LOG
+		echo "FOUND /var/cache/yum/$YUM_ARCH/$FEDORA/metadata" | tee -a $LOG
 	    else
 		echo "INFO metadata not found - skipping repo use"| tee -a $LOG
 	    fi
@@ -112,7 +115,7 @@ EOF
 function create-usb-repo2()
 {
     echo "starting create-usb-repo2" | tee -a $LOG
-    RELEASEVER=`ls /var/cache/yum/$XSARCH`
+    RELEASEVER=`ls /var/cache/yum/$YUM_ARCH`
     u_mnt=`mount | grep var/cache/yum | gawk '{print $1}' | gawk '{print $1}'`
     echo "VAR-u_mnt is $u_mnt"
     if ! [ -z $u_mnt ]; then
@@ -121,9 +124,9 @@ function create-usb-repo2()
 	    usbkey=$(findmnt -n -o TARGET -S $u_mnt)
 	    echo "found $usbkey"
 	    if [ -d $usbkey/xs-repo -a ! -d $usbkey/library ]; then
-		mkdir -p $usbkey/xs-repo/$ARCH/$RELEASEVER/local | tee -a $LOG
-		yumdownloader --destdir=$usbkey/xs-repo/$ARCH/$RELEASEVER/local xs-config* | tee -a $LOG
-		createrepo $usbkey/xs-repo/$ARCH/$RELEASEVER | tee -a $LOG
+		mkdir -p $usbkey/xs-repo/$YUM_ARCH/$RELEASEVER/local | tee -a $LOG
+		yumdownloader --destdir=$usbkey/xs-repo/$YUM_ARCH/$RELEASEVER/local xs-config* | tee -a $LOG
+		createrepo $usbkey/xs-repo/$YUM_ARCH/$RELEASEVER | tee -a $LOG
 		sleep 2
 		sync
 		umount $usbkey | tee -a $LOG
