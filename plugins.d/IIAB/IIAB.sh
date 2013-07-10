@@ -1,4 +1,4 @@
-function vnc()
+function IIAB()
 {
 	case "$1" in
 	"yes")
