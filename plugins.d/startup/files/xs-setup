@@ -129,7 +129,7 @@ httpd yes
 portal yes
 
 # Core services offered
-#ejabberd yes
+ejabberd yes
 #xs-security yes
 #idmgr yes
 #postgresql yes

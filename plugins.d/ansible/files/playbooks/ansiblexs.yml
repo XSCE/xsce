@@ -18,6 +18,6 @@
 #    - include: tasks/named.yml
     - include: tasks/avahi.yml
     - include: tasks/sugar-stats.yml
-    - include: tasks/ejabberd.yml
+#    - include: tasks/ejabberd.yml
     - include: tasks/postgresql.yml
 #    - include: tasks/pathagar.yml
