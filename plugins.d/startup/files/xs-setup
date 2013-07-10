@@ -131,9 +131,8 @@ portal yes
 # Core services offered
 ejabberd yes
 #xs-security yes
-idmgr yes
-postgresql yes
-moodle yes
+#idmgr yes
+#postgresql yes
 activity-server yes
 openvpn yes
 #puppet yes
@@ -142,7 +141,7 @@ openvpn yes
 #pathagar yes
 
 # needs work
-avahi yes
+#avahi yes
 
 dansguardian yes
 #ntop yes
@@ -150,18 +149,23 @@ dansguardian yes
 upload yes
 #xo-admin yes
 	
-stats yes
+#stats yes
 
 #Install ansible rpm
 #playbooks can be applied using xs-runansible
 ansible yes
 
 #Enable software watchdog
-monit yes
+#monit yes
 # Finalize install
 yum-etckeeper yes
 create-usb-repo2
 do-last
+
+xs-runansible
+
+#moodle needs postgresql running
+moodle yes
 
 echo "XS configured; ready to reboot and use."
 #echo "please check the configured services below"
