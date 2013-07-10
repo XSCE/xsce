@@ -133,7 +133,6 @@ ejabberd yes
 #xs-security yes
 #idmgr yes
 #postgresql yes
-moodle yes
 activity-server yes
 openvpn yes
 #puppet yes
@@ -164,6 +163,10 @@ create-usb-repo2
 do-last
 
 xs-runansible
+
+#moodle needs postgresql running
+moodle yes
+
 echo "XS configured; ready to reboot and use."
 #echo "please check the configured services below"
 #xs-services-check
