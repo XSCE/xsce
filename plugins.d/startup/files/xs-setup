@@ -120,52 +120,52 @@ if [[ $num_ifaces > 2 ]]; then
     dhcpd yes
     touch /.olpcxs-net-configured
 fi
-    
-# Remote admin services
+
+# Core services offered
 httpd yes
-#vnc yes
+    
+ejabberd yes
+xs-security yes
+idmgr yes
+postgresql yes
+activity-server yes
+moodle yes
+avahi yes
 
 # Portal
 portal yes
 
-# Core services offered
-ejabberd yes
-#xs-security yes
-#idmgr yes
-#postgresql yes
-activity-server yes
-openvpn yes
-#puppet yes
-
 # optional services -- enabled now for testing
-#pathagar yes
 IIAB yes
-# needs work
-#avahi yes
-
+openvpn yes
+puppet yes
+stats yes
 dansguardian yes
+upload yes
+
 #ntop yes
 #nmon yes
-upload yes
 #xo-admin yes
-	
-#stats yes
+
+# Remote admin services
+#vnc yes
 
 #Install ansible rpm
 #playbooks can be applied using xs-runansible
 ansible yes
 
 #Enable software watchdog
-#monit yes
+monit yes
+
+# needs work
+#pathagar yes
+
+# xs-runansible
+
 # Finalize install
 yum-etckeeper yes
 create-usb-repo2
 do-last
-
-xs-runansible
-
-#moodle needs postgresql running
-moodle yes
 
 echo "XS configured; ready to reboot and use."
 #echo "please check the configured services below"
