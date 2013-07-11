@@ -115,10 +115,10 @@ EOF
 function create-usb-repo2()
 {
     echo "starting create-usb-repo2" | tee -a $LOG
-    RELEASEVER=`ls /var/cache/yum/$YUM_ARCH`
     u_mnt=`mount | grep var/cache/yum | gawk '{print $1}' | gawk '{print $1}'`
     echo "VAR-u_mnt is $u_mnt"
     if ! [ -z $u_mnt ]; then
+        RELEASEVER=`ls /var/cache/yum/$YUM_ARCH`
 	umount /var/cache/yum | tee -a $LOG
 	if [ x$u_mnt != x ]; then
 	    usbkey=$(findmnt -n -o TARGET -S $u_mnt)
