@@ -8,19 +8,19 @@ function IIAB()
             exit $YUMERROR
         fi
         touch $SETUPSTATEDIR/IIAB
-        cp `which iiab.wsgi` /var/www/html
-        cat << EOF > /etc/httpd/conf.d/iiab.conf
-        XSendFile on
-        XSendFilePath /iiab
-
-        <VirtualHost *>
-             WSGIScriptAlias /iiab /var/www/html/iiab.wsgi
-
-             <Directory /var/www/iiab>
-                 require all granted
-             </Directory>
-        </VirtualHost>
-        EOF
+#        cp `which iiab.wsgi` /var/www/html
+#        cat << EOF > /etc/httpd/conf.d/iiab.conf
+#        XSendFile on
+#        XSendFilePath /iiab
+#
+#        <VirtualHost *>
+#             WSGIScriptAlias /iiab /var/www/html/iiab.wsgi
+#
+#            <Directory /var/www/iiab>
+#                 require all granted
+#             </Directory>
+#        </VirtualHost>
+#        EOF
 
         ;;
     "no")
