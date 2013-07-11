@@ -9,7 +9,7 @@ function IIAB()
         fi
         touch $SETUPSTATEDIR/IIAB
         cp `which iiab.wsgi` /var/www/html
-        cat <<EOF > /etc/httpd/conf.d/iiab.conf
+        cat << EOF > /etc/httpd/conf.d/iiab.conf
         XSendFile on
         XSendFilePath /iiab
 
