@@ -7,4 +7,5 @@ sleep 20
 ## named is installed breaking dns
 #xs-setup-network
 # powerd generates its own rules wait a bit and load ours 
-systemctl condrestart iptables.service
+#systemctl condrestart iptables.service
+/bin/iiab-server &
