@@ -17,6 +17,7 @@
 /usr/share/xs-config/cfg/etc/NetworkManager/system-connections/dhcp
 /usr/share/xs-config/cfg/etc/NetworkManager/system-connections/eth0-wireless
 /usr/share/xs-config/cfg/etc/NetworkManager/system-connections/eth0-wireless-lan
+/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/wireless-lan
 /usr/share/xs-config/cfg/etc/NetworkManager/system-connections/static
 /usr/share/xs-config/cfg/etc/NetworkManager/system-connections/Sugar
 /usr/share/xs-config/cfg/etc/systemd/system/iptables.service

@@ -19,6 +19,7 @@ install:
 	install -D files/dhcp  $(DESTDIR)/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/dhcp
 	install -D files/eth0-wireless  $(DESTDIR)/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/eth0-wireless
 	install -D files/eth0-wireless-lan  $(DESTDIR)/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/eth0-wireless-lan
+	install -D files/wireless-lan  $(DESTDIR)/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/wireless-lan
 	install -D files/static  $(DESTDIR)/usr/share/xs-config/cfg/etc/NetworkManager/system-connections/static
 	install -D files/iptables.service  $(DESTDIR)/usr/share/xs-config/cfg/etc/systemd/system/iptables.service
 	install -D files/cnt_interface_info.php  $(DESTDIR)/usr/share/xs-config/cfg/html/top/es/cnt_interface_info.php
