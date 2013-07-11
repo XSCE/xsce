@@ -9,8 +9,6 @@ install:
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/httpd/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/httpd/conf.d/
-	install -D -d  $(DESTDIR)etc/systemd/
-	install -D -d  $(DESTDIR)etc/systemd/system/
 	install -D -d  $(DESTDIR)etc/pgsql-xs/
 	install -D -d  $(DESTDIR)etc/sysconfig/
 	install -D -d  $(DESTDIR)etc/sysconfig/pgsql/
@@ -20,11 +18,12 @@ install:
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/library/pgsql-xs/
 	install -D -d  $(DESTDIR)etc/sysconfig/olpc-scripts/
 	install -D -d  $(DESTDIR)etc/sysconfig/olpc-scripts/domain_config.d/
-	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/monit.d/
+	install -D -d  $(DESTDIR)etc/systemd/
+	install -D -d  $(DESTDIR)etc/systemd/system/
+	install -D -d  $(DESTDIR)etc/dansguardian/
 	install -D -d  $(DESTDIR)var/
 	install -D -d  $(DESTDIR)var/named-xs/
 	install -D -d  $(DESTDIR)var/named-xs/data/
-	install -D -d  $(DESTDIR)etc/dansguardian/
 	install -D -d  $(DESTDIR)etc/ejabberd/
 	install -D -d  $(DESTDIR)etc/init.d/
 	install -D -d  $(DESTDIR)/etc/init.d/
@@ -48,10 +47,6 @@ install:
 	install -D -d  $(DESTDIR)root/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/profile.d/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/yum.repos.d/
-	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/html/portal/
-	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/portal/incl/
-	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/portal/images/
-	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/portal/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/top/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/top/es/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/top/en/
@@ -72,5 +67,7 @@ install:
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/etc/sysconfig/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/etc/sysconfig/vnc/
 	install -D -d $(DESTDIR)usr/share/xs-config/plugins.d
+	install -D -d $(DESTDIR)usr/share/xs-config/cfg/etc/monit.d/
+
 	cp -rp * $(DESTDIR)usr/share/xs-config/plugins.d
 	rm -rf $(DESTDIR)usr/share/xs-config/plugins.d/*/files/
