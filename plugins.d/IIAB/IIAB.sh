@@ -16,7 +16,7 @@ function IIAB()
         <VirtualHost *>
              WSGIScriptAlias /iiab /var/www/html/iiab.wsgi
 
-             <Directory /var/www/>
+             <Directory /var/www/iiab>
                  require all granted
              </Directory>
         </VirtualHost>
