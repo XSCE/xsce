@@ -7,21 +7,18 @@ function IIAB()
             echo "\n\nYum returned an error\n\n" | tee -a $LOG
             exit $YUMERROR
         fi
+        ln -sf /bin/iiab.wsgi /var/www/html/iiab.wsgi
+	if [ ! -f $SETUPSTATEDIR/IIAB ]; then
+	    cat << EOF >> /etc/httpd/conf/http.conf
+XSendFile on
+XSendFilePath /
+WSGIScriptAlias /iiab /var/www/iiab.wsgi
+EOF
+	fi
+        cat << EOF > /etc/httpd/conf.d/iiab.conf
+Redirect /iiab http://schoolserver:25000/iiab
+EOF
         touch $SETUPSTATEDIR/IIAB
-#        cp `which iiab.wsgi` /var/www/html
-#        cat << EOF > /etc/httpd/conf.d/iiab.conf
-#        XSendFile on
-#        XSendFilePath /iiab
-#
-#        <VirtualHost *>
-#             WSGIScriptAlias /iiab /var/www/html/iiab.wsgi
-#
-#            <Directory /var/www/iiab>
-#                 require all granted
-#             </Directory>
-#        </VirtualHost>
-#        EOF
-
         ;;
     "no")
         rm $SETUPSTATEDIR/IIAB
