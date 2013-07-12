@@ -52,6 +52,7 @@ install:
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/portal/incl/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/portal/images/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/portal/
+	install -D -d  $(DESTDIR)/usr/share/xs-config/etc/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/top/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/top/es/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/top/en/

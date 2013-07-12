@@ -7,3 +7,4 @@ install:
 	install -D files/portal/xs-portal.css  $(DESTDIR)/usr/share/xs-config/cfg/html/portal/
 	install -D files/portal/index.hi.php  $(DESTDIR)/usr/share/xs-config/cfg/html/portal/
 	install -D files/portal/index.en.php  $(DESTDIR)/usr/share/xs-config/cfg/html/portal/
+	install -D files/etc/xs-portal.conf  $(DESTDIR)/usr/share/xs-config/cfg/etc
