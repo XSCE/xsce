@@ -163,13 +163,13 @@ EOF
 
 	# fix usbmount as /media is on tmpfs use /mnt instead
 	mkdir -p /mnt/usb0
-	mkdir /mnt/usb1
-	mkdir /mnt/usb2
-	mkdir /mnt/usb3
-	mkdir /mnt/usb4
-	mkdir /mnt/usb5
-	mkdir /mnt/usb6
-	mkdir /mnt/usb7
+	mkdir -p /mnt/usb1
+	mkdir -p /mnt/usb2
+	mkdir -p /mnt/usb3
+	mkdir -p /mnt/usb4
+	mkdir -p /mnt/usb5
+	mkdir -p /mnt/usb6
+	mkdir -p /mnt/usb7
         sed -i -e 's:media:mnt:g' /etc/usbmount/usbmount.conf
 
         # check for other schoolservers on the local network
