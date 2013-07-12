@@ -4,4 +4,5 @@ Services being monitored are listed at /etc/monit.d , and to avoid interlocking,
 
 To tell monit to stop monitoring a service, run "monit stop <servicename>"
 
-Services currently running can be checked a few minutes after boot, by running "monit summary". This few minutes works as grace period, because some services may take some time to start.
+Services currently running can be checked a few minutes after boot, by running "monit summary". This few minutes works as grace period, because some services may take some time to start.a
+
