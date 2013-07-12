@@ -158,7 +158,7 @@ ansible yes
 monit yes
 
 # needs work
-#pathagar yes
+pathagar yes
 
 # xs-runansible
 
