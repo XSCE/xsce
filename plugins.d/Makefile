@@ -9,6 +9,8 @@ install:
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/httpd/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/httpd/conf.d/
+	install -D -d  $(DESTDIR)usr/local/
+	install -D -d  $(DESTDIR)usr/local/pathagar/
 	install -D -d  $(DESTDIR)etc/systemd/
 	install -D -d  $(DESTDIR)etc/systemd/system/
 	install -D -d  $(DESTDIR)etc/pgsql-xs/
