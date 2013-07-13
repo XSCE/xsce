@@ -19,7 +19,8 @@ function pathagar()
         sed -i -e "s/\@\@USER\@\@/$PATHAGARUSER/" /etc/pathagar/settings.py
 
         # get the python preample for site-packages where pathagar is loaded
-        SITE=`python -c "import site;print(site.getsitepackages()[0])"`
+        SITE=`python -c "from distutils.sysconfig import get_python_lib; \
+                print(get_python_lib());"`
         pushd $SITE/django-sendfile
         python $SITE/django-sendfile/setup.py install
         popd
