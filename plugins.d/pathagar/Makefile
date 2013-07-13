@@ -2,4 +2,4 @@ install:
 
 	install -D files/settings.py.in  $(DESTDIR)/etc/pathagar/settings.py.in
 	install -D files/pathagar.conf  $(DESTDIR)/usr/share/xs-config/cfg/etc/httpd/conf.d/pathagar.conf
-	install -D files/pathagar.wsgi  $(DESTDIR)/usr/local/pathagar/pathagar.wsgi
+	install -D files/pathagar.wsgi  $(DESTDIR)/etc/pathagar/pathagar.wsgi
