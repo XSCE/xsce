@@ -21,6 +21,10 @@ function pathagar()
         # get the python preample for site-packages where pathagar is loaded
         SITE=`python -c "from distutils.sysconfig import get_python_lib; \
                 print(get_python_lib());"`
+
+        # put the settings.py in the site
+        ln -sf /etc/pathagar/settings.py $SITE/pathagar/settings.py
+
         pushd $SITE/django-sendfile
         python $SITE/django-sendfile/setup.py install
         popd
@@ -64,12 +68,14 @@ function pathagar()
                 --settings=pathagar.settings"
         popd
 
-        # apache needs to add books
-        ln -fs $CFGDIR/etc/httpd/conf.d/pathagar.conf \
-                $DESTDIR/etc/httpd/conf.d/pathagar.conf
+        # apache needs to know how to distribute books
+        cp /etc/pathagar/pathagar.conf.in /etc/pathagar/pathagar.conf
+        sed -i -e "s/\@\@SITEPACKAGES\@\@/$SITE/" \
+            /etc/pathagar/pathagar.conf
+        ln -fs /etc/pathagar/pathagar.conf /etc/httpd/conf.d/pathagar.conf
         ;;
 	"no")
-        set +e;rm $SETUPSTATEDIR/pathagar; set
+        set +e;rm $SETUPSTATEDIR/pathagar; set -e
         ;;
 	esac
 }
