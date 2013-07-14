@@ -1,6 +1,7 @@
 # install root
 %define DESTDIR  /
 
+
 BuildArch: noarch
 
 #  Requires a few tools and
