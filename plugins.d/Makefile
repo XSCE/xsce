@@ -2,18 +2,16 @@ install:
 
 	install -D -d  $(DESTDIR)etc/
 	install -D -d  $(DESTDIR)etc/pathagar/
-	install -D -d  $(DESTDIR)usr/
-	install -D -d  $(DESTDIR)usr/share/
-	install -D -d  $(DESTDIR)usr/share/xs-config/
-	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/
-	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/
-	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/httpd/
-	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/httpd/conf.d/
 	install -D -d  $(DESTDIR)etc/systemd/
 	install -D -d  $(DESTDIR)etc/systemd/system/
 	install -D -d  $(DESTDIR)etc/pgsql-xs/
 	install -D -d  $(DESTDIR)etc/sysconfig/
 	install -D -d  $(DESTDIR)etc/sysconfig/pgsql/
+	install -D -d  $(DESTDIR)usr/
+	install -D -d  $(DESTDIR)usr/share/
+	install -D -d  $(DESTDIR)usr/share/xs-config/
+	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/
+	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/systemd/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/systemd/system/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/library/
@@ -37,6 +35,8 @@ install:
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/html/top/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/html/top/en/
 	install -D -d  $(DESTDIR)etc/httpd/conf/
+	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/httpd/
+	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/httpd/conf.d/
 	install -D -d  $(DESTDIR)etc/rc.d/
 	install -D -d  $(DESTDIR)etc/ssh/
 	install -D -d  $(DESTDIR)etc/dhcp/

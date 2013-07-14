@@ -1,0 +1,18 @@
+# This is an Apache config file to be modified and placed in /etc/httpd/conf.d
+#
+WSGIScriptAlias /books @@SITEPACKAGES@@/pathagar/pathagar.wsgi
+<Directory @@SITEPACKAGES/pathagar
+<Files pathagar.wsgi>
+Require all granted
+</Files>
+</Directory>
+
+ErrorLog /var/log/httpd/pathagar-error.log
+
+# Possible values include: debug, info, notice, warn, error, crit,
+# alert, emerg.
+LogLevel warn
+
+CustomLog /var/log/httpd/pathagar-access.log combined
+ServerSignature On
+

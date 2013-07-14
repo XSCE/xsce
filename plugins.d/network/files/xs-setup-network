@@ -139,21 +139,25 @@ if [ -n "$gw_iface" ]; then
     fi
 
     if [ $is_xo == "1" ]; then
-        if [ $wan_iface != "eth0" ]; then
-            write_nm_connection "dhcp" "$wan_mac" "$wan_iface"
-            # if we have two dongles, disable the internal radio
-            delete_eth0_connections $UPLINK
-        else
-            for i in $UPLINK;
-            do
-                present=`cat $i | grep ignore-auto-dns=true`
-                if [ x$present = x ]; then
-                    echo "ignore-auto-dns=true" >>  $i
-                else
-                    echo "ignore-auto-dns=true already present for $i" | tee -a $LOG
-                fi
-            done
-        fi
+	case $wan_inface in
+            eth0|mlan0)
+                for i in $UPLINK;
+                do
+                    present=`cat $i | grep ignore-auto-dns=true`
+                    if [ x$present = x ]; then
+                        echo "ignore-auto-dns=true" >>  $i
+                    else
+                        echo "ignore-auto-dns=true already present for $i" | tee -a $LOG
+                    fi
+                done
+                ;;
+            *)
+                write_nm_connection "dhcp" "$wan_mac" "$wan_iface"
+                # if we have two dongles, disable the internal radio
+                delete_eth0_connections $UPLINK
+                ;;
+        esac
+
         # the dhclient attaches to the wan device, fixup may be necessary
         if [ "$last_wan_dev" != "$wan_iface" ];then
             xs-domain-config
