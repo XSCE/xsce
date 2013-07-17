@@ -1,9 +1,9 @@
-#- name: Install named packages
-#  yum: name=${item}
-#       state=installed
-#  with_items:
-#   - bind
-#   - bind-utils
+- name: Install named packages
+  yum: name=${item}
+       state=installed
+  with_items:
+   - bind
+   - bind-utils
 - name: Configure named
   template: src=${item.src}
             dest=${item.dest}
