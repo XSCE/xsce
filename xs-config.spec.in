@@ -127,7 +127,7 @@ fi
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/*.conf.in
 %config(noreplace) %{_sysconfdir}/pathagar/settings.py.in
 %config(noreplace) %{_sysconfdir}/pathagar/pathagar.wsgi
-%config(noreplace) %{_sysconfdir}/pathagar/pathagar.conf.in
+%config(noreplace) %{_sysconfdir}/pathagar/pathagar.conf
 
 %config(noreplace) %{_sysconfdir}/sysconfig/olpc-scripts/
 %config(noreplace) %{_sysconfdir}/sysconfig/modules/*.modules
