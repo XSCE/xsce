@@ -25,7 +25,7 @@
 - name: Disable root login with password 
   lineinfile: dest=/etc/ssh/sshd_config
               regexp='^PermitRootLogin'
-              line='^PermitRootLogin without-password'
+              line='PermitRootLogin without-password'
               state=present
 #TODO: use handler to reload ssh
 
