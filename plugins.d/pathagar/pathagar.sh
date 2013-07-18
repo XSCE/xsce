@@ -5,7 +5,7 @@ function pathagar()
 	case "$1" in
 	"yes")
       $YUM_CMD Django django-tagging django-taggit django-sendfile \
-		mod_wsgi pathagar python-setuptools  psycopg2
+		mod_wsgi pathagar python-setuptools  python-psycopg2
         #httpd yes #-- currently on by default
        touch $SETUPSTATEDIR/pathagar
         # make a non privileged user

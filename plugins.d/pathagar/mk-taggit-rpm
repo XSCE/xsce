@@ -1,0 +1,44 @@
+#!/bin/bash
+# script to generate the taggit rpm required by Seth Woodward's github pathagar repo
+
+git clone git://github.com/alex/django-taggit.git
+
+cat <<EOF > django-taggit/setup.py
+#!/usr/bin/env python
+from distutils.core import setup
+setup(name='django-taggit',
+	packages = ['taggit',
+		'taggit.migrations',
+		'tests',
+		],
+	package_dir = {'taggit':'',
+		'taggit':'taggit'},
+	package_data = {'taggit':
+		['../CHANGELOG.txt',
+		'../LICENSE',
+		'../AUTHORS',
+		'../MANIFEST.in',
+		'../REAME.rst',
+		'../setup.*',
+		'../docs/*',
+		'../requirements/*',
+		'../runtests.py',
+		'locale/*/*/django.*',
+		],
+	}
+)
+EOF
+cat <<EOF > django-taggit/setup.cfg
+[bdist_rpm]
+release = 3
+packager = George Hunt <georgejhunt@gmail.com>
+requires = django
+EOF
+cd django-taggit
+python setup.py bdist_rpm -v
+cd ~/django-taggit/dist
+mkdir temp
+cp django*noarch.rpm temp
+cd temp
+rpm2cpio django* | cpio -id
+tree
