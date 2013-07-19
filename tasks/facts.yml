@@ -1,0 +1,3 @@
+- name: Get network-manager status
+  shell: ps fauxww | grep NetworkManage[r]; echo "$?"
+  register: networkmanager-running

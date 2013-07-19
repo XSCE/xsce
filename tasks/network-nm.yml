@@ -1,0 +1,23 @@
+- name: Configure /etc/sysconfig/network
+  template: src=network/sysconfig.network.j2
+            dest=/etc/sysconfig/network
+            owner=root
+            group=root
+            mode=0644
+
+#TODO: Convert those steps into facts, using a script/ansible module
+- name: Get UUID for lan
+  shell: /bin/nmcli c | grep {{ xsce_networks["lan"].iface }} | awk '{print $2}'
+  register: lan_uuid
+
+- name: Get type for lan
+  shell: /bin/nmcli c | grep {{ xsce_networks["lan"].iface }} | awk '{print $3}'
+  register: lan_type
+
+- name: Configure LAN interface using network manager
+  template: src=network/nm-conf.j2
+            dest=/etc/NetworkManager/system-connections/eth1-static.ansible
+            owner=root
+            group=root
+            mode=0600
+   

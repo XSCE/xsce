@@ -1,6 +1,13 @@
-- name: Configure /etc/hosts
-  template: src=files/etc/hosts.j2
-            dest=/etc/hosts
+- name: Configure /etc/sysconfig/network
+  template: src=network/sysconfig.network.j2
+            dest=/etc/sysconfig/network
+            owner=root
+            group=root
+            mode=0644
+
+- name: Configure LAN interface without using NM
+  template: src=network/ifcfg.j2
+            dest=/etc/sysconfig/network-scripts/test-ifcfg-{{ xsce_networks['wan'].iface }}-ansible
             owner=root
             group=root
             mode=0644

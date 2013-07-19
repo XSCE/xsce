@@ -1,9 +1,18 @@
-#Interfaces
-wan_if: 2
-lan_if: 1
-
-xsce_hostname : schoolserver.local
+#Domain name
+xsce_hostname : schoolserver
 xsce_domain: local
+
+#Network
+xsce_networks:
+    wan: 
+      iface: eth0
+      netrange: dhcp
+    lan:
+      iface: eth1
+      network: 172.18.96.0
+      ip: 172.18.96.1
+      netmask: 255.255.224.0
+
 #Services
 services:
   - name: idmgr
