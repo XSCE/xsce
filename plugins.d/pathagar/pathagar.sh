@@ -60,9 +60,6 @@ function pathagar()
         popd
 
         # apache needs to know how to distribute books
-        cp /etc/pathagar/pathagar.conf.in /etc/pathagar/pathagar.conf
-        sed -i -e "s/\@\@SITEPACKAGES\@\@/$SITE/" \
-            /etc/pathagar/pathagar.conf
         ln -fs /etc/pathagar/pathagar.conf /etc/httpd/conf.d/pathagar.conf
         ;;
 	"no")
