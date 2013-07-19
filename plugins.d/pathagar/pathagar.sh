@@ -25,9 +25,6 @@ function pathagar()
         # put the settings.py in the site
         ln -sf /etc/pathagar/settings.py $SITE/pathagar/settings.py
 
-        pushd $SITE/django-sendfile
-        python $SITE/django-sendfile/setup.py install
-        popd
 
         # don't error out if this script is already executed once
         LOADED=`su - postgres -c "psql -l" | gawk '{if($1=="books") print $1}'`
@@ -49,12 +46,6 @@ function pathagar()
         systemctl restart postgresql-xs.service
 
         pushd $SITE/pathagar
-            # replace the default development settings with our configured ones
-            if [ -f ./settings.py ] ; then
-                rm -f ./settings.py
-            fi
-            # link our settings to project folder
-            ln -s /etc/pathagar/settings.py .
             export "DJANGO_SETTINGS_MODULE=pathagar.settings"
 
             # create a Django admin user -- first create a command string
@@ -62,7 +53,7 @@ function pathagar()
                 User.objects.create_superuser\
                 ('$PATHAGARUSER', '$PATHAGARUSER@schoolserver.local',\
                  '$PATHPASSWORD')"
-                echo "$CMD" | su - "$PATHAGARUSER" -c "$SITE/pathagar/manage.py shell"
+                echo "$CMD" | su - "$PATHAGARUSER" -c "python $SITE/pathagar/manage.py shell"
 
             su - $PATHAGARUSER -c "django-admin syncdb --noinput --traceback \
                 --settings=pathagar.settings"
