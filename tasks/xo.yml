@@ -21,12 +21,6 @@
               line='%_excludedocs 0'
               state=present
 
-- name: Keep docs wheninstalling packages
-  lineinfile: dest=/etc/rpm/macros.imgcreate
-              regexp='^%_excludedocs'
-              line='%_excludedocs 0'
-              state=present
-
 - name: Configure networkmanager plugin
   ini_file: dest=/etc/NetworkManager/NetworkManager.conf
             section=main
