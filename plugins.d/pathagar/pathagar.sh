@@ -54,7 +54,6 @@ function pathagar()
                 ('$PATHAGARUSER', '$PATHAGARUSER@schoolserver.local',\
                  '$PATHPASSWORD')"
                 echo "$CMD" | su - "$PATHAGARUSER" -c "python $SITE/pathagar/manage.py shell"
-
             su - $PATHAGARUSER -c "django-admin syncdb --noinput --traceback \
                 --settings=pathagar.settings"
         popd
