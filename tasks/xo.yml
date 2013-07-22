@@ -27,12 +27,16 @@
             option=plugins
             value=keyfile
 
-- name: Create modem connection
-  template: src=templates/xo/networkmanager-modem
-            dest=/etc/NetworkManager/system-connections/"Sugar Modem Connection"
-            owner=root
-            group=root
+- name: Change failure and interval settings for modem connection
+  ini_file: dest=/etc/NetworkManager/system-connections/"Sugar Modem Connection"
+            section=ppp
+            option=${item.option}
+            value=${item.value}
+            backup=yes
             mode=0600
+  with_items:
+     - { option: 'lcp-echo-failure', value: '5' }
+     - { option: 'lcp-echo-interval', value: '30' }
 
 - name: Create bigger rwtab
   lineinfile: dest=/etc/sysconfig/readonly-root
