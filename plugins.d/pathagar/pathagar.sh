@@ -22,9 +22,11 @@ function pathagar()
         SITE=`python -c "from distutils.sysconfig import get_python_lib; \
                 print(get_python_lib());"`
 
-        # put the settings.py in the site
+        # put the settings.py in the fixed part of site
         ln -sf /etc/pathagar/settings.py $SITE/pathagar/settings.py
 
+	# put the wsgi interface where httpd expects to find it
+	ln -sf /etc/pathagar/pathagar.wsgi /library/pathagar/pathagar.wsgi
 
         # don't error out if this script is already executed once
         LOADED=`su - postgres -c "psql -l" | gawk '{if($1=="books") print $1}'`
