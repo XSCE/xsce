@@ -1,3 +1,10 @@
 - name: Get network-manager status
   shell: ps fauxww | grep NetworkManage[r]; echo "$?"
   register: networkmanager-running
+
+- name: Get mac address for lan interface
+  shell: /sbin/ip addr show ${xsce_networks.$item.iface} | /bin/awk '/link\/ether/ { print \$2}'
+  register: mac_$item
+  with_items:
+    - wan
+    - lan
