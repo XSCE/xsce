@@ -6,11 +6,11 @@ xsce_domain: local
 xsce_networks:
     wan: 
       iface: eth0
-      netrange: dhcp
+      ip: dhcp
     lan:
       iface: eth1
-      network: 172.18.96.0
       ip: 172.18.96.1
+      network: 172.18.96.0
       netmask: 255.255.224.0
 
 #Services
