@@ -32,11 +32,14 @@
     - { src: 'named/dummy', dest: '/var/named-xs/data/dummy' , owner: "named" , mode: '0755'}
 
 - name: Set folder permission
-  file: path=/var/named-xs
+  file: path=$item
         owner=named
         group=root
         mode=0755
-        status=directory
+        state=directory
+  with_items:
+    - /var/named-xs
+    - /var/named-xs/data
 
 - name: Enable named service
   service: name=named
