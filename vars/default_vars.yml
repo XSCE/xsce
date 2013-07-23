@@ -14,7 +14,9 @@ xsce_networks:
       netmask: 255.255.224.0
 
 #Services
+squid: True
 services:
   - name: idmgr
-    enabled: yes
-    
+    enabled: True
+  - name: squid
+    enabled: True    
