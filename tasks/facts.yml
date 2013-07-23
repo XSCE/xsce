@@ -2,9 +2,15 @@
   shell: ps fauxww | grep NetworkManage[r]; echo "$?"
   register: networkmanager-running
 
+- name: Get WAN type
+  shell: /sbin/iwconfig ${xsce_networks.wan.iface}
+  register: wan_type
+
 - name: Get mac address for lan interface
-  shell: /sbin/ip addr show ${xsce_networks.$item.iface} | /bin/awk '/link\/ether/ { print \$2}'
-  register: mac_$item
-  with_items:
-    - wan
-    - lan
+  shell: /sbin/ip addr show ${xsce_networks.lan.iface} | /bin/awk '/link\/ether/ { print \$2}'
+  register: mac_lan
+
+- name: Get mac address for wan interface
+  shell: /sbin/ip addr show ${xsce_networks.wan.iface} | /bin/awk '/link\/ether/ { print \$2}'
+  register: mac_wan
+
