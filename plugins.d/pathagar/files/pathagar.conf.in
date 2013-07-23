@@ -16,8 +16,8 @@ Require all granted
 </Directory>
 
 
-WSGIScriptAlias /books /library/pathagar/pathagar.wsgi
-<Directory /library/pathagar
+WSGIScriptAlias /books /@@SITE@@/pathagar/pathagar.wsgi
+<Directory /@@SITE@@/pathagar>
 <files pathagar.wsgi>
 Require all granted
 </files>

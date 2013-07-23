@@ -58,8 +58,6 @@ install:
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/portal/images/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/etc/
 	install -D -d  $(DESTDIR)etc/pathagar/
-	install -D -d  $(DESTDIR)library/
-	install -D -d  $(DESTDIR)library/pathagar/
 	install -D -d  $(DESTDIR)var/
 	install -D -d  $(DESTDIR)var/named-xs/
 	install -D -d  $(DESTDIR)var/named-xs/data/

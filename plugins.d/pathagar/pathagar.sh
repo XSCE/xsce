@@ -26,7 +26,7 @@ function pathagar()
         ln -sf /etc/pathagar/settings.py $SITE/pathagar/settings.py
 
 	# put the wsgi interface where httpd expects to find it
-	ln -sf /etc/pathagar/pathagar.wsgi /library/pathagar/pathagar.wsgi
+	ln -sf /etc/pathagar/pathagar.wsgi "/$SITE/pathagar/pathagar.wsgi
 
         # don't error out if this script is already executed once
         LOADED=`su - postgres -c "psql -l" | gawk '{if($1=="books") print $1}'`
@@ -61,6 +61,8 @@ function pathagar()
         popd
 
         # apache needs to know how to distribute books
+        cp /etc/pathagar/pathagar.conf.in /etc/pathagar/pathagar.conf
+        sed -i -e "s/\@\@SITE\@\@/$SITE/" /etc/pathagar/pathagar.conf
         ln -fs /etc/pathagar/pathagar.conf /etc/httpd/conf.d/pathagar.conf
         ;;
 	"no")
