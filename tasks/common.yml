@@ -29,10 +29,10 @@
               state=present
 #TODO: use handler to reload ssh
 
-- name: Disable selinux
-  selinux: policy=targeted
-           state=permissive
-#TODO: check logs for selinux issues, and enable it
+#- name: Disable selinux
+#  selinux: policy=targeted
+#           state=permissive
+#TODO: check for selinux issues, and disable it
 
 - name: Enable common services
   service: name=$item
