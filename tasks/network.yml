@@ -5,9 +5,25 @@
             group=root
             mode=0644
 
-- name: Configure LAN interface without using NM
+
+- name: Configure lan interface
   template: src=network/ifcfg.j2
-            dest=/etc/sysconfig/network-scripts/test-ifcfg-{{ xsce_networks['wan'].iface }}-ansible
-            owner=root
-            group=root
-            mode=0644
+            dest=/etc/sysconfig/network-scripts/ifcfg-${item.iface}
+  with_items:
+    - ${xsce_networks.lan}
+
+- name: Configure lan mac address
+  lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-${xsce_networks.lan.iface}
+              regexp='^HWADDR='
+              line='HWADDR=${mac_lan.stdout}'
+              state=present
+
+#TODO: Check when are used those flags
+- name: Create wan xs flags
+  shell: echo ${xsce_networks.wan.iface} > /etc/sysconfig/xs_wan_device
+
+- name: Create lan xs flags
+  shell: echo ${xsce_networks.lan.iface} > /etc/sysconfig/xs_lan_device
+
+- name: Create domain flag
+  shell: echo ${xsce_hostname}.${xsce_domain} > /etc/sysconfig/xs_domain_name

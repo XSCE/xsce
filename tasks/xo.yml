@@ -25,7 +25,7 @@
   ini_file: dest=/etc/NetworkManager/NetworkManager.conf
             section=main
             option=plugins
-            value=keyfile
+            value=ifcfg-rh,keyfile
 
 - name: Change failure and interval settings for modem connection
   ini_file: dest=/etc/NetworkManager/system-connections/"Sugar Modem Connection"
