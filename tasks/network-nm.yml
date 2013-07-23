@@ -5,19 +5,22 @@
             group=root
             mode=0644
 
-#TODO: Convert those steps into facts, using a script/ansible module
-- name: Get UUID for lan
-  shell: /bin/nmcli c | grep {{ xsce_networks["lan"].iface }} | awk '{print $2}'
-  register: lan_uuid
+- name: Remove lan and wan ifaces from network manager
+  ini_file: dest=/etc/NetworkManager/NetworkManager.conf
+            section=keyfile
+            option=unmanaged-devices
+            value=mac:${mac_lan.stdout}
+#           value=mac:${mac_lan.stdout};mac:${mac_wan.stdout}
+#TODO: when wan is wifi, we can manage it with nm
 
-- name: Get type for lan
-  shell: /bin/nmcli c | grep {{ xsce_networks["lan"].iface }} | awk '{print $3}'
-  register: lan_type
+- name: Configure lan interface
+  template: src=network/ifcfg.j2
+            dest=/etc/sysconfig/network-scripts/ifcfg-${item.iface}
+  with_items:
+    - ${xsce_networks.lan}
 
-- name: Configure LAN interface using network manager
-  template: src=network/nm-conf.j2
-            dest=/etc/NetworkManager/system-connections/eth1-static.ansible
-            owner=root
-            group=root
-            mode=0600
-   
+- name: Configure lan mac address
+  lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-${xsce_networks.lan.iface}
+              regexp='^HWADDR='
+              line='HWADDR=${mac_lan.stdout}'
+              state=present
