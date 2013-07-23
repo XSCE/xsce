@@ -1,30 +1,25 @@
 - hosts: 127.0.0.1
   user: root
   connection: local
-  gather_facts: no
+#  gather_facts: no
   vars:
   - watchdog: [ sshd,idmgr,ejabberd,httpd,postgresql,squid ]
   vars_files:
   - vars/default_vars.yml
   tasks:
-#    - include: tasks/xo.yml
-#      when: ansible_distribution_version == "13"
-#    - include: tasks/common.yml
+    - include: tasks/xo.yml
+      when: ansible_distribution_version == "13"
+    - include: tasks/common.yml
 #TODO: change facts.yml into a script / ansible module
     - include: tasks/facts.yml
-    - include: tasks/network-nm.yml
-      when_string: ${networkmanager-running.stdout} != "1"
     - include: tasks/network.yml
-      when_string: ${networkmanager-running.stdout} == "1"
-
-#    - include: tasks/install-xs.yml
-#    - include: tasks/idmgr.yml
-#    - include: tasks/dhcpd.yml
-#    - include: tasks/monit.yml
-#    - include: tasks/gateway.yml
-#    - include: tasks/network.yml
-#    - include: tasks/sysctl.yml
-#    - include: tasks/named.yml
+    - include: tasks/gateway.yml
+    - include: tasks/install-xs.yml
+    - include: tasks/idmgr.yml
+    - include: tasks/dhcpd.yml
+  #  - include: tasks/monit.yml
+    - include: tasks/sysctl.yml
+    - include: tasks/named.yml
 #    - include: tasks/avahi.yml
 #    - include: tasks/sugar-stats.yml
 #    - include: tasks/ejabberd.yml
