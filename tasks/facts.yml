@@ -11,13 +11,6 @@
   register: mac_lan
 
 - name: Get mac address for wan interface
-  shell: /sbin/ip addr show ${xsce_networks.wan.iface} | /bin/awk '/link\/ether/ { print \$2}'
+  shell: /sbin/ip addr show ${xsce_networks.wan.iface} | /bin/awk '/link\/ether/ { print \$2}' | tr [:lower:] [:upper:]
   register: mac_wan
 
-- name: Generate uuid for lan
-  shell: /bin/uuidgen > /etc/sysconfig/xs_lan_uuid
-        creates=/etc/sysconfig/xs_lan_uuid
-
-- name: Get UUID for lan
-  command: /bin/cat /etc/sysconfig/xs_lan_uuid
-  register: uuid_lan
