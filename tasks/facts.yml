@@ -3,7 +3,7 @@
   register: networkmanager-running
 
 - name: Get WAN type
-  shell: /sbin/iwconfig ${xsce_networks.wan.iface}
+  shell: /bin/nmcli d | grep ${xsce_networks.wan.iface} | awk '{print \$2}'
   register: wan_type
 
 - name: Get mac address for lan interface
