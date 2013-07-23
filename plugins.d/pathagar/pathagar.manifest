@@ -1,3 +1,3 @@
 /etc/pathagar/settings.py.in
-/etc/pathagar/pathagar.conf
+/etc/pathagar/pathagar.conf.in
 /etc/pathagar/pathagar.wsgi
