@@ -31,7 +31,7 @@
               regexp='^HWADDR='
               line='HWADDR=${mac_wan.stdout}'
               state=present
-
+  when: wan_type.stdout.find('802-3-ethernet') != -1
 
 
 #TODO: Check when are used those flags
