@@ -15,7 +15,6 @@
 #TODO: change facts.yml into a script / ansible module
     - include: tasks/facts.yml
     - include: tasks/network.yml
-    - include: tasks/gateway.yml
     - include: tasks/idmgr.yml
     - include: tasks/dhcpd.yml
     - include: tasks/monit.yml
@@ -23,6 +22,7 @@
     - include: tasks/named.yml
     - include: tasks/avahi.yml
     - include: tasks/sugar-stats.yml
+    - include: tasks/gateway.yml
 #    - include: tasks/ejabberd.yml
 #    - include: tasks/postgresql.yml
 #    - include: tasks/pathagar.yml
