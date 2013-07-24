@@ -32,6 +32,9 @@
         owner=apache
         group=apache
         state=directory
+- name: Create admin group
+  group: name=admin
+         state=present
 - name: Add apache user to admin group
   user: name=apache
         groups=admin
