@@ -18,20 +18,20 @@
               state=present
 
 #TODO: configure WIFI wan
-- name: Configure wan dynamic interface
-  template: src=network/ifcfg-dhcp.j2
-            dest=/etc/sysconfig/network-scripts/ifcfg-${item.iface}
-  with_items:
-    - ${xsce_networks.wan}
-  when: '"802-3-ethernet" == "${wan_type.stdout}"'
+#- name: Configure wan dynamic interface
+#  template: src=network/ifcfg-dhcp.j2
+#            dest=/etc/sysconfig/network-scripts/ifcfg-${item.iface}
+#  with_items:
+#    - ${xsce_networks.wan}
+#  when: '"802-3-ethernet" == "${wan_type.stdout}"'
 #  when: wan_type.stdout.find('802-3-ethernet') != -1
 
-- name: Configure wan mac address
-  lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-${xsce_networks.wan.iface}
-              regexp='^HWADDR='
-              line='HWADDR=${mac_wan.stdout}'
-              state=present
-  when: '"802-3-ethernet" == "${wan_type.stdout}"'
+#- name: Configure wan mac address
+#  lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-${xsce_networks.wan.iface}
+#              regexp='^HWADDR='
+#              line='HWADDR=${mac_wan.stdout}'
+#              state=present
+#  when: '"802-3-ethernet" == "${wan_type.stdout}"'
 
 #TODO: Check when are used those flags
 - name: Create wan xs flags
