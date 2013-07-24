@@ -5,7 +5,5 @@ then
 
 	echo "Please reboot!"
 else
-	echo normal
-	exit 33
         ansible-playbook -i ansible_hosts ansiblexs.yml --connection=local $1
 fi
