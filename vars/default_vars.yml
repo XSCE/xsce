@@ -5,10 +5,10 @@ xsce_domain: local
 #Network
 xsce_networks:
     wan: 
-      iface: eth0
+      iface: eth1
       ip: dhcp
     lan:
-      iface: eth1
+      iface: eth2
       ip: 172.18.96.1
       network: 172.18.96.0
       netmask: 255.255.224.0
