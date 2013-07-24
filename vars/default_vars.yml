@@ -15,6 +15,7 @@ xsce_networks:
 
 #Services
 squid: True
+dansguardian: True
 services:
   - name: idmgr
     enabled: True

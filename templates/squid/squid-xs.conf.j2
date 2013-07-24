@@ -4,7 +4,11 @@
 ###############################
 #  Network Interface
 
+{% if dansguardian %}
+http_port 0.0.0.0:3130 
+{% else %}
 http_port 0.0.0.0:3128 transparent
+{% endif %}
 
 icp_port 0
 
