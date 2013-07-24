@@ -1,1 +1,11 @@
-ansible-playbook -i ansible_hosts ansiblexs.yml --connection=local $1
+#!/bin/bash
+if [ x"$1" == x"xo" ]
+then
+	ansible-playbook -i ansible_hosts ansiblexo.yml --connection=local 
+
+	echo "Please reboot!"
+else
+	echo normal
+	exit 33
+        ansible-playbook -i ansible_hosts ansiblexs.yml --connection=local $1
+fi
