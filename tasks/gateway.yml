@@ -37,5 +37,6 @@
   service: name=iptables
            enabled=yes
            state=restarted
+  ignore_errors: yes
  
 
