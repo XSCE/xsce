@@ -2,21 +2,21 @@
 #
 Alias /favicon.ico /library/pathagar/static/favicon.ico
 
-AliasMatch ^/([^/]*\.css) /@@SITE@@/pathagar/static_media/styles/$1
+AliasMatch ^/([^/]*\.css) @@SITE@@/pathagar/static_media/styles/$1
 
 Alias /media/ /library/pathagar/media/
-Alias /static_media/ /@@SITE@@/pathagar/static_media/
+Alias /static_media/ @@SITE@@/pathagar/static_media/
 
 <Directory /library/pathagar/media>
 Require all granted
 </Directory>
 
 
-WSGIScriptAlias /books /@@SITE@@/pathagar/pathagar.wsgi
-<Directory /@@SITE@@/pathagar>
-<files pathagar.wsgi>
+WSGIScriptAlias /books @@SITE@@/pathagar/pathagar.wsgi
+<Directory @@SITE@@/pathagar>
+#<files pathagar.wsgi>
 Require all granted
-</files>
+#</files>
 </Directory>
 
 ErrorLog /var/log/httpd/pathagar-error.log
