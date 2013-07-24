@@ -23,8 +23,8 @@
             owner=sugar-stats
             group=sugar-stats
             mode=0644
+
 - name: Enable sugar-stats service
   service: name=sugar-stats-server
            enabled=yes
-           state=started
            
