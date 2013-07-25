@@ -33,6 +33,8 @@
 #  selinux: policy=targeted
 #           state=permissive
 #TODO: check for selinux issues, and disable it
+- name: Set hostname
+  command: hostnamectl set-hostname {{ xsce_hostname }}.{{ xsce_domain }}
 
 - name: Enable common services
   service: name=$item
