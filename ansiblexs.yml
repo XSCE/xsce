@@ -24,7 +24,7 @@
     - include: tasks/sugar-stats.yml
     - include: tasks/httpd.yml
     - include: tasks/squid.yml
+    - include: tasks/ejabberd.yml
     - include: tasks/gateway.yml
-#    - include: tasks/ejabberd.yml
 #    - include: tasks/postgresql.yml
 #    - include: tasks/pathagar.yml
