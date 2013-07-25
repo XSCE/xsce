@@ -1,8 +1,21 @@
-# --ejabberd_xs.service  
-# systemd start up file modifications
-.include /usr/lib/systemd/system/ejabberd.service
+[Unit]
+Description=A distributed, fault-tolerant Jabber/XMPP server
+After=network.target
+
 [Service]
+Type=oneshot
+User=ejabberd
+Group=ejabberd
+LimitNOFILE=50000
+RestartSec=5
 EnvironmentFile=/etc/sysconfig/ejabberd-xs
-ExecStart=/usr/libexec/ejabberd-xs start
-ExecStop=/usr/libexec/ejabberd-xs stop
-PIDFile=/var/run/ejabberd/ejbberd.pid
+ExecStart=/usr/sbin/ejabberdctl \
+		--config $CONFIG_FILE \
+		--ctl-config /etc/ejabberd/ejabberdctl.cfg \
+		--logs "/var/log/ejabberd" \
+		--spool "/var/lib/ejabberd/spool" start
+ExecStop=/usr/sbin/ejabberdctl stop
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

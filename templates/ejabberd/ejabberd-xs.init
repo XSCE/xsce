@@ -136,9 +136,9 @@ is_running() {
 
 start() {
         echo -n $"Starting ejabberd: "
-	if [ "$ULIMIT_MAX_FILES" ]; then
-		ulimit -n $ULIMIT_MAX_FILES
-	fi
+	#if [ "$ULIMIT_MAX_FILES" ]; then
+	#	ulimit -n $ULIMIT_MAX_FILES
+	#fi
 
 	check_domain_configured
 
