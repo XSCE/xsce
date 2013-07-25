@@ -36,5 +36,8 @@
 - name: Enable iptables service 
   service: name=iptables
            enabled=yes
+
+- name: Run iptables 
+  command: /etc/sysconfig/iptables-config
  
 
