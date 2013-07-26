@@ -7,9 +7,71 @@ LOG=/home/olpc/xs-setup.log
 FEDORA=`rpm -q fedora-release|gawk 'BEGIN {FS="-";}{print $3}'`
 XSARCH=`uname -i`
 NO_REBOOT=0
+TEXTMODEFLAG="/home/olpc/.textmode"
+DEFAULT_SET="-x"
+set $DEFAULT_SET
+
+# Make sure only root can run our script
+if [ "$(id -u)" != "0" ]; then
+    echo "This script must be run as root" 1>&2
+    exit 1
+fi
 
 if [ $ISXO = "1" ]
 then
+    # What kind of XO is this?
+    XOTYPE=
+    if [ -f /proc/device-tree/mfg-data/M# ];then 
+	model=`cat /proc/device-tree/mfg-data/M#` 
+        case $model in
+        "CL1" | "CL1A")
+            XOTYPE="XO1"
+            ;;
+         "CL1B" | "CL1C")
+            XOTYPE="XO1.5"
+            ;;
+         "CL2" | "CL2A")
+            XOTYPE="XO1.75"
+            ;;
+         "CL4" | "CL4A" | "CL4B" | "CL4C")
+            XOTYPE="XO4"
+            ;;
+         *)
+            XOTYPE=
+            ;;
+         esac
+    fi
+    export XOTYPE
+
+    if [ "$XOTYPE" = "XO1" ] && [ ! -f "$TEXTMODEFLAG" ]; then
+        set +x
+        echo ""
+        echo "######################################################"
+        echo ""
+        echo ""
+        echo "The XO-1 needs to use memory that is normally used by the GUI"
+        echo "to install XSCE software. Hit return to restart the install process"
+        echo "and then re-issue the 'bootstrap-xo' terminal command (up arrow)" 
+        echo "" 
+        echo "" 
+        echo "#####################################################" 
+        echo "" 
+        read -p "Press [Enter] key to restart the install process" 
+        echo "" 
+        echo ""
+        echo "Going into text mode in 5 seconds"
+        #
+        # Disable the graphical mode for the XO, diable X11, use memory for serving
+        rm /etc/systemd/system/default.target  # remove the link
+        ln -sf /lib/systemd/system/multi-user.target /etc/systemd/system/default.target
+        touch $TEXTMODEFLAG    
+        sleep 5
+        telinit 3
+#       obsevation is that changing run levels terminates this script
+    fi
+    set "$DEFAULT_SET"
+
+
     # there are files open in the tempfs /var/log -- so we cannot just unmount it
     # we need to disable tempfs and then start up again on a /var/log directory
     # that persists
