@@ -49,6 +49,12 @@
               regexp='^empty.*/var/lib/dhcpd'
               state=absent
 
+- name: Persist /etc/hosts between reboots
+  lineinfile: dest=/etc/statetab.d/olpc
+              regexp='^/etc/hosts'
+              state=absent
+
+
 - name: Disable /var/log tmpfs 
   lineinfile: dest=/etc/fstab
               regexp='^varlog.*'
