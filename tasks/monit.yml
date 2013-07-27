@@ -34,6 +34,6 @@
 - name: Enable monit service
   command: chkconfig monit on
 
-- name: Restart monit service
-  command: service monit restart
+#- name: Restart monit service
+#  command: service monit restart
 
