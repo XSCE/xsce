@@ -26,5 +26,6 @@
     - include: tasks/squid.yml
     - include: tasks/ejabberd.yml
     - include: tasks/gateway.yml
-#    - include: tasks/postgresql.yml
+    - include: tasks/postgresql.yml
+    - include: tasks/moodle.yml
 #    - include: tasks/pathagar.yml
