@@ -50,4 +50,4 @@
   shell: echo ${xsce_networks.lan.iface} > /etc/sysconfig/xs_lan_device
 
 - name: Create domain flag
-  shell: echo ${xsce_hostname}.${xsce_domain} > /etc/sysconfig/xs_domain_name
+  shell: echo ${xsce_domain} > /etc/sysconfig/xs_domain_name
