@@ -147,9 +147,8 @@ if [ -n "$gw_iface" ]; then
                     present=`cat $i | grep ignore-auto-dns=true`
                     if [ x$present = x ]; then
                         sed -i '/method=auto/d' $i 
-                        sed -i '/[ipv4]/d' $i 
-                        sed -i '/[ipv6]/d' $i 
-                        echo "" >> $i
+                        sed -i '/ipv4/d' $i 
+                        sed -i '/ipv6/d' $i 
                         echo "[ipv6]" >> $i
                         echo "method=auto" >> $i
                         echo "" >> $i
