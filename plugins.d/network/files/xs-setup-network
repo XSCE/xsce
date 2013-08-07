@@ -149,14 +149,13 @@ if [ -n "$gw_iface" ]; then
                         sed -i '/method=auto/d' $i 
                         sed -i '/[ipv4]/d' $i 
                         sed -i '/[ipv6]/d' $i 
-                        cat << EOF >> $i
-[ipv6]
-method=auto
-
-[ipv4]
-method=auto
-ignore-auto-dns=true
-EOF
+                        echo "" >> $i
+                        echo "[ipv6]" >> $i
+                        echo "method=auto" >> $i
+                        echo "" >> $i
+                        echo "[ipv4]" >> $i
+                        echo "method=auto" >> $i
+                        echo "ignore-auto-dns=true" >> $i
                     else
                         echo "ignore-auto-dns=true already present for $i" | tee -a $LOG
                     fi
