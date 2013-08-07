@@ -145,7 +145,17 @@ if [ -n "$gw_iface" ]; then
                 do
                     present=`cat $i | grep ignore-auto-dns=true`
                     if [ x$present = x ]; then
-                        echo "ignore-auto-dns=true" >>  $i
+                        sed -i '/method=auto/d' $i 
+                        sed -i '/[ipv4]/d' $i 
+                        sed -i '/[ipv6]/d' $i 
+                        cat << EOF >> $i
+[ipv6]
+method=auto
+
+[ipv4]
+method=auto
+ignore-auto-dns=true
+EOF
                     else
                         echo "ignore-auto-dns=true already present for $i" | tee -a $LOG
                     fi
