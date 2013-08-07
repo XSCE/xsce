@@ -55,8 +55,23 @@ install:
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/portal/images/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/portal/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/etc/
+<<<<<<< HEAD
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/top/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/top/es/
+=======
+	install -D -d  $(DESTDIR)etc/pathagar/
+	install -D -d  $(DESTDIR)var/
+	install -D -d  $(DESTDIR)var/named-xs/
+	install -D -d  $(DESTDIR)var/named-xs/data/
+	install -D -d  $(DESTDIR)etc/httpd/
+	install -D -d  $(DESTDIR)etc/httpd/conf.d/
+	install -D -d  $(DESTDIR)etc/httpd/conf/
+	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/httpd/
+	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/httpd/conf.d/
+	install -D -d  $(DESTDIR)etc/squid/
+	install -D -d  $(DESTDIR)usr/libexec/
+	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/html/top/en/
+>>>>>>> da5e8e3e85ac6b9ab34b81758fadbc187af40e15
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/top/en/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/top/assets/
 	install -D -d  $(DESTDIR)/usr/share/xs-config/cfg/html/top/bin/

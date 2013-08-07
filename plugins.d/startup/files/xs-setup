@@ -157,8 +157,8 @@ ansible yes
 #Enable software watchdog
 monit yes
 
-# needs work
-#pathagar yes 
+# Server books from locally administered cache
+pathagar yes 
 
 # xs-runansible
 

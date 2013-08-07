@@ -11,9 +11,13 @@ import os
 # Books settings:
 
 BOOKS_PER_PAGE = 20 # Number of books shown per page in the OPDS
-                    # catalogs and in the HTML pages.
+                    # catalogs and in the HTML pages.
 
-BOOKS_STATICS_VIA_DJANGO = True
+BOOKS_STATICS_VIA_DJANGO = False
+
+STATICFILLES_DIRS = ['/library/pathagar/static',
+	'pathagar/static-media',
+]
 
 # sendfile settings:
 
@@ -51,9 +55,11 @@ USE_I18N = True
 
 MEDIA_ROOT = os.path.join(CUR_DIR, 'static_media')
 
-MEDIA_URL = 'http://127.0.0.1:8000/static_media'
-
+MEDIA_URL = 'http://127.0.0.1/media/'
 ADMIN_MEDIA_PREFIX = '/media/'
+
+STATIC_ROOT = '/libarary/pathagar/static'
+STATIC_URL = 'localhost/static'
 
 SECRET_KEY = '7ks@b7+gi^c4adff)6ka228#rd4f62v*g_dtmo*@i62k)qn=cs'
 
@@ -72,7 +78,7 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'pathagar.urls'
 
-INTERNAL_IPS = ('127.0.0.1',)
+INTERNAL_IPS = ('127.0.0.1','172.18.96.1',)
 
 TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(__file__), 'templates'),
@@ -84,6 +90,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
+    'django.contrib.staticfiles',
     'tagging',
-    'pathagar.books'
+    'pathagar.books',
 )
