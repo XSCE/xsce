@@ -139,7 +139,7 @@ if [ -n "$gw_iface" ]; then
     fi
 
     if [ $is_xo -eq 1 ]; then
-	case $wan_inface in
+	case $wan_iface in
             eth0|mlan0)
                 for i in $UPLINK;
                 do
