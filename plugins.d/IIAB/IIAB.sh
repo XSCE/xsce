@@ -8,22 +8,23 @@ function IIAB()
             exit $YUMERROR
         fi
 ## future use
-#        ln -sf /bin/iiab.wsgi /var/www/html/iiab.wsgi
-#	 if [ ! -f $SETUPSTATEDIR/IIAB ]; then
-#	    cat << EOF >> /etc/httpd/conf/http.conf
-#XSendFile on
-#XSendFilePath /
-#WSGIScriptAlias /iiab /var/www/iiab.wsgi
-#EOF
-#	fi
+        ln -sf /bin/iiab.wsgi /var/www/html/iiab.wsgi
+	if [ ! -f $SETUPSTATEDIR/IIAB ]; then
+	    cat << EOF >> /etc/httpd/conf/http.conf
+XSendFile on
+XSendFilePath /
+WSGIScriptAlias /iiab /var/www/iiab.wsgi
+EOF
+	fi
 
 	## temp workaround for above
-        cat << EOF > /etc/httpd/conf.d/iiab.conf
-Redirect /iiab http://schoolserver:25000/iiab
-EOF
+#        cat << EOF > /etc/httpd/conf.d/iiab.conf
+#Redirect /iiab http://schoolserver:25000/iiab
+#EOF
 	## started from rc.local on reboots
-        /bin/iiab-server &
-        touch $SETUPSTATEDIR/IIAB
+#        /bin/iiab-server &
+#        touch $SETUPSTATEDIR/IIAB
+	
         ;;
     "no")
         rm $SETUPSTATEDIR/IIAB
