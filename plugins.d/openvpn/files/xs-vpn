@@ -1,4 +1,4 @@
-j!/bin/sh
+!/bin/sh
 
 # we'd like the user of this script to have root privilege
 if [ "$(id -u)" != "0" ]; then
