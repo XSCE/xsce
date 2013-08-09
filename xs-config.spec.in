@@ -128,7 +128,9 @@ fi
 %config(noreplace) %{_sysconfdir}/pathagar/settings.py.in
 %config(noreplace) %{_sysconfdir}/pathagar/pathagar.conf.in
 %config(noreplace) %{_sysconfdir}/pathagar/pathagar.wsgi
-%config(noreplace) %{_sysconfdir}/openvpn/*
+%config(noreplace) %{_sysconfdir}/openvpn/road*
+%config(noreplace) %{_sysconfdir}/openvpn/keys/client*
+%config(noreplace) %{_sysconfdir}/openvpn/keys/ca.crt
 
 %config(noreplace) %{_sysconfdir}/sysconfig/olpc-scripts/
 %config(noreplace) %{_sysconfdir}/sysconfig/modules/*.modules
@@ -180,6 +182,7 @@ fi
 %files xo
 %{_bindir}/bootstrap-xo
 %{_bindir}/prep-storage.sh
+%{_bindir}/prep-storage-xo1.sh
 %{_libdir}/udev/rules.d/10-olpc-net.rules
 
 %files ts
@@ -187,4 +190,5 @@ fi
 %{_sysconfdir}/dhcp/dhcpd-ts.conf.in
 %{_sysconfdir}/hostapd/hostapd.conf.in
 %{_sysconfdir}/avahi/avahi-daemon.conf.in
+
 

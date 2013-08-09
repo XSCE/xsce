@@ -43,31 +43,34 @@ then
     fi
     export XOTYPE
 
-    if [ "$XOTYPE" = "XO1" ] && [ ! -f "$TEXTMODEFLAG" ]; then
-        set +x
-        echo ""
-        echo "######################################################"
-        echo ""
-        echo ""
-        echo "The XO-1 needs to use memory that is normally used by the GUI"
-        echo "to install XSCE software. Hit return to restart the install process"
-        echo "and then re-issue the 'bootstrap-xo' terminal command (up arrow)" 
-        echo "" 
-        echo "" 
-        echo "#####################################################" 
-        echo "" 
-        read -p "Press [Enter] key to restart the install process" 
-        echo "" 
-        echo ""
-        echo "Going into text mode in 5 seconds"
-        #
-        # Disable the graphical mode for the XO, diable X11, use memory for serving
-        rm /etc/systemd/system/default.target  # remove the link
-        ln -sf /lib/systemd/system/multi-user.target /etc/systemd/system/default.target
-        touch $TEXTMODEFLAG    
-        sleep 5
-        telinit 3
-#       obsevation is that changing run levels terminates this script
+    if [ "$XOTYPE" = "XO1" ]; then
+        if [ ! -f "$TEXTMODEFLAG" ]; then
+            set +x
+            echo ""
+            echo "######################################################"
+            echo ""
+            echo ""
+            echo "The XO-1 needs to use memory that is normally used by the GUI"
+            echo "to install XSCE software. Hit return to restart the install process"
+            echo "and then re-issue the 'bootstrap-xo' terminal command (up arrow)" 
+            echo "" 
+            echo "" 
+            echo "#####################################################" 
+            echo "" 
+            read -p "Press [Enter] key to restart the install process" 
+            echo "" 
+            echo ""
+            echo "Going into text mode in 5 seconds"
+            #
+            # Disable the graphical mode for the XO, diable X11, use memory for serving
+            rm /etc/systemd/system/default.target  # remove the link
+            ln -sf /lib/systemd/system/multi-user.target /etc/systemd/system/default.target
+            touch $TEXTMODEFLAG    
+            sleep 5
+            telinit 3
+#       observation is that changing run levels terminates this script
+        fi
+        #if [
     fi
     set "$DEFAULT_SET"
 
@@ -83,7 +86,8 @@ then
 		(--) shift; break;;
 		(-*) echo "$0: error - unrecognized option $1" >&2; exit 1;;
 	        (*) break;;
-	    esac
+
+    esac
 	    shift
         done
 
