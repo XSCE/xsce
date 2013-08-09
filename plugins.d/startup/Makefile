@@ -18,6 +18,7 @@ install:
 	install -D files/bootstrap-ts  $(DESTDIR)/usr/bin/bootstrap-ts
 	install -D files/cat-parts  $(DESTDIR)/usr/bin/cat-parts
 	install -D files/prep-storage.sh  $(DESTDIR)/usr/bin/prep-storage.sh
+	install -D files/prep-storage-xo1.sh  $(DESTDIR)/usr/bin/prep-storage-xo1.sh
 	install -D files/xs-mkaccount  $(DESTDIR)/usr/bin/xs-mkaccount
 	install -D files/xs-services-check  $(DESTDIR)/usr/bin/xs-services-check
 	install -D files/xs-setup  $(DESTDIR)/usr/bin/xs-setup

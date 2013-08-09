@@ -17,6 +17,7 @@
 /usr/bin/bootstrap-ts
 /usr/bin/cat-parts
 /usr/bin/prep-storage.sh
+/usr/bin/prep-storage-xo1.sh
 /usr/bin/xs-mkaccount
 /usr/bin/xs-services-check
 /usr/bin/xs-setup
