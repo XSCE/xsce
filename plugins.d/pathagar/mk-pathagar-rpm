@@ -1,15 +1,17 @@
 #!/bin/bash
 # script to generate the pathagar rpm from Seth Woodward's github repo
+release='8'
 
 set -e
+cdir=`pwd`
 git clone git://github.com/PathagarBooks/pathagar
 cat << EOF > pathagar/setup.py
 #!/usr/bin/env python
 
 from distutils.core import setup
 
-# all the specifics are selected in setup.cfg
 setup(name='pathagar',
+	version = '0.4',
 	packages = ['pathagar',
 		'pathagar.books',
 		'pathagar.books.management',
@@ -48,19 +50,17 @@ EOF
 
 cat <<EOF > pathagar/setup.cfg
 [bdist_rpm]
-release = 3
 packager = George Hunt <georgejhunt@gmail.com>
+release = 8
 requires = django
 	django-tagging
 	django-taggit
 	django-sendfile
 EOF
 cd pathagar
-cdir=`pwd`
 python setup.py bdist_rpm -v
 
-cd $cdir
-cd dist
+cd $cdir/pathagar/dist
 mkdir -p temp
 cp path*noarch.rpm temp
 cd temp

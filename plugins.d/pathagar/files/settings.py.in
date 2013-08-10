@@ -92,5 +92,6 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.staticfiles',
     'tagging',
+    'taggit',
     'pathagar.books',
 )
