@@ -10,10 +10,10 @@ function IIAB()
 ## future use
         ln -sf /bin/iiab.wsgi /var/www/html/iiab.wsgi
 	if [ ! -f $SETUPSTATEDIR/IIAB ]; then
-	    cat << EOF >> /etc/httpd/conf/http.conf
+	    cat << EOF > /etc/httpd/conf.d/iiab.conf
 XSendFile on
 XSendFilePath /
-WSGIScriptAlias /iiab /var/www/iiab.wsgi
+WSGIScriptAlias /iiab /var/www/html/iiab.wsgi
 EOF
 	fi
 
@@ -23,7 +23,7 @@ EOF
 #EOF
 	## started from rc.local on reboots
 #        /bin/iiab-server &
-#        touch $SETUPSTATEDIR/IIAB
+        touch $SETUPSTATEDIR/IIAB
 	
         ;;
     "no")
