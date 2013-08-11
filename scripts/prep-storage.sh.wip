@@ -280,3 +280,5 @@ echo "$MEDIAMNT/swap/swap.img swap 	swap	defaults 0 0" >> /etc/fstab
 swapon $MEDIAMNT/swap/swap.img       
    
 exit 0
+
+
