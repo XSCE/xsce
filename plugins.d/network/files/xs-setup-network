@@ -65,7 +65,7 @@ num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
 # Is this an XO
 is_xo=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
 
-if [ x$XOTYPE != x ]:then
+if [ x$XOTYPE != x ];then
     is_xo=1
     echo "xo model is $XOTYPE" | tee -a $LOG
 else
