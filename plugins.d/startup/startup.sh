@@ -145,8 +145,8 @@ function create-usb-repo2()
 		    sync
 		fi
 	    fi
-	    umounting $usbkey | tee -a $LOG
-	    umount usbkey
+	    echo "umounting $usbkey" | tee -a $LOG
+	    umount $usbkey
 	else
 	    echo "INFO No external media found" | tee -a $LOG
 	fi
