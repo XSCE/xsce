@@ -33,7 +33,7 @@ function iiab_link($service_link_text, $service_link_desc, $service_search_text)
 {
 	global $serv_arr, $serv_loc;
 
-  if (array_key_exists ( "iiab" , $serv_arr )) {
+  if (array_key_exists ( "IIAB" , $serv_arr )) {
   	// 1st show a text to indicate we are searching for content	  	
     $link_clause = '<div id="iiab-search" class="xsServiceWrapper"><div class="xsServiceLink">' . $service_link_text . '</div>';
     $search_text = '<div class="xsServiceDesc">' . $service_search_text . '</div></div><div style="clear:both"></div>';    
