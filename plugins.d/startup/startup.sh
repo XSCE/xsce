@@ -38,6 +38,7 @@ CFGDIR=/usr/share/xs-config/cfg
 PLUGINDIR=/usr/share/xs-config/plugins.d
 CFGFUNCTIONS=/etc/sysconfig/olpc-scripts/functions
 MARKER=/.olpcxs-configured
+PREPED=/.xsce-preped
 LOG=/var/log/xs-setup.log
 POSTGRESSDIR=/library/pgsql-xs
 SETUPSTATEDIR=/etc/sysconfig/olpc-scripts/setup.d/installed
@@ -262,17 +263,19 @@ exclude=ejabberd
     #do all of the yum installs in a single operation
     get_enabled_plugins
 
-    # always install the following
-    INSTALLTHESE="syck rssh mtd-utils acpid mlocate"
-    for mod in $PLUGIN_LIST; do
-	if [ -d $PLUGINDIR/$mod/yum ];then
-            INSTALLTHESE=$INSTALLTHESE" "`ls $PLUGINDIR/$mod/yum/`
-	fi
-    done
-    echo "installing rpms: $INSTALLTHESE" | tee -a $LOG
-    $YUM_CMD $INSTALLTHESE | tee -a $LOG
-
-    etckeeper-if-selected "after installing core packages"
+    if [ ! -e $PREPED ]; then
+	# always install the following
+	INSTALLTHESE="syck rssh mtd-utils acpid mlocate"
+	for mod in $PLUGIN_LIST; do
+	    if [ -d $PLUGINDIR/$mod/yum ];then
+		INSTALLTHESE=$INSTALLTHESE" "`ls $PLUGINDIR/$mod/yum/`
+	    fi
+	done
+	echo "installing rpms: $INSTALLTHESE" | tee -a $LOG
+	$YUM_CMD $INSTALLTHESE | tee -a $LOG
+	etckeeper-if-selected "after installing core packages"
+	touch $PREPED
+    fi
     echo "startup routine completed" | tee -a $LOG
     date  2>&1 | tee -a $LOG
 
