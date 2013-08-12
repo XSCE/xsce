@@ -116,17 +116,19 @@ function create-usb-repo2()
 {
     echo "starting create-usb-repo2" | tee -a $LOG
     u_mnt=`mount | grep var/cache/yum | gawk '{print $1}' | gawk '{print $1}'`
+    yum_mnt=`mount | grep var/cache/yum | gawk '{print $1}' | wc`
     echo "VAR-u_mnt is $u_mnt"
-    if ! [ -z $u_mnt ]; then
+    if ! [ -z $yum_mnt ]; then
 	RELEASEVER=`ls /var/cache/yum/$YUM_ARCH`
 	umnt_yum=`mount | grep cache/yum | gawk '{print $3}'`
-	echo "yum mount points are $umnt_yum "  
+	echo "yum mount points are $umnt_yum "
 	for mnt in $umnt_yum; do
 	    echo "unmounting $mnt" | tee -a $LOG
 	    umount /var/cache/yum | tee -a $LOG
 	done
-	if [ x$u_mnt != x ]; then
-	    usbkey=$(findmnt -n -o TARGET -S $u_mnt)
+	usb_mnt=`mount | grep fat | gawk '{print $1}'`
+	if [ x"$usb_mnt" != x ]; then
+	    usbkey=$(findmnt -n -o TARGET -S $usb_mnt)
 	    echo "found $usbkey"
 	    if [ -d $usbkey/xs-repo -a ! -d $usbkey/library ]; then
 		if [ $HAVE_GATEWAY = 1 ]; then 
@@ -136,8 +138,9 @@ function create-usb-repo2()
 		    sleep 2
 		    sync
 		fi
-		umounting $usbkey | tee -a $LOG
 	    fi
+	    umounting $usbkey | tee -a $LOG
+	    umount usbkey
 	else
 	    echo "INFO No external media found" | tee -a $LOG
 	fi
