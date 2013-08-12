@@ -64,6 +64,13 @@ num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
 
 # Is this an XO
 is_xo=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
+
+if [ x$XOTYPE != x ]:then
+    is_xo=1
+    echo "xo model is $XOTYPE" | tee -a $LOG
+else
+    is_xo=0
+fi    
 echo "is_xo = $is_xo" | tee -a $LOG
 
 function delete_eth0_connections
@@ -111,6 +118,13 @@ for iface in $(ifconfig | gawk 'BEGIN{FS=":"}(/^.*: flags=/) {print( $1);}')
        oth_iface=$iface
     fi
     done
+
+if [ -n "$gw_iface" ]; then
+    HAVE_GATEWAY=1
+else
+    HAVE_GATEWAY=0
+fi
+export HAVE_GATEWAY
 
 #========================================================
 # 4/14/13   then abort further processing if device names and mac numbers are unchanged
