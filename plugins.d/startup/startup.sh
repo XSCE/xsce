@@ -60,7 +60,10 @@ function get_usb_repo()
     for usb in `ls /mnt`;do
         if [ -d /mnt/$usb/xs-repo ];then
 	    echo "INFO using <usbkey>/xs-repo for yum cache" | tee -a $LOG
-	    mount --bind /mnt/$usb/xs-repo /var/cache/yum
+            bind_yum=`mount | grep var/cache/yum | wc | gawk '{print $1}'` 
+	    if [ $bind_yum -eq 0 ];then
+	        mount --bind /mnt/$usb/xs-repo /var/cache/yum
+	    fi
 	    # convert uname -i to match what yum uses
 	    # might need to converet to using case for x64 i386 if affected
 	    if [ $XSARCH = "armv7l" ];then
@@ -103,6 +106,7 @@ cost=100
 
 EOF
 		echo "FOUND /var/cache/yum/$YUM_ARCH/$FEDORA/metadata" | tee -a $LOG
+		break
 	    else
 		echo "INFO metadata not found - skipping repo use"| tee -a $LOG
 	    fi
