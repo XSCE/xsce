@@ -3,7 +3,7 @@ $serv_loc = array(
 "activity-server" => "",
 "iiab" => "/iiab/redirect",
 "moodle-xs" => "/moodle",
-"pathagar" => "",
+"pathagar" => "/books/latest",
 "upload" => "/upload_activity.php"
 );
 
