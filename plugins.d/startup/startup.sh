@@ -135,7 +135,9 @@ function create-usb-repo2()
 	    usbkey=$(findmnt -n -o TARGET -S $usb_mnt)
 	    echo "found $usbkey"
 	    if [ -d $usbkey/xs-repo -a ! -d $usbkey/library ]; then
-		if [ $HAVE_GATEWAY = 1 ]; then 
+		# Try to figure out which interface is connected to a gateway
+		HAVE_GATEWAY=`route -n | awk '{if($4=="UG")print $8}'`
+		if [ x"$HAVE_GATEWAY" != x ]; then 
   		    mkdir -p $usbkey/xs-repo/$YUM_ARCH/$RELEASEVER/local | tee -a $LOG
 		    yumdownloader --destdir=$usbkey/xs-repo/$YUM_ARCH/$RELEASEVER/local xs-config* | tee -a $LOG
 		    createrepo $usbkey/xs-repo/$YUM_ARCH/$RELEASEVER | tee -a $LOG
