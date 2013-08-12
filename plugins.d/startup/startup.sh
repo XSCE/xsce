@@ -119,7 +119,7 @@ function create-usb-repo2()
     echo "VAR-u_mnt is $u_mnt"
     if ! [ -z $u_mnt ]; then
 	RELEASEVER=`ls /var/cache/yum/$YUM_ARCH`
-	umnt_yum=`mount | grep cache/yum | sed '{print $3}'`
+	umnt_yum=`mount | grep cache/yum | gawk '{print $3}'`
 	echo "yum mount points are $umnt_yum "  
 	for mnt in $umnt_yum; do
 	    echo "unmounting $mnt" | tee -a $LOG
