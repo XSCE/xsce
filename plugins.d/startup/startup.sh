@@ -60,7 +60,7 @@ function get_usb_repo()
     for usb in `ls /mnt`;do
         if [ -d /mnt/$usb/xs-repo ];then
 	    echo "INFO using <usbkey>/xs-repo for yum cache" | tee -a $LOG
-            bind_yum=`mount | grep var/cache/yum | wc | gawk '{print $1}'` 
+            bind_yum=`mount | grep var/cache/yum | wc | gawk '{print $2}'` 
 	    if [ $bind_yum -eq 0 ];then
 	        mount --bind /mnt/$usb/xs-repo /var/cache/yum
 	    fi
