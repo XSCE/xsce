@@ -13,8 +13,8 @@ $tok = strtok($temp, " \n\t\r");
 
 while ($tok !== false) {
 //    echo "Word=$tok<br />";
-    $tok = strtok(" \n\t\r");
     $serv_arr[$tok] = 1;
+    $tok = strtok(" \n\t\r");
 }
 
 function service_link($service_key, $service_link_text, $service_link_desc)
