@@ -274,7 +274,6 @@ exclude=ejabberd
 	echo "installing rpms: $INSTALLTHESE" | tee -a $LOG
 	$YUM_CMD $INSTALLTHESE | tee -a $LOG
 	etckeeper-if-selected "after installing core packages"
-	touch $PREPED
     fi
     echo "startup routine completed" | tee -a $LOG
     date  2>&1 | tee -a $LOG
