@@ -120,10 +120,9 @@ EOF
 function create-usb-repo2()
 {
     echo "starting create-usb-repo2" | tee -a $LOG
-    u_mnt=`mount | grep var/cache/yum | gawk '{print $1}' | gawk '{print $1}'`
-    yum_mnt=`mount | grep var/cache/yum | gawk '{print $1}' | wc`
-    echo "VAR-u_mnt is $u_mnt"
-    if ! [ -z $yum_mnt ]; then
+    yum_mnt=`mount | grep var/cache/yum | wc | gawk '{print $2}'`
+    echo "found $yum_mnt bind mounts" | tee -a $LOG 
+    if  [ $yum_mnt -gt 0 ]; then
 	RELEASEVER=`ls /var/cache/yum/$YUM_ARCH`
 	umnt_yum=`mount | grep cache/yum | gawk '{print $3}'`
 	echo "yum mount points are $umnt_yum "
@@ -131,28 +130,29 @@ function create-usb-repo2()
 	    echo "unmounting $mnt" | tee -a $LOG
 	    umount /var/cache/yum | tee -a $LOG
 	done
-	usb_mnt=`mount | grep fat | gawk '{print $1}'`
-	if [ x"$usb_mnt" != x ]; then
-	    usbkey=$(findmnt -n -o TARGET -S $usb_mnt)
-	    echo "found $usbkey"
-	    if [ -d $usbkey/xs-repo -a ! -d $usbkey/library ]; then
-		# Try to figure out which interface is connected to a gateway
-		HAVE_GATEWAY=`route -n | awk '{if($4=="UG")print $8}'`
-		if [ x"$HAVE_GATEWAY" != x ]; then 
-  		    mkdir -p $usbkey/xs-repo/$YUM_ARCH/$RELEASEVER/local | tee -a $LOG
-		    yumdownloader --destdir=$usbkey/xs-repo/$YUM_ARCH/$RELEASEVER/local xs-config* | tee -a $LOG
-		    createrepo $usbkey/xs-repo/$YUM_ARCH/$RELEASEVER | tee -a $LOG
-		    sleep 2
-		    sync
-		fi
-	    fi
-	    echo "umounting $usbkey" | tee -a $LOG
-	    umount $usbkey
-	else
-	    echo "INFO No external media found" | tee -a $LOG
-	fi
     else
 	echo "INFO /var/cache/yum is not mounted" | tee -a $LOG
+    fi
+
+    usb_mnt=`mount | grep fat | gawk '{print $1}'`
+    if [ x"$usb_mnt" != x ]; then
+	usbkey=$(findmnt -n -o TARGET -S $usb_mnt)
+	echo "found $usbkey"
+	if [ -d $usbkey/xs-repo -a ! -d $usbkey/library ]; then
+	    # Try to figure out which interface is connected to a gateway
+	    HAVE_GATEWAY=`route -n | awk '{if($4=="UG")print $8}'`
+	    if [ x"$HAVE_GATEWAY" != x ]; then 
+  		mkdir -p $usbkey/xs-repo/$YUM_ARCH/$RELEASEVER/local | tee -a $LOG
+		yumdownloader --destdir=$usbkey/xs-repo/$YUM_ARCH/$RELEASEVER/local xs-config* | tee -a $LOG
+		createrepo $usbkey/xs-repo/$YUM_ARCH/$RELEASEVER | tee -a $LOG
+		sleep 2
+		sync
+		fi
+	fi
+	echo "umounting $usbkey" | tee -a $LOG
+	umount $usbkey
+    else
+	echo "INFO No external media found" | tee -a $LOG
     fi
     echo "leaving create-usb-repo2" | tee -a $LOG
 }
