@@ -146,6 +146,7 @@ upload yes
 #ntop yes
 #nmon yes
 #xo-admin yes
+tccustomize yes
 
 # Remote admin services
 #vnc yes
