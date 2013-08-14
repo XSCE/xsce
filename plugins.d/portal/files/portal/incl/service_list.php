@@ -1,6 +1,6 @@
 <?php
 $serv_loc = array(    
-"activity-server" => "",
+"activity-server" => "/activities",
 "iiab" => "/iiab/redirect",
 "moodle-xs" => "/moodle",
 "pathagar" => "/books/latest",
