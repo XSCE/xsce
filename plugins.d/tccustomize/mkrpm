@@ -11,7 +11,7 @@ if ! [ -d mktinycorexo ]; then
 fi
 pushd mktinycorexo
 if ! [ -d output ]; then
-	./mktinycorexo --xo-custom --zd
+	./mktinycorexo --xo-custom 
 fi
 popd
 
