@@ -14,6 +14,11 @@ function IIAB()
 XSendFile on
 XSendFilePath /
 WSGIScriptAlias /iiab /var/www/html/iiab.wsgi
+Alias /iiabstatic /usr/lib/python2.7/site-packages/iiab/static
+
+<Directory /usr/lib/python2.7/site-packages/iiab/static>
+	require all granted
+</Directory>
 EOF
 	fi
 
