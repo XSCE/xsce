@@ -1,0 +1,13 @@
+- name: Install munin package
+  yum: name=$item
+       state=present
+  with_items:
+    - munin
+    - munin-node
+
+- name: Enable munin-node service
+  service: name=munin-node
+           enabled=yes
+
+
+
