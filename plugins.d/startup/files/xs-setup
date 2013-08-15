@@ -160,6 +160,7 @@ monit yes
 
 # Server books from locally administered cache
 pathagar yes 
+cups yes
 
 # xs-runansible
 
