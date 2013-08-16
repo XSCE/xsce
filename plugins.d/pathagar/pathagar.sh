@@ -53,7 +53,7 @@ function pathagar()
             # create a Django admin user -- first create a command string
             CMD="from django.contrib.auth.models import User; \
                 User.objects.create_superuser\
-                ('$PATHAGARUSER', '$PATHAGARUSER@schoolserver.local',\
+                ('$PATHAGARUSER', '$PATHAGARUSER@schoolserver',\
                  '$PATHPASSWORD')"
                 echo "$CMD" | su - "$PATHAGARUSER" -c "python $SITE/pathagar/manage.py shell"
             su - $PATHAGARUSER -c "django-admin syncdb --noinput --traceback \

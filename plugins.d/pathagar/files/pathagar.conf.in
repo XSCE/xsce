@@ -7,7 +7,7 @@ AliasMatch ^/([^/]*\.css) @@SITE@@/pathagar/static_media/styles/$1
 Alias /media/ /library/pathagar/media/
 Alias /static_media/ @@SITE@@/pathagar/static_media/
 
-<Directory /library/pathagar/media>
+<Directory /library/pathagar>
 Require all granted
 </Directory>
 
