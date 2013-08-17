@@ -1,7 +1,8 @@
 install:
 
 	install -D files/proxy_ajp.conf.in  $(DESTDIR)/etc/httpd/conf.d/proxy_ajp.conf.in
-	install -D files/httpd-xs.conf.in  $(DESTDIR)/etc/httpd/conf/httpd-xs.conf.in
+	install -D files/httpd-xs-2.2.conf.in  $(DESTDIR)/etc/httpd/conf/httpd-xs-2.2.conf.in
+	install -D files/httpd-xs-2.4.conf.in  $(DESTDIR)/etc/httpd/conf/httpd-xs-2.4.conf.in
 	install -D files/php.ini.in  $(DESTDIR)/etc/php.ini.in
 	install -D files/httpd.in  $(DESTDIR)/etc/sysconfig/httpd.in
 	install -D files/xs-httpcache  $(DESTDIR)/usr/bin/xs-httpcache
