@@ -273,8 +273,17 @@ exclude=ejabberd
 	done
 	echo "installing rpms: $INSTALLTHESE" | tee -a $LOG
 	$YUM_CMD $INSTALLTHESE | tee -a $LOG
+
+	# if yum was unsuccessful, find it out now
+	# "username named not found" but it's what happens otherwise
+	grep named /etc/passwd
         if [ $? -ne 0 ] ; then
-            echo "\n\nYum returned an error\n\n" | tee -a $LOG
+	    set +x
+ 	    echo "==================================================="
+            echo "\n\nYum  was not successfull\n\n" | tee -a $LOG
+	    echo "If this was an online install, check network connection"
+	    echo "If this was offline, check USB drive\n\n"
+ 	    echo "==================================================="
             exit $YUMERROR
         fi
 	etckeeper-if-selected "after installing core packages"
