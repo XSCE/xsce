@@ -273,6 +273,10 @@ exclude=ejabberd
 	done
 	echo "installing rpms: $INSTALLTHESE" | tee -a $LOG
 	$YUM_CMD $INSTALLTHESE | tee -a $LOG
+        if [ $? -ne 0 ] ; then
+            echo "\n\nYum returned an error\n\n" | tee -a $LOG
+            exit $YUMERROR
+        fi
 	etckeeper-if-selected "after installing core packages"
     fi
     echo "startup routine completed" | tee -a $LOG
