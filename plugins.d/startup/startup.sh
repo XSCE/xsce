@@ -107,12 +107,17 @@ cost=100
 
 EOF
 		echo "FOUND /var/cache/yum/$YUM_ARCH/$FEDORA/metadata" | tee -a $LOG
-		break
+		HAVE_GATEWAY=`route -n | awk '{if($4=="UG")print $8}'`
+		if [ x"$HAVE_GATEWAY" = x ]; then
+		    echo "no gateway disabling on-line yum repos" | tee -a $LOG
+		    sed -i -e 's|#yum.repos.d=/tmp|yum.repos.d=/tmp|' /tmp/yum.conf
+		fi 
 	    else
 		echo "INFO metadata not found - skipping repo use"| tee -a $LOG
 	    fi
+	    break
 	else
-	    echo "INFO usbkey xs-repo not found - skipping"| tee -a $LOG
+	    echo "INFO usbkey xs-repo not found on /mnt/$usb - skipping"| tee -a $LOG
         fi
     done
 }
@@ -440,6 +445,9 @@ function do-last()
 function do_last()
 {
     etckeeper-if-selected 'School Server setup changed - do_last'
+    if [ -f /tmp/yum.conf ]; then
+	rm /tmp/yum.conf
+    fi
     echo "do last executed" | tee -a $LOG
     date | tee -a $LOG
     if [ ! -e $MARKER ]; then
