@@ -48,16 +48,17 @@ function pathagar()
         systemctl restart postgresql-xs.service
 
         pushd $SITE/pathagar
-            export "DJANGO_SETTINGS_MODULE=pathagar.settings"
+	export "DJANGO_SETTINGS_MODULE=pathagar.settings"
+	# create the database to put the admin user into
+	su - $PATHAGARUSER -c "django-admin syncdb --noinput --traceback \
+	--settings=pathagar.settings"
 
-            # create a Django admin user -- first create a command string
-            CMD="from django.contrib.auth.models import User; \
-                User.objects.create_superuser\
-                ('$PATHAGARUSER', '$PATHAGARUSER@schoolserver',\
-                 '$PATHPASSWORD')"
-                echo "$CMD" | su - "$PATHAGARUSER" -c "python $SITE/pathagar/manage.py shell"
-            su - $PATHAGARUSER -c "django-admin syncdb --noinput --traceback \
-                --settings=pathagar.settings"
+	# create a Django admin user -- first create a command string
+	CMD="from django.contrib.auth.models import User; \
+	User.objects.create_superuser\
+	('$PATHAGARUSER', '$PATHAGARUSER@schoolserver',\
+	'$PATHPASSWORD')"
+	echo "$CMD" | su - "$PATHAGARUSER" -c "python $SITE/pathagar/manage.py shell"
         popd
 
         # apache needs to know how to distribute books

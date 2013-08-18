@@ -13,7 +13,6 @@ install:
 	install -D files/init.in  $(DESTDIR)/etc/sysconfig/init.in
 	install -D files/pcspkr.modules  $(DESTDIR)/etc/sysconfig/modules/pcspkr.modules
 	install -D files/sysctl.conf.in  $(DESTDIR)/etc/sysctl.conf.in
-	install -D files/xs-apply-changes  $(DESTDIR)/root/xs-apply-changes
 	install -D files/bootstrap-xo  $(DESTDIR)/usr/bin/bootstrap-xo
 	install -D files/bootstrap-ts  $(DESTDIR)/usr/bin/bootstrap-ts
 	install -D files/cat-parts  $(DESTDIR)/usr/bin/cat-parts

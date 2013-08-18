@@ -12,7 +12,6 @@
 /etc/sysconfig/modules/pcspkr.modules
 /etc/sysconfig/olpc-scripts/setup.d/installed/dummy
 /etc/sysctl.conf.in
-/root/xs-apply-changes
 /usr/bin/bootstrap-xo
 /usr/bin/bootstrap-ts
 /usr/bin/cat-parts

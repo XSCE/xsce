@@ -26,7 +26,6 @@ install:
 	install -D -d  $(DESTDIR)etc/sysconfig/olpc-scripts/
 	install -D -d  $(DESTDIR)etc/sysconfig/olpc-scripts/setup.d/
 	install -D -d  $(DESTDIR)etc/sysconfig/olpc-scripts/setup.d/installed/
-	install -D -d  $(DESTDIR)root/
 	install -D -d  $(DESTDIR)usr/bin/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/profile.d/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/yum.repos.d/
