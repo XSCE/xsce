@@ -15,9 +15,10 @@ function httpd()
         # if httpd version is 2.4.4, use new syntax for access control
 	if [ $(rpm -q httpd | grep fc17) ]; then
 	    cp -pf $CFGDIR/etc/httpd/conf/httpd-xs-2.2.conf.in /etc/httpd/conf/httpd-xs.conf |tee -a $LOG
+	    ln -fs $CFGDIR/etc/httpd/conf.d/xs-2.2.conf /etc/httpd/conf.d/xs-2.2.conf | tee -a $LOG
 	else
 	    cp -pf $CFGDIR/etc/httpd/conf/httpd-xs-2.4.conf.in /etc/httpd/conf/httpd-xs.conf |tee -a $LOG
-
+	    ln -fs $CFGDIR/etc/httpd/conf.d/xs-2.4.conf /etc/httpd/conf.d/xs-2.4.conf | tee -a $LOG
 	fi
 
 	# Choose a config depending on memory
