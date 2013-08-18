@@ -50,10 +50,15 @@ if [ -f /etc/sysconfig/xs-disable-config ]; then
 fi
 
 # seed low-level network conf and domain
-if [ x$1 = x ]; then
-    xs-domain-config $DOMAIN
-else
+if [ x$1 != x ]; then
     xs-domain-config $1
+else
+    if [ -f /etc/sysconfig/xs_domain_name ]; then
+        DOMAIN_SET=`cat /etc/sysconfig/xs_domain_name`
+	xs-domain-config $DOMAIN_SET
+    else
+        xs-domain-config $DOMAIN
+    fi
 fi
 
 #systemd change
