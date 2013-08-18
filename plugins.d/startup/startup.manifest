@@ -21,6 +21,8 @@
 /usr/bin/xs-services-check
 /usr/bin/xs-setup
 /usr/bin/xs-setup-functions
+/usr/bin/xs-enable
+/usr/bin/xs-disable
 /usr/share/xs-config/cfg/etc/profile.d/bashrc_xs.sh
 /usr/share/xs-config/cfg/etc/yum.repos.d/media.repo
 
