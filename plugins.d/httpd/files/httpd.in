@@ -3,6 +3,6 @@
 # systemd requires that this be done at setup time in httpd.conf
 #
 #
-OPTIONS=" -f conf/httpd-xs.conf "
+OPTIONS=" -f conf/httpd-xs.conf 
 
 

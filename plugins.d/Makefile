@@ -65,8 +65,8 @@ install:
 	install -D -d  $(DESTDIR)etc/openvpn/keys/
 	install -D -d  $(DESTDIR)etc/httpd/
 	install -D -d  $(DESTDIR)etc/httpd/conf.d/
-	install -D -d  $(DESTDIR)etc/httpd/conf/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/httpd/
+	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/httpd/conf/
 	install -D -d  $(DESTDIR)usr/share/xs-config/cfg/etc/httpd/conf.d/
 	install -D -d  $(DESTDIR)etc/squid/
 	install -D -d  $(DESTDIR)usr/libexec/
