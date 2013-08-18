@@ -260,12 +260,16 @@ exclude=ejabberd
 ' /etc/yum.repos.d/fedora-updates.repo
     fi
 
-    #do all of the yum installs in a single operation
     get_enabled_plugins
 
+    # add some sysamin tools
+    TOOLS=`ls $PLUGINDIR/startup/yum/`
+    $YUM_CMD $TOOLS | tee -a $LOG
+    
+    #do all of the yum installs in a single operation
     if [ ! -e $PREPED ]; then
 	# always install the following
-	INSTALLTHESE="syck rssh mtd-utils acpid mlocate"
+	INSTALLTHESE=""
 	for mod in $PLUGIN_LIST; do
 	    if [ -d $PLUGINDIR/$mod/yum ];then
 		INSTALLTHESE=$INSTALLTHESE" "`ls $PLUGINDIR/$mod/yum/`
