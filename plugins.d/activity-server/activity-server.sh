@@ -16,6 +16,8 @@ function activity-server()
                     /var/www/html/upload_activity.php
         # patch .var multiview which seems to be broken
         ln -sf /library/xs-activity-server/activities/index.html.DEFAULT /library/xs-activity-server/activities/index.html
+        #execute the setup script
+        /etc/sysconfig/olpc-scripts/setup.d/xs-activity-server
         
         # if this is the new apache 2.4, add the wierd permission
         if [ ! `rpm -q fedora-release | grep 17` ]; then
@@ -23,8 +25,6 @@ function activity-server()
             Require all granted
             ' /etc/httpd/conf.d/xs-activity-server.conf
         fi
-        #execute the setup script
-        /etc/sysconfig/olpc-scripts/setup.d/xs-activity-server
              
         touch $SETUPSTATEDIR/activity-server
         ;;
