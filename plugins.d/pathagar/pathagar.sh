@@ -4,7 +4,7 @@ function pathagar()
 {
 	case "$1" in
 	"yes")
-	$YUM_CMD Django django-tagging django-taggit django-sendfile \
+        $YUM_CMD Django django-tagging django-taggit django-sendfile \
 		mod_wsgi pathagar python-setuptools  python-psycopg2
         #httpd yes #-- currently on by default
         #postgresql yes #-- currently on by default
@@ -15,6 +15,7 @@ function pathagar()
 
         # make a non privileged user
         if [ ! `grep $PATHAGARUSER /etc/passwd` ]; then
+            echo "adding pathagar user..."
             adduser $PATHAGARUSER
             echo "$PATHPASSWORD" | passwd $PATHAGARUSER --stdin
             chmod 770 /home/$PATHAGARUSER
@@ -30,11 +31,14 @@ function pathagar()
 	    ln -sf /etc/pathagar/pathagar.wsgi "/$SITE/pathagar/pathagar.wsgi"
 	    systemctl restart postgresql-xs.service
 	    sleep 5
+        else
+            echo "INFO - pathagar user already exists"
         fi
 
         # don't error out if this script is already executed once
         LOADED=`su - postgres -c "psql -l" | gawk '{if($1=="books") print $1}'`
         if [ "$LOADED" != "books" ]; then
+            echo "creating database...."    
             # create administrative postgresql user and database for pathagar
             su - postgres -c "psql  -c 'create database books'"
             su - postgres -c "psql  -c 'create user $PATHAGARUSER;'"
@@ -48,9 +52,11 @@ function pathagar()
                 /library/pgsql-xs/pg_hba.conf
             sed -i -e 's/^host.*127.*/host     all    all    127.0.0.1\/32   trust/'\
                 /library/pgsql-xs/pg_hba.conf
-	fi
+        else
+            "INFO - database already created"
+        fi
 
-	if [ ! -f $SETUPSTATEDIR/pathagar ]; then
+        if [ ! -f $SETUPSTATEDIR/pathagar ]; then
             pushd $SITE/pathagar
             export "DJANGO_SETTINGS_MODULE=pathagar.settings"
 
@@ -63,20 +69,24 @@ function pathagar()
             su - $PATHAGARUSER -c "django-admin syncdb --noinput --traceback \
                 --settings=pathagar.settings"
 	    popd
-	fi
+        else
+            echo "SETUPSTATEDIR/pathagar exists"
+        fi
 
         # apache needs to know how to distribute books
-	cp /etc/pathagar/pathagar.conf.in /etc/pathagar/pathagar.conf
-	sed -i -e "s|\@\@SITE\@\@|$SITE|" /etc/pathagar/pathagar.conf
-	ln -fs /etc/pathagar/pathagar.conf /etc/httpd/conf.d/pathagar.conf
-	touch $SETUPSTATEDIR/pathagar
-	systemctl restart httpd
+        cp /etc/pathagar/pathagar.conf.in /etc/pathagar/pathagar.conf
+        sed -i -e "s|\@\@SITE\@\@|$SITE|" /etc/pathagar/pathagar.conf
+        ln -fs /etc/pathagar/pathagar.conf /etc/httpd/conf.d/pathagar.conf
+        touch $SETUPSTATEDIR/pathagar
+        systemctl restart httpd
         ;;
 
-	"no")
-        set +e;rm $SETUPSTATEDIR/pathagar; set -e
-	unlink /etc/httpd/conf.d/pathagar.conf
+        "no")
+        set +e
+        rm $SETUPSTATEDIR/pathagar
+        unlink /etc/httpd/conf.d/pathagar.conf
+        set -e
         ;;
 
-	esac
+        esac
 }

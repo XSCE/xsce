@@ -370,11 +370,10 @@ function get_enabled_plugins()
        then
            echo "plugin disabled $plugin" | tee -a $LOG
        else
-           echo "$plugin"
+           echo "$plugin" | tee -a $LOG
            PLUGIN_LIST="$PLUGIN_LIST $plugin" 
        fi
     done
-    echo "plugin list is $PLUGIN_LIST" | tee -a $LOG
 }
 
 function etckeeper-if-selected()
