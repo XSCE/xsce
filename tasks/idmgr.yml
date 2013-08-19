@@ -40,3 +40,13 @@
   with_items:
     - idmgr
     - xinetd
+
+#idmgr needs an extra step
+- name: Enable ejabberd service
+  file: src=/etc/systemd/system/idmgr.service
+        dest=/etc/systemd/system/multi-user.target.wants/idmgr.service
+        owner=root
+        group=root
+        state=link
+
+
