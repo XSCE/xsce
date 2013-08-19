@@ -20,13 +20,17 @@
     - { src: 'ejabberd/ejabberd-xs.service.j2', dest: '/etc/systemd/system/ejabberd-xs.service', mode: '0755' }
     - { src: 'ejabberd/xs-ejabberd-srg', dest: '/usr/bin/xs-ejabberd-srg' , mode: '0755' }
     - { src: 'ejabberd/10-ejabberdmoodle', dest: '/etc/sudoers.d/10-ejabberdmoodle', mode: '0440' }
+    - { src: 'ejabberd/ejabberd.tmpfiles', dest: '/etc/tmpfiles.d/ejabberd.conf', mode: '0640' }
 
 - name: Set domain name
   shell: echo {{ xsce_domain }} > /etc/sysconfig/ejabberd_domain_name
       
 
 - name: Enable ejabberd service
-  service: name=ejabberd-xs
-           enabled=yes
+  file: src=/etc/systemd/system/ejabberd-xs.service
+        dest=/etc/systemd/system/multi-user.target.wants/ejabberd-xs.service
+        owner=root
+        group=root
+        state=link
 
 
