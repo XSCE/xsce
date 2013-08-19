@@ -211,16 +211,6 @@ function startup()
         #record the config file additions
         etckeeper-if-selected 'Config files copied <file.in> to <file>'
 
-        # exit-hooks blasts school server into resolv.conf, use NM, and finese
-        #ln -sf $CFGDIR/etc/dhcp/dhclient-exit-hooks $DESTDIR/etc/dhcp
-        ln -sf $CFGDIR/etc/logrotate.d/* $DESTDIR/etc/logrotate.d
-        ln -sf $CFGDIR/etc/profile.d/* $DESTDIR/etc/profile.d
-
-        # sudo doesn't accept symlinks here
-        install -m 440 $CFGDIR/etc/sudoers.d/* $DESTDIR/etc/sudoers.d
-
-        # let not use wildcards for multiple services   
-        #install -m 440 $CFGDIR/etc/systemd/system/* $DESTDIR/etc/systemd/system
 
         # run setup scripts belonging to other packages
         #shopt -s nullglob
@@ -256,14 +246,6 @@ function startup()
         echo "208.67.222.222;208.67.220.220;" > /home/$DEFAULTUSER/etc/sysconfig/xs_opendns_ip
         chmod -R 770 /home/$DEFAULTUSER
         chown -R $DEFAULTUSER:$DEFAULTUSER /home/$DEFAULTUSER
-
-    # disable the installation of ejabberd from fedora-updates
-    if [ -f /etc/yum.repos.d/fedora-updates.repo ] && \
-        [ ! `grep exclude=ejabberd /etc/yum.repos.d/fedora-updates.repo` ];then
-        sed -i ' /^gpgcheck/ a\
-exclude=ejabberd
-' /etc/yum.repos.d/fedora-updates.repo
-    fi
 
     get_enabled_plugins
 
@@ -350,11 +332,19 @@ function do_once()
     if [ -f /etc/yum.repos.d/fedora.repo ]; then  # rpi uses pidora repo name
         sed -i -e 's/metadata_expire=7d/metadata_expire=never/' /etc/yum.repos.d/fedora.repo
     fi
-    #sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora.repo
-    #sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora-updates.repo
+    sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora.repo
+    sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora-updates.repo
 
     # use NM keyfile in place of ifcfg-rh XOs have this set already via OOB
     sed -i -e 's/ifcfg-rh/keyfile/' /etc/NetworkManager/NetworkManager.conf
+
+    # exit-hooks blasts school server into resolv.conf, use NM, and finese
+    #ln -sf $CFGDIR/etc/dhcp/dhclient-exit-hooks $DESTDIR/etc/dhcp
+    ln -sf $CFGDIR/etc/logrotate.d/* $DESTDIR/etc/logrotate.d
+    ln -sf $CFGDIR/etc/profile.d/* $DESTDIR/etc/profile.d
+
+    # sudo doesn't accept symlinks here
+    install -m 440 $CFGDIR/etc/sudoers.d/* $DESTDIR/etc/sudoers.d
 
     # Work would be needed to get the XS components playing nice with SELinux, so
     # disable it.
