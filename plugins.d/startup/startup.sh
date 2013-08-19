@@ -31,7 +31,7 @@
 #===============================================================================
 #
 # notes: need to systemctl unmask before systemctl enable
-set -x -e -u
+set -e -u
 
 DESTDIR=""
 CFGDIR=/usr/share/xs-config/cfg
@@ -269,7 +269,6 @@ function startup()
 	# "username named not found" but it's what happens otherwise
 	grep named /etc/passwd
         if [ $? -ne 0 ] ; then
-	    set +x
  	    echo "==================================================="
             echo "\n\nYum  was not successfull\n\n" | tee -a $LOG
 	    echo "If this was an online install, check network connection"

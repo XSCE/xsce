@@ -75,7 +75,7 @@ function pathagar()
 
 	"no")
         set +e;rm $SETUPSTATEDIR/pathagar; set -e
-	rm -f /etc/httpd/conf.d/pathagar.conf
+	unlink /etc/httpd/conf.d/pathagar.conf
         ;;
 
 	esac

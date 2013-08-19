@@ -8,8 +8,6 @@ function activity-server()
                 exit $YUMERROR
             fi
 
-        #execute the setup script
-        /etc/sysconfig/olpc-scripts/setup.d/xs-activity-server
         # permit apache to perform the upload task,
         chgrp -R admin /library/xs-activity-server
         chmod -R 775 /library/xs-activity-server
@@ -25,6 +23,8 @@ function activity-server()
             Require all granted
             ' /etc/httpd/conf.d/xs-activity-server.conf
         fi
+        #execute the setup script
+        /etc/sysconfig/olpc-scripts/setup.d/xs-activity-server
              
         touch $SETUPSTATEDIR/activity-server
         ;;

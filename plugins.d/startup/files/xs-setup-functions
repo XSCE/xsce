@@ -32,13 +32,13 @@ export XOTYPE
 
 for mod in `ls $PLUGINDIR`; do
     if [ -d $PLUGINDIR/$mod ];then
-        pushd $PLUGINDIR/$mod
+        pushd $PLUGINDIR/$mod > /dev/null
         SCRIPTLIST=`ls -1 *.sh`
         for script in $SCRIPTLIST;do
             if [ ! -z $script ]; then
                 source "./$script"
             fi
         done
-        popd
+        popd > /dev/null
     fi
 done

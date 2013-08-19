@@ -3,7 +3,7 @@
 # Configures fundamental XS items.
 # Usage: xs-setup [hostname]
 
-set -x -e
+set -e
 
 DESTDIR=/
 CFGDIR=/usr/share/xs-config/cfg
@@ -113,7 +113,6 @@ if [[ $num_ifaces < 3 && $ISXO = 1 ]] || [[ ! -z "$sendmessage" ]]; then
     ;;
     esac
 fi
-set -x
 
 # Determine the number of interfaces again since it may have changed
 num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
@@ -160,12 +159,12 @@ tccustomize yes
 #playbooks can be applied using xs-runansible
 ansible yes
 
-#Enable software watchdog
-monit yes
-
 # Server books from locally administered cache
 pathagar yes 
 cups yes
+
+#Enable software watchdog
+monit yes
 
 # xs-runansible
 
