@@ -4,9 +4,10 @@ function pathagar()
 {
 	case "$1" in
 	"yes")
-      $YUM_CMD Django django-tagging django-taggit django-sendfile \
+	$YUM_CMD Django django-tagging django-taggit django-sendfile \
 		mod_wsgi pathagar python-setuptools  python-psycopg2
         #httpd yes #-- currently on by default
+        #postgresql yes #-- currently on by default
 
         # get the python preample for site-packages where pathagar is loaded
         SITE=`python -c "from distutils.sysconfig import get_python_lib; \
@@ -27,6 +28,8 @@ function pathagar()
 
 	    # put the wsgi interface where httpd expects to find it
 	    ln -sf /etc/pathagar/pathagar.wsgi "/$SITE/pathagar/pathagar.wsgi"
+	    systemctl restart postgresql-xs.service
+	    sleep 5
         fi
 
         # don't error out if this script is already executed once
@@ -47,21 +50,20 @@ function pathagar()
                 /library/pgsql-xs/pg_hba.conf
 	fi
 
-        systemctl restart postgresql-xs.service
+	if [ ! -f $SETUPSTATEDIR/pathagar ]; then
+            pushd $SITE/pathagar
+            export "DJANGO_SETTINGS_MODULE=pathagar.settings"
 
-        pushd $SITE/pathagar
-	export "DJANGO_SETTINGS_MODULE=pathagar.settings"
-	# create the database to put the admin user into
-	su - $PATHAGARUSER -c "django-admin syncdb --noinput --traceback \
-	--settings=pathagar.settings"
-
-	# create a Django admin user -- first create a command string
-	CMD="from django.contrib.auth.models import User; \
-	User.objects.create_superuser\
-	('$PATHAGARUSER', '$PATHAGARUSER@schoolserver',\
-	'$PATHPASSWORD')"
-	echo "$CMD" | su - "$PATHAGARUSER" -c "python $SITE/pathagar/manage.py shell"
-        popd
+            # create a Django admin user -- first create a command string
+            CMD="from django.contrib.auth.models import User; \
+                User.objects.create_superuser\
+                ('$PATHAGARUSER', '$PATHAGARUSER@schoolserver',\
+                 '$PATHPASSWORD')"
+                echo "$CMD" | su - "$PATHAGARUSER" -c "python $SITE/pathagar/manage.py shell"
+            su - $PATHAGARUSER -c "django-admin syncdb --noinput --traceback \
+                --settings=pathagar.settings"
+	    popd
+	fi
 
         # apache needs to know how to distribute books
 	cp /etc/pathagar/pathagar.conf.in /etc/pathagar/pathagar.conf
@@ -73,9 +75,8 @@ function pathagar()
 
 	"no")
         set +e;rm $SETUPSTATEDIR/pathagar; set -e
+	rm -f /etc/httpd/conf.d/pathagar.conf
         ;;
 
 	esac
 }
-
-
