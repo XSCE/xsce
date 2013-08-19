@@ -53,7 +53,7 @@ function pathagar()
             sed -i -e 's/^host.*127.*/host     all    all    127.0.0.1\/32   trust/'\
                 /library/pgsql-xs/pg_hba.conf
         else
-            "INFO - database already created"
+            echo "INFO - database already created"
         fi
 
         if [ ! -f $SETUPSTATEDIR/pathagar ]; then

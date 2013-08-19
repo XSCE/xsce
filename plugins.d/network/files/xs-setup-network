@@ -222,8 +222,9 @@ do
 	    cp $config $config.$BACKUP_SUFFIX ;
 	fi
 	cp $config.in $config.tmp ;
-	sed -i -e s/@@BASEDNSNAME2@@/$new_name/ $config.tmp ;
+	sed -i -e s/@@BASEDNSNAME4@@/$short_host/ $config.tmp ;
 	sed -i -e s/@@BASEDNSNAME3@@/$short_host/ $config.tmp ;
+	sed -i -e s/@@BASEDNSNAME2@@/$new_name/ $config.tmp ;
 	sed -i -e s/@@IPADDR@@/$ipaddr/ $config.tmp ;
 	cat $config.tmp > $config ;
 	rm $config.tmp ;
