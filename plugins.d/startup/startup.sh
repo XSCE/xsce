@@ -110,8 +110,9 @@ EOF
 		HAVE_GATEWAY=`route -n | awk '{if($4=="UG")print $8}'`
 		if [ x"$HAVE_GATEWAY" = x ]; then
 		    echo "no gateway disabling on-line yum repos" | tee -a $LOG
-		    sed -i -e 's|#yum.repos.d=/tmp|yum.repos.d=/tmp|' /tmp/yum.conf
-		fi 
+		    YUM_CMD="yum -c /tmp/yum.conf --disablerepo=* --enablerepo=usb-media -y install"
+		    YUM_REINSTALL="yum -c /tmp/yum.conf --disablerepo=* --enablerepo=usb-media -y reinstall"
+		fi
 	    else
 		echo "INFO metadata not found - skipping repo use"| tee -a $LOG
 	    fi
