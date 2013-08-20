@@ -30,7 +30,7 @@ function pathagar()
 
             # Need to have auth running
             sed -i -e "s/^disable*/        disable         = no/" /etc/xinetd.d/auth
-            sed i- -e "s/-E/ /" /etc/xinetd.d/auth 
+            sed -i -e "s/-E/ /" /etc/xinetd.d/auth 
             systemctl restart xinetd 
 
 	    # put the wsgi interface where httpd expects to find it
