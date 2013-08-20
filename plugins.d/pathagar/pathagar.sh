@@ -71,8 +71,9 @@ function pathagar()
                 User.objects.create_superuser \
                 ('$PATHAGARUSER', '$PATHAGARUSER@$HOSTNAME', '$PATHPASSWORD')"
                 echo "Django admin CMD is $CMD"
-                echo "$CMD" | su - "$PATHAGARUSER" -c "python $SITE/pathagar/manage.py shell"
-            
+                echo "$CMD" | su - "$PATHAGARUSER" -c "python $SITE/pathagar/manage.py shell" \ 
+                > /dev/null  
+
             su - $PATHAGARUSER -c "django-admin syncdb --noinput --traceback \
                 --settings=pathagar.settings"
 	    popd
