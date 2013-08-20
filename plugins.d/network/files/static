@@ -10,6 +10,7 @@ dns=127.0.0.1;
 dns-search=@@DOMAIN@@;
 addresses1=172.18.96.1;19;0.0.0.0;
 may-fail=true
+never-default=true
 
 [802-3-ethernet]
 duplex=full
