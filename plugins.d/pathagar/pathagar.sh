@@ -6,7 +6,7 @@ function pathagar()
 	case "$1" in
 	"yes")
         $YUM_CMD Django django-tagging django-taggit django-sendfile \
-		mod_wsgi pathagar python-setuptools  python-psycopg2 auth
+		mod_wsgi pathagar python-setuptools  python-psycopg2 pidentd
         #httpd yes #-- currently on by default
         #postgresql yes #-- currently on by default
 
