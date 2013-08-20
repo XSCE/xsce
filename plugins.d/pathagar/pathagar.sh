@@ -6,7 +6,7 @@ function pathagar()
 	case "$1" in
 	"yes")
         $YUM_CMD Django django-tagging django-taggit django-sendfile \
-		mod_wsgi pathagar python-setuptools  python-psycopg2 pidentd
+		mod_wsgi pathagar python-setuptools  python-psycopg2 authd
         #httpd yes #-- currently on by default
         #postgresql yes #-- currently on by default
 
@@ -29,7 +29,7 @@ function pathagar()
             ln -sf /etc/pathagar/settings.py $SITE/pathagar/settings.py
 
             # Need to have auth running
-            sed -i -e "s/^disable*/        disable         = no/" /etc/xinetd.d/auth
+            sed -i -e "s/yes/no/" /etc/xinetd.d/auth
             sed -i -e "s/-E/ /" /etc/xinetd.d/auth 
             systemctl restart xinetd 
 
