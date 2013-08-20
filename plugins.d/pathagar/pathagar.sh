@@ -66,6 +66,10 @@ function pathagar()
             pushd $SITE/pathagar
             export "DJANGO_SETTINGS_MODULE=pathagar.settings"
 
+	    # create the tables where admin user can be entered
+            su - $PATHAGARUSER -c "django-admin syncdb --noinput --traceback \
+                --settings=pathagar.settings"
+
             # create a Django admin user -- first create a command string
             CMD="from django.contrib.auth.models import User; \
                 User.objects.create_superuser \
@@ -74,8 +78,6 @@ function pathagar()
                 echo "$CMD" | su - "$PATHAGARUSER" -c "python $SITE/pathagar/manage.py shell" \ 
                 > /dev/null  
 
-            su - $PATHAGARUSER -c "django-admin syncdb --noinput --traceback \
-                --settings=pathagar.settings"
 	    popd
         else
             echo "SETUPSTATEDIR/pathagar exists"
