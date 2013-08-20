@@ -143,20 +143,20 @@ function create-usb-repo2()
     usb_mnt=`mount | grep fat | gawk '{print $1}'`
     if [ x"$usb_mnt" != x ]; then
 	usbkey=$(findmnt -n -o TARGET -S $usb_mnt)
-	echo "found $usbkey"
-	if [ -d $usbkey/xs-repo -a ! -d $usbkey/library ]; then
+	echo "found "$usbkey""
+	if [ -d "$usbkey"/xs-repo -a ! -d "$usbkey"/library ]; then
 	    # Try to figure out which interface is connected to a gateway
 	    HAVE_GATEWAY=`route -n | awk '{if($4=="UG")print $8}'`
 	    if [ x"$HAVE_GATEWAY" != x ]; then 
-  		mkdir -p $usbkey/xs-repo/$YUM_ARCH/$RELEASEVER/local | tee -a $LOG
-		yumdownloader --destdir=$usbkey/xs-repo/$YUM_ARCH/$RELEASEVER/local xs-config* | tee -a $LOG
-		createrepo $usbkey/xs-repo/$YUM_ARCH/$RELEASEVER | tee -a $LOG
+  		mkdir -p "$usbkey"/xs-repo/$YUM_ARCH/$RELEASEVER/local | tee -a $LOG
+		yumdownloader --destdir="$usbkey"/xs-repo/$YUM_ARCH/$RELEASEVER/local xs-config* | tee -a $LOG
+		createrepo "$usbkey"/xs-repo/$YUM_ARCH/$RELEASEVER | tee -a $LOG
 		sleep 2
 		sync
 		fi
 	fi
-	echo "umounting $usbkey" | tee -a $LOG
-	umount $usbkey
+	echo "umounting "$usbkey"" | tee -a $LOG
+	umount "$usbkey"
     else
 	echo "INFO No external media found" | tee -a $LOG
     fi

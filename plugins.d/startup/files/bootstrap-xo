@@ -154,11 +154,11 @@ EOF
                 maybe=`ls -la /sys/class/block/ | grep usb | gawk '{print 9}'`
                 if ! [ -z "$maybe" ];then
                     usbkey=`findmnt -n -o TARGET -S $parts`
-		    if [ ! -d $usbkey/xs-repo/  -a ! -d $usbkey/library ];then
-			mkdir $usbkey/xs-repo			
+		    if [ ! -d "$usbkey"/xs-repo/  -a ! -d "$usbkey"/library ];then
+			mkdir "$usbkey"/xs-repo			
 		    fi
 		    echo "INFO using <usbkey>/xs-repo for yum cache" | tee -a $LOG
-		    mount --bind $usbkey/xs-repo /var/cache/yum
+		    mount --bind "$usbkey"/xs-repo /var/cache/yum
 		    # ensures $XSARCH/$FEDORA on fresh usbkey
 		    # update the online metadata from previous runs
 		    # and confirms available repos
@@ -203,7 +203,7 @@ installonly_limit=3
 
 [usb-media]
 name=usb-media
-baseurl=file://$usbkey/xs-repo/\$basearch/\$releasever
+baseurl=file://"$usbkey"/xs-repo/\$basearch/\$releasever
 enabled=1
 gpgcheck=0
 cost=100
