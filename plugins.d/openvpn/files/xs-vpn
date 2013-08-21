@@ -1,4 +1,4 @@
-!/bin/sh
+#!/bin/sh
 
 # we'd like the user of this script to have root privilege
 if [ "$(id -u)" != "0" ]; then
@@ -6,16 +6,41 @@ if [ "$(id -u)" != "0" ]; then
     exit 1
 fi
 
+case $1 in
+"stop" | "no" | "off")
+    killall openvpn
+    exit 0
+    ;;
+"status")
+    pid=`ps -e|grep openvpn`
+    if [ -z "$pid" ]; then
+        echo "The openvpn process is not running"
+    else
+        echo "Openvpn is running with id $pid"
+        ip=`ifconfig tun | gawk '(/netmask /) {print( $2);}'`
+        echo "Local vpn tunnel address is $ip"
+    fi
+    exit 0
+    ;;
+    
+esac
+
+# we'd line for passwords authentication to be turned off
+grep -E^.*PasswordAuthentication.*[Yy]es /etc/ssh/sshd_conf
+if [ "$1" != "test" ] || [ $# -eq 0];then
+	if [ $? -eq 0 ]; then
+		echo "Openvpn is only safe when public/private keys are used"
+		echo " And when passwords are turned off in /etc/ssh/sshd_conf"
+		exit 1
+	fi
+fi
+
 # openvpn config file directory
 dir=/etc/openvpn
 
-if [ $# -eq 0 ]; then
-    cmd="start"
-else
-    cmd=$1
-fi
+cmd=$1
 case $cmd in
-"start" | "yes" | "on")
+"test" | "unsafe" | "insecure")
 # load TUN/TAP kernel module
     modprobe tun
 
@@ -31,23 +56,20 @@ case $cmd in
 	ping -c 5 -i 5 10.8.0.1
 	# a zero return means the tunnel is up
 	if [ $? -ne "0" ]; then
+		echo "Stopping any openvpn instance"
 		killall openvpn
 		sleep 10
+		echo "Starting openvpn and waiting 10 seconds for daemon to become ready"
     		openvpn --cd $dir --daemon --config roadwarrior-client.conf
+	fi
+	sleep 10 
+	echo "Testing VPN connection"
+	ping -c 4 -i 4 10.8.0.1
+	if [ $? -eq 0 ]; then
+		echo "vpn tunnel established"
+	else
+		echo "vpn connection failed"
 	fi
 
     ;;
-"stop" | "no" | "off")
-    killall openvpn
-    ;;
-"status")
-    pid=`ps -e|grep openvpn`
-    if [ -z "$pid" ]; then
-        echo "The openvpn process is not running"
-    else
-        echo "Openvpn is running with id $pid"
-        ip=`ifconfig tun | gawk '(/netmask /) {print( $2);}'`
-        echo "Local vpn tunnel address is $ip"
-    fi
-        
 esac
