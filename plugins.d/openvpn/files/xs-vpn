@@ -25,7 +25,7 @@ case $1 in
     
 esac
 
-# we'd line for passwords authentication to be turned off
+# we'd like for passwords authentication to be turned off
 grep -E^.*PasswordAuthentication.*[Yy]es /etc/ssh/sshd_conf
 if [ "$1" != "test" ] || [ $# -eq 0];then
 	if [ $? -eq 0 ]; then
@@ -40,7 +40,7 @@ dir=/etc/openvpn
 
 cmd=$1
 case $cmd in
-"test" | "unsafe" | "insecure")
+"test" | "unsafe" | "on")
 # load TUN/TAP kernel module
     modprobe tun
 
