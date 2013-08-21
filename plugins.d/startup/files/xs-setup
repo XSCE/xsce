@@ -161,7 +161,7 @@ ansible yes
 
 # Server books from locally administered cache
 pathagar yes 
-cups yes
+#cups yes
 
 #Enable software watchdog
 monit yes
