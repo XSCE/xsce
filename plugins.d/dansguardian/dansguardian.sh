@@ -32,9 +32,14 @@ function dansguardian()
 	systemctl start squid.service
         ;;
     "no")
+	systemctl stop squid
         systemctl stop dansguardian
+        sed -i 's/http_port 0.0.0.0:3130 transparent/http_port 0.0.0.0:3128/g'\
+		 /etc/squid/squid-xs.conf
+        sed -i 's/acl localhost/#acl localhost/' /etc/squid/squid-xs.conf
         systemctl disable dansguardian
         rm $SETUPSTATEDIR/dansguardian
+	systemctl start squid
 
         ;;
     esac
