@@ -127,7 +127,7 @@ fi
 function fastprompt()
 {
     unset PROMPT_COMMAND
-    PS1="\[${HILIT}\][\u@\h]\[$NC\] \W >"  ;;
+    PS1="\[${HILIT}\][\u@\h]\[$NC\] \W >"
 }
 
 
