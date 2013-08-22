@@ -77,7 +77,8 @@ function pathagar()
                 echo "Django admin CMD is $CMD"
                 echo "$CMD" | su - "$PATHAGARUSER" -c "python $SITE/pathagar/manage.py shell" \ 
                 > /dev/null  
-
+	    mkdir -p /library/pathagar/media
+	    chown -R apache:apache /library/pathagar
 	    popd
         else
             echo "SETUPSTATEDIR/pathagar exists"
