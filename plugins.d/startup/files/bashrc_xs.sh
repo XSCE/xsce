@@ -105,7 +105,7 @@ ${CYAN} - DISPLAY on ${RED}$DISPLAY${NC}\n"
 date
 function _exit()        # Function to run upon exit of shell.
 {
-    echo -e "${RED}Hasta la vista, baby${NC}"
+    echo -e "${RED}Hasta La Vista, Au Revoir, Good Bye${NC}"
 }
 trap _exit EXIT
 
@@ -127,15 +127,7 @@ fi
 function fastprompt()
 {
     unset PROMPT_COMMAND
-    case $TERM in
-        *term | rxvt )
-            #PS1="${HILIT}[\h]$NC \W > \[\033]0;\${TERM} [\u@\h] \w\007\]" ;;
-            PS1="${HILIT}[\u@\h]$NC \W >"  ;;
-        linux )
-            PS1="${HILIT}[\h]$NC \W > " ;;
-        *)
-            PS1="[\h] \W > " ;;
-    esac
+    PS1="\[${HILIT}\][\u@\h]\[$NC\] \W >"  ;;
 }
 
 
