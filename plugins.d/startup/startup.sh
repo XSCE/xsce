@@ -123,7 +123,7 @@ EOF
     done
 }
 
-function create-usb-repo2()
+function unmount-yum-cache()
 {
     echo "starting create-usb-repo2" | tee -a $LOG
     yum_mnt=`mount | grep var/cache/yum | wc | gawk '{print $2}'`
@@ -139,7 +139,11 @@ function create-usb-repo2()
     else
 	echo "INFO /var/cache/yum is not mounted" | tee -a $LOG
     fi
+}
 
+function create-usb-repo2()
+{
+    unmount-yum-cache
     usb_mnt=`mount | grep fat | gawk '{print $1}'`
     if [ x"$usb_mnt" != x ]; then
 	usbkey=$(findmnt -n -o TARGET -S $usb_mnt)
@@ -434,12 +438,12 @@ function do-last()
 function do_last()
 {
     etckeeper-if-selected 'School Server setup changed - do_last'
-    if [ -f /tmp/yum.conf ]; then
-	rm /tmp/yum.conf
-    fi
     echo "do last executed" | tee -a $LOG
     date | tee -a $LOG
     if [ ! -e $MARKER ]; then
+        if [ -f /tmp/yum.conf ]; then
+	    rm /tmp/yum.conf
+        fi
         # mlocate needs to be initialized with all the new files
         updatedb
         # require that olpc user enter a password to become root

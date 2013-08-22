@@ -5,7 +5,8 @@ if [ $# -ne 1 ]; then
 	echo "xs-enable requires a plugin name as the single parameter"
 	exit 1
 fi
+get_usb_repo
 do-first
 $1 yes
+unmount-yum-cache
 do-last
-
