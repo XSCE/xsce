@@ -339,8 +339,10 @@ function do_once()
     if [ -f /etc/yum.repos.d/fedora.repo ]; then  # rpi uses pidora repo name
         sed -i -e 's/metadata_expire=7d/metadata_expire=never/' /etc/yum.repos.d/fedora.repo
     fi
-    sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora.repo
-    sed -i '#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$basearch# a\ exclude=ejabberd' /etc/yum.repos.d/fedora-updates.repo
+
+    sed -i -e '/^enabled=/a exclude=ejabberd' /etc/yum.repos.d/fedora.repo
+    sed -i -e '/^enabled=/a exclude=ejabberd' /etc/yum.repos.d/fedora-updates.repo
+    sed -i -e '/^enabled=/a exclude=ejabberd' /etc/yum.repos.d/fedora-updates-testing.repo
 
     # use NM keyfile in place of ifcfg-rh XOs have this set already via OOB
     sed -i -e 's/ifcfg-rh/keyfile/' /etc/NetworkManager/NetworkManager.conf
