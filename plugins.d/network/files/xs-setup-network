@@ -64,13 +64,6 @@ num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
 
 # Is this an XO
 is_xo=`[ -f /proc/device-tree/mfg-data/MN ] && echo 1 || echo 0`
-
-if [ x$XOTYPE != x ];then
-    is_xo=1
-    echo "xo model is $XOTYPE" | tee -a $LOG
-else
-    is_xo=0
-fi    
 echo "is_xo = $is_xo" | tee -a $LOG
 
 function delete_eth0_connections
@@ -119,10 +112,14 @@ for iface in $(ifconfig | gawk 'BEGIN{FS=":"}(/^.*: flags=/) {print( $1);}')
     fi
     done
 
-XO4=`cat $XOTYPE | grep XO-4`
+if [ $is_xo = 1 ];then
+    XO4=`cat /proc/device-tree/mfg-data/MN | grep XO-4` 
+else
+    XO4=
+fi    
 
 # mlan0 comes after eth2 so the above would be wrong on a XO-4
-if [ $num_ifaces > 3 ] && [ x$XO4 != x ]]; then
+if [ $num_ifaces > 3 ] && [ x$XO4 != x ]; then
     echo "Forcing LAN to be eth2 on XO-4" | tee -a $LOG
     oth_iface=eth2
 fi
