@@ -80,7 +80,7 @@ function delete_eth0_connections
     if [ -n "$1" ]; then
         for connection in $1;do
             if [ grep "802-11-wireless" $connection ]; then
-                rm -f $connecion
+                rm -f $connecion | tee -a $LOG
             fi
         done
     fi
@@ -205,8 +205,10 @@ else
     echo "$wan_mac" > /etc/sysconfig/xs_lan_mac
 fi
 
+systemctl restart NetworkManager-dispatcher.service | tee -a $LOG
+
 systemctl stop NetworkManager.service
-systemctl start NetworkManager.service
+systemctl start NetworkManager.service | tee -a $LOG
 
 short_host=`hostname -s`
 new_name=`hostname -f`
@@ -238,8 +240,8 @@ popd
 
 # the adapter names may have changed, so update the iptables
 set +e
-/etc/sysconfig/iptables-config
-systemctl restart iptables.service
+/etc/sysconfig/iptables-config | tee -a $LOG
+systemctl restart iptables.service | tee -a $LOG
 set -e
 echo "XS standard networking configured with" | tee -a $LOG
 echo "hostname = $short_host" | tee -a $LOG

@@ -8,6 +8,7 @@ function named()
         if [ -d /var/named-xs ]; then
             chown -R named /var/named-xs
         fi
+        systemctl enable NetworkManager-dispatcher.service | tee -a $LOG
         systemctl enable named.service 2>&1 | tee -a $LOG
         systemctl restart named.service 2>&1 | tee -a $LOG
         touch $SETUPSTATEDIR/named
