@@ -49,6 +49,10 @@ if [ -f /etc/sysconfig/xs-disable-config ]; then
     exit 0
 fi
 
+if [ -d /var/run/powerd-inhibit-dim ]; then
+    touch /var/run/powerd-inhibit-dim/$$
+fi
+
 # seed low-level network conf and domain
 if [ x$1 != x ]; then
     xs-domain-config $1
