@@ -27,7 +27,7 @@ esac
 
 # we'd like for passwords authentication to be turned off
 grep -E^.*PasswordAuthentication.*[Yy]es /etc/ssh/sshd_conf
-if [ "$1" != "test" ] || [ $# -eq 0];then
+if [ "$1" != "test" ] && [ $# -eq 0];then
 	if [ $? -eq 0 ]; then
 		echo "Openvpn is only safe when public/private keys are used"
 		echo " And when passwords are turned off in /etc/ssh/sshd_conf"
@@ -48,7 +48,7 @@ case $cmd in
 	# 8.8.8.8 is one of google's dns servers
 	ping -c 3 -i 3 8.8.8.8
 	if [ $? -ne 0 ]; then
-		# internet is not available, tunnel not possible
+		echo "internet is not available, tunnel not possible"
 		exit 1
 	fi
 	
