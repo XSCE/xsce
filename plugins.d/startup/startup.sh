@@ -108,8 +108,9 @@ cost=100
 EOF
 		echo "FOUND /var/cache/yum/$YUM_ARCH/$FEDORA/metadata" | tee -a $LOG
 		HAVE_GATEWAY=`route -n | awk '{if($4=="UG")print $8}'`
+		echo "HAVE_GATEWAY is $HAVE_GATEWAY" | tee -a $LOG
 		if [ x"$HAVE_GATEWAY" = x ]; then
-		    echo "no gateway disabling on-line yum repos" | tee -a $LOG
+		    echo "no gateway - disabling on-line yum repos" | tee -a $LOG
 		    YUM_CMD="yum -c /tmp/yum.conf --disablerepo=* --enablerepo=usb-media -y install"
 		    YUM_REINSTALL="yum -c /tmp/yum.conf --disablerepo=* --enablerepo=usb-media -y reinstall"
 		fi
@@ -125,7 +126,7 @@ EOF
 
 function unmount-yum-cache()
 {
-    echo "starting create-usb-repo2" | tee -a $LOG
+    echo "called unmount-yum-cache" | tee -a $LOG
     yum_mnt=`mount | grep var/cache/yum | wc | gawk '{print $2}'`
     echo "found $yum_mnt bind mounts" | tee -a $LOG 
     if  [ $yum_mnt -gt 0 ]; then
@@ -143,6 +144,7 @@ function unmount-yum-cache()
 
 function create-usb-repo2()
 {
+    echo "starting create-usb-repo2" | tee -a $LOG
     unmount-yum-cache
     usb_mnt=`mount | grep fat | gawk '{print $1}'`
     if [ x"$usb_mnt" != x ]; then
@@ -151,6 +153,7 @@ function create-usb-repo2()
 	if [ -d "$usbkey"/xs-repo -a ! -d "$usbkey"/library ]; then
 	    # Try to figure out which interface is connected to a gateway
 	    HAVE_GATEWAY=`route -n | awk '{if($4=="UG")print $8}'`
+	    echo "HAVE_GATEWAY is $HAVE_GATEWAY" | tee -a $LOG
 	    if [ x"$HAVE_GATEWAY" != x ]; then 
   		mkdir -p "$usbkey"/xs-repo/$YUM_ARCH/$RELEASEVER/local | tee -a $LOG
 		yumdownloader --destdir="$usbkey"/xs-repo/$YUM_ARCH/$RELEASEVER/local xs-config* | tee -a $LOG

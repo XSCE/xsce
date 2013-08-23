@@ -25,5 +25,4 @@
 /usr/bin/xs-disable
 /usr/bin/xs-update
 /usr/share/xs-config/cfg/etc/profile.d/bashrc_xs.sh
-/usr/share/xs-config/cfg/etc/yum.repos.d/media.repo
 
