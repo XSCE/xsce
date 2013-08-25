@@ -3,6 +3,7 @@ function squid()
     case "$1" in
 	"yes")
         touch $SETUPSTATEDIR/squid
+	cp /etc/squid/squid-xs.conf.in /etc/squid/squid-xs.conf
         # create the cache directories
         mkdir -p /library/cache
         chown squid:squid /library/cache
