@@ -26,7 +26,11 @@ hostname $xs_full_name
 
 # clear any old config files
 set +e
-rm /etc/dhclient-*.conf 2>&1 /dev/null
+remove=`ls /etc/dhclient-*.conf`
+for inf in $remove; do
+    echo "removing $inf"
+    rm -f $inf
+done
 set -e
 
 if [ x$wan_iface != x ]; then
