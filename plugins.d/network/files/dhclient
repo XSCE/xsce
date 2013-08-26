@@ -5,55 +5,46 @@ DHCLIENT_TEMPLATE="/usr/share/xs-config/cfg/etc/dhclient-hostname.conf.in"
 # find the current gateway 
 wan_iface=`route -n | awk '{if($4=="UG")print $8}'`
 
-# reference installed hostname name by default
-. /etc/sysconfig/network
-
-# ensure installed hostname is set. 
-echo "setting host name to $HOSTNAME"
-hostname $HOSTNAME
-
 # grab the short hostname 
 short_host=`hostname -s`
 
-### reference future config file here ####
-# for XSNAME= 
-
 # ensure a default name
-if [ x$short_host = x  ]; then
+if [ $short_host != schoolserver ]; then
     short_host=schoolserver
 fi
 
 # append the passed domain name
-xs_full_name=$short_host.$1
+domain=`cat /etc/sysconfig/xs_domain_name`
+xs_full_name=$short_host.$domain
 
-echo "changing FQDN to $xs_full_name"
+echo "changing FQDN to $xs_full_name" | tee -a /var/log/xs-setup.log
+# change the config files
+sed -i -e '/HOSTNAME=/d' /etc/sysconfig/network
+echo "HOSTNAME=$xs_full_name " >> /etc/sysconfig/network
+echo $xs_full_name  > /etc/hostname
 hostname $xs_full_name
 
 # clear any old config files
 set +e
-rm /etc/dhclient-*.conf
+rm /etc/dhclient-*.conf 2>&1 /dev/null
 set -e
 
-# replace the hostname in the dhclient interface file 
-if [ -e $DHCLIENT_TEMPLATE ]; then
-    sed -e s/@@BASEDNSNAME3@@/$short_host/ $DHCLIENT_TEMPLATE \
-            > /etc/dhclient-$wan_iface.conf ;
+if [ x$wan_iface != x ]; then
+    # replace the hostname in the dhclient interface file 
+    if [ -e $DHCLIENT_TEMPLATE ]; then
+        sed -e s/@@BASEDNSNAME3@@/$short_host/ $DHCLIENT_TEMPLATE \
+                > /etc/dhclient-$wan_iface.conf ;
+    else
+        echo "WARNING: missing $DHCLIENT_TEMPLATE!" | tee -a /var/log/xs-setup.log
+    fi
+
+    # kill the old lease file that has old hostname
+    if [ -e /var/run/nm-dhclient-$wan_iface.conf ]; then
+        rm /var/run/nm-dhclient-$wan_iface.conf
+    fi
 else
-    echo "WARNING: missing $DHCLIENT_TEMPLATE!" 
+    echo "dhclient missing default gateway" | tee -a /var/log/xs-setup.log
 fi
-
-# let have xs-setup-network restart networking
-# systemctl stop NetworkManager.service
-# change the config file
-sed -i -e '/HOSTNAME=/d' /etc/sysconfig/network
-echo "HOSTNAME=$xs_full_name " >> /etc/sysconfig/network
-echo $xs_full_name  > /etc/hostname
-
-# kill the old lease file that has old hostname
-if [ -e /var/run/nm-dhclient-$wan_iface.conf ]; then
-    rm /var/run/nm-dhclient-$wan_iface.conf
-fi
-# systemctl start NetworkManager.service
 
 #donedns=`hostname -f` 
 donedns=`hostname ` 
