@@ -12,6 +12,13 @@
             group=root
             mode=0644
 
+- name: Create admin user
+  htpasswd: path=/etc/munin/munin-htpasswd
+            name=admin
+            password=munindxs
+            create=yes
+            state=present
+
 - name: Enable munin-node service
   service: name=munin-node
            enabled=yes
