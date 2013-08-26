@@ -8,7 +8,7 @@ install:
 	install -D files/ip6tables-xs.in  $(DESTDIR)/etc/sysconfig/olpc-scripts/ip6tables-xs.in
 	install -D files/iptables-xs.in  $(DESTDIR)/etc/sysconfig/olpc-scripts/iptables-xs.in
 	install -D files/resolv.conf.in  $(DESTDIR)/etc/sysconfig/olpc-scripts/resolv.conf.in
-	install -D files/dhclient  $(DESTDIR)/etc/sysconfig/olpc-scripts/domain_config.d/dhclient
+	install -D files/dhclient  $(DESTDIR)/usr/share/xs-config/cfg/etc/dhcp/dhclient
 	install -D files/xs-domain-config  $(DESTDIR)/usr/bin/xs-domain-config
 	install -D files/xs-gen-iptables  $(DESTDIR)/usr/bin/xs-gen-iptables
 	install -D files/xs-resolvconf  $(DESTDIR)/usr/bin/xs-resolvconf

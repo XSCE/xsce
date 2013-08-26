@@ -86,6 +86,10 @@ rm -rf $RPM_BUILD_ROOT
 %post
 
 ## Rename old conffiles
+if [ -e /etc/sysconfig/olpc-scripts/domain_config.d/dhclient ]; then
+    rm /etc/sysconfig/olpc-scripts/domain_config.d/dhclient
+fi
+
 if [ -e /etc/sysconfig/olpc-scripts/xs-domain-name ]; then
    mv /etc/sysconfig/olpc-scripts/xs-domain-name /etc/sysconfig/xs_domain_name
 fi

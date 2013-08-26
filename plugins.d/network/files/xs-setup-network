@@ -181,7 +181,7 @@ if [ -n "$gw_iface" ]; then
 
         # the dhclient attaches to the wan device, fixup may be necessary
         if [ "$last_wan_dev" != "$wan_iface" ];then
-            xs-domain-config
+            /usr/share/xs-config/cfg/etc/dhcp/dhclient
         fi
     fi # end of dealing with is_xo
     echo "$wan_iface" > /etc/sysconfig/xs_wan_device
