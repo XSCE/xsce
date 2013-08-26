@@ -202,10 +202,11 @@ else
     echo "$wan_mac" > /etc/sysconfig/xs_lan_mac
 fi
 
-systemctl restart NetworkManager-dispatcher.service | tee -a $LOG
 
-systemctl stop NetworkManager.service
-systemctl start NetworkManager.service | tee -a $LOG
+systemctl stop NetworkManager-dispatcher.service 2>&1 | tee -a $LOG
+systemctl stop NetworkManager.service 2>&1 | tee -a $LOG
+systemctl start NetworkManager.service 2>&1 | tee -a $LOG
+systemctl start NetworkManager-dispatcher.service 2>&1 | tee -a $LOG
 
 short_host=`hostname -s`
 new_name=`hostname -f`
@@ -237,8 +238,8 @@ popd
 
 # the adapter names may have changed, so update the iptables
 set +e
-/etc/sysconfig/iptables-config | tee -a $LOG
-systemctl restart iptables.service | tee -a $LOG
+/etc/sysconfig/iptables-config 2>&1 | tee -a $LOG
+systemctl restart iptables.service 2>&1 | tee -a $LOG
 set -e
 echo "XS standard networking configured with" | tee -a $LOG
 echo "hostname = $short_host" | tee -a $LOG
