@@ -125,6 +125,7 @@ fi
 %{_datadir}/%{name}
 %config(noreplace) %{_sysconfdir}/*.in
 %config(noreplace) %{_sysconfdir}/squid/squid-xs.conf.in
+%config(noreplace) %{_sysconfdir}/squid/squid-xs-dg.conf.in
 %config(noreplace) %{_sysconfdir}/ejabberd/ejabberd-xs.cfg.in
 %config(noreplace) %{_sysconfdir}/ejabberd/ejabberdctl.cfg.in
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/*.conf.in
