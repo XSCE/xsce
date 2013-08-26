@@ -2,8 +2,8 @@ function squid()
 {
     case "$1" in
 	"yes")
-        touch $SETUPSTATEDIR/squid
-	cp /etc/squid/squid-xs.conf.in /etc/squid/squid-xs.conf
+        cp /etc/squid/squid-xs.conf.in /etc/squid/squid-xs.conf
+        cp /etc/sysconfig/squid.in /etc/sysconfig/squid
         # create the cache directories
         mkdir -p /library/cache
         chown squid:squid /library/cache
@@ -14,11 +14,11 @@ function squid()
             etckeeper-if-selected 'xs-setup force-create httpcache flag'
         fi
         set +e
-        systemctl enable iptables.service
-        /etc/sysconfig/iptables-config
-        systemctl restart iptables.service
+        /etc/sysconfig/iptables-config  2>&1 | tee -a $LOG
+        systemctl restart iptables.service  2>&1 | tee -a $LOG
         systemctl enable squid.service 2>&1 | tee -a $LOG
         systemctl restart squid.service 2>&1 | tee -a $LOG
+        touch $SETUPSTATEDIR/squid
 	set -e
         ;;
 
