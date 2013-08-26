@@ -33,4 +33,10 @@
         group=root
         state=link
 
+- name: Start ejabberd service
+  service: name=ejabberd-xs
+           state=restarted
+           enabled=yes
+
+
 
