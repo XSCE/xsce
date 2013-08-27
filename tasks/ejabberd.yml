@@ -33,4 +33,20 @@
         group=root
         state=link
 
+- name: Start ejabberd service
+  service: name=ejabberd-xs
+           state=restarted
+           enabled=yes
+
+- name: Wait for ejabberd service start
+  wait_for: port=5280
+            delay=15
+            state=started
+            timeout=300
+
+- name: Create online group
+  shell: ejabberdctl srg_create Online "schoolserver" Online "Online_Users" Online
+
+- name: Add all users to online group
+  shell: ejabberdctl srg_user_add '@online@' "schoolserver" Online "schoolserver"
 
