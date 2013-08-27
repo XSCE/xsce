@@ -86,7 +86,7 @@ override_acls.
 %% You can define one or several, for example:
 %% {hosts, ["example.net", "example.com", "example.org"]}.
 %%
-{hosts, ["{{ xsce_hostname }}"]}.
+{hosts, ["{{ xsce_hostname }}.{{ xsce_domain }}"]}.
 
 %%
 %% route_subdomains: Delegate subdomains to other Jabber server.
