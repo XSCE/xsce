@@ -51,6 +51,13 @@
         owner=sugar-stats
         mode=0755
 
+- name: Enable logrotate
+  copy: src=statistics-consolidation/stats-consolidation.logrotate
+        dest=/etc/logrotate.d/stats-consolidation
+        group=root
+        owner=root
+        mode=0644
+
 - name: Install cron file
   template: src=statistics-consolidation/stats-consolidation.cron
             dest=/etc/cron.d/stats-consolidation
