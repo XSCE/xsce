@@ -9,6 +9,7 @@
    - rsync
    - htop
    - etckeeper
+   - python-passlib
 
 - name: Keep yum cache
   ini_file: dest=/etc/yum.conf
