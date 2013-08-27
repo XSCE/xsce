@@ -30,4 +30,5 @@
     - include: tasks/chrony.yml
     - include: tasks/moodle.yml
     - include: tasks/munin.yml
+    - include: tasks/statistics-consolidation.yml
 #    - include: tasks/pathagar.yml
