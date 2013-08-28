@@ -73,8 +73,8 @@ function delete_eth0_connections
     if [ -n "$1" ]; then
         for connection in $1;do
             if [ grep "802-11-wireless" $connection ]; then
-                echo "removing $connecion" | tee -a $LOG
-                rm -f $connecion | tee -a $LOG
+                echo "removing $connection" | tee -a $LOG
+                rm -f $connection | tee -a $LOG
             fi
         done
     fi
@@ -86,8 +86,8 @@ function clean_connection
     list=`ls /etc/NetworkManager/system-connections/*-$1` 2>&1 >/dev/null
     if [ x"$list" != x ]; then
         for connection in "$list";do
-            echo "removing $connecion" | tee -a $LOG
-            rm -f $connecion | tee -a $LOG
+            echo "removing $"connection" | tee -a $LOG
+            rm -f $"connection | tee -a $LOG
         done
     fi
 }
