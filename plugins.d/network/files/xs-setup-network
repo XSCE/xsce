@@ -81,11 +81,12 @@ function delete_eth0_connections
 }
 
 function clean_connection
-# removes all connection names that we use
+# removes all un-used connection names that we care about
+# takes type and interface
 {
     list=`ls /etc/NetworkManager/system-connections/*-$1` 2>&1 >/dev/null
     echo "found old connections: $list" | tee -a $LOG
-    if [ x"$list" != x ]; then
+    if [ x"$list" != /etc/NetworkManager/system-connections/$2-$1 ]; then
         for connection in $list;do
             echo "removing $connection" | tee -a $LOG
             rm -f $connection | tee -a $LOG
@@ -149,7 +150,7 @@ fi
 
 if [ -n $oth_iface ]; then
     oth_mac=`ifconfig $oth_iface | gawk '(/^ *ether /) {print( $2);}'`
-    clean_connection static
+    clean_connection static $oth_iface
     write_nm_connection "static" "$oth_mac" "$oth_iface"
     echo "$oth_iface" > /etc/sysconfig/xs_lan_device
     echo "$oth_mac" > /etc/sysconfig/xs_lan_mac
@@ -206,7 +207,7 @@ if [ -n "$gw_iface" ]; then
                 done
                 ;;
             *)
-                clean connection dhcp
+                clean_connection dhcp $wan_iface
                 write_nm_connection "dhcp" "$wan_mac" "$wan_iface"
                 # if we have two dongles, disable the internal radio
                 if [ x"$UPLINK" != x  ]; then
