@@ -260,14 +260,15 @@ do
 done
 
 # the adapter names may have changed, so update the iptables
-set +e
-/etc/sysconfig/iptables-config 2>&1 | tee -a $LOG
-systemctl restart iptables.service 2>&1 | tee -a $LOG
-set -e
+/bin/xs-gen-iptables 2>&1 | tee -a $LOG
+
+echo "################################################################"  | tee -a $LOG
 echo "XS standard networking configured with" | tee -a $LOG
 echo "hostname = $short_host" | tee -a $LOG
 echo "FQDN = $new_name" | tee -a $LOG
 echo "LAN device $oth_iface using $ipaddr " | tee -a $LOG
 echo "gateway device $gw_iface using $wan_ip" | tee -a $LOG
+echo "################################################################"  | tee -a $LOG
 mydate=`date`
 echo "completed the xs-setup-network script at $mydate" | tee -a $LOG
+
