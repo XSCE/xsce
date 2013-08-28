@@ -79,6 +79,17 @@ function delete_eth0_connections
     fi
 }
 
+function clean_connection
+# removes all connection names that we use
+{
+    list=`ls /etc/NetworkManager/system-connections/*-$1` 2>&1 >/dev/null
+    if [ x"$list" != x ]; then
+        for connection in "$list";do
+            rm -f $connecion | tee -a $LOG
+        done
+    fi
+}
+
 # use NetworkManager to set up devices
 function write_nm_connection(){
     # receives connection_filename, hwaddr,  device_name as parameters
@@ -135,6 +146,7 @@ fi
 
 if [ -n $oth_iface ]; then
     oth_mac=`ifconfig $oth_iface | gawk '(/^ *ether /) {print( $2);}'`
+    clean_connection static
     write_nm_connection "static" "$oth_mac" "$oth_iface"
     echo "$oth_iface" > /etc/sysconfig/xs_lan_device
     echo "$oth_mac" > /etc/sysconfig/xs_lan_mac
@@ -191,6 +203,7 @@ if [ -n "$gw_iface" ]; then
                 done
                 ;;
             *)
+                clean connection dhcp
                 write_nm_connection "dhcp" "$wan_mac" "$wan_iface"
                 # if we have two dongles, disable the internal radio
                 if [ x"$UPLINK" != x  ]; then
