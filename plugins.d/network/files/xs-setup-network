@@ -134,8 +134,9 @@ for iface in $(ifconfig | gawk 'BEGIN{FS=":"}(/^.*: flags=/) {print( $1);}')
     if [ "$iface" != "lo" ] && [ "$iface" != "$gw_iface" ]; then
        oth_iface=$iface
     fi
-    done
+done
 
+## start LAN
 if [ $is_xo = 1 ];then
     XO4=`cat /proc/device-tree/mfg-data/MN | grep XO-4` 
 else
@@ -184,7 +185,7 @@ if [ -n "$gw_iface" ]; then
     fi
 
     UPLINK=`find /etc/NetworkManager/system-connections -maxdepth 1 -type f -name "*" \
-            -not -name static* -not -name "Sugar *"`
+            -not -name *static -not -name "Sugar *"`
     if [ $is_xo -eq 1 ]; then
 	case $wan_iface in
             eth0|mlan0)
