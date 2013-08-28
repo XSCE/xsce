@@ -242,7 +242,6 @@ do
 	echo WARNING: Skipped $config - template file is missing! | tee -a $LOG
     fi
 done
-popd
 
 # the adapter names may have changed, so update the iptables
 set +e
