@@ -84,10 +84,11 @@ function clean_connection
 # removes all connection names that we use
 {
     list=`ls /etc/NetworkManager/system-connections/*-$1` 2>&1 >/dev/null
+    echo "found old connections: $list | tee -a $LOG
     if [ x"$list" != x ]; then
-        for connection in "$list";do
-            echo "removing $"connection" | tee -a $LOG
-            rm -f $"connection | tee -a $LOG
+        for connection in $list;do
+            echo "removing $connection" | tee -a $LOG
+            rm -f $connection | tee -a $LOG
         done
     fi
 }
