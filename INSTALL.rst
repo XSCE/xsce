@@ -8,12 +8,22 @@ On the XO-1.75 or XO-4 laptop
 *****************************
 * Flash the laptop with a stable 13.2.0 image
 * In ``My Settings->Power`` turn of Automatic Power Management
-* Install ansible, git; clone the DXS git repo; and run initial setup
+* Install ansible, git. You'll also need to clone the latest ansible sources because of a bug with the packaged version.
 
     ::
 
       su -
-      yum -y install ansible git
+      yum -y install ansible git # This will pull in the required dependencies
+      git clone git://github.com/ansible/ansible.git
+      cd ansible
+      git checkout devel
+      source hacking/env-setup
+
+* clone the DXS git repo; and run initial setup
+
+    ::
+
+      cd ~/
       git clone https://github.com/activitycentral/dxs.git
       cd dxs
       ./runansible xo
@@ -25,7 +35,9 @@ On the XO-1.75 or XO-4 laptop
 
     ::
 
-      ./runansible
+      source ~/anisble/hacking/env-setup
+      cd dxs
+      ./runansible # This will take a lot of time as it installs packages
       reboot
 
 * DXS should be up and functional
