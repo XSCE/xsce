@@ -20,7 +20,7 @@
 - name: change default port
   lineinfile: dest=/etc/ajenti/config.json
               regexp=' 8000'
-              line=' 9990'
+              line='"port":9990'
 
 - name: exe permission to ajenti
   file: path=/etc/rc.d/init.d/ajenti
