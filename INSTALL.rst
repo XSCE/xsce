@@ -29,7 +29,7 @@ On the XO-1.75 or XO-4 laptop
       ./runansible xo
       reboot
 
-    .. Note:: Depending on the type of setup (one or two dongle), you'll need to check and edit the contents of ``<dxs_root_directory>/vars/default_vars.yml``. For a one dongle setup the interfaces are eth0 and eth1 for WAN and LAN respectively. For a two dongle setup, the interfaces become eth1 and eth2.
+    .. Warning:: Depending on the type of setup (one or two dongle), you'll need to check and edit the contents of ``<dxs_root_directory>/vars/default_vars.yml``. For a one dongle setup the interfaces are eth0 and eth1 for WAN and LAN respectively. For a two dongle setup, the interfaces become eth1 and eth2. Since DXS won't automatically find out which eth is LAN or WAN, a good practice would be to first insert the WAN dongle, so it get's its IP address, and then insert the LAN dongle.
 
 * After rebooting (insert the ethernet dongles at this point)...
 
