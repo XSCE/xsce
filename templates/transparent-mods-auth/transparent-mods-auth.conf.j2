@@ -16,4 +16,4 @@ Alias /login /var/www/login/web
 RewriteEngine On
 
 RewriteCond %{QUERY_STRING} !check
-RewriteRule ^/moodle/(.*) http://schoolserver.local/login/login.php?url=/moodle/$1 [QSA]
+RewriteRule ^/moodle/(.*) http://{{ xsce_hostname }}.{{ xsce_domain }}/login/login.php?url=/moodle/$1 [QSA]
