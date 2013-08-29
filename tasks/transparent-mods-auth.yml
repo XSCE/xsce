@@ -17,13 +17,6 @@
      - { src: 'transparent-mods-auth/transparent-mods-auth.conf.j2' , dest: '/etc/httpd/conf.d/transparent-mods-auth.conf', mode: '0644' }
 
 
-- name: Configure the server-name (necessary to make URL-redirections work)
-  lineinfile: dest=/etc/httpd/conf/httpd.conf
-              state=present
-              regexp='^#ServerName www.example.com:80'
-              line='ServerName schoolserver'
-
-
 - name: Restart httpd
   service: name=httpd
            state=restarted
