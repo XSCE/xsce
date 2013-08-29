@@ -1,0 +1,29 @@
+- name: Create web-directory structure, for transparent-authentication mappings
+  file: path=/var/www/login/web
+        mode=0755
+        owner=root
+        group=root
+        state=directory
+
+- name: Copy module-files, plus conf-files
+  template: src=${item.src}
+            dest=${item.dest}
+            owner=root
+            group=root
+            mode=${item.mode}
+  with_items:
+     - { src: 'transparent-mods-auth/login.php' , dest: '/var/www/login/web/login.php', mode: '0644' }
+     - { src: 'transparent-mods-auth/unauthorized.jsp.j2' , dest: '/var/www/login/web/unauthorized.jsp', mode: '0644' }
+     - { src: 'transparent-mods-auth/transparent-mods-auth.conf.j2' , dest: '/etc/httpd/conf.d/transparent-mods-auth.conf', mode: '0644' }
+
+
+- name: Configure the server-name (necessary to make URL-redirections work)
+  lineinfile: dest=/etc/httpd/conf/httpd.conf
+              state=present
+              regexp='^#ServerName www.example.com:80'
+              line='ServerName schoolserver'
+
+
+- name: Restart httpd
+  service: name=httpd
+           state=restarted
