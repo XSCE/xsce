@@ -229,12 +229,19 @@ if [ "$last_wan_dev" != "$wan_iface" ];then
     /usr/share/xs-config/cfg/etc/dhcp/dhclient
 fi
 
-
-systemctl enable NetworkManager-dispatcher.service 2>&1 | tee -a $LOG
-systemctl stop NetworkManager-dispatcher.service 2>&1 | tee -a $LOG
+nmrpm=`rpm -q NetworkManager | awk -F - '{print $2}' | sed -e 's/\.//' \
+       | sed -e 's/\.//' | sed -e 's/\.//'` 
+echo "NetworkManager version is $nmrpm" | tee -a $LOG
+if [ $nmrpm -gt 0981 ];then
+    systemctl enable NetworkManager-dispatcher.service 2>&1 | tee -a $LOG
+    systemctl stop NetworkManager-dispatcher.service 2>&1 | tee -a $LOG
+fi
 systemctl stop NetworkManager.service 2>&1 | tee -a $LOG
 systemctl start NetworkManager.service 2>&1 | tee -a $LOG
-systemctl start NetworkManager-dispatcher.service 2>&1 | tee -a $LOG
+
+if [ $nmrpm -gt 0981 ];then
+    systemctl start NetworkManager-dispatcher.service 2>&1 | tee -a $LOG
+fi
 
 short_host=`hostname -s`
 new_name=`hostname -f`
