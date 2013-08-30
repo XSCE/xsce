@@ -49,7 +49,7 @@ On the XO-1.75 or XO-4 laptop
 
     ::
 
-      source ~/anisble/hacking/env-setup
+      source ~/ansible/hacking/env-setup
       cd dxs
       ./runansible # This will take a lot of time as it installs packages
       reboot
