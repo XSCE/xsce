@@ -1,0 +1,19 @@
+# Create a web-folder, for our sandwitch-authentication solution.
+<Directory /var/www/login/web/>
+        Options Indexes MultiViews
+        AllowOverride None
+        Order allow,deny
+        allow from all
+</Directory>
+
+Alias /login /var/www/login/web
+
+
+
+
+# Create the mechanism, so that all the concerned "other" web-URLs, are
+# redirected first to our sandwitch-authentication solution.
+RewriteEngine On
+
+RewriteCond %{QUERY_STRING} !check
+RewriteRule ^/moodle/(.*) http://{{ xsce_hostname }}.{{ xsce_domain }}/login/login.php?url=/moodle/$1 [QSA]

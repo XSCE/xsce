@@ -32,4 +32,5 @@
     - include: tasks/munin.yml
     - include: tasks/statistics-consolidation.yml
     - include: tasks/wondershaper.yml
+    - include: tasks/transparent-mods-auth.yml
 #    - include: tasks/pathagar.yml
