@@ -204,7 +204,7 @@ function startup()
 
     ## Prepare config files
     CFG_TEMPLATES="rsyslog.conf motd.olpc sysctl.conf ssh/sshd_config
-    sysconfig/named sysconfig/init sysconfig/squid rssh.conf php.ini
+    sysconfig/named sysconfig/init rssh.conf php.ini
     httpd/conf.d/proxy_ajp.conf httpd/conf.d/ssl.conf"
 
     for i in $CFG_TEMPLATES; do

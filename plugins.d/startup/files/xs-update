@@ -2,6 +2,6 @@
 # simple shim to update xs-config
 source xs-setup-functions
 get_usb_repo
-yum_cmd=`echo $YUM_CMD | sed -e '/install/update/'`
+yum_cmd=`echo $YUM_CMD | sed -e 's/install/update/'`
 $yum_cmd xs-config
 unmount-yum-cache

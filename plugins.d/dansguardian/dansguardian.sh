@@ -31,7 +31,7 @@ function dansguardian()
         ;;
     "no")
 	systemctl stop squid
-        cp /etc/sysconfig/squid-xs.in /etc/sysconfig/squid
+        cp /etc/sysconfig/squid.in /etc/sysconfig/squid
         systemctl stop dansguardian
         systemctl disable dansguardian
         rm $SETUPSTATEDIR/dansguardian
