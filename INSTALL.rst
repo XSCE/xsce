@@ -2,7 +2,7 @@
 Installing the Dextrose Server
 ==============================
 
-Like the XSCE both, single and two dongle installs are supported. Performing
+Like the XSCE, both single and two dongle installs are supported. Performing
 the two dongle install requires a bit of manual configuration which we will
 get to.
 
