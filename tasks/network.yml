@@ -9,7 +9,7 @@
 - name: Configure /etc/hosts
   lineinfile: dest=/etc/hosts
               regexp='^172\.18\.96\.1'
-              line='172.18.96.1            schoolserver      schoolserver.local'
+              line='172.18.96.1            {{ xsce_hostname }}      {{ xsce_hostname }}.{{ xsce_domain }}'
               owner=root
               group=root
               mode=0644
