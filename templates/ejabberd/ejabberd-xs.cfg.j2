@@ -312,7 +312,7 @@ override_acls.
 %%
 %%{acl, admin, {user, "aleksey", "localhost"}}.
 %%{acl, admin, {user, "ermine", "example.org"}}.
-{acl, admin, {user, "admin", "{{ xsce_hostname }}"}}.
+{acl, admin, {user, "admin", "{{ xsce_hostname }}.{{ xsce_domain }}"}}.
 
 %%
 %% Blocked users
