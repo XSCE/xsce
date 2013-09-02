@@ -10,6 +10,7 @@
     - pkg: libxslt-devel
     - pkg: pyOpenSSL
     - pkg: python-daemon
+    - pkg: gcc
 
 - name: install ajenti from Pypi
   pip: name=ajenti version=0.99.34
