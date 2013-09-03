@@ -24,9 +24,20 @@ else
 }
 
 
+# If all ok, redirect to the "original" URL, after appending the original "GET"-variables.
+$original_url = $original_url . "?";
 
-# If all ok, redirect to the "original" URL.
-header('Location: ' . $original_url . '?check=0');
+foreach ($_GET as $key => $val)
+{
+        # Do not re-append "url" GET-variable.
+        if ($key == "url")
+        {
+                continue;
+        }
+
+        $original_url = $original_url . "$key=$val&";
+}
+
+header('Location: ' . $original_url . 'check=0');
 
 ?>
-
