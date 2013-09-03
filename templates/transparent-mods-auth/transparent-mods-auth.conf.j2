@@ -15,5 +15,6 @@ Alias /login /var/www/login/web
 # redirected first to our sandwitch-authentication solution.
 RewriteEngine On
 
+RewriteCond %{REQUEST_METHOD} GET
 RewriteCond %{QUERY_STRING} !check
 RewriteRule ^/moodle/(.*) http://{{ xsce_hostname }}.{{ xsce_domain }}/login/login.php?url=/moodle/$1 [QSA]
