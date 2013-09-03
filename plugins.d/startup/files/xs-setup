@@ -129,6 +129,12 @@ if [[ $num_ifaces > 2 ]]; then
     touch /.olpcxs-net-configured
 fi
 
+if [ -e /etc/xs-setup.conf ]; then
+    source /etc/xs-setup.conf
+else
+    source /usr/share/xs-config/cfg/etc/xs-setup.conf
+fi
+
 # xs-runansible
 
 # Finalize install
