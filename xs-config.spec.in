@@ -74,6 +74,12 @@ Summary: Bootstraper for running OLPC XS School server on an trimslice.
 %description ts
 Bootstraper for running OLPC XS School server on an trimslice.
 
+%package x86_64
+Summary: Config file for running OLPC XS School server on x86_64.
+
+%description x86_64
+Config file for running OLPC XS School server on X86_64.
+
 %prep
 %setup
 %install
@@ -174,6 +180,8 @@ fi
 %config(noreplace) %{_prefix}/share/xs-config/cfg/etc/monit.d/*
 %config(noreplace) %{_sysconfdir}/monitrc.in
 
+%config %{_prefix}/share/xs-config/cfg/etc/xs-setup.conf
+
 %{_bindir}/cat-parts
 %{_bindir}/xs-*
 %{_libexecdir}/moodle-xs-init
@@ -194,4 +202,5 @@ fi
 %{_sysconfdir}/hostapd/hostapd.conf.in
 %{_sysconfdir}/avahi/avahi-daemon.conf.in
 
-
+%files x86_64
+%config(noreplace) /etc/xs-setup.conf

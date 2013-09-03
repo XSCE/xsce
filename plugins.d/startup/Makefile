@@ -1,5 +1,6 @@
 install:
 
+	install -D files/xs-setup-64.conf  $(DESTDIR)/etc/xs-setup.conf
 	install -D files/hosts.in  $(DESTDIR)/etc/hosts.in
 	install -D files/motd.in  $(DESTDIR)/etc/motd.in
 	install -D files/motd.olpc.in  $(DESTDIR)/etc/motd.olpc.in
@@ -26,3 +27,4 @@ install:
 	install -D files/xs-disable  $(DESTDIR)/usr/bin/xs-disable
 	install -D files/xs-update  $(DESTDIR)/usr/bin/xs-update
 	install -D files/bashrc_xs.sh  $(DESTDIR)/usr/share/xs-config/cfg/etc/profile.d/bashrc_xs.sh
+	install -D files/xs-setup.conf  $(DESTDIR)/usr/share/xs-config/cfg/etc/xs-setup.conf

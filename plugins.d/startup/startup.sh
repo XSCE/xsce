@@ -369,8 +369,13 @@ function do_once()
 
 function get_enabled_plugins()
 {
-    source_file=`which xs-setup`
     ## add sourcing external config file on usbkey
+    if [ -e /etc/xs-setup.conf ]; 
+    then
+        source_file=/etc/xs-setup.conf
+    else
+        source_file=/usr/share/xs-config/cfg/etc/xs-setup.conf
+    fi
     echo "using $source_file for enabled_plugins" | tee -a $LOG
     wanted_mods=`cat $source_file | grep yes | awk '{print $1}'`
     PLUGIN_LIST=
