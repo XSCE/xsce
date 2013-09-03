@@ -86,11 +86,13 @@ function clean_connection
 {
     list=`ls /etc/NetworkManager/system-connections/*-$1` 2>&1 >/dev/null
     echo "found old connections: $list" | tee -a $LOG
-    if [ x"$list" != /etc/NetworkManager/system-connections/$2-$1 ]; then
+    if [ "$list" != /etc/NetworkManager/system-connections/$2-$1 ]; then
         for connection in $list;do
             echo "removing $connection" | tee -a $LOG
             rm -f $connection | tee -a $LOG
         done
+    else
+        echo "not removing $2-$1 over-writing" | tee -a $LOG
     fi
 }
 
