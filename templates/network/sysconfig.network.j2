@@ -2,4 +2,5 @@ NETWORKING=yes
 NETWORKING_IPV6=no
 IPV6FORWARDING=no
 IPV6_AUTOCONF=no
-HOSTNAME={{ xsce_hostname }}
+#TODO remove deprecated HOSTNAME entry
+HOSTNAME={{ xsce_hostname }}.{{ xsce_domain }}
