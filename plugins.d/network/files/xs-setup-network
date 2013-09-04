@@ -59,6 +59,12 @@ if [ -f /etc/sysconfig/xs-disable-config ]; then
     exit 0
 fi
 
+# silence noisy logging from missing file
+if ! [ -f /etc/sysconfig/network-scripts/net.hotplug ]; then
+    echo "#!/bin/bash" > /etc/sysconfig/network-scripts/net.hotplug
+    chmod 700 /etc/sysconfig/network-scripts/net.hotplug
+fi
+
 # Determine the number of interfaces
 num_ifaces=`ls /sys/class/net | wc | gawk '{print $1}'`
 
