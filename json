@@ -1,1 +1,0 @@
-ansible all -m setup -i ansible_hosts --connection=local
