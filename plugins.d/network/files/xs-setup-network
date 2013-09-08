@@ -279,8 +279,11 @@ do
 done
 
 # the adapter names may have changed, so update the iptables
-/bin/xs-gen-iptables 2>&1 | tee -a $LOG
-
+set +e
+#/bin/xs-gen-iptables 2>&1 | tee -a $LOG
+/etc/sysconfig/iptables-config  2>&1 | tee -a $LOG
+systemctl restart iptables.service 2>&1 | tee -a $LOG
+set -e
 echo "################################################################"  | tee -a $LOG
 echo "XS standard networking configured with" | tee -a $LOG
 echo "hostname = $short_host" | tee -a $LOG
