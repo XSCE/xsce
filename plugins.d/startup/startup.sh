@@ -264,7 +264,7 @@ function startup()
     #do all of the yum installs in a single operation
     if [ ! -e $PREPED ]; then
 	# always install the following
-	INSTALLTHESE=""
+	INSTALLTHESE="bind"
 	for mod in $PLUGIN_LIST; do
 	    if [ -d $PLUGINDIR/$mod/yum ];then
 		INSTALLTHESE=$INSTALLTHESE" "`ls $PLUGINDIR/$mod/yum/`
