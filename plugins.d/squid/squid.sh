@@ -2,6 +2,8 @@ function squid()
 {
     case "$1" in
 	"yes")
+        $YUM_CMD cadaver squid 2>&1 | tee -a $LOG
+
         cp /etc/squid/squid-xs.conf.in /etc/squid/squid-xs.conf
         cp /etc/sysconfig/squid.in /etc/sysconfig/squid
         # create the cache directories
