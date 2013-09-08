@@ -2,13 +2,12 @@ function named()
 {
 	case "$1" in
 	"yes")
-        cp /etc/sysconfig/olpc-scripts/resolv.conf.in /etc/sysconfig/olpc-scripts/resolv.conf
+        $YUM_CMD bind bind-utils 2>&1 | tee -a $LOG
         # if xs data files are installed before bind, named user doesn't exist,
         # and group ownership is set to root, which user named cannot read
         if [ -d /var/named-xs ]; then
             chown -R named /var/named-xs
         fi
-        systemctl enable NetworkManager-dispatcher.service | tee -a $LOG
         systemctl enable named.service 2>&1 | tee -a $LOG
         systemctl restart named.service 2>&1 | tee -a $LOG
         touch $SETUPSTATEDIR/named
