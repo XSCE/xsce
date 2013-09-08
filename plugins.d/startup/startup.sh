@@ -278,7 +278,9 @@ function startup()
 	grep named /etc/passwd
         if [ $? -ne 0 ] ; then
  	    echo "==================================================="
-            echo "\n\nYum  was not successfull\n\n" | tee -a $LOG
+	    echo "\n\nYum  was not successfull\n\n" | tee -a $LOG
+	    sleep 10
+	    sync
 	    echo "If this was an online install, check network connection"
 	    echo "If this was offline, check USB drive\n\n"
  	    echo "==================================================="
