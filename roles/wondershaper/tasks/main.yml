@@ -1,10 +1,10 @@
 - name: copy wshaper service script
-  template: src=templates/shaper/wondershaper.service
+  template: src=wondershaper.service
             dest=/usr/lib/systemd/system/wondershaper.service
             mode=0644
 
 - name: copy wshaper script
-  template: src=templates/shaper/wondershaper.j2
+  template: src=wondershaper.j2
             dest=/usr/bin/wondershaper
             owner=root
             group=root
@@ -25,7 +25,7 @@
         state=directory
 
 - name: copy wshaper config script
-  template: src=templates/shaper/wondershaper.conf
+  template: src=wondershaper.conf
             dest=/etc/conf.d/wondershaper.conf
             owner=root
             group=root
@@ -37,4 +37,6 @@
         owner=root
         group=root
         state=link
+
+- include: ajenti-wondershaper.yml
 
