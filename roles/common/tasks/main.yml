@@ -43,4 +43,9 @@
            state=started
   with_items:
     - sshd
+
+- include: install-xs.yml
+- include: chrony.yml
+- include: avahi.yml
+- include: sysctl.yml
     
