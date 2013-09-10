@@ -13,6 +13,14 @@ xsce_networks:
       network: 172.18.96.0
       netmask: 255.255.224.0
 
+watchdog: 
+  - sshd
+  - idmgr
+  - ejabberd 
+  - httpd
+  - postgresql
+  - squid 
+
 #Services
 squid: True
 dansguardian: True

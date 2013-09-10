@@ -1,0 +1,66 @@
+- name: Install python-pip package
+  yum: name=python-pip
+       state=installed
+
+- name: Install statistics-consolidation with pip
+  pip: name=git+https://src.sugarlabs.org/~migonzalvar/statistics-consolidation/migonzalvars-statistics-consolidation/@sqlalchemy-v2#egg=stats_consolidation
+
+- name: Install required libraries
+  yum: name=${item.pkg}
+       state=installed
+  with_items:
+    - pkg: rrdtool-python
+    - pkg: python-sqlalchemy
+    - pkg: python-psycopg2
+
+- name: Enable postgresl access by md5 method
+  lineinfile: >
+      dest=/library/pgsql-xs/pg_hba.conf
+      regexp="^host\s+statsconso"
+      line="host     statsconso     statsconso     samehost     md5"
+      state=present
+      insertbefore="^host\s+all"
+      owner=postgres
+      group=postgres
+
+- name: Restart postgresql service
+  service: name=postgresql-xs
+           state=restarted
+
+- name: Create postgres user
+  postgresql_user: user=statsconso password=statsconso
+  sudo: yes
+  sudo_user: postgres
+
+- name: Create postgres database
+  postgresql_db: db=statsconso owner=statsconso
+  sudo: yes
+  sudo_user: postgres
+
+- name: Install conf file
+  template: src=statistics-consolidation/stats-consolidation.conf
+            dest=/etc/stats-consolidation.conf
+            owner=root
+            group=root
+            mode=0644
+
+- name: Create log directory
+  file: path=/var/log/statistics-consolidation
+        state=directory
+        group=sugar-stats
+        owner=sugar-stats
+        mode=0755
+
+- name: Enable logrotate
+  template: src=statistics-consolidation/stats-consolidation.logrotate
+            dest=/etc/logrotate.d/stats-consolidation
+            group=root
+            owner=root
+            mode=0644
+
+- name: Install cron file
+  template: src=statistics-consolidation/stats-consolidation.cron
+            dest=/etc/cron.d/stats-consolidation
+            owner=root
+            group=root
+            mode=0644

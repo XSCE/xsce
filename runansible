@@ -1,8 +1,8 @@
 #!/bin/bash
 if [ x"$1" == x"xo" ]
 then
-	ansible-playbook -i ansible_hosts ansiblexo.yml --connection=local 
+	ansible-playbook -i ansible_hosts dxs-xo.yml --connection=local 
 	echo "Please reboot!"
 else
-        ansible-playbook -i ansible_hosts ansiblexs.yml --connection=local $1
+        ansible-playbook -i ansible_hosts dxs.yml --connection=local 
 fi

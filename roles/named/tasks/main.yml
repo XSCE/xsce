@@ -1,0 +1,48 @@
+- name: Install named packages
+  yum: name=${item}
+       state=installed
+  with_items:
+   - bind
+   - bind-utils
+
+- name: Configure named
+  template: src=${item.src}
+            dest=${item.dest}
+            owner=${item.owner}
+            group=root
+            mode=${item.mode}
+  with_items:
+    - { src: 'named-xs.conf.j2', dest: '/etc/named-xs.conf', owner: "root" , mode: '0644' }
+    - { src: 'named.j2', dest: '/etc/sysconfig/named', owner: "root" , mode: '0755' }
+    - { src: 'named', dest: '/etc/sysconfig/olpc-scripts/domain_config.d/named', owner: "root" , mode: '0755' }
+    - { src: 'localdomain.zone', dest: '/var/named-xs/localdomain.zone',owner: "named" , mode: '0755' }
+    - { src: 'localhost.zone', dest: '/var/named-xs/localhost.zone', owner: "named" , mode: '0755' }
+    - { src: 'named.broadcast', dest: '/var/named-xs/named.broadcast', owner: "named" , mode: '0755'}
+    - { src: 'named.ip6.local', dest: '/var/named-xs/named.ip6.local' , owner: "named" , mode: '0755'}
+    - { src: 'named.local', dest: '/var/named-xs/named.local' , owner: "named" , mode: '0755'}
+    - { src: 'named.rfc1912.zones', dest: '/var/named-xs/named.rfc1912.zones' , owner: "named" , mode: '0755'}
+    - { src: 'named.root', dest: '/var/named-xs/named.root' , owner: "named" , mode: '0755'}
+    - { src: 'named.root.hints', dest: '/var/named-xs/named.root.hints' , owner: "named" , mode: '0755'}
+    - { src: 'named.zero', dest: '/var/named-xs/named.zero' , owner: "named" , mode: '0755'}
+    - { src: 'school.external.zone.db', dest: '/var/named-xs/school.external.zone.db' , owner: "named" , mode: '0755'}
+    - { src: 'school.internal.zone.16.in-addr.db.j2', dest: '/var/named-xs/school.internal.zone.16.in-addr.db' , owner: "named" , mode: '0644'}
+    - { src: 'school.internal.zone.32.in-addr.db.j2', dest: '/var/named-xs/school.internal.zone.32.in-addr.db' , owner: "named" , mode: '0644'}
+    - { src: 'school.internal.zone.48.in-addr.db.j2', dest: '/var/named-xs/school.internal.zone.48.in-addr.db' , owner: "named" , mode: '0644'}
+    - { src: 'school.internal.zone.db', dest: '/var/named-xs/school.internal.zone.db' , owner: "root" , mode: '0755'}
+    - { src: 'school.internal.zone.in-addr.db.j2', dest: '/var/named-xs/school.internal.zone.in-addr.db' , owner: "named" , mode: '0644'}
+    - { src: 'dummy', dest: '/var/named-xs/data/dummy' , owner: "named" , mode: '0755'}
+
+- name: Set folder permission
+  file: path=$item
+        owner=named
+        group=root
+        mode=0755
+        state=directory
+
+  with_items:
+    - /var/named-xs
+    - /var/named-xs/data
+
+- name: Enable named service
+  service: name=named
+           enabled=yes

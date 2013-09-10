@@ -1,0 +1,42 @@
+- name: copy wshaper service script
+  template: src=wondershaper.service
+            dest=/usr/lib/systemd/system/wondershaper.service
+            mode=0644
+
+- name: copy wshaper script
+  template: src=wondershaper.j2
+            dest=/usr/bin/wondershaper
+            owner=root
+            group=root
+            mode=0744
+
+- name: create conf.d directory
+  file: path=/etc/conf.d
+        owner=root
+        group=root
+        mode=0755
+        state=directory
+
+- name: create ansible.d facts directory
+  file: path=/etc/ansible/facts.d
+        owner=root
+        group=root
+        mode=0750
+        state=directory
+
+- name: copy wshaper config script
+  template: src=wondershaper.conf
+            dest=/etc/conf.d/wondershaper.conf
+            owner=root
+            group=root
+            mode=0600
+
+- name: create fact for wondershaper config file
+  file: src=/etc/conf.d/wondershaper.conf
+        dest=/etc/ansible/facts.d/wondershaper.fact
+        owner=root
+        group=root
+        state=link
+
+- include: ajenti-wondershaper.yml
+

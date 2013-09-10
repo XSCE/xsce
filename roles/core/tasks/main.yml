@@ -1,0 +1,3 @@
+- name: Core services installed
+  command: echo Core services installed
+

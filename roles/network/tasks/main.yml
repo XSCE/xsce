@@ -1,0 +1,61 @@
+- name: Configure /etc/sysconfig/network
+  template: src=sysconfig.network.j2
+            dest=/etc/sysconfig/network
+            owner=root
+            group=root
+            mode=0644
+
+#TODO: Use vars instead of hardcoded values
+- name: Configure /etc/hosts
+  lineinfile: dest=/etc/hosts
+              regexp='^172\.18\.96\.1'
+              line='172.18.96.1            {{ xsce_hostname }}.{{ xsce_domain }}      {{ xsce_hostname }}'
+              owner=root
+              group=root
+              mode=0644
+
+- name: Configure /etc/hosts
+  lineinfile: dest=/etc/hosts
+              regexp='^127\.0\.0\.1'
+              line='127.0.0.1            localhost.localdomain      localhost    schoolserver'
+              owner=root
+              group=root
+              mode=0644
+
+- name: Configure lan interface
+  template: src=ifcfg.j2
+            dest=/etc/sysconfig/network-scripts/ifcfg-${item.iface}
+  with_items:
+    - ${xsce_networks.lan}
+
+- name: Configure lan mac address
+  lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-${xsce_networks.lan.iface}
+              regexp='^HWADDR='
+              line='HWADDR=${mac_lan.stdout}'
+              state=present
+
+#TODO: configure WIFI wan
+#- name: Configure wan dynamic interface
+#  template: src=network/ifcfg-dhcp.j2
+#            dest=/etc/sysconfig/network-scripts/ifcfg-${item.iface}
+#  with_items:
+#    - ${xsce_networks.wan}
+#  when: '"802-3-ethernet" == "${wan_type.stdout}"'
+#  when: wan_type.stdout.find('802-3-ethernet') != -1
+
+#- name: Configure wan mac address
+#  lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-${xsce_networks.wan.iface}
+#              regexp='^HWADDR='
+#              line='HWADDR=${mac_wan.stdout}'
+#              state=present
+#  when: '"802-3-ethernet" == "${wan_type.stdout}"'
+
+#TODO: Check when are used those flags
+- name: Create wan xs flags
+  shell: echo ${xsce_networks.wan.iface} > /etc/sysconfig/xs_wan_device
+
+- name: Create lan xs flags
+  shell: echo ${xsce_networks.lan.iface} > /etc/sysconfig/xs_lan_device
+
+- name: Create domain flag
+  shell: echo ${xsce_domain} > /etc/sysconfig/xs_domain_name
