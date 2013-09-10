@@ -13,17 +13,17 @@
             group=${item.owner}
             mode=${item.mode}
   with_items:
-    - src: 'squid/squid.sysconfig'
+    - src: 'squid.sysconfig'
       dest: '/etc/sysconfig/squid'
       owner: 'root'
       group: 'root'
       mode: '0755'
-    - src: 'squid/squid-xs.conf.j2'
+    - src: 'squid-xs.conf.j2'
       dest: '/etc/squid/squid-xs.conf'
       owner: 'squid'
       group: 'squid'
       mode: '0644'
-    - src: 'squid/dansguardian.conf.j2'
+    - src: 'dansguardian.conf.j2'
       dest: '/etc/dansguardian/dansguardian.conf'
       owner: 'dansguardian'
       group: 'dansguardian'
