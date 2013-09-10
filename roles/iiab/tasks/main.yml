@@ -1,0 +1,35 @@
+- name: Install IIAB yum repo
+  template: src=iiab.repo
+            dest=/etc/yum.repos.d/iiab.repo
+            owner=root
+            group=root
+            mode=0644
+
+- name: Install IIAB required packages
+  yum: name=$item
+       state=present
+  with_items:
+    - Internet-in-a-Box
+    - mod_wsgi
+    - mod_xsendfile
+    - Whoosh
+    - backports.lzma
+
+- name: Copy IIAB config file
+  template: src=iiab.conf.j2
+            dest=/etc/httpd/conf.d/iiab.conf
+            owner=root
+            group=root
+            mode=0644
+
+- name: Create link to cgi 
+  file: src=/bin/iiab.wsgi
+        dest=/var/www/html/iiab.wsgi
+        owner=root
+        group=root
+        state=link
+
+- name: Restart httpd service
+  service: name=httpd
+           state=restarted
+
