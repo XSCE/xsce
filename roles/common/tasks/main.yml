@@ -48,4 +48,4 @@
 - include: chrony.yml
 - include: avahi.yml
 - include: sysctl.yml
-    
+- include: facts.yml   
