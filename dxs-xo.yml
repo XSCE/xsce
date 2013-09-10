@@ -4,5 +4,5 @@
   vars:
   vars_files:
   - vars/default_vars.yml
-  tasks:
-    - include: tasks/xo.yml
+  roles:
+      - xo

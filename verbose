@@ -1,1 +1,0 @@
-ansible-playbook -i ansible_hosts ansiblexs.yml --connection=local $1 -vvv
