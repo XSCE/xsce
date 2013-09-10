@@ -1,0 +1,15 @@
+- hosts: 127.0.0.1
+  user: root
+  connection: local
+  vars:
+  vars_files:
+  - vars/default_vars.yml
+  roles:
+      - common
+      - network
+      - gateway
+      - core
+      - sugar-stats
+      
+      
+

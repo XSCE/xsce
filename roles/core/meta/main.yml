@@ -1,0 +1,16 @@
+dependencies:
+   - { role: named }
+   - { role: ejabberd }
+   - { role: httpd }
+   - { role: postgresql }
+   - { role: moodle }
+   - { role: idmgr }
+   - { role: squid }
+   - { role: sugar-stats }
+   - { role: ajenti }
+   - { role: wondershaper }
+   - { role: munin }
+   - { role: monit }
+
+
+
