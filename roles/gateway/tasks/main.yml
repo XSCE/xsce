@@ -24,3 +24,5 @@
 - name: Enable dhcpd service
   service: name=dhcpd 
            enabled=yes
+
+- include: gateway.yml
