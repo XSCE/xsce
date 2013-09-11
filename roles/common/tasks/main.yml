@@ -1,3 +1,13 @@
+- name: Install xs repo
+  get_url: url=http://xsce.activitycentral.com/repos/xsce-release.repo dest=/etc/yum.repos.d/
+
+- name: Create /library
+  file: path=/library
+        owner=root
+        group=root
+        mode=0755
+        state=directory
+
 - name: Install common packages
   yum: name=$item
        state=present
@@ -44,7 +54,6 @@
   with_items:
     - sshd
 
-- include: install-xs.yml
 - include: chrony.yml
 - include: avahi.yml
 - include: sysctl.yml
