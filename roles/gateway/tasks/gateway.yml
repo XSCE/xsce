@@ -7,14 +7,14 @@
        state=installed
 
 - name: Create olpc-scripts directory
-  file: path=/etc/sysconfig/olpc-scripts/
+  file: path=$item
         owner=root
         group=root
         mode=0755
         state=directory
   with_items:
     - /etc/sysconfig/olpc-scripts/
-    - /etc/sysconfig/olpc-scripts/setup.d/installed
+    - /etc/sysconfig/olpc-scripts/setup.d/installed/
 
 - name: Create gateway flag
   shell: echo 1 > /etc/sysconfig/olpc-scripts/setup.d/installed/gateway
