@@ -27,12 +27,6 @@
             option=keepcache
             value=1
 
-- name: Keep docs wheninstalling packages
-  lineinfile: dest=/etc/rpm/macros.imgcreate
-              regexp='^%_excludedocs'
-              line='%_excludedocs 0'
-              state=present
-
 - name: Disable root login with password 
   lineinfile: dest=/etc/ssh/sshd_config
               regexp='^PermitRootLogin'

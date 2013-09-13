@@ -15,7 +15,7 @@
             option=keepcache
             value=1
 
-- name: Keep docs wheninstalling packages
+- name: Keep docs when installing packages
   lineinfile: dest=/etc/rpm/macros.imgcreate
               regexp='^%_excludedocs'
               line='%_excludedocs 0'
