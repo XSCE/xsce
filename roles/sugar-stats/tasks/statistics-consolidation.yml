@@ -3,7 +3,7 @@
        state=installed
 
 - name: Install statistics-consolidation with pip
-  pip: name=git+https://src.sugarlabs.org/~migonzalvar/statistics-consolidation/migonzalvars-statistics-consolidation/@sqlalchemy-v2#egg=stats_consolidation
+  pip: name=git+https://github.com/migonzalvar/statistics-consolidation.git@sqlalchemy-v2#egg=stats_consolidation
 
 - name: Install required libraries
   yum: name=${item.pkg}
@@ -19,7 +19,7 @@
       regexp="^host\s+statsconso"
       line="host     statsconso     statsconso     samehost     md5"
       state=present
-      insertbefore="^host\s+all"
+      insertafter="^# IPv4 local connections"
       owner=postgres
       group=postgres
 
