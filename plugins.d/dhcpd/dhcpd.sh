@@ -12,7 +12,8 @@ function dhcpd()
         touch /var/lib/dhcpd/dhcpd.leases
         chown dhcpd:dhcpd /var/lib/dhcpd/dhcpd.leases
         systemctl enable dhcpd.service 2>&1 | tee -a $LOG
-        systemctl start dhcpd.service 2>&1 | tee -a $LOG
+	# release 0.4 defer dchpd startup until network is up
+        #systemctl start dhcpd.service 2>&1 | tee -a $LOG
         ;;
 	"no")
 		systemctl disable dhcpd.service 2>&1 | tee -a $LOG

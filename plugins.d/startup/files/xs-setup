@@ -124,8 +124,8 @@ if [[ $num_ifaces > 2 ]]; then
     named yes
     squid yes
     gateway yes
-    xs-setup-network
     dhcpd yes
+    xs-setup-network
     touch /.olpcxs-net-configured
 fi
 
