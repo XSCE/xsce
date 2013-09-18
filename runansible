@@ -1,8 +1,20 @@
 #!/bin/bash
-if [ x"$1" == x"xo" ]
-then
-	ansible-playbook -i ansible_hosts dxs-xo.yml --connection=local 
-	echo "Please reboot!"
-else
-        ansible-playbook -i ansible_hosts dxs.yml --connection=local 
+if [ -f dxs-vagrant.yml ]
+ then
+ PLAYBOOK="dxs-vagrant.yml"
+ INVENTORY="ansible_hosts"
+ echo "Running local playbooks! "
+ else
+ if [ -f /var/lib/dxs/dxs-vagrant.yml ]
+ then
+ PLAYBOOK="/var/lib/dxs/dxs-vagrant.yml"
+ INVENTORY="/var/lib/dxs/ansible_hosts"
+ echo "Running rpm provided playbooks ! "
 fi
+fi
+if [ "$PLAYBOOK" == "" ]
+	then
+	echo "rpm is not installed, and local playbook wasn't found!"
+	exit
+	fi
+ansible-playbook -i $INVENTORY $PLAYBOOK --connection=local 
