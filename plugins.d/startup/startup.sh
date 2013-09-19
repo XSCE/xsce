@@ -351,7 +351,7 @@ function do_once()
 
     # exit-hooks blasts school server into resolv.conf, use NM, and finese
     #ln -sf $CFGDIR/etc/dhcp/dhclient-exit-hooks $DESTDIR/etc/dhcp
-    ln -sf $CFGDIR/etc/logrotate.d/* $DESTDIR/etc/logrotate.d
+    #ln -sf $CFGDIR/etc/logrotate.d/* $DESTDIR/etc/logrotate.d
     ln -sf $CFGDIR/etc/profile.d/* $DESTDIR/etc/profile.d
 
     # sudo doesn't accept symlinks here

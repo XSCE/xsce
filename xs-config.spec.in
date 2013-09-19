@@ -91,6 +91,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 
+## fix logrotate
+if [ -e /etc/logrotate.d/"*" ]; then
+    rm /etc/logrotate.d/"*"
+fi
+
 ## Rename old conffiles
 if [ -e /etc/sysconfig/olpc-scripts/domain_config.d/dhclient ]; then
     rm /etc/sysconfig/olpc-scripts/domain_config.d/dhclient
