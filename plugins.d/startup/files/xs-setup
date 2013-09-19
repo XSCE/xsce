@@ -53,6 +53,9 @@ if [ -d /var/run/powerd-inhibit-dim ]; then
     touch /var/run/powerd-inhibit-dim/$$
 fi
 
+# set the hostname for dhclient
+/usr/share/xs-config/cfg/etc/dhcp/dhclient
+
 # seed low-level network conf and domain
 if [ x$1 != x ]; then
     xs-domain-config $1
