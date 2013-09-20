@@ -62,6 +62,7 @@ else
     fi
 fi
 echo "Setting the base domain name to $new_domain_name" | tee -a $LOG
+hostname schoolserver.$new_domain_name
 
 #  Apply each executable in the config directory
 #  JV - sort places dhclient to be run first in the list

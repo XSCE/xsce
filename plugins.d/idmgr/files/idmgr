@@ -18,7 +18,7 @@ CONFIG_LIST="/etc/idmgr.conf"
 #  This is the suffix which original versions of modified files will have
 BACKUP_SUFFIX=old
 
-short_host=`hostname -s`
+short_host=schoolserver
 new_name=$short_host.$1
 
 for config in $CONFIG_LIST;
