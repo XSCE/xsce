@@ -1,5 +1,5 @@
 - name: install wondershaper ajenti plugin
-  pip: https://github.com/migonzalvar/ajenti-plugin-wondershaper/archive/0.3.tar.gz
+  pip: name=https://github.com/migonzalvar/ajenti-plugin-wondershaper/archive/0.3.tar.gz
 
 - name: restart ajenti service
   service: name=ajenti
