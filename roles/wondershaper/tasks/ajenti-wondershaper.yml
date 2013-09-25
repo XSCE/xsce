@@ -1,19 +1,5 @@
-- name: install custom reconfigure
-  pip: name='https://github.com/migonzalvar/reconfigure/archive/0.1.23-0migonzalvar0.zip'
-       extra_args='-I'
-
 - name: install wondershaper ajenti plugin
-  git: repo=git://github.com/migonzalvar/ajenti-plugin-wondershaper.git
-       version=0.1.0
-       dest=/var/lib/ajenti/ajenti-plugin-wondershaper
-
-- name: link to plugin
-  file: state=link
-        src=/var/lib/ajenti/ajenti-plugin-wondershaper/wondershaper
-        path=/var/lib/ajenti/plugins/wondershaper
-        group=root
-        owner=root
-        mode=0755
+  pip: name=https://github.com/migonzalvar/ajenti-plugin-wondershaper/archive/0.3.tar.gz
 
 - name: restart ajenti service
   service: name=ajenti
