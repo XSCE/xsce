@@ -50,4 +50,5 @@
         group=root
         state=link
 
+- include: xs-authserver.yml
 
