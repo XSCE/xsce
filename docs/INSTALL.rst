@@ -2,27 +2,24 @@
 Installing the Dextrose Server
 ==============================
 
-Like the XSCE, both single and two dongle installs are supported. Performing
+Like the XSCE_, both single and two dongle installs are supported. Performing
 the two dongle install requires a bit of manual configuration which we will
 get to.
 
 On the XO-1.75 or XO-4 laptop
 *****************************
-* Flash the laptop with a stable 13.2.0 image
+* Flash the laptop with a stable `13.2.0 image`_
 
 * In ``My Settings->Power`` turn of Automatic Power Management
 
-* Install ansible, git. You'll also need to clone the latest ansible sources
-  because of a bug with the packaged version.
+* Install ansible, git. 
 
     ::
 
       su -
-      yum -y install ansible git # This will pull in the required dependencies
-      git clone git://github.com/ansible/ansible.git
-      cd ansible
-      git checkout devel
-      source hacking/env-setup
+      wget http://xsce.activitycentral.com/repos/xs-extra/noarch/ansible-1.3.1-0.git201309161027.fc18.noarch.rpm
+      yum -y localinstall ansible-1.3.1-0.git201309161027.fc18.noarch.rpm
+      yum -y install git
 
 * clone the DXS git repo; and run initial setup
 
@@ -49,9 +46,16 @@ On the XO-1.75 or XO-4 laptop
 
     ::
 
-      source ~/ansible/hacking/env-setup
       cd dxs
       ./runansible # This will take a lot of time as it installs packages
       reboot
 
 * DXS should be up and functional
+
+.. Note::
+   You may also wish to see the detailed INSTALL instructions at this link:
+   ``https://sugardextrose.org/projects/dxs/wiki/Testbed-github``
+
+.. _13.2.0 image: http://wiki.laptop.org/go/Release_notes/13.2.0#Installation
+.. _detailed install instructions: https://sugardextrose.org/projects/dxs/wiki/Testbed-github
+.. _XSCE: http://schoolserver.org/
