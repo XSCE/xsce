@@ -2,13 +2,13 @@
 Installing the Dextrose Server
 ==============================
 
-Like the XSCE, both single and two dongle installs are supported. Performing
+Like the XSCE_, both single and two dongle installs are supported. Performing
 the two dongle install requires a bit of manual configuration which we will
 get to.
 
 On the XO-1.75 or XO-4 laptop
 *****************************
-* Flash the laptop with a stable 13.2.0 image
+* Flash the laptop with a stable `13.2.0 image`_
 
 * In ``My Settings->Power`` turn of Automatic Power Management
 
@@ -56,3 +56,6 @@ On the XO-1.75 or XO-4 laptop
    You may also wish to see the detailed INSTALL instructions at this link:
    ``https://sugardextrose.org/projects/dxs/wiki/Testbed-github``
 
+.. _13.2.0 image: http://wiki.laptop.org/go/Release_notes/13.2.0#Installation
+.. _detailed install instructions: https://sugardextrose.org/projects/dxs/wiki/Testbed-github
+.. _XSCE: http://schoolserver.org/
