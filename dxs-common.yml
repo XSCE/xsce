@@ -3,7 +3,7 @@
   sudo: yes
   vars:
   vars_files:
-  - [ "vars/{{ ansible_bios_version }}.yml" , "vars/default_vars.yml" ]
+  - vars/default_vars.yml
   roles:
       - common
       - network
