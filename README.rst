@@ -11,7 +11,7 @@ All of our server code resides in this repository. We are using ansible_ as
 the underlying technology to install, deploy, configure and manage the
 various server components.
 
-Please see the INSTALL file for instructions to install the server on
+Please see the *INSTALL* file from the *docs* folder for instructions to install the server on
 supported software and hardware platforms.
 
 If you want to explore and get dirty with the code, please read the HACKING
