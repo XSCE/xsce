@@ -1,13 +1,13 @@
 #!/bin/bash
-if [ -f dxs-common.yml ]
+if [ -f dxs.yml ]
  then
- PLAYBOOK="dxs-common.yml"
+ PLAYBOOK="dxs.yml"
  INVENTORY="ansible_hosts"
  echo "Running local playbooks! "
  else
- if [ -f /var/local/dxs/dxs-common.yml ]
+ if [ -f /var/local/dxs/dxs.yml ]
  then
- PLAYBOOK="/var/local/dxs/dxs-common.yml"
+ PLAYBOOK="/var/local/dxs/dxs.yml"
  INVENTORY="/var/local/dxs/ansible_hosts"
  echo "Running rpm provided playbooks ! "
 fi
