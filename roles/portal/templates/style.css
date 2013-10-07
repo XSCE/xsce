@@ -44,7 +44,7 @@ body {
 }
 
 #servicelist{
-  text-align: justified;
+  text-align: justify;
   width: 50%;
   margin-left: auto;
   margin-right: auto;
@@ -139,7 +139,7 @@ body {
 
 /* Responsive queries for narrower screens */
 
-@media only screen and (max-width: 768px) {
+@media screen and (max-width: 768px) {
   #header #logo img {width:32px;height:34px;}
   #header {height:60px;}
   h1 {font-size:1.15em;}
@@ -149,3 +149,4 @@ body {
   #servicelist { width:96%;}
   #footer {height:7em;}
 }
+
