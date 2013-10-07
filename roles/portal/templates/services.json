@@ -1,0 +1,22 @@
+[  
+  {
+    "name": "Internet In A Box",
+    "description": "Browse Wikipedia, Books, Maps, and Educational videos",
+    "link": "iiab"
+  },
+  {
+    "name": "Moodle home page",
+    "description": "Access the Moodle learning management system",
+    "link": "moodle"
+  },
+  {
+    "name": "Upload an Activity",
+    "description": "From this link you can upload .xo files to make them available as Activities to all users",
+    "link": "upload_activity.php"
+  },
+  {
+    "name": "Download an Activity",
+    "description": "From this link you can download various Activities present on the server",
+    "link": "activities"
+  }
+]
