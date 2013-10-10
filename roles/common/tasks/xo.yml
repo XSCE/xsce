@@ -63,4 +63,13 @@
 - name: Disable graphical login
   service: name=olpc-dm
            enabled=no
+  register: disabled_login
+
+- name: Reboot system 
+  command: /sbin/reboot 
+  when: disabled_login.changed
+  ignore_errors: yes
+  async: 300
+  poll: 120
+ 
 

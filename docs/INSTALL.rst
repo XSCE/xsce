@@ -28,8 +28,7 @@ On the XO-1.75 or XO-4 laptop
       cd ~/
       git clone https://github.com/activitycentral/dxs.git
       cd dxs
-      ./runansible xo
-      reboot
+      ./runansible
 
     .. Warning::
        Depending on the type of setup (one or two dongle), you'll need to
@@ -40,6 +39,7 @@ On the XO-1.75 or XO-4 laptop
        DXS won't automatically find out which eth is LAN or WAN, a good
        practice would be to first insert the WAN dongle, so it get's its IP
        address, and then insert the LAN dongle.
+
 
 
 * After rebooting (insert the ethernet dongles at this point)...
@@ -59,3 +59,12 @@ On the XO-1.75 or XO-4 laptop
 .. _13.2.0 image: http://wiki.laptop.org/go/Release_notes/13.2.0#Installation
 .. _detailed install instructions: https://sugardextrose.org/projects/dxs/wiki/Testbed-github
 .. _XSCE: http://schoolserver.org/
+
+Building the rpm
+*****************************
+
+* An rpm can be built by using the command
+
+    ::
+      rpmbuild -bb dxs.spec
+
