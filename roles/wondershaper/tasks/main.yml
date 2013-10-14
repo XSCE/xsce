@@ -38,5 +38,10 @@
         group=root
         state=link
 
+- name: enable wondershaper service
+  service: name=wondershaper
+           enabled=yes
+           state=started
+
 - include: ajenti-wondershaper.yml
 
