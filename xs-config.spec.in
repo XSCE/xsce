@@ -192,6 +192,7 @@ fi
 %{_libexecdir}/moodle-xs-init
 %doc README README.networking
 %doc README.no-fsck-questions
+%doc COPYING
 #%{_sysconfdir}/sysconfig/vnc/self.pem
 #%{_sysconfdir}/sysconfig/vnc/xstartup
 
