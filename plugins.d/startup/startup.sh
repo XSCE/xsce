@@ -230,7 +230,7 @@ function startup()
         etckeeper-if-selected "disabled selinux, scripts sourced"
 
         # make a non privileged user, and give her remote access
-        if [ ! `grep $DEFAULTUSER /etc/passwd` ]; then
+        if [ ! -d /home/$DEFAULTUSER ]; then
             adduser $DEFAULTUSER
             echo "$DEFAULTPASSWORD" | passwd $DEFAULTUSER --stdin
             #we've added apache to the admin group, so permit group access
