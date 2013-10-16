@@ -41,3 +41,20 @@
   service: name=xs-authserver
            enabled=yes
            state=started
+
+- name: add xs-authserver to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=xs-authserver
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: XS-authserver
+    - option: description
+      value: 'xs-authserver implements a seamless web authentication service
+             using XO laptop registration capabilities.  It is heavily inspired
+             by the Moodle OLPC-XS authentication plugin'
+    - option: port
+      value: 5000
+    - option: path
+      value: /
