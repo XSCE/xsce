@@ -1,0 +1,7 @@
+---
+- name: read ini
+  read_ini_file: src='{{ service_filelist }}'
+  register: services_list
+
+- name: create service file
+  template: src=services.json.j2 dest=/var/www/html/services.json
