@@ -50,6 +50,7 @@
   user: name=apache
         groups=admin
         state=present
+        createhome=no
 
 - name: Enable httpd
   service: name=httpd
