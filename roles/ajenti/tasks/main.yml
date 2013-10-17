@@ -13,7 +13,7 @@
     - pkg: gcc
 
 - name: install ajenti from Pypi
-  pip: name=ajenti version=0.99.34
+  pip: name=https://github.com/migonzalvar/ajenti/releases/download/0.99.34-patched3/ajenti-0.99.34-patched3.tar.gz
 
 - name: install python-catcher
   pip: name=python-catcher version=0.1.3
