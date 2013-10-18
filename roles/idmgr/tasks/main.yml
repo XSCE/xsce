@@ -50,5 +50,17 @@
         group=root
         state=link
 
+- name: Configure rssh rsync permissions to allow OLPC Backup clients
+  lineinfile: dest=/etc/rssh.conf
+             state=present
+             regexp=^#allowrsync
+             line=allowrsync
+
+- name: Configure rssh sftp permissions for backup restore clients
+  lineinfile: dest=/etc/rssh.conf
+             state=present
+             regexp=^#allowsftp
+             line=allowsftp
+
 - include: xs-authserver.yml
 
