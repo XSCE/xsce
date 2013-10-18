@@ -5,7 +5,7 @@
     - index.html
     - style.css
     - services.js
-    - images/logo64.png
+    - logo64.png
 
 - name: read ini
   read_ini_file: src='{{ service_filelist }}'
