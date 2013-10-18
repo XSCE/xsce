@@ -31,3 +31,16 @@
   service: name=moodle-xs
            enabled=yes
            state=started
+
+- name: add moodle to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=moodle
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: Moodle
+    - option: description
+      value: "Access the Moodle learning management system."
+    - option: path
+      value: /moodle

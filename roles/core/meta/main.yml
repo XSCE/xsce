@@ -12,6 +12,4 @@ dependencies:
    - { role: wondershaper }
    - { role: munin }
    - { role: monit }
-
-
-
+   - { role: portal }

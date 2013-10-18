@@ -33,3 +33,15 @@
   service: name=httpd
            state=restarted
 
+- name: add iiab to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=iiab
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: Internet-in-a-Box
+    - option: description
+      value: "The Internet-in-a-Box is a small, inexpensive device which provides essential Internet resources without any Internet connection. It provides a local copy of half a terabyte of the world’s Free information."
+    - option: path
+      value: /iiab
