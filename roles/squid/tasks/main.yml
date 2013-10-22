@@ -1,0 +1,80 @@
+- name: Install squid packages
+  yum: name=${item}
+       state=installed
+  with_items:
+    - squid
+    - cadaver
+    - dansguardian
+
+- name: Copy init script and config file
+  template: src=${item.src}
+            dest=${item.dest}
+            owner=${item.owner}
+            group=${item.owner}
+            mode=${item.mode}
+  with_items:
+    - src: 'squid.sysconfig'
+      dest: '/etc/sysconfig/squid'
+      owner: 'root'
+      group: 'root'
+      mode: '0755'
+    - src: 'squid-xs.conf.j2'
+      dest: '/etc/squid/squid-xs.conf'
+      owner: 'squid'
+      group: 'squid'
+      mode: '0644'
+    - src: 'dansguardian.conf.j2'
+      dest: '/etc/dansguardian/dansguardian.conf'
+      owner: 'dansguardian'
+      group: 'dansguardian'
+      mode: '0640'
+    
+
+- name: Create squid cache directory
+  file: path=/library/cache
+        owner=squid
+        group=squid
+        mode=0750
+        state=directory
+
+- name: Create squid log directory
+  file: path=/var/log/squid
+        owner=squid
+        group=squid
+        mode=0750
+        state=directory
+
+- name: Create dansguardian log directory
+  file: path=/var/log/dansguardian
+        owner=dansguardian
+        group=dansguardian
+        mode=0750
+        state=directory
+
+- name: Stop Squid
+  service: name=squid
+           state=stopped
+  ignore_errors: yes
+
+- name: Enable dansguardian
+  service: name=dansguardian
+           enabled=yes
+           state=started
+  when_boolean: ${dansguardian}
+
+- name: Disable dansguardian
+  service: name=dansguardian
+           enabled=yes
+           state=started
+  when_boolean: not ${dansguardian}
+
+
+ 
+- name: Create xs_httpcache flag
+  shell: echo 1 > /etc/sysconfig/xs_httpcache_on
+         creates=/etc/sysconfig/xs_httpcache_on
+
+- name: Start squid service
+  service: name=squid
+           enabled=yes
+           state=started

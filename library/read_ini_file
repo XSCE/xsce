@@ -1,0 +1,47 @@
+#!/usr/bin/python
+
+import json
+import datetime
+import shlex
+import sys
+from ConfigParser import ConfigParser
+
+
+def parse_ini(filename):
+    cfg = ConfigParser()
+    files = cfg.read(filename)
+    return cfg
+
+
+def cfg_to_dict(cfg):
+    data = {}
+    for section in cfg.sections():
+        data[section] = {}
+        for option, value in cfg.items(section):
+            data[section][option] = value
+    return data
+
+
+def exit_json(retcode=0, data={}, **kwargs):
+    date = str(datetime.datetime.now())
+    output = {'date': date}
+    output.update(data)
+    output.update(kwargs)
+    print json.dumps(output)
+    sys.exit(retcode)
+
+
+# read the argument string from the arguments file
+args_file = sys.argv[1]
+args_data = file(args_file).read()
+
+arguments = shlex.split(args_data)
+for arg in arguments:
+    if arg.find("=") != -1:
+        (key, value) = arg.split("=")
+        if key == 'src':
+            cfg = parse_ini(value)
+            data = cfg_to_dict(cfg)
+            exit_json(sections=data)
+
+exit_json(retcode=1, error='Invalid arguments')
