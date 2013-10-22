@@ -1,0 +1,19 @@
+[connection]
+id={{ xsce_networks["lan"].iface }}
+uuid=${lan_uuid.stdout}
+type=${lan_type.stdout}
+
+[ipv4]
+method=manual
+dns=127.0.0.1;
+dns-search={{ xsce_domain }};
+addresses1={{ xsce_networks["lan"].ip }};19;0.0.0.0;
+may-fail=true
+
+[lan_type]
+duplex=full
+mac-address=popo
+
+[ipv6]
+method=link-local
+may-fail=true

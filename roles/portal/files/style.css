@@ -1,0 +1,152 @@
+html {
+  height:100%;
+}
+
+body {
+  font-family: Verdana,"Bitstream Vera Sans","DejaVu Sans",Dejavu,Tahoma,Geneva,Arial;
+  margin:0px;
+  padding:0px;
+  height: 100%;
+}
+
+#container{
+  min-height:100%;
+  position:relative;
+}
+
+#header{
+  text-transform:uppercase;
+  height:100px;
+  background:#811788;
+  width:100%;
+  border-bottom:3px solid #7F7F7F;
+}
+
+#header #logo{
+  display:block;
+  padding:1em;
+  float:left;
+}
+
+#header #logo img{
+  width:64px;
+  height:68px;
+}
+
+#header #sitename h1{
+  margin:1em;
+  color:#FFF;
+  float:left;
+}
+
+#services{
+  padding:2em 0 7em 0;
+}
+
+#servicelist{
+  text-align: justify;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  border: 3px solid #811788;
+  background: #A137A8;
+  color: #FFF;
+}
+/*
+#tabs {
+  text-align: center;
+  border-top: 3px solid #811788;
+  border-left: 3px solid #811788;
+  border-right: 3px solid #811788;
+  width:50%;
+  margin-left: auto;
+  margin-right: auto;
+  background: #A137A8;
+  color: #FFF;
+}
+
+#tabs ul {
+  width: 100%;
+  list-style: none;
+  margin: 0 auto;
+}
+
+#tabs li {
+  display: inline;
+  border: 3px solid #811788;
+  margin: 0.5em;
+}
+
+#tabs li a {
+  padding: 1em;
+  color: #FFF;
+  font-weight: bold;
+  background: #811788;
+  text-decoration: none;
+}
+
+#tabs li a:hover {
+  background: #FF960C;
+}
+*/
+#services h2{
+  text-align: center;
+}
+
+.service {
+  margin: 0.5em;
+  border: 3px solid #811788;
+  line-height: 2em;
+}
+
+#servicelist a{
+  text-align: center;
+  font-weight:bold;
+  display: block;
+  width: 100%;
+  text-decoration: none;
+  color: #FFF;
+  background-color: #811788;
+}
+
+#servicelist a:hover{
+  background-color: #FF960C;
+}
+
+#servicelist #desc{
+  padding:0 1em;
+  background: #FFF;
+  color: #811788;
+}
+
+#footer{
+  color:#FFF;
+  position:absolute;
+  bottom:0px;
+  width:100%;
+  height:5em;
+  background:#7F7F7F;
+  border-top:3px solid #811788;
+}
+#footer p{
+  font-size: 0.8em;
+  margin: 1em;
+}
+#footer a{
+  text-decoration:none;
+  color:#811788;
+}  
+
+/* Responsive queries for narrower screens */
+
+@media screen and (max-width: 768px) {
+  #header #logo img {width:32px;height:34px;}
+  #header {height:60px;}
+  h1 {font-size:1.15em;}
+  h2 {font-size:1em;}
+  #tabs {width:96%;}
+  #services {padding-bottom:9em;}
+  #servicelist { width:96%;}
+  #footer {height:7em;}
+}
+

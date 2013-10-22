@@ -1,0 +1,15 @@
+---
+- name: install static files
+  copy: src='{{ item }}' dest='/var/www/html/{{ item }}'
+  with_items:
+    - index.html
+    - style.css
+    - services.js
+    - logo64.png
+
+- name: read ini
+  read_ini_file: src='{{ service_filelist }}'
+  register: services_list
+
+- name: create service file
+  template: src=services.json.j2 dest=/var/www/html/services.json

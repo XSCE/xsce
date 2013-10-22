@@ -1,0 +1,54 @@
+- name: Install postgresql packages
+  yum: name=$item
+       state=present
+  with_items:
+    - postgresql
+    - postgresql-server
+
+- name: Create postgresql-xs systemd service
+  template: src=postgresql-xs.service
+            dest=/etc/systemd/system/postgresql-xs.service
+            owner=root
+            group=root
+            mode=0644
+
+- name: Create postgres data directory
+  file: path=/library/pgsql-xs
+        owner=postgres
+        group=postgres
+        mode=0700
+        state=directory
+
+- name: Create initial postgres db
+  command:  /usr/bin/postgresql-setup  initdb postgresql-xs -E 'UTF-8' --lc-collate='en_US.UTF-8' --lc-ctype='en_US.UTF-8' 
+           creates=/library/pgsql-xs/pg_hba.conf
+
+#TODO: Add this setup to the template, instead of adding 3 steps
+- name: Configure postgres (512mb)
+  template: src=postgresql-512m.conf
+            dest=/library/pgsql-xs/postgresql.conf
+            owner=postgres
+            group=postgres
+            mode=0640
+  when: ansible_memtotal_mb < 1000
+
+- name: Configure postgres (1024mb)
+  template: src=postgresql-1024m.conf
+            dest=/library/pgsql-xs/postgresql.conf
+            owner=postgres
+            group=postgres
+            mode=0640
+  when: ansible_memtotal_mb > 1000 and ansible_memtotal_mb < 2000
+
+- name: Configure postgres (2048mb)
+  template: src=postgresql-512m.conf
+            dest=/library/pgsql-xs/postgresql.conf
+            owner=postgres
+            group=postgres
+            mode=0640
+  when: ansible_memtotal_mb > 2000
+
+- name: Enable postgresql service
+  service: name=postgresql-xs
+           enabled=yes
+           state=started 

@@ -1,0 +1,57 @@
+- name: Install xs repo
+  get_url: url=http://xsce.activitycentral.com/repos/xsce-release.repo dest=/etc/yum.repos.d/
+
+- include: xo.yml
+  when: ansible_distribution_release == "based on Fedora 18"
+
+- name: Create /library
+  file: path=/library
+        owner=root
+        group=root
+        mode=0755
+        state=directory
+
+- name: Install common packages
+  yum: name=$item
+       state=present
+  with_items:
+   - createrepo
+   - acpid
+   - mlocate
+   - mtd-utils
+   - rsync
+   - htop
+   - etckeeper
+   - python-passlib
+
+- name: Keep yum cache
+  ini_file: dest=/etc/yum.conf
+            section=main
+            option=keepcache
+            value=1
+
+- name: Disable root login with password 
+  lineinfile: dest=/etc/ssh/sshd_config
+              regexp='^PermitRootLogin'
+              line='PermitRootLogin without-password'
+              state=present
+#TODO: use handler to reload ssh
+
+#- name: Disable selinux
+#  selinux: policy=targeted
+#           state=permissive
+#TODO: check for selinux issues, and disable it
+- name: Set hostname
+  command: hostnamectl set-hostname {{ xsce_hostname }}.{{ xsce_domain }}
+
+- name: Enable common services
+  service: name=$item
+           enabled=yes
+           state=started
+  with_items:
+    - sshd
+
+- include: chrony.yml
+- include: avahi.yml
+- include: sysctl.yml
+- include: facts.yml   

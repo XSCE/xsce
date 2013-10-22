@@ -1,0 +1,16 @@
+- name: Get network-manager status
+  shell: ps fauxww | grep NetworkManage[r]; echo "$?"
+  register: networkmanager-running
+
+- name: Get WAN type
+  shell: /bin/nmcli d | grep ${xsce_networks.wan.iface} | awk '{print \$2}'
+  register: wan_type
+
+- name: Get mac address for lan interface
+  shell: /sbin/ip addr show ${xsce_networks.lan.iface} | /bin/awk '/link\/ether/ { print \$2}' | tr [:lower:] [:upper:]
+  register: mac_lan
+
+- name: Get mac address for wan interface
+  shell: /sbin/ip addr show ${xsce_networks.wan.iface} | /bin/awk '/link\/ether/ { print \$2}' | tr [:lower:] [:upper:]
+  register: mac_wan
+
