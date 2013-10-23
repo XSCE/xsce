@@ -17,7 +17,8 @@
     - /etc/sysconfig/olpc-scripts/domain_config.d
 
 - name: Configure named
-  template: src=${item.src}
+  template: backup=yes
+            src=${item.src}
             dest=${item.dest}
             owner=${item.owner}
             group=root

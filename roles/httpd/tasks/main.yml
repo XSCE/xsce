@@ -6,7 +6,8 @@
     - php
 
 - name: Create sugar-stats directory tree
-  template: src=${item.src}
+  template: backup=yes
+            src=${item.src}
             dest=${item.dest}
             owner=root
             group=root

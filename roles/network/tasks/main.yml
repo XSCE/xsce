@@ -1,5 +1,6 @@
 - name: Configure /etc/sysconfig/network
-  template: src=sysconfig.network.j2
+  template: backup=yes
+            src=sysconfig.network.j2
             dest=/etc/sysconfig/network
             owner=root
             group=root
@@ -23,7 +24,8 @@
               mode=0644
 
 - name: Configure lan interface
-  template: src=ifcfg.j2
+  template: backup=yes
+            src=ifcfg.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-${item.iface}
   with_items:
     - ${xsce_networks.lan}
@@ -36,7 +38,8 @@
 
 #TODO: configure WIFI wan
 #- name: Configure wan dynamic interface
-#  template: src=network/ifcfg-dhcp.j2
+#  template: backup=yes
+#            src=network/ifcfg-dhcp.j2
 #            dest=/etc/sysconfig/network-scripts/ifcfg-${item.iface}
 #  with_items:
 #    - ${xsce_networks.wan}

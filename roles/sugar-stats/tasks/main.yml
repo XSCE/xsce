@@ -19,7 +19,8 @@
     - /library/sugar-stats/users
 
 - name: Copy sugar-stats config file
-  template: src=sugar-stats.conf.j2
+  template: backup=yes
+            src=sugar-stats.conf.j2
             dest=/etc/sugar-stats.conf
             owner=sugar-stats
             group=sugar-stats

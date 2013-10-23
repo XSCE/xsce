@@ -21,7 +21,8 @@
          creates=/etc/sysconfig/olpc-scripts/setup.d/installed/gateway
 
 - name: Install iptables services
-  template: src=${item.src}
+  template: backup=yes
+            src=${item.src}
             dest=${item.dest}
             owner=root
             group=root

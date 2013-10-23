@@ -7,7 +7,8 @@
     - dansguardian
 
 - name: Copy init script and config file
-  template: src=${item.src}
+  template: backup=yes
+            src=${item.src}
             dest=${item.dest}
             owner=${item.owner}
             group=${item.owner}
