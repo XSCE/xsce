@@ -1,7 +1,10 @@
 ---
 - name: Install moodle required packages
-  yum: name=moodle-xs
-       state=installed
+  yum: name=$item
+       state=present
+  with_items:
+    - moodle-xs
+    - python-psycopg2
 
 - name: Configure moodle
   template: src={{ item.src }}
@@ -19,6 +22,22 @@
     - src: 'moodle-xs-init'
       dest: '/usr/libexec/moodle-xs-init'
       mode: '0755'
+
+- name: Create db user
+  postgresql_user: name=apache
+                   role_attr_flags=NOSUPERUSER,NOCREATEROLE,NOCREATEDB
+                   state=present
+  sudo: yes
+  sudo_user: postgres
+
+- name: Create database
+  postgresql_db: name=moodle-xs
+                 encoding=utf8
+                 owner=apache
+                 template=template0
+                 state=present
+  sudo: yes
+  sudo_user: postgres
 
 - name: Execute moodle startup script
   command: /usr/libexec/moodle-xs-init start
