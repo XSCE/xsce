@@ -12,4 +12,5 @@
   register: services_list
 
 - name: create service file
-  template: src=services.json.j2 dest=/var/www/html/services.json
+  template: backup=yes
+            src=services.json.j2 dest=/var/www/html/services.json

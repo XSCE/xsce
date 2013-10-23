@@ -6,7 +6,8 @@
     - php
 
 - name: Create sugar-stats directory tree
-  template: src=${item.src}
+  template: backup=yes
+            src=${item.src}
             dest=${item.dest}
             owner=root
             group=root
@@ -21,7 +22,8 @@
      - { src: 'xs-http' , dest: '/etc/sudoers.d/xs-http', mode: '0640'}
 
 - name: Configure the server-name (necessary to make URL-redirections work)
-  lineinfile: dest=/etc/httpd/conf/httpd.conf
+  lineinfile: backup=yes
+              dest=/etc/httpd/conf/httpd.conf
               state=present
               regexp='^#ServerName www.example.com:80'
               line='ServerName schoolserver'

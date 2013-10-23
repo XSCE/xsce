@@ -19,7 +19,8 @@
   pip: name=python-catcher version=0.1.3
 
 - name: change default port
-  lineinfile: dest=/etc/ajenti/config.json
+  lineinfile: backup=yes
+              dest=/etc/ajenti/config.json
               state=present
               backrefs=yes
               regexp='"port":\s*[0-9]{1,5}'

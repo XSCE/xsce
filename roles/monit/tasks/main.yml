@@ -10,14 +10,16 @@
         state=directory
 
 - name: Update main config file 
-  template: src=monitrc
+  template: backup=yes
+            src=monitrc
             dest=/etc/monitrc
             owner=root
             group=root
             mode=0600
 
 - name: Update config files
-  template: src=$item
+  template: backup=yes
+            src=$item
             dest=/usr/share/xs-config/cfg/etc/monit.d/$item
             owner=root
             group=root
