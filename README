@@ -159,3 +159,9 @@ Credits and blame
 - Maintainer: Martin Langhoff <martin@laptop.org>
 - John Watlington <wad@laptop.org>
 - Based on an original - but very different - package by Daniel Margo
+
+Install on Fedora 18
+====================
+
+su -
+curl -L https://raw.github.com/XSCE/xsce/master/bootstrap.sh | bash
