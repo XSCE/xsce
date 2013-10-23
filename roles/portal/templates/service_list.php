@@ -1,7 +1,7 @@
 <?php
 
 $serv_arr  = array();
-$serv_arr = parse_ini_file ( '/etc/sysconfig/servicelist', true);
+$serv_arr = parse_ini_file ( '{{service_filelist}}', true);
 
 var_dump ($serv_arr);
 

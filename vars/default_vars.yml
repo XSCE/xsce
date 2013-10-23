@@ -22,7 +22,7 @@ watchdog:
   - squid 
 
 #Services
-service_filelist: /etc/sysconfig/servicelist
+service_filelist: /etc/sysconfig/xs_installed_services
 squid: True
 dansguardian: True
 services:
