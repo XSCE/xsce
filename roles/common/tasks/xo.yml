@@ -3,7 +3,8 @@
            creates=/etc/powerd/flags/inhibit-suspend
 
 - name: Disable sleep on lid closing
-  lineinfile: dest=/etc/powerd/powerd.conf
+  lineinfile: backup=yes
+              dest=/etc/powerd/powerd.conf
               regexp='^config_SLEEP_WHEN_LID_CLOSED' 
               line='config_SLEEP_WHEN_LID_CLOSED="no"'
               state=present
@@ -16,7 +17,8 @@
             value=1
 
 - name: Keep docs when installing packages
-  lineinfile: dest=/etc/rpm/macros.imgcreate
+  lineinfile: backup=yes
+              dest=/etc/rpm/macros.imgcreate
               regexp='^%_excludedocs'
               line='%_excludedocs 0'
               state=present
@@ -39,24 +41,28 @@
      - { option: 'lcp-echo-interval', value: '30' }
 
 - name: Create bigger rwtab
-  lineinfile: dest=/etc/sysconfig/readonly-root
+  lineinfile: backup=yes
+              dest=/etc/sysconfig/readonly-root
               regexp='^RW_OPTIONS'
               line='RW_OPTIONS="-o size=4M -o nr_inodes=2048"'
               state=present
 
 - name: Remove dhcpd entry from /etc/rwtab
-  lineinfile: dest=/etc/rwtab
+  lineinfile: backup=yes
+              dest=/etc/rwtab
               regexp='^empty.*/var/lib/dhcpd'
               state=absent
 
 - name: Persist /etc/hosts between reboots
-  lineinfile: dest=/etc/statetab.d/olpc
+  lineinfile: backup=yes
+              dest=/etc/statetab.d/olpc
               regexp='^/etc/hosts'
               state=absent
 
 
 - name: Disable /var/log tmpfs 
-  lineinfile: dest=/etc/fstab
+  lineinfile: backup=yes
+              dest=/etc/fstab
               regexp='^varlog.*'
               state=absent
 

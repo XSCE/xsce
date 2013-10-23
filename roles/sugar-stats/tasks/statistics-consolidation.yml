@@ -14,7 +14,8 @@
     - pkg: python-psycopg2
 
 - name: Enable postgresl access by md5 method
-  lineinfile: >
+  lineinfile: backup=yes
+              >
       dest=/library/pgsql-xs/pg_hba.conf
       regexp="^host\s+statsconso"
       line="host     statsconso     statsconso     samehost     md5"

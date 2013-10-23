@@ -8,7 +8,8 @@
 
 #TODO: Use vars instead of hardcoded values
 - name: Configure /etc/hosts
-  lineinfile: dest=/etc/hosts
+  lineinfile: backup=yes
+              dest=/etc/hosts
               regexp='^172\.18\.96\.1'
               line='172.18.96.1            {{ xsce_hostname }}.{{ xsce_domain }}      {{ xsce_hostname }}'
               owner=root
@@ -16,7 +17,8 @@
               mode=0644
 
 - name: Configure /etc/hosts
-  lineinfile: dest=/etc/hosts
+  lineinfile: backup=yes
+              dest=/etc/hosts
               regexp='^127\.0\.0\.1'
               line='127.0.0.1            localhost.localdomain      localhost    schoolserver'
               owner=root
@@ -31,7 +33,8 @@
     - ${xsce_networks.lan}
 
 - name: Configure lan mac address
-  lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-${xsce_networks.lan.iface}
+  lineinfile: backup=yes
+              dest=/etc/sysconfig/network-scripts/ifcfg-${xsce_networks.lan.iface}
               regexp='^HWADDR='
               line='HWADDR=${mac_lan.stdout}'
               state=present
@@ -47,7 +50,8 @@
 #  when: wan_type.stdout.find('802-3-ethernet') != -1
 
 #- name: Configure wan mac address
-#  lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-${xsce_networks.wan.iface}
+#  lineinfile: backup=yes
+#              dest=/etc/sysconfig/network-scripts/ifcfg-${xsce_networks.wan.iface}
 #              regexp='^HWADDR='
 #              line='HWADDR=${mac_wan.stdout}'
 #              state=present
