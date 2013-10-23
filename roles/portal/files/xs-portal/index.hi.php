@@ -25,7 +25,7 @@
 <?php iiab_link("Internet In A Box", 
 								"Lorem Ipsum ",
 								"Searching for Internet In A Box"); ?>
-<?php service_link("moodle-xs","मूडल्","लोरेम इप्सुम dolor sit amet, consectetur dipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non "); ?>
+<?php service_link("moodle","मूडल्","लोरेम इप्सुम dolor sit amet, consectetur dipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non "); ?>
 <?php service_link("upload", "Upload", "Lorem Ipsum"); ?>
 <?php service_link("activity-server", "Download an Activity", "Lorem Ipsum"); ?>
 
