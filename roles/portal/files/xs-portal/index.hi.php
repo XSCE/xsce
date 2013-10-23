@@ -27,7 +27,6 @@
 //                "Searching for Internet In A Box"); 
 ?>
 <?php service_link("iiab", "Internet In A Box", "Internet-in-a-Box is a copy of some of the most important material on the internet, such as the Wikipedia, stored locally where you can reach it easily."); ?>
-<?php service_link("moodle", "Moodle Home Page", "Moodle is a collection of lessons and study materials organized to help you learn many fascinating things."); ?>
 <?php service_link("moodle","मूडल्","लोरेम इप्सुम dolor sit amet, consectetur dipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non "); ?>
 <?php service_link("upload", "Upload", "Lorem Ipsum"); ?>
 <?php service_link("activity-server", "Download an Activity", "Lorem Ipsum"); ?>

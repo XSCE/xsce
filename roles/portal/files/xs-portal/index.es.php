@@ -30,7 +30,6 @@ Esta página debe ser en español
 ?>
 <?php service_link("iiab", "Internet In A Box", "Internet-in-a-Box is a copy of some of the most important material on the internet, such as the Wikipedia, stored locally where you can reach it easily."); ?>
 <?php service_link("moodle", "Moodle Home Page", "Moodle is a collection of lessons and study materials organized to help you learn many fascinating things."); ?>
-<?php service_link("moodle", "Moodle Home Page", "Moodle is a collection of lessons and study materials organized to help you learn many fascinating things."); ?>
 <?php service_link("upload", "Upload Files", "From this link you can upload various files such as images and activities"); ?>
 <?php service_link("activity-server", "Download an Activity", "You can add a new activity to your XO from this link."); ?>
 
