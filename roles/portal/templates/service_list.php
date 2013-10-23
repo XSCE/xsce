@@ -3,8 +3,6 @@
 $serv_arr  = array();
 $serv_arr = parse_ini_file ( '{{service_filelist}}', true);
 
-var_dump ($serv_arr);
-
 function service_link($service_key, $service_link_text, $service_link_desc)
 {
 	global $serv_arr;
