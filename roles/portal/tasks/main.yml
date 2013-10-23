@@ -51,4 +51,10 @@
             owner=root
             group=root
             mode=0644
-  
+
+- name: Install xs-portal service discovery
+  template: src=service_list.php
+            dest=/var/www/html/xs-portal/incl
+            owner=root
+            group=root
+            mode=0644  
