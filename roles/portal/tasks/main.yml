@@ -1,6 +1,6 @@
 - name: Create xs-portal directory tree
   file: path=$item
-        mode=0644
+        mode=0755
         owner=root
         group=root
         state=directory
