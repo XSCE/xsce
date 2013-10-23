@@ -1,5 +1,6 @@
 - name: Install IIAB yum repo
-  template: src=iiab.repo
+  template: backup=yes
+            src=iiab.repo
             dest=/etc/yum.repos.d/iiab.repo
             owner=root
             group=root
@@ -16,7 +17,8 @@
     - backports.lzma
 
 - name: Copy IIAB config file
-  template: src=iiab.conf.j2
+  template: backup=yes
+            src=iiab.conf.j2
             dest=/etc/httpd/conf.d/iiab.conf
             owner=root
             group=root
