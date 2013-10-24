@@ -1,0 +1,11 @@
+---
+- hosts: all
+  sudo: yes
+  vars:
+  vars_files:
+  - vars/default_vars.yml
+  roles:
+      - common
+      - network
+      - gateway
+      - core
