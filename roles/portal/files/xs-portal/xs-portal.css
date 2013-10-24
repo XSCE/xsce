@@ -1,0 +1,111 @@
+/* XSCE Home Page */
+
+#wrapper {
+	font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  position: relative;
+	margin: 0 auto;
+
+	width: 100%;
+	max-width: 1600px;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	
+}
+
+#main {
+	text-align: left;
+	
+}
+
+
+#xsBanner {
+	/*width:900px;*/
+	height:200px;
+	
+}
+.xsIcon {
+	width:400px; 
+	float:left; 
+	border-width:3px; 
+	border-style:solid; 
+	border-color:#333;	
+}
+
+.xsLanguage {
+	width:150px; 
+	float:right; 
+	border-width:3px; 
+	border-style:solid;
+	color: #000; 
+	border-color:#333;	
+	background-color: #DDC;
+}
+
+/* language display and selection bar, implemented as an UL */
+#xsLanguageSelect {
+	font-size: 16pt;
+	margin: 4px 4px 0 0;
+	padding: 3px 6px;
+	text-align: left;	
+	/* get rid of the bullets */
+	list-style-type: none;	
+}
+
+#xsLanguageSelect a {
+	text-decoration: none;
+}
+
+#xsLanguageSelect A:link {
+	color: #000;
+}
+
+#xsLanguageSelect A:visited {
+	color: #000;
+}
+
+#xsLanguageSelect A:active {
+	color: #000;
+}
+
+#xsLanguageSelect A:hover {
+	color: #000;
+	font-weight:bold
+}
+
+.xsServiceWrapper {
+	margin-top: 10px; 
+	margin-right: 10px; 
+}
+
+.xsServiceLink {
+	width:250px; 
+	float:left;
+}
+
+.xsServiceLink a {
+	text-decoration: none;
+	color: blue;
+}
+
+.xsServiceLink A:link {
+	color: blue;
+}
+
+.xsServiceLink A:visited {
+	color: blue;
+}
+
+.xsServiceLink A:active {
+	color: blue;
+}
+
+.xsServiceLink A:hover {
+	color: blue;
+	font-weight:bold
+}
+
+.xsServiceDesc {	
+	 overflow:hidden;
+}
+#rotator img { position: absolute; }
