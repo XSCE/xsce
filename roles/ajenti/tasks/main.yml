@@ -13,13 +13,14 @@
     - pkg: gcc
 
 - name: install ajenti from Pypi
-  pip: name=https://github.com/migonzalvar/ajenti/releases/download/0.99.34-patched3/ajenti-0.99.34-patched3.tar.gz
+  pip: name=https://github.com/migonzalvar/ajenti/releases/download/0.99.34-patched5/ajenti-0.99.34-patched5.tar.gz
 
 - name: install python-catcher
   pip: name=python-catcher version=0.1.3
 
 - name: change default port
-  lineinfile: dest=/etc/ajenti/config.json
+  lineinfile: backup=yes
+              dest=/etc/ajenti/config.json
               state=present
               backrefs=yes
               regexp='"port":\s*[0-9]{1,5}'

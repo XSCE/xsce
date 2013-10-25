@@ -6,7 +6,8 @@
     - postgresql-server
 
 - name: Create postgresql-xs systemd service
-  template: src=postgresql-xs.service
+  template: backup=yes
+            src=postgresql-xs.service
             dest=/etc/systemd/system/postgresql-xs.service
             owner=root
             group=root
@@ -25,7 +26,8 @@
 
 #TODO: Add this setup to the template, instead of adding 3 steps
 - name: Configure postgres (512mb)
-  template: src=postgresql-512m.conf
+  template: backup=yes
+            src=postgresql-512m.conf
             dest=/library/pgsql-xs/postgresql.conf
             owner=postgres
             group=postgres
@@ -33,7 +35,8 @@
   when: ansible_memtotal_mb < 1000
 
 - name: Configure postgres (1024mb)
-  template: src=postgresql-1024m.conf
+  template: backup=yes
+            src=postgresql-1024m.conf
             dest=/library/pgsql-xs/postgresql.conf
             owner=postgres
             group=postgres
@@ -41,7 +44,8 @@
   when: ansible_memtotal_mb > 1000 and ansible_memtotal_mb < 2000
 
 - name: Configure postgres (2048mb)
-  template: src=postgresql-512m.conf
+  template: backup=yes
+            src=postgresql-512m.conf
             dest=/library/pgsql-xs/postgresql.conf
             owner=postgres
             group=postgres

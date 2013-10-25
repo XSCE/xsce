@@ -14,14 +14,14 @@
     - pkg: python-psycopg2
 
 - name: Enable postgresl access by md5 method
-  lineinfile: >
-      dest=/library/pgsql-xs/pg_hba.conf
-      regexp="^host\s+statsconso"
-      line="host     statsconso     statsconso     samehost     md5"
-      state=present
-      insertafter="^# IPv4 local connections"
-      owner=postgres
-      group=postgres
+  lineinfile: backup=yes
+              dest=/library/pgsql-xs/pg_hba.conf
+              regexp="^host\s+statsconso"
+              line="host     statsconso     statsconso     samehost     md5"
+              state=present
+              insertafter="^# IPv4 local connections"
+              owner=postgres
+              group=postgres
 
 - name: Restart postgresql service
   service: name=postgresql-xs
@@ -38,7 +38,8 @@
   sudo_user: postgres
 
 - name: Install conf file
-  template: src=statistics-consolidation/stats-consolidation.conf
+  template: backup=yes
+            src=statistics-consolidation/stats-consolidation.conf
             dest=/etc/stats-consolidation.conf
             owner=root
             group=root
@@ -52,14 +53,16 @@
         mode=0755
 
 - name: Enable logrotate
-  template: src=statistics-consolidation/stats-consolidation.logrotate
+  template: backup=yes
+            src=statistics-consolidation/stats-consolidation.logrotate
             dest=/etc/logrotate.d/stats-consolidation
             group=root
             owner=root
             mode=0644
 
 - name: Install cron file
-  template: src=statistics-consolidation/stats-consolidation.cron
+  template: backup=yes
+            src=statistics-consolidation/stats-consolidation.cron
             dest=/etc/cron.d/stats-consolidation
             owner=root
             group=root
