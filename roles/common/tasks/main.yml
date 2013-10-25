@@ -52,6 +52,10 @@
   with_items:
     - sshd
 
+- name: Install system bash profile
+  copy: src=bashrc_xs.sh dest=/etc/profile.d/
+  tags: test
+
 - include: chrony.yml
 - include: avahi.yml
 - include: sysctl.yml
