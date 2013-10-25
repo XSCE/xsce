@@ -15,14 +15,13 @@
 
 - name: Enable postgresl access by md5 method
   lineinfile: backup=yes
-              >
-      dest=/library/pgsql-xs/pg_hba.conf
-      regexp="^host\s+statsconso"
-      line="host     statsconso     statsconso     samehost     md5"
-      state=present
-      insertafter="^# IPv4 local connections"
-      owner=postgres
-      group=postgres
+              dest=/library/pgsql-xs/pg_hba.conf
+              regexp="^host\s+statsconso"
+              line="host     statsconso     statsconso     samehost     md5"
+              state=present
+              insertafter="^# IPv4 local connections"
+              owner=postgres
+              group=postgres
 
 - name: Restart postgresql service
   service: name=postgresql-xs
