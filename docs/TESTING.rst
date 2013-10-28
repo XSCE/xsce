@@ -1,5 +1,5 @@
 =====================
-DXS Testing Checklist
+XSCE Testing Checklist
 =====================
 
 dhcpd
