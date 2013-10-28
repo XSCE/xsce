@@ -16,7 +16,8 @@ $(DESTDIR):
 BUILDDIR = $(PWD)/build
 
 # symbols
-PKGNAME = xs-config
+# The following should permit branding, without affecting function of school server
+PKGNAME = XSCE
 VERSION = $(shell git describe | sed 's/^v//' | sed 's/-/./g')
 RELEASE = 1
 ARCH = noarch
@@ -40,15 +41,15 @@ SOURCES: Makefile
 	rm -fr $(NV)
 	gzip  $(NV).tar
 	mv $(NV).tar.gz $(BUILDDIR)/SOURCES/
-
-xs-config.spec: xs-config.spec.in
+xsce.spec: xsce.spec.in
 	sed -e 's:@VERSION@:$(VERSION):g' < $< > $@
+	sed -e 's:@PKGNAME@:$(PKGNAME):g' < $< > $@
 
-.PHONY: xs-config.spec.in
+.PHONY: xsce.spec.in
 	# This forces a rebuild of xs-config.spec.in
 
-rpm: SOURCES xs-config.spec
-	$(RPMBUILD) -ba --target $(ARCH) $(PKGNAME).spec
+rpm: SOURCES xsce.spec
+	$(RPMBUILD) -ba --target $(ARCH) xsce.spec
 	rm -fr $(BUILDDIR)/BUILD/$(NV)
 	#rpmlint $(BUILDDIR)/RPMS/$(ARCH)/$(NV)-$(REL).$(ARCH).rpm
 
@@ -58,20 +59,19 @@ rpm-name:
 
 publish:
 	scp $(BUILDDIR)/RPMS/$(ARCH)/$(NV)-$(REL).$(ARCH).rpm \
-	    xs-dev.laptop.org:/xsrepos/testing/olpc/11/i586/
+	    xsce.activitycentral.com:/repos/xsce/devel/RPMS/noarch/
 	scp $(BUILDDIR)/SRPMS/$(NV)-$(REL).src.rpm \
-	    xs-dev.laptop.org:/xsrepos/testing/olpc/11/source/SRPMS/
-	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/11/i586
-	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/11/source/SRPMS
+	    xsce.activitycentral.com:/repos/xsce/devel/SRPMS/
+	ssh xsce.activitycentral.com sudo createrepo /repos/xsce/devel
 
-publish-stable:
+publise-stable:
 
 	scp $(BUILDDIR)/RPMS/$(ARCH)/$(NV)-$(REL).$(ARCH).rpm \
-	    xs-dev.laptop.org:/xsrepos/testing/olpc/$(BRANCH)/i586/
+	    xsce.activitycentral.com:/repos/xsce/devel/$(BRANCH)/i586/
 	scp $(BUILDDIR)/SRPMS/$(NV)-$(REL).src.rpm \
-	    xs-dev.laptop.org:/xsrepos/testing/olpc/$(BRANCH)/source/SRPMS/
-	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/$(BRANCH)/i586
-	ssh xs-dev.laptop.org sudo createrepo /xsrepos/testing/olpc/$(BRANCH)/source/SRPMS
+	    xsce.activitycentral.com:/xsrepos/testing/olpc/$(BRANCH)/source/SRPMS/
+	ssh xsce.activitycentral.com sudo createrepo /xsrepos/testing/olpc/$(BRANCH)/i586
+	ssh xsce.activitycentral.com sudo createrepo /xsrepos/testing/olpc/$(BRANCH)/source/SRPMS
 MY = one two
 
 install:
