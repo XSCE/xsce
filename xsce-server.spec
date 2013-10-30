@@ -3,8 +3,8 @@
 %define git_get_ver %(echo %{git_version} | sed 's/^v\\?\\(.*\\)-\\([0-9]\\+\\)-g.*$/\\1/;s/-//')
 %define git_get_rel %(echo %{git_version} | sed 's/^v\\?\\(.*\\)-\\([0-9]\\+-g.*\\)$/\\2/;s/-/_/')
 
-Name:      dextrose-server
-Summary:   Dextrose server deployment scripts
+Name:      xsce-server
+Summary:   XSCE deployment scripts
 Version:   %git_get_ver
 Release:   %git_get_rel
 License:   GPLv3
@@ -12,13 +12,13 @@ Group:     Applications/System
 Source:    %{expand:%%(pwd)}
 BuildArch: noarch
 Requires: bash, python >= 2.7, ansible >= 1.3
-URL:       http://github.com/activitycentral/dxs.git
-Provides:  dextrose-server
+URL:       http://github.com/XSCE/xsce.git
+Provides:  xsce-server
 
 BuildRoot: %{_topdir}/BUILD/%{name}-%{version}-%{release}
 
 %description
-Ansible playbook collection for dextrose server project, implementing Activity Central's vision of a School Server appliance with enterprise support. DXS closely tracks the XSCE (School Server Community Edition), both in vision and software development.
+Ansible playbook collection for XSCE project.
 
 
 %prep
