@@ -13,6 +13,7 @@ Source:    %{expand:%%(pwd)}
 BuildArch: noarch
 Requires: bash, python >= 2.7, ansible >= 1.3
 URL:       http://github.com/XSCE/xsce.git
+Provides: xs-config xs-tools
 Provides:  xsce-server
 
 BuildRoot: %{_topdir}/BUILD/%{name}-%{version}-%{release}
