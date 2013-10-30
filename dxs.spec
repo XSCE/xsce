@@ -24,19 +24,18 @@ Ansible playbook collection for dextrose server project, implementing Activity C
 %prep
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/usr/bin
-mkdir -p $RPM_BUILD_ROOT/var/local/dxs
-mkdir -p $RPM_BUILD_ROOT/usr/local/share/doc/dxs/
-mkdir -p $RPM_BUILD_ROOT/usr/share/ansible/dxs/
+mkdir -p $RPM_BUILD_ROOT/var/local/xsce
+mkdir -p $RPM_BUILD_ROOT/usr/local/share/doc/xsce/
+mkdir -p $RPM_BUILD_ROOT/usr/share/ansible/xsce/
 
 cd $RPM_BUILD_ROOT
 
-cp -rf %{SOURCEURL0}/roles ./var/local/dxs/
-cp -rf %{SOURCEURL0}/vars ./var/local/dxs/
-cp -rf %{SOURCEURL0}/dxs*.yml ./var/local/dxs
-cp -rf %{SOURCEURL0}/xsce.yml ./var/local/dxs
-cp -rf %{SOURCEURL0}/ansible_hosts ./var/local/dxs
-cp -rf %{SOURCEURL0}/docs/* ./usr/local/share/doc/dxs/
-cp -rf %{SOURCEURL0}/library/* ./usr/share/ansible/dxs
+cp -rf %{SOURCEURL0}/roles ./var/local/xsce/
+cp -rf %{SOURCEURL0}/vars ./var/local/xsce/
+cp -rf %{SOURCEURL0}/xsce.yml ./var/local/xsce
+cp -rf %{SOURCEURL0}/ansible_hosts ./var/local/xsce
+cp -rf %{SOURCEURL0}/docs/* ./usr/local/share/doc/xsce/
+cp -rf %{SOURCEURL0}/library/* ./usr/share/ansible/xsce
 cp %{SOURCEURL0}/runansible ./usr/bin/
 
 %clean
@@ -44,6 +43,6 @@ rm -r -f "$RPM_BUILD_ROOT"
 
 %files
 /usr/bin/runansible
-/var/local/dxs
-/usr/share/ansible/dxs
-%doc /usr/local/share/doc/dxs
+/var/local/xsce
+/usr/share/ansible/xsce
+%doc /usr/local/share/doc/xsce
