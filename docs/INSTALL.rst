@@ -11,7 +11,7 @@ On the XO-1.75 or XO-4 laptop
 
 * Flash the laptop with a stable `13.2.0 image`_
 
-* In ``My Settings->Power`` turn of Automatic Power Management
+* In ``My Settings->Power`` turn off Automatic Power Management
 
 * Install ansible and git::
 
