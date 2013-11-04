@@ -35,7 +35,6 @@ cp -rf %{SOURCEURL0}/vars ./var/local/dxs/
 cp -rf %{SOURCEURL0}/dxs*.yml ./var/local/dxs
 cp -rf %{SOURCEURL0}/ansible_hosts ./var/local/dxs
 cp -rf %{SOURCEURL0}/docs/* ./usr/local/share/doc/dxs/
-cp -rf %{SOURCEURL0}/library/* ./usr/share/ansible/dxs
 cp %{SOURCEURL0}/runansible ./usr/bin/
 
 %clean
@@ -44,5 +43,4 @@ rm -r -f "$RPM_BUILD_ROOT"
 %files
 /usr/bin/runansible
 /var/local/dxs
-/usr/share/ansible/dxs
 %doc /usr/local/share/doc/dxs
