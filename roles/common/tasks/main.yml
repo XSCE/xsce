@@ -1,3 +1,6 @@
+- name: Get XSCE facts
+  xsce: dest=test
+
 - name: Install xs repo
   get_url: url=http://xsce.activitycentral.com/repos/xsce-release.repo dest=/etc/yum.repos.d/
 
@@ -70,4 +73,3 @@
 - include: chrony.yml
 - include: avahi.yml
 - include: sysctl.yml
-- include: facts.yml   
