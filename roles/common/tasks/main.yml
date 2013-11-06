@@ -23,6 +23,18 @@
    - htop
    - etckeeper
    - python-passlib
+   - usbmount
+   - iptables
+   - net-tools
+   - openssh-server
+   - sudo
+   - syslog
+   - logrotate
+   - xml-common
+   - etckeeper
+   - make
+   - yum-utils
+   - NetworkManager   
 
 - name: Keep yum cache
   ini_file: dest=/etc/yum.conf
