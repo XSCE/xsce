@@ -4,6 +4,9 @@
 - include: xo.yml
   when: ansible_distribution_release == "based on Fedora 18"
 
+- include: selinux.yml
+  when: ansible_selinux["status"] != "disabled"
+
 - name: Create /library
   file: path=/library
         owner=root
@@ -38,10 +41,6 @@
               state=present
 #TODO: use handler to reload ssh
 
-#- name: Disable selinux
-#  selinux: policy=targeted
-#           state=permissive
-#TODO: check for selinux issues, and disable it
 - name: Set hostname
   command: hostnamectl set-hostname {{ xsce_hostname }}.{{ xsce_domain }}
 
