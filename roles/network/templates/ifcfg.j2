@@ -1,7 +1,7 @@
-DEVICE=${item.iface}
+DEVICE={{ xsce_lan_iface }}
 BOOTPROTO=static
 DHCPCLASS=
-HWADDR=
-IPADDR=${item.ip}
-NETMASK=${item.netmask}
+HWADDR={{ xsce_lan_mac }}
+IPADDR={{ lan_ip }}
+NETMASK={{ lan_netmask }}
 ONBOOT=yes

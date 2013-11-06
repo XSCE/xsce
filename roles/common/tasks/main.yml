@@ -1,3 +1,6 @@
+- name: Get XSCE facts
+  xsce_facts: facts=true
+
 - name: Install xs repo
   get_url: url=http://xsce.activitycentral.com/repos/xsce-release.repo dest=/etc/yum.repos.d/
 
@@ -54,8 +57,15 @@
 #  selinux: policy=targeted
 #           state=permissive
 #TODO: check for selinux issues, and disable it
+#- name: Set hostname
+#  command: hostnamectl set-hostname {{ xsce_hostname }}.{{ xsce_domain }}
+
 - name: Set hostname
-  command: hostnamectl set-hostname {{ xsce_hostname }}.{{ xsce_domain }}
+  template: backup=yes
+            dest=/etc/hostname
+            src=hostname.j2
+            owner=root
+            mode=0644
 
 - name: Enable common services
   service: name=$item
@@ -71,4 +81,3 @@
 - include: chrony.yml
 - include: avahi.yml
 - include: sysctl.yml
-- include: facts.yml   
