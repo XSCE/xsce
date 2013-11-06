@@ -31,11 +31,20 @@
             dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_lan_iface}}
 
 #TODO: Check when are used those flags
-- name: Create wan xs flags
-  shell: echo {{xsce_wan_iface}} > /etc/sysconfig/xs_wan_device
+- name: Create xs network flags
+  template: backup=yes
+            src={{ item }}.j2
+            dest=/etc/sysconfig/{{ item }}
+  with_items:
+    - xs_wan_device
+    - xs_lan_device
+    - xs_domain_name
 
-- name: Create lan xs flags
-  shell: echo {{xsce_lan_iface}} > /etc/sysconfig/xs_lan_device
+#- name: Create wan xs flags
+#  shell: echo {{xsce_wan_iface}} > /etc/sysconfig/xs_wan_device
 
-- name: Create domain flag
-  shell: echo {{xsce_domain}} > /etc/sysconfig/xs_domain_name
+#- name: Create lan xs flags
+#  shell: echo {{xsce_lan_iface}} > /etc/sysconfig/xs_lan_device
+
+#- name: Create domain flag
+#  shell: echo {{xsce_domain}} > /etc/sysconfig/xs_domain_name
