@@ -1,5 +1,5 @@
 - name: Install sugar-stats required packages
-  yum: name=$item
+  yum: name={{ item }}
        state=installed
   with_items:
     - sugar-stats-server
@@ -8,7 +8,7 @@
     - python-xappy
 
 - name: Create sugar-stats directory tree
-  file: path=$item
+  file: path={{ item }}
         owner=sugar-stats
         group=sugar-stats
         mode=0755

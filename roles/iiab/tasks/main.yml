@@ -7,7 +7,7 @@
             mode=0644
 
 - name: Install IIAB required packages
-  yum: name=$item
+  yum: name={{ item }}
        state=present
   with_items:
     - Internet-in-a-Box
