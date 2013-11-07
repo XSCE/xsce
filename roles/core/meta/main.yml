@@ -13,3 +13,4 @@ dependencies:
    - { role: munin }
    - { role: monit }
    - { role: portal }
+   - { role: activity-server }   
