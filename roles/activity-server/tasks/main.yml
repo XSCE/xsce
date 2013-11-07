@@ -21,8 +21,8 @@
             group=root
             mode=0644
 
-- name: Copy xs-activity-server usbmount file
-  template: src=usbmount-60-xs-activity-server-installcontent
+- name: Link xs-activity-server usbmount file
+  template: src=/usr/share/xs-activity-server/usbmount-60-xs-activity-server-installcontent
             dest=/etc/usbmount/mount.d/
             owner=root
             group=root
