@@ -26,7 +26,6 @@
             dest=/etc/usbmount/mount.d/
             owner=root
             group=root
-            mode=0777
             state=links
 
 # TODO: Fix .var multiview
