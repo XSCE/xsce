@@ -61,13 +61,13 @@
   service: name=dansguardian
            enabled=yes
            state=started
-  when_boolean: ${dansguardian}
+  when: "dansguardian"
 
 - name: Disable dansguardian
   service: name=dansguardian
            enabled=yes
            state=started
-  when_boolean: not ${dansguardian}
+  when: "not dansguardian"
 
 
  
