@@ -19,6 +19,11 @@ if [ x"$XO_VERSION" == "XO-4" ]
 	LAN=eth2
 	fi
 
+if [ x"$LAN" == "x" ]
+then
+  echo "ERROR! You need another network device!"
+  exit 1
+fi
 cat << EOF
 {
     "changed": false,
