@@ -516,7 +516,11 @@ doc_root =
 user_dir =
 
 ; Directory in which the loadable extensions (modules) reside.
+{% if ansible_userspace_bits == 64 %}
+extension_dir = "/usr/lib64/php/modules"
+{% else %}
 extension_dir = "/usr/lib/php/modules"
+{% endif %}
 
 ; Whether or not to enable the dl() function.  The dl() function does NOT work
 ; properly in multithreaded servers, such as IIS or Zeus, and is automatically
