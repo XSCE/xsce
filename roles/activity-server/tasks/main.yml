@@ -22,11 +22,12 @@
             mode=0644
 
 - name: Link xs-activity-server usbmount file
-  template: src=/usr/share/xs-activity-server/usbmount-60-xs-activity-server-installcontent
+  file: src=/usr/share/xs-activity-server/usbmount-60-xs-activity-server-installcontent
             dest=/etc/usbmount/mount.d/
             owner=root
             group=root
             mode=0777
+            state=links
 
 # TODO: Fix .var multiview
 #       For now patch it
