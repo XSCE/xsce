@@ -29,6 +29,7 @@
 - name: exe permission to ajenti
   file: path=/etc/rc.d/init.d/ajenti
         mode=0744
+        state=file
 
 - name: start ajenti service
   service: name=ajenti
