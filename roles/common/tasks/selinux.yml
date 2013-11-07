@@ -1,0 +1,8 @@
+- name: Disable selinux on next boot
+  selinux: policy=targeted
+           state=permissive
+  register: selinux_disabled
+
+- name: Disable selinux for this session (if needed)
+  command: setenforce permissive
+  when: selinux_disabled.changed
