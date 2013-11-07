@@ -4,17 +4,9 @@
   with_items:
    - chrony
 
-- name: Set chrony subnet, so that the clients may "ping and sync" with DXS.
-  lineinfile: backup=yes
-              dest=/etc/chrony.conf
-              state=present
-              regexp='^#allow 192.168/16' 
-              line='allow 172.18'
-
-- name: Add stratum configuration to chrony
-  lineinfile: backup=yes
-              dest=/etc/chrony.conf
-              state=present
-              regexp='^#local stratum 10'
-              line='local stratum 10'
+#TODO: Use regexp filter instead of hard-code ip 
+- name: Update chrony config file
+  template: backup=yes
+            dest=/etc/chrony.conf
+            src=chrony.conf.j2
 
