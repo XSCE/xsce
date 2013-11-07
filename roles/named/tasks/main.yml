@@ -1,12 +1,12 @@
 - name: Install named packages
-  yum: name=${item}
+  yum: name={{ item }}
        state=installed
   with_items:
    - bind
    - bind-utils
 
 - name: Set folder permission
-  file: path=$item
+  file: path={{ item }}
         owner=named
         group=root
         mode=0755
@@ -18,11 +18,11 @@
 
 - name: Configure named
   template: backup=yes
-            src=${item.src}
-            dest=${item.dest}
-            owner=${item.owner}
+            src={{ item.src }}
+            dest={{ item.dest }}
+            owner={{ item.owner }}
             group=root
-            mode=${item.mode}
+            mode={{ item.mode }}
   with_items:
     - { src: 'named-xs.conf.j2', dest: '/etc/named-xs.conf', owner: "root" , mode: '0644' }
     - { src: 'named.j2', dest: '/etc/sysconfig/named', owner: "root" , mode: '0755' }

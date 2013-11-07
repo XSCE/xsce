@@ -1,5 +1,5 @@
 - name: Install squid packages
-  yum: name=${item}
+  yum: name={{ item }}
        state=installed
   with_items:
     - squid
@@ -8,11 +8,11 @@
 
 - name: Copy init script and config file
   template: backup=yes
-            src=${item.src}
-            dest=${item.dest}
-            owner=${item.owner}
-            group=${item.owner}
-            mode=${item.mode}
+            src={{ item.src }}
+            dest={{ item.dest }}
+            owner={{ item.owner }}
+            group={{ item.owner }}
+            mode={{ item.mode }}
   with_items:
     - src: 'squid.sysconfig'
       dest: '/etc/sysconfig/squid'

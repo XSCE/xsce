@@ -3,7 +3,7 @@
        state=installed
 
 - name: Install required libraries
-  yum: name=${item.pkg}
+  yum: name={{ item.pkg }}
        state=installed
   with_items:
     - pkg: python-devel

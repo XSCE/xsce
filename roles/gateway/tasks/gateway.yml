@@ -7,7 +7,7 @@
        state=installed
 
 - name: Create olpc-scripts directory
-  file: path=$item
+  file: path={{ item }}
         owner=root
         group=root
         mode=0755
@@ -22,8 +22,8 @@
 
 - name: Install iptables services
   template: backup=yes
-            src=${item.src}
-            dest=${item.dest}
+            src={{ item.src }}
+            dest={{ item.dest }}
             owner=root
             group=root
             mode=0755

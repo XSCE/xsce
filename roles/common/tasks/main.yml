@@ -12,7 +12,7 @@
         state=directory
 
 - name: Install common packages
-  yum: name=$item
+  yum: name={{ item }}
        state=present
   with_items:
    - createrepo
@@ -58,7 +58,7 @@
   command: hostnamectl set-hostname {{ xsce_hostname }}.{{ xsce_domain }}
 
 - name: Enable common services
-  service: name=$item
+  service: name={{ item }}
            enabled=yes
            state=started
   with_items:

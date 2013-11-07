@@ -19,16 +19,16 @@
 
 - name: Update config files
   template: backup=yes
-            src=$item
-            dest=/usr/share/xs-config/cfg/etc/monit.d/$item
+            src={{ item }}
+            dest=/usr/share/xs-config/cfg/etc/monit.d/{{ item }}
             owner=root
             group=root
             mode=0755
   with_items: $watchdog
 
 - name: Enable monit on known services
-  file: path=/etc/monit.d/$item
-        src=/usr/share/xs-config/cfg/etc/monit.d/$item
+  file: path=/etc/monit.d/{{ item }}
+        src=/usr/share/xs-config/cfg/etc/monit.d/{{ item }}
         state=link
   with_items: $watchdog
 
