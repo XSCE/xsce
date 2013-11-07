@@ -3,11 +3,11 @@
       state=installed
 - name: Configure dhcpd
   template: backup=yes
-            src=${item.src}
-            dest=${item.dest}
+            src={{ item.src }}
+            dest={{ item.dest }}
             owner=root
             group=root
-            mode=${item.mode}
+            mode={{ item.mode }}
   with_items:
    - { src: 'dhcp/dhcpd-xs.conf.j2', dest: '/etc/dhcpd-xs.conf', mode: '0644' }
    - { src: 'dhcp/dhcpd-env.j2' , dest: '/etc/sysconfig/dhcpd' , mode: '0755' }
