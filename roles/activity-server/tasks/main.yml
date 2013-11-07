@@ -40,7 +40,10 @@
 # ln -sf /usr/share/xs-config/cfg/html/top/en/cntr_upl_activity.php /var/www/html/upload_activity.php
 
 
-# service httpd condrestart
+- name: Restart httpd
+  service: name=httpd
+           enabled=yes
+           state=restarted
 
 - name: add xs-activity-server to service list
   ini_file: dest='{{ service_filelist }}'
