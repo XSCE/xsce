@@ -8,7 +8,8 @@
   file: path=/library/xs-activity-server
         mode=0755
         owner=root
-        group=root
+        group=admin
+        recurse=yes
         state=directory        
 
 # Do in ansible what was done in /etc/sysconfig/olpc-scripts/setup.d/xs-activity-server script
