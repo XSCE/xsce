@@ -6,12 +6,12 @@
   pip: name=git+https://github.com/migonzalvar/statistics-consolidation.git@sqlalchemy-v2#egg=stats_consolidation
 
 - name: Install required libraries
-  yum: name=${item.pkg}
+  yum: name={{ item }}
        state=installed
   with_items:
-    - pkg: rrdtool-python
-    - pkg: python-sqlalchemy
-    - pkg: python-psycopg2
+    - rrdtool-python
+    - python-sqlalchemy
+    - python-psycopg2
 
 - name: Enable postgresl access by md5 method
   lineinfile: backup=yes
