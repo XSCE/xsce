@@ -3,15 +3,8 @@ xsce_hostname : schoolserver
 xsce_domain: local
 
 #Network
-xsce_networks:
-    wan: 
-      iface: eth0
-      ip: dhcp
-    lan:
-      iface: eth1
-      ip: 172.18.96.1
-      network: 172.18.96.0
-      netmask: 255.255.224.0
+lan_ip: 172.18.96.1
+lan_netmask: 255.255.224.0
 
 watchdog: 
   - sshd

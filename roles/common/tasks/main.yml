@@ -1,3 +1,6 @@
+- name: Get XSCE facts
+  xsce_facts: facts=true
+
 - name: Install xs repo
   get_url: url=http://xsce.activitycentral.com/repos/xsce-release.repo dest=/etc/yum.repos.d/
 
@@ -54,7 +57,11 @@
 #TODO: use handler to reload ssh
 
 - name: Set hostname
-  command: hostnamectl set-hostname {{ xsce_hostname }}.{{ xsce_domain }}
+  template: backup=yes
+            dest=/etc/hostname
+            src=hostname.j2
+            owner=root
+            mode=0644
 
 - name: Enable common services
   service: name={{ item }}
@@ -63,11 +70,6 @@
   with_items:
     - sshd
 
-- name: Install system bash profile
-  copy: src=bashrc_xs.sh dest=/etc/profile.d/
-  tags: test
-
 - include: chrony.yml
 - include: avahi.yml
 - include: sysctl.yml
-- include: facts.yml   
