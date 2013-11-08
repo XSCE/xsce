@@ -38,9 +38,12 @@
   service: name=iptables
            enabled=yes
 
-- name: Run iptables 
-  command: /etc/sysconfig/iptables-config
-
 - include: dhcpd.yml
   when: 'xsce_lan_iface != ""' 
+
+- include: squid.yml
+  when: 'xsce_lan_iface != ""'
+
+- name: Run iptables 
+  command: /etc/sysconfig/iptables-config
 
