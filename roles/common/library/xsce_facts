@@ -14,16 +14,11 @@ if [ -f /proc/device-tree/mfg-data/MN ]
 	XO_VERSION="none"
 fi
 
-if [ `echo $XO_VERSION | grep XO-4` ]
+if [ `echo $XO_VERSION | grep XO-4` ] && [ x"$LAN" != "x" ]
 	then
 	LAN=eth2
-	fi
-
-if [ x"$LAN" == "x" ]
-then
-  echo "ERROR! You need another network device!"
-  exit 1
 fi
+
 cat << EOF
 {
     "changed": false,
