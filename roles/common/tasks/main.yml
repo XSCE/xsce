@@ -1,5 +1,5 @@
 - name: Get XSCE facts
-  xsce: dest=test
+  xsce_facts: facts=true
 
 - name: Install xs repo
   get_url: url=http://xsce.activitycentral.com/repos/xsce-release.repo dest=/etc/yum.repos.d/
@@ -69,10 +69,6 @@
            state=started
   with_items:
     - sshd
-
-- name: Install system bash profile
-  copy: src=bashrc_xs.sh dest=/etc/profile.d/
-  tags: test
 
 - include: chrony.yml
 - include: avahi.yml
