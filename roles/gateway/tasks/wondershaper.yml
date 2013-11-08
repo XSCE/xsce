@@ -45,6 +45,3 @@
   service: name=wondershaper
            enabled=yes
            state=started
-
-- include: ajenti-wondershaper.yml
-

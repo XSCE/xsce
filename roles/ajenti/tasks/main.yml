@@ -31,6 +31,9 @@
         mode=0744
         state=file
 
+- include: ajenti-wondershaper.yml
+  when: 'xsce_lan_iface != ""'
+
 - name: start ajenti service
   service: name=ajenti
            enabled=yes
