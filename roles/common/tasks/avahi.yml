@@ -7,6 +7,13 @@
    - avahi-tools
    - avahi-ui
 
+- name: Update avahi config file
+  template: backup=yes
+            dest=/etc/avahi/avahi-daemon.conf
+            src=avahi-daemon.conf.j2
+
+
 - name: Enable avahi service
   service: name=avahi-daemon
            enabled=yes
+           state=started
