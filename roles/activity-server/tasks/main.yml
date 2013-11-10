@@ -1,0 +1,61 @@
+- name: Install xs-activity-server package
+  yum: name=xs-activity-server
+       state=present
+       
+# assume apache in admin group
+
+- name: Config xs-activity-server directory tree
+  file: path=/library/xs-activity-server
+        mode=0755
+        owner=root
+        group=admin
+        recurse=yes
+        state=directory        
+
+# Do in ansible what was done in /etc/sysconfig/olpc-scripts/setup.d/xs-activity-server script
+
+- name: Copy xs-activity-server config file
+  template: src=xs-activity-server.conf
+            dest=/etc/httpd/conf.d/
+            owner=root
+            group=root
+            mode=0644
+
+- name: Link xs-activity-server usbmount file
+  file: src=/usr/share/xs-activity-server/usbmount-60-xs-activity-server-installcontent
+        dest=/etc/usbmount/mount.d/usbmount-60-xs-activity-server-installcontent
+        owner=root
+        group=root
+        state=link
+
+# TODO: Fix .var multiview
+#       For now patch it
+
+- name: Link default html to generic
+  shell: ln -sf /library/xs-activity-server/activities/index.html.DEFAULT /library/xs-activity-server/activities/index.html
+
+# TODO: Upload Activity via web interface
+#       and figure out what to do with olpc_activities.service 
+
+# short term addition of link for upload-activity server
+# ln -sf /usr/share/xs-config/cfg/html/top/en/cntr_upl_activity.php /var/www/html/upload_activity.php
+
+
+- name: Restart httpd
+  service: name=httpd
+           enabled=yes
+           state=restarted
+
+- name: add xs-activity-server to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=activity-server
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: "Activity Server"
+    - option: description
+      value: "Download an Activity."
+    - option: path
+      value: /activities
+            

@@ -8,7 +8,7 @@ dependencies:
    - { role: sugar-stats }
    - { role: iiab }
    - { role: ajenti }
-   - { role: wondershaper }
    - { role: munin }
    - { role: monit }
    - { role: portal }
+   - { role: activity-server }   
