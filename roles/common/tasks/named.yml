@@ -47,3 +47,5 @@
 - name: Enable named service
   service: name=named
            enabled=yes
+           state=started
+
