@@ -11,3 +11,4 @@ dependencies:
    - { role: monit, tags: ['services','monit','core'] }
    - { role: portal, tags: ['services','portal','core'] }
    - { role: activity-server, tags: ['olpc','activity-server','core'] }   
+   - { role: pathagar, tags: ['services','pathagar'] }
