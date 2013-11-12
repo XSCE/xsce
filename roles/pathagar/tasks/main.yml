@@ -1,33 +1,107 @@
-- name: Install python-pip package
-  yum: name=python-pip
+- name: Install pathagar pre requisites
+  yum: name={{ item }}
        state=installed
+  with_items:
+    - python-virtualenv
+    - python-pip
+    - python-psycopg2
+
+- name: Create destination folder
+  file: path=/usr/local/pathagar/pathagar
+        state=directory
+        owner=root
+        group=root
+        mode=0755
 
 - name: Clone pathagar repo
   git: repo=https://github.com/PathagarBooks/pathagar.git
-       dest=/usr/local/pathagar
+       dest=/usr/local/pathagar/pathagar
        update=yes
        version=master
 
-- name: Install pathagar requirements
-  pip: requirements=/usr/local/pathagar/requirements.pip
+- name: Install pathagar requirements in a virtualenv
+  pip: name={{ item }}
+       virtualenv=/usr/local/pathagar/venv
+       virtualenv_site_packages=yes
+  with_items:
+    - Django==1.4.5
+    - django-tagging==0.3.1
+    - django-sendfile==0.3.0
+    - git+git://github.com/FinalsClub/django-taggit.git
 
-- name: Create initial db
-  shell: python manage.py syncdb --noinput
-         chdir=/usr/local/pathagar/
-         creates=/usr/local/pathagar/database.db
+- name: Create pathagar postgresql user
+  postgresql_user: name=pathagar
+                   password=pathagar
+                   role_attr_flags=NOSUPERUSER,NOCREATEROLE,NOCREATEDB
+                   state=present
+  sudo: yes
+  sudo_user: postgres
 
-- name: Upload pathagar xsce admin user
-  copy: src=admin.json
-        dest=/usr/local/pathagar/books/fixtures/admin.json
-        owner=root
-        group=root
-        mode=0600
+- name: Enable pathagar postgresql user access by md5 method
+  lineinfile: backup=yes
+              dest=/library/pgsql-xs/pg_hba.conf
+              regexp="^host\s+pathagar"
+              line="host    pathagar        pathagar     samehost     md5"
+              state=present
+              insertafter="^# IPv4 local connections"
+              owner=postgres
+              group=postgres
+  register: enable_pathagar_md5_access
 
-- name: Create default admin user
-  django_manage: >
-         command=loaddata
-         app_path=/usr/local/pathagar/
-         fixtures=/usr/local/pathagar/books/fixtures/admin.json
-#         settings=/usr/local/pathagar/settings.py
-#         database=/usr/local/pathagar/database.db
+- name: Reload postgresql service
+  service: name=postgresql-xs
+           state=reloaded
+  when: enable_pathagar_md5_access.changed
 
+- name: Create pathagar postgresql database
+  postgresql_db: name=pathagar
+                 encoding=utf8
+                 owner=pathagar
+                 state=present
+  sudo: yes
+  sudo_user: postgres
+
+- name: Install XS custom settings for patahgar
+  template: src=prod_settings.py
+            dest=/usr/local/pathagar/pathagar/prod_settings.py
+            owner=root
+            group=root
+            mode=0644
+
+- name: Create pathagar initial db
+  django_manage: app_path=/usr/local/pathagar/pathagar
+                 command=syncdb
+                 virtualenv=/usr/local/pathagar/venv
+                 settings=pathagar.prod_settings
+
+- name: Upload pathagar admin user
+  template: src=auth.User.json
+            dest=/usr/local/pathagar/auth.User.json
+            owner=root
+            group=root
+            mode=0600
+
+- name: Load pathagar admin user
+  django_manage: app_path=/usr/local/pathagar/pathagar
+                 command=loaddata
+                 virtualenv=/usr/local/pathagar/venv
+                 settings=pathagar.prod_settings
+                 fixtures=/usr/local/pathagar/auth.User.json
+
+- name: Install wsgi.py for patahgar
+  template: src=wsgi.py
+            dest=/usr/local/pathagar/wsgi.py
+            owner=root
+            group=root
+            mode=0644
+
+- name: Install pathagar service unit
+  template: src=pathagar.service
+            backup=yes
+            dest=/etc/systemd/system/pathagar.service
+            mode=0644
+
+- name: Enable and start pathagar service
+  service: name=pathagar
+           enabled=yes
+           state=started
