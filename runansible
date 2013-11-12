@@ -17,4 +17,20 @@ if [ "$PLAYBOOK" == "" ]
 	echo "rpm is not installed, and local playbook wasn't found!"
 	exit
 	fi
-ansible-playbook -i $INVENTORY $PLAYBOOK --connection=local 
+
+#Domain change
+if [ x"$1" != x ]
+then
+  if echo $1 | grep -sq "\."
+      then
+      XSHOSTNAME=`echo $1 | cut -d\. -f1`
+      XSDOMAIN=`echo $1 | cut -d\. -f2-`
+      ARGS="--extra-vars \"xsce_hostname=$XSHOSTNAME xsce_domain=$XSDOMAIN\""
+       echo $ARGS
+    else
+      XSHOSTNAME=$1
+      ARGS="--extra-vars \"xsce_hostname=$XSHOSTNAME\""
+     fi
+fi
+
+ansible-playbook -i $INVENTORY $PLAYBOOK "${ARGS}" --connection=local 
