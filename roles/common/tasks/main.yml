@@ -1,5 +1,6 @@
 - name: Get XSCE facts
   xsce_facts: facts=true
+  tags: facts
 
 - name: Install xs repo
   get_url: url=http://xsce.activitycentral.com/repos/xsce-release.repo dest=/etc/yum.repos.d/
