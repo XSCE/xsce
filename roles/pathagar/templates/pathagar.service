@@ -2,9 +2,9 @@
 Description=pathagar daemon
 
 [Service]
-WorkingDirectory=/usr/local/pathagar
+WorkingDirectory={{ pathagar_dir }}
 Environment="DJANGO_SETTINGS_MODULE=pathagar.prod_settings"
-ExecStart=/usr/bin/gunicorn --bind 0.0.0.0:7000 --pythonpath /usr/local/pathagar/venv/lib/python2.7/site-packages/ wsgi
+ExecStart=/usr/bin/gunicorn --bind 0.0.0.0:{{ pathagar_port }} --pythonpath {{ pathagar_venv }}/lib/python2.7/site-packages/ wsgi
 
 [Install]
 WantedBy=multi-user.target

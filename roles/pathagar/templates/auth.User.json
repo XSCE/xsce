@@ -3,7 +3,7 @@
     "pk": 1, 
     "model": "auth.user", 
     "fields": {
-      "username": "pathagar", 
+      "username": "{{ pathagar_username }}", 
       "first_name": "", 
       "last_name": "", 
       "is_active": true, 
@@ -12,8 +12,8 @@
       "last_login": "2013-11-12T05:06:17.207", 
       "groups": [], 
       "user_permissions": [], 
-      "password": "pbkdf2_sha256$10000$qkA7MPkQWHTY$AO5j/ByLC68qEt8X1c9QvieArbadYKhiBnlKe8uR6G8=", 
-      "email": "pathagar@schoolserver.local", 
+      "password": "{{ pathagar_password }}", 
+      "email": "{{ pathagar_username  }}@{{ xsce_hostname }}.{{ xsce_domain }}", 
       "date_joined": "2013-11-12T05:06:17.207"
     }
   }
