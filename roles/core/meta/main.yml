@@ -12,3 +12,4 @@ dependencies:
    - { role: monit }
    - { role: portal }
    - { role: activity-server }   
+   - { role: pathagar }   
