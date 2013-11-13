@@ -58,6 +58,7 @@
                  encoding=utf8
                  owner={{ pathagar_db_user }}
                  state=present
+                 template=template0
   sudo: yes
   sudo_user: postgres
 
