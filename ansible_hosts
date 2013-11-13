@@ -1,2 +1,2 @@
 [localhost]
-127.0.0.1
+127.0.0.1 xsce_hostname=schoolserver xsce_domain=lan
