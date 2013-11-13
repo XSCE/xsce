@@ -14,11 +14,6 @@ if [ -f /proc/device-tree/mfg-data/MN ]
 	XO_VERSION="none"
 fi
 
-if [ `echo $XO_VERSION | grep XO-4` ] && [ x"$LAN" != "x" ]
-	then
-	LAN=eth2
-fi
-
 cat << EOF
 {
     "changed": false,
