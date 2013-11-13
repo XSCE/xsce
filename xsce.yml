@@ -5,7 +5,7 @@
   vars_files:
   - vars/default_vars.yml
   roles:
-      - { role: common, tags: [ 'system' ] }
+      - { role: common, tags: [ 'common','xo' ] }
       - { role: network, tags: [ 'network' ] }
-      - { role: gateway, tags: [ 'gateway' ] }
-      - { role: core, tags: [ 'core' ] }
+      - { role: gateway, tags: [ 'gateway','squid','dhcpd','wondershaper' ] }
+      - { role: core, tags: [ 'core','services','olpc' ] }
