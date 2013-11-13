@@ -50,8 +50,11 @@ On the XO-1.75 or XO-4 laptop
 Using tags
 ==========
 
-* To avoid replaying all the playbooks, you can use tags to restrict what task are used: ::
-  ansible-playbook -i ansible_hosts xsce.yml --tags="facts,squid"
+* To avoid replaying all the playbooks, you can use tags to restrict what task are used: 
+::
+
+  ansible-playbook -i ansible_hosts xsce.yml --tags="facts,squid" 
+* Avaliable tags are: ``activity-server, ajenti, core, common, dhcpd, ejabberd, facts, gateway, httpd, idmgr, iiab, monit, moodle, munin, named, network, olpc, portal, postgresql, services, squid, sugar-stats, wondershaper, xo``
 
 
 Building the rpm
