@@ -1,11 +1,13 @@
 - name: Get XSCE facts
   xsce_facts: facts=true
+  tags: facts
 
 - name: Install xs repo
   get_url: url=http://xsce.activitycentral.com/repos/xsce-release.repo dest=/etc/yum.repos.d/
 
 - include: xo.yml
   when: ansible_distribution_release == "based on Fedora 18"
+  tag: xo
 
 - include: selinux.yml
   when: ansible_selinux["status"] != "disabled"

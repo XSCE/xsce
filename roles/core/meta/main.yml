@@ -1,14 +1,14 @@
 dependencies:
-   - { role: named }
-   - { role: ejabberd }
-   - { role: httpd }
-   - { role: postgresql }
-   - { role: moodle }
-   - { role: idmgr }
-   - { role: sugar-stats }
-   - { role: iiab }
-   - { role: ajenti }
-   - { role: munin }
-   - { role: monit }
-   - { role: portal }
-   - { role: activity-server }   
+   - { role: named, tags: ['services','named'] }
+   - { role: ejabberd, tags: ['olpc','ejabberd'] }
+   - { role: httpd , tags: ['services','httpd'] }
+   - { role: postgresql, tags: ['services','postgresql'] }
+   - { role: moodle , tags: ['olpc','moodle']}
+   - { role: idmgr , tags: ['olpc','idmgr']}
+   - { role: sugar-stats , tags: ['olpc','sugar-stats']}
+   - { role: iiab, tags: ['services','iiab']}
+   - { role: ajenti , tags: ['services','ajenti']}
+   - { role: munin , tags: ['services','munin']}
+   - { role: monit , tags: ['services','monit']}
+   - { role: portal , tags: ['services','portal']}
+   - { role: activity-server , tags: ['olpc','activity-server']}   

@@ -1,9 +1,8 @@
 ==============================
-Installing the Dextrose Server
+Installing the Schoolserver Community Edition 
 ==============================
 
-Both single and two dongle installs are supported. Performing the two dongle
-install requires a bit of manual configuration which we will get to.
+Both single and two dongle installs are supported. 
 
 
 On the XO-1.75 or XO-4 laptop
@@ -46,6 +45,16 @@ On the XO-1.75 or XO-4 laptop
 .. _13.2.0 image: http://wiki.laptop.org/go/Release_notes/13.2.0#Installation
 
 .. _XSCE: http://schoolserver.org/
+
+
+Using tags
+==========
+
+* To avoid replaying all the playbooks, you can use tags to restrict what task are used: 
+::
+
+  ansible-playbook -i ansible_hosts xsce.yml --tags="facts,squid" 
+* Avaliable tags are: ``activity-server, ajenti, core, common, dhcpd, ejabberd, facts, gateway, httpd, idmgr, iiab, monit, moodle, munin, named, network, olpc, portal, postgresql, services, squid, sugar-stats, wondershaper, xo``
 
 
 Building the rpm
