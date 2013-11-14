@@ -6,6 +6,7 @@ pathagar_subpath: /books
 pathagar_dir: /usr/local/pathagar
 pathagar_src: '{{ pathagar_dir }}/pathagar'
 pathagar_venv: '{{ pathagar_dir }}/venv'
+pathagar_collectstatic: '{{ pathagar_dir }}/static'
 
 pathagar_db_name: pathagar
 pathagar_db_user: pathagar

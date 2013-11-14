@@ -89,6 +89,12 @@
                  settings=pathagar.prod_settings
                  fixtures={{ pathagar_dir }}/auth.User.json
 
+- name: Collect pathagar static files
+  django_manage: app_path={{ pathagar_src }}
+                 command=collectstatic
+                 virtualenv={{ pathagar_venv }}
+                 settings=pathagar.prod_settings
+
 - name: Install wsgi.py for patahgar
   template: src=wsgi.py
             dest={{ pathagar_dir }}/wsgi.py

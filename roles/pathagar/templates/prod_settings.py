@@ -14,3 +14,11 @@ DATABASES = {
             'PORT': '5432',
         }
 }
+
+STATIC_ROOT = '{{ pathagar_collectstatic }}'
+STATIC_URL = '/static/'
+
+INSTALLED_APPS += (
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+)
