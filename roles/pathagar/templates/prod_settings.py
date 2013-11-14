@@ -1,6 +1,7 @@
 from settings import *
 
 FORCE_SCRIPT_NAME = '{{ pathagar_subpath }}'
+LOGIN_REDIRECT_URL = FORCE_SCRIPT_NAME
 
 MEDIA_ROOT = '{{ pathagar_media }}'
 MEDIA_URL = '{{ pathagar_subpath }}/static_media/'
