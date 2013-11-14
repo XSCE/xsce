@@ -3,6 +3,7 @@ from settings import *
 FORCE_SCRIPT_NAME = '{{ pathagar_subpath }}'
 
 MEDIA_ROOT = '{{ pathagar_media }}'
+MEDIA_URL = '{{ pathagar_subpath }}/static_media/'
 
 SECRET_KEY = '7ks@b7+gi^c4adff)6ka228#rd4f62v*g_dtmo*@i62k)qn=cs'
 DATABASES = {
@@ -17,9 +18,4 @@ DATABASES = {
 }
 
 STATIC_ROOT = '{{ pathagar_collectstatic }}'
-STATIC_URL = '/static/'
-
-INSTALLED_APPS += (
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-)
+STATIC_URL = '{{ pathagar_subpath }}/static/'
