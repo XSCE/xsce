@@ -4,6 +4,7 @@
 pathagar_subpath: /books
 
 pathagar_dir: /usr/local/pathagar
+pathagar_media: /library/pathagar/media
 pathagar_src: '{{ pathagar_dir }}/pathagar'
 pathagar_venv: '{{ pathagar_dir }}/venv'
 pathagar_collectstatic: '{{ pathagar_dir }}/static'

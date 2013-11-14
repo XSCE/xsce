@@ -2,6 +2,8 @@ from settings import *
 
 FORCE_SCRIPT_NAME = '{{ pathagar_subpath }}'
 
+MEDIA_ROOT = '{{ pathagar_media }}'
+
 SECRET_KEY = '7ks@b7+gi^c4adff)6ka228#rd4f62v*g_dtmo*@i62k)qn=cs'
 DATABASES = {
     'default': {
