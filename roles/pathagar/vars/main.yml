@@ -1,6 +1,8 @@
 ---
 # variables for pathagar
 
+pathagar_subpath: /books
+
 pathagar_dir: /usr/local/pathagar
 pathagar_src: '{{ pathagar_dir }}/pathagar'
 pathagar_venv: '{{ pathagar_dir }}/venv'

@@ -96,13 +96,23 @@
             group=root
             mode=0644
 
-- name: Install pathagar service unit
-  template: src=pathagar.service
+- name: Install httpd conf for pathagar
+  template: src=pathagar.conf
             backup=yes
-            dest=/etc/systemd/system/pathagar.service
+            dest=/etc/httpd/conf.d/pathagar.conf
             mode=0644
 
-- name: Enable and start pathagar service
-  service: name=pathagar
-           enabled=yes
-           state=started
+- name: Restart http
+  service: name=httpd
+           state=reloaded
+
+# - name: Install pathagar service unit
+#   template: src=pathagar.service
+#             backup=yes
+#             dest=/etc/systemd/system/pathagar.service
+#             mode=0644
+
+# - name: Enable and start pathagar service
+#   service: name=pathagar
+#            enabled=yes
+#            state=started
