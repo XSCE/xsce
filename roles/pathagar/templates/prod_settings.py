@@ -2,7 +2,6 @@ from settings import *
 
 FORCE_SCRIPT_NAME = '{{ pathagar_subpath }}'
 
-DEBUG = False
 SECRET_KEY = '7ks@b7+gi^c4adff)6ka228#rd4f62v*g_dtmo*@i62k)qn=cs'
 DATABASES = {
     'default': {
