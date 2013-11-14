@@ -14,10 +14,10 @@
         mode=0755
 
 - name: Clone pathagar repo
-  git: repo=https://github.com/PathagarBooks/pathagar.git
+  git: repo=https://github.com/migonzalvar/pathagar.git
        dest={{ pathagar_src }}
        update=yes
-       version=master
+       version=xsce-devel
 
 - name: Install pathagar requirements in a virtualenv
   pip: name={{ item }}
