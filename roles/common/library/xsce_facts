@@ -1,6 +1,6 @@
 #!/bin/bash
 
-WAN=`/sbin/ip route ls | awk '{if($1=="default")print $5}' | tr -d ' '`
+WAN=`/sbin/route -n | awk '{if($4=="UG")print $8}' | tr -d ' '`
 LAN=`/sbin/ip link show  | grep mtu | awk -F":" '{print \$2}' | grep -v -e lo -e $WAN| tr -d ' '  | head -n1` 
 
 WAN_MAC=`/sbin/ip addr show $WAN | /bin/awk '/link\/ether/ { print \$2}' | tr [:lower:] [:upper:]`
