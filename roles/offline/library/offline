@@ -7,6 +7,7 @@ WAN=`/sbin/ip route ls | awk '{if($1=="default")print $5}' | tr -d ' '`
 
 function make_yum_conf()
 {
+	echo "making /tmp/yum.conf" | tee -a $LOG
 	cat << EOF > /tmp/yum.conf
 
 [main]
@@ -36,7 +37,7 @@ installonly_limit=3
 
 [usb-media]
 name=usb-media
-baseurl=file://"$usbkey"/xs-repo/\$basearch/\$releasever
+baseurl=file://$usbkey/xs-repo/\$basearch/\$releasever
 enabled=1
 gpgcheck=0
 cost=100
@@ -53,7 +54,7 @@ function get_usb_key()
                 maybe=`ls -la /sys/class/block/ | grep usb | gawk '{print $9}'`
                 if ! [ -z "$maybe" ];then
                     usbkey=`findmnt -n -o TARGET -S $parts`
-		    if [ ! -d "$usbkey"/xs-repo/  -a ! -d "$usbkey"/library ];then
+		    if [ ! -d "$usbkey"/xs-repo  -a ! -d "$usbkey"/library ];then
 			mkdir "$usbkey"/xs-repo			
 		    fi
 		    echo "INFO using <usbkey>/xs-repo for yum cache" | tee -a $LOG
@@ -76,6 +77,7 @@ function get_usb_key()
 			    echo "NO GATEWAY disable online repos" | tee -a $LOG
 			    sed -i -e ':#yum.repos.d=/tmp:yum.repos.d=/tmp:s' /tmp/yum.conf
 			fi
+			echo "using /tmp/yum.conf" | tee -a $LOG
 			mv /etc/yum.conf /etc/yum.conf.xsce
 			mv /tmp/yum.conf /etc/
 		    else
