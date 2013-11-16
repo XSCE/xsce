@@ -21,7 +21,6 @@
             owner=avahi
             group=avahi
             mode=640
-  tags:     avahi
            
 - name: Enable avahi service
   service: name=avahi-daemon

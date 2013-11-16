@@ -33,9 +33,6 @@ $IPTABLES -A INPUT -i lo -j ACCEPT
 $IPTABLES -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 $IPTABLES -A INPUT -m state --state NEW -i  $lan -j ACCEPT
 
-# Allow mDNS 
-$IPTABLES -A INPUT -p udp --dport 5353 -d 224.0.0.251 -j ACCEPT
-
     #We alway run as gateway 
     $IPTABLES -A INPUT -p tcp --dport ssh -m state --state NEW -i $wan -j ACCEPT
 
