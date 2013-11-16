@@ -3,9 +3,16 @@
 
 - name: Install xs repo
   get_url: url=http://xsce.activitycentral.com/repos/xsce-release.repo dest=/etc/yum.repos.d/
+  when: ansible_default_ipv4["gateway"] != ""
 
 - include: xo.yml
   when: ansible_distribution_release == "based on Fedora 18"
+
+- name: Keep yum cache
+  ini_file: dest=/etc/yum.conf
+            section=main
+            option=keepcache
+            value=1
 
 - include: selinux.yml
   when: ansible_selinux["status"] != "disabled"
@@ -41,12 +48,6 @@
    - make
    - yum-utils
    - NetworkManager   
-
-- name: Keep yum cache
-  ini_file: dest=/etc/yum.conf
-            section=main
-            option=keepcache
-            value=1
 
 - name: Disable root login with password 
   lineinfile: backup=yes

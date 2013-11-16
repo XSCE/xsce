@@ -12,7 +12,7 @@ function make_yum_conf()
 [main]
 # this is inside yum where basearch releasever are detected.
 cachedir=/var/cache/yum/\$basearch/\$releasever
-logfile=/home/olpc/yum.log
+logfile=/root/yum.log
 keepcache=1
 exactarch=1
 obsoletes=1
@@ -75,7 +75,9 @@ function get_usb_key()
 			if [ x$WAN = x ]; then
 			    echo "NO GATEWAY disable online repos" | tee -a $LOG
 			    sed -i -e ':#yum.repos.d=/tmp:yum.repos.d=/tmp:s' /tmp/yum.conf
-			fi  
+			fi
+			mv /etc/yum.conf /etc/yum.conf.xsce
+			mv /tmp/yum.conf /etc/
 		    else
 			echo "INFO repo metadata not found - skipping repo use" | tee -a $LOG
 		    fi
@@ -91,6 +93,7 @@ function unmount_yum_cache()
 {
     echo "called unmount-yum-cache" | tee -a $LOG
     if [ -f /etc/yum.conf.xsce ]; then
+	rm -rf /etc/yum.conf
 	mv /etc/yum.conf.xsce /etc/yum.conf
     fi
     yum_mnt=`mount | grep var/cache/yum | wc | gawk '{print $2}'`
