@@ -11,15 +11,15 @@
   template: backup=yes
             src=rfb.service
             dest=/etc/avahi/services/
-            owner=avahi	
-            group=avahi
+            owner=root
+            group=root
             mode=640
            
   template: backup=yes 
             src=schoolserver.service
             dest=/etc/avahi/services/
-            owner=avahi
-            group=avahi
+            owner=root
+            group=root
             mode=640
            
 - name: Enable avahi service
