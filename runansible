@@ -1,5 +1,5 @@
 #!/bin/bash
-LOG=xsce-log2.txt
+LOG=/tmp/tmp-xsce-log.txt
 if [ -f xsce.yml ]
  then
  source roles/offline/library/offline
@@ -23,3 +23,5 @@ if [ "$PLAYBOOK" == "" ]
 get_usb_key
 ansible-playbook -i $INVENTORY $PLAYBOOK --connection=local | tee -a $LOG 
 create_usb_repo2
+DATE=`date +%F@%T`
+mv $LOG /root/$DATE-xsce-log.txt
