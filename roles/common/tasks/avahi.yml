@@ -10,17 +10,18 @@
 - name: Install avahi announce config files
   template: backup=yes
             src=rfb.service
-            dest=/etc/avahi/conf.d/
+            dest=/etc/avahi/services/
             owner=root
             group=root
             mode=640
            
   template: backup=yes 
             src=schoolserver.service
-            dest=/etc/avahi/conf.d/
+            dest=/etc/avahi/services/
             owner=root
             group=root
             mode=640
+  tags:     avahi
            
 - name: Enable avahi service
   service: name=avahi-daemon
