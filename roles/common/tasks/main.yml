@@ -23,8 +23,6 @@
    - htop
    - etckeeper
    - python-passlib
-   - vim-enhanced
-   - vim-filesystem
 
 - name: Keep yum cache
   ini_file: dest=/etc/yum.conf
