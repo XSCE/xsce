@@ -16,10 +16,6 @@
     - /etc/sysconfig/olpc-scripts/
     - /etc/sysconfig/olpc-scripts/setup.d/installed/
 
-- name: Create gateway flag
-  shell: echo 1 > /etc/sysconfig/olpc-scripts/setup.d/installed/gateway
-         creates=/etc/sysconfig/olpc-scripts/setup.d/installed/gateway
-
 - name: Install iptables services
   template: backup=yes
             src={{ item.src }}
@@ -34,10 +30,6 @@
     - { src: "gateway/iptables.service" , dest: "/etc/systemd/system/iptables.service" }
     - { src: "gateway/xs-gen-iptables" , dest: "/usr/bin/xs-gen-iptables" }
 
-- name: Enable iptables service 
-  service: name=iptables
-           enabled=yes
-
 - include: dhcpd.yml
   when: 'xsce_lan_iface != ""' 
 
@@ -49,4 +41,12 @@
 
 - name: Run iptables 
   command: /etc/sysconfig/iptables-config
+
+- name: Enable iptables service 
+  service: name=iptables
+           enabled=yes
+
+- name: Create gateway flag
+  shell: echo 1 > /etc/sysconfig/olpc-scripts/setup.d/installed/gateway
+         creates=/etc/sysconfig/olpc-scripts/setup.d/installed/gateway
 
