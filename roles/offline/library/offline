@@ -124,7 +124,7 @@ function create_usb_repo2()
 	usbkey=$(findmnt -n -o TARGET -S $usb_mnt)
 	echo "found "$usbkey""
 	if [ -d "$usbkey"/xs-repo -a ! -d "$usbkey"/library ]; then
-	    echo "creating yum repo plese wait...." | tee -a $LOG
+	    echo "creating yum repo please wait...." | tee -a $LOG
 	    createrepo "$usbkey"/xs-repo/$YUM_ARCH/$RELEASEVER | tee -a $LOG
 	    sleep 2
 	    sync
