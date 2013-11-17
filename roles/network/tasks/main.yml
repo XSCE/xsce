@@ -41,9 +41,16 @@
     - xs_lan_device
     - xs_domain_name
 
+- name: restart NetworkManager services
+  service: name=NetworkManager
+           enabled=yes
+           state=restarted
+  service: name=NetworkManager-dispatcher
+           enabled=yes
+           state=restarted
+
 - name: Set WAN as LAN when there isn't another interface
   template: backup=yes
             src=xs_wan_device.j2
             dest=/etc/sysconfig/xs_lan_device
   when: 'xsce_lan_iface == "" '
-
