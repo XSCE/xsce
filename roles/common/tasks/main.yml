@@ -1,6 +1,13 @@
 - name: Get XSCE facts
   xsce_facts: facts=true
 
+- name: Set hostname
+  template: backup=yes
+            dest=/etc/hostname
+            src=hostname.j2
+            owner=root
+            mode=0644
+
 - name: Install xs repo
   get_url: url=http://xsce.activitycentral.com/repos/xsce-release.repo dest=/etc/yum.repos.d/
 
@@ -16,6 +23,12 @@
         group=root
         mode=0755
         state=directory
+
+- name: Keep yum cache
+  ini_file: dest=/etc/yum.conf
+            section=main
+            option=keepcache
+            value=1
 
 - name: Install common packages
   yum: name={{ item }}
@@ -42,12 +55,6 @@
    - yum-utils
    - NetworkManager   
 
-- name: Keep yum cache
-  ini_file: dest=/etc/yum.conf
-            section=main
-            option=keepcache
-            value=1
-
 - name: Disable root login with password 
   lineinfile: backup=yes
               dest=/etc/ssh/sshd_config
@@ -56,17 +63,10 @@
               state=present
 #TODO: use handler to reload ssh
 
-- name: Set hostname
-  template: backup=yes
-            dest=/etc/hostname
-            src=hostname.j2
-            owner=root
-            mode=0644
-
 - name: Enable common services
   service: name={{ item }}
            enabled=yes
-           state=started
+           state=restarted
   with_items:
     - sshd
 
