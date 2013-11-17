@@ -1,13 +1,13 @@
 - name: check pip is installed
   yum: name=python-pip
-       state=present
+       state=latest
 
 - name: install xs-authserver from pypi
   pip: name=xs-authserver
 
 - name: install gunicorn
   yum: name=python-gunicorn
-       state=present
+       state=latest
 
 - name: Configure xs-authserver
   template: backup=yes
@@ -41,7 +41,7 @@
 - name: Enable xs-authserver service
   service: name=xs-authserver
            enabled=yes
-           state=started
+           state=restarted
 
 - name: add xs-authserver to service list
   ini_file: dest='{{ service_filelist }}'

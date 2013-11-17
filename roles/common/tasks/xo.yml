@@ -23,6 +23,12 @@
               line='%_excludedocs 0'
               state=present
 
+- name: pre(re)-Install packages
+  yum: name={{ item }}
+       state=latest
+  with_items:
+   - usbmount
+
 - name: Configure networkmanager plugin
   ini_file: dest=/etc/NetworkManager/NetworkManager.conf
             section=main

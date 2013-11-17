@@ -1,6 +1,6 @@
 - name: Install python-pip package
   yum: name=python-pip
-       state=installed
+       state=latest
 
 - name: Clone pathagar repo
   git: repo=https://github.com/PathagarBooks/pathagar.git

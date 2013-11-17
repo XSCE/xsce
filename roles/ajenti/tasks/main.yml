@@ -1,10 +1,10 @@
 - name: Install python-pip package
   yum: name=python-pip
-       state=installed
+       state=latest
 
 - name: Install required libraries
   yum: name={{ item.pkg }}
-       state=installed
+       state=latest
   with_items:
     - pkg: python-devel
     - pkg: libxslt-devel
@@ -37,4 +37,4 @@
 - name: start ajenti service
   service: name=ajenti
            enabled=yes
-           state=started
+           state=restarted

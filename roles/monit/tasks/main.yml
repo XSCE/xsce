@@ -1,6 +1,6 @@
 - name: Install monit package
   yum: name=monit
-       state=present
+       state=latest
 
 - name: Create config dir
   file: path=/usr/share/xs-config/cfg/etc/monit.d
