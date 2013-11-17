@@ -57,8 +57,10 @@ function get_usb_key()
 		    if [ ! -d "$usbkey"/xs-repo  -a ! -d "$usbkey"/library ];then
 			mkdir "$usbkey"/xs-repo			
 		    fi
-		    echo "INFO using <usbkey>/xs-repo for yum cache" | tee -a $LOG
-		    mount --bind "$usbkey"/xs-repo /var/cache/yum
+		    if [ -d "$usbkey"/xs-repo ];then
+			echo "INFO using <usbkey>/xs-repo for yum cache" | tee -a $LOG
+			mount --bind "$usbkey"/xs-repo /var/cache/yum
+		    fi
 
 		    # convert uname -i to match what yum uses
 		    if [ $XSARCH = "armv7l" ];then

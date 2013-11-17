@@ -20,6 +20,7 @@ if [ "$PLAYBOOK" == "" ]
 	echo "rpm is not installed, and local playbook wasn't found!" | tee -a $LOG
 	exit
 	fi
+ansible -m setup -i ansible_hosts localhost --connection=local | tee -a $LOG
 get_usb_key
 ansible-playbook -i $INVENTORY $PLAYBOOK --connection=local | tee -a $LOG 
 create_usb_repo2
