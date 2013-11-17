@@ -20,7 +20,7 @@
   lineinfile: backup=yes
               dest=/etc/hosts
               regexp='^127\.0\.0\.1'
-              line='127.0.0.1            localhost.localdomain      localhost    schoolserver'
+              line='127.0.0.1            localhost.localdomain   localhost   {{ xsce_hostname }}'
               owner=root
               group=root
               mode=0644
@@ -46,5 +46,4 @@
             src=xs_wan_device.j2
             dest=/etc/sysconfig/xs_lan_device
   when: 'xsce_lan_iface == "" '
-
 
