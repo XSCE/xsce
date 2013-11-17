@@ -23,9 +23,7 @@
     - { src: 'xs-ejabberd-srg', dest: '/usr/bin/xs-ejabberd-srg' , mode: '0755' }
     - { src: '10-ejabberdmoodle', dest: '/etc/sudoers.d/10-ejabberdmoodle', mode: '0440' }
     - { src: 'ejabberd.tmpfiles', dest: '/etc/tmpfiles.d/ejabberd.conf', mode: '0640' }
-
-- name: Set domain name
-  shell: echo {{ xsce_domain }} > /etc/sysconfig/ejabberd_domain_name
+  register: ejabberd_config
 
 - name: Enable ejabberd service
   file: src=/etc/systemd/system/ejabberd-xs.service
@@ -34,20 +32,28 @@
         group=root
         state=link
 
+- name: Remove ejabberd_domain if domain changes
+  file: path=/etc/sysconfig/ejabberd_domain_name
+        state=absent
+  when: ejabberd_config.changed
+
 - name: Start ejabberd service
   service: name=ejabberd-xs
            state=restarted
            enabled=yes
+  when: ejabberd_config.changed
 
 - name: Wait for ejabberd service start
   wait_for: port=5280
             delay=15
             state=started
             timeout=300
+  when: ejabberd_config.changed
 
 - name: Create online group
   shell: ejabberdctl srg_create Online "schoolserver" Online "Online_Users" Online
+  when: ejabberd_config.changed
 
 - name: Add all users to online group
   shell: ejabberdctl srg_user_add '@online@' "schoolserver" Online "schoolserver"
-
+  when: ejabberd_config.changed
