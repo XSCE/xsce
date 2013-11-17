@@ -1,6 +1,6 @@
 - name: Install httpd required packages
   yum: name={{ item }}
-       state=installed
+       state=latest
   with_items:
     - httpd
     - php
@@ -55,5 +55,5 @@
 - name: Enable httpd
   service: name=httpd
            enabled=yes
-           state=started
+           state=restarted
 
