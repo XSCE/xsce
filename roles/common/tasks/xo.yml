@@ -85,5 +85,4 @@
   ignore_errors: yes
   async: 300
   poll: 120
- 
 

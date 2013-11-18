@@ -1,20 +1,28 @@
 #!/bin/bash
+LOG=/tmp/tmp-xsce-log.txt
 if [ -f xsce.yml ]
  then
+ source roles/offline/library/offline
  PLAYBOOK="xsce.yml"
  INVENTORY="ansible_hosts"
- echo "Running local playbooks! "
+ echo "Running local playbooks! " | tee -a $LOG
  else
  if [ -f /var/local/xsce/xsce.yml ]
  then
+ source /var/local/xsce/roles/offline/library/offline
  PLAYBOOK="/var/local/xsce/xsce.yml"
  INVENTORY="/var/local/xsce/ansible_hosts"
- echo "Running rpm provided playbooks ! "
+ echo "Running rpm provided playbooks ! " | tee -a $LOG
 fi
 fi
 if [ "$PLAYBOOK" == "" ]
 	then
-	echo "rpm is not installed, and local playbook wasn't found!"
+	echo "rpm is not installed, and local playbook wasn't found!" | tee -a $LOG
 	exit
 	fi
-ansible-playbook -i $INVENTORY $PLAYBOOK --connection=local 
+ansible -m setup -i ansible_hosts localhost --connection=local | tee -a $LOG
+get_usb_key
+ansible-playbook -i $INVENTORY $PLAYBOOK --connection=local | tee -a $LOG 
+create_usb_repo2
+DATE=`date +%F@%T`
+mv $LOG /root/$DATE-xsce-log.txt

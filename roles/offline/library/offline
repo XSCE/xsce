@@ -1,0 +1,136 @@
+#!/bin/bash
+
+FEDORA=`rpm -q fedora-release|gawk 'BEGIN {FS="-";}{print $3}'`
+XSARCH=`uname -i`
+LOG=/tmp/tmp-xsce-log.txt
+WAN=`/sbin/ip route ls | awk '{if($1=="default")print $5}' | tr -d ' '`
+
+function make_yum_conf()
+{
+	echo "making /tmp/yum.conf" | tee -a $LOG
+	cat << EOF > /tmp/yum.conf
+
+[main]
+# this is inside yum where basearch releasever are detected.
+cachedir=/var/cache/yum/\$basearch/\$releasever
+logfile=/root/yum.log
+keepcache=1
+exactarch=1
+obsoletes=1
+gpgcheck=0
+installonly_limit=3
+
+#yum.repos.d=/tmp
+
+#  This is the default, if you make this bigger yum won't see if the metadata
+# is newer on the remote and so you'll "gain" the bandwidth of not having to
+# download the new metadata and "pay" for it by yum not having correct
+# information.
+#  It is esp. important, to have correct metadata, for distributions like
+# Fedora which don't keep old packages around. If you don't like this checking
+# interupting your command line usage, it's much better to have something
+# manually check the metadata once an hour (yum-updatesd will do this).
+# metadata_expire=90m
+
+# PUT YOUR REPOS HERE OR IN separate files named file.repo
+# in /etc/yum.repos.d
+
+[usb-media]
+name=usb-media
+baseurl=file://$usbkey/xs-repo/\$basearch/\$releasever
+enabled=1
+gpgcheck=0
+cost=100
+
+EOF
+
+}
+
+function get_usb_key()
+{
+        usbkey=""
+        for parts in `ls /dev/sd*1`; do
+            if [ x$parts != 'x' ];then
+                maybe=`ls -la /sys/class/block/ | grep usb | gawk '{print $9}'`
+                if ! [ -z "$maybe" ];then
+                    usbkey=`findmnt -n -o TARGET -S $parts`
+		    if [ ! -d "$usbkey"/xs-repo  -a ! -d "$usbkey"/library ];then
+			mkdir "$usbkey"/xs-repo			
+		    fi
+		    if [ -d "$usbkey"/xs-repo ];then
+			echo "INFO using <usbkey>/xs-repo for yum cache" | tee -a $LOG
+			mount --bind "$usbkey"/xs-repo /var/cache/yum
+		    fi
+
+		    # convert uname -i to match what yum uses
+		    if [ $XSARCH = "armv7l" ];then
+			YUM_ARCH=armhfp
+		    else
+			YUM_ARCH=$XSARCH
+		    fi
+		    # confirm we have a repo to use
+		    if [ -d /var/cache/yum/$YUM_ARCH/$FEDORA/repodata ];then
+			# the sub-directories hold online-repo cache
+			# we use the top level to hold the offline repo 
+			# sum of all the cached rpms held
+			echo "FOUND /var/cache/yum/$YUM_ARCH/$FEDORA/metadata" | tee -a $LOG
+			make_yum_conf
+			if [ x$WAN = x ]; then
+			    echo "NO GATEWAY disable online repos" | tee -a $LOG
+			    sed -i -e ':#yum.repos.d=/tmp:yum.repos.d=/tmp:s' /tmp/yum.conf
+			fi
+			echo "using /tmp/yum.conf" | tee -a $LOG
+			mv /etc/yum.conf /etc/yum.conf.xsce
+			mv /tmp/yum.conf /etc/
+		    else
+			echo "INFO repo metadata not found - skipping repo use" | tee -a $LOG
+		    fi
+		    break
+		else
+		    echo "INFO no usbkey to use - skipping" | tee -a $LOG
+		fi
+	    fi
+	done
+}
+
+function unmount_yum_cache()
+{
+    echo "called unmount-yum-cache" | tee -a $LOG
+    if [ -f /etc/yum.conf.xsce ]; then
+	rm -rf /etc/yum.conf
+	mv /etc/yum.conf.xsce /etc/yum.conf
+    fi
+    yum_mnt=`mount | grep var/cache/yum | wc | gawk '{print $2}'`
+    echo "found $yum_mnt bind mounts" | tee -a $LOG 
+    if  [ $yum_mnt -gt 0 ]; then
+	RELEASEVER=`ls /var/cache/yum/$YUM_ARCH`
+	umnt_yum=`mount | grep cache/yum | gawk '{print $3}'`
+	echo "yum mount points are $umnt_yum "
+	for mnt in $umnt_yum; do
+	    echo "unmounting $mnt" | tee -a $LOG
+	    umount /var/cache/yum | tee -a $LOG
+	done
+    else
+	echo "INFO /var/cache/yum is not mounted" | tee -a $LOG
+    fi
+}
+
+function create_usb_repo2()
+{
+    echo "starting create-usb-repo2" | tee -a $LOG
+    unmount_yum_cache
+    usb_mnt=`mount | grep fat | gawk '{print $1}'`
+    if [ x"$usb_mnt" != x ]; then
+	usbkey=$(findmnt -n -o TARGET -S $usb_mnt)
+	echo "found "$usbkey""
+	if [ -d "$usbkey"/xs-repo -a ! -d "$usbkey"/library ]; then
+	    echo "creating yum repo please wait...." | tee -a $LOG
+	    createrepo "$usbkey"/xs-repo/$YUM_ARCH/$RELEASEVER | tee -a $LOG
+	    sleep 2
+	    sync
+	fi
+    else
+	echo "INFO No external media found" | tee -a $LOG
+    fi
+    echo "leaving create-usb-repo2" | tee -a $LOG
+}
