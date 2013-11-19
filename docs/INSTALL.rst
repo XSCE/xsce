@@ -13,10 +13,18 @@ On the XO-1.75 or XO-4 laptop
 
 * In ``My Settings->Power`` turn off Automatic Power Management
 
-* Install ansible and git::
+* Install git and ansible (for dependencies)::
 
     su -
     yum install -y git ansible
+    
+* Update ansible::
+    
+    cd ~/
+    git clone https://github.com/ansible/ansible.git
+    cd ansible
+    git checkout 07b59da99
+    python setup.py install
 
 * Clone the XSCE git repo and run initial setup::
 
