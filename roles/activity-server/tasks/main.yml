@@ -31,7 +31,7 @@
         - bin/xs-check-activities
                 
 - name: Copy language templates        
-  synchronize: src=lang_templates
+  synchronize: src=roles/activity-server/files/lang_templates
                dest=/library/xs-activity-server/lang_templates
 
 # Do in ansible what was done in /etc/sysconfig/olpc-scripts/setup.d/xs-activity-server script
