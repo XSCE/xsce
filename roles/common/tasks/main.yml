@@ -32,7 +32,7 @@
 
 - name: Install common packages
   yum: name={{ item }}
-       state=latest
+       state=present
   with_items:
    - createrepo
    - acpid

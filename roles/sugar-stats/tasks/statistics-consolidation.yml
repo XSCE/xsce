@@ -1,6 +1,6 @@
 - name: Install python-pip package
   yum: name=python-pip
-       state=latest
+       state=installed
 
 - name: Install statistics-consolidation with pip
   pip: name=git+https://github.com/migonzalvar/statistics-consolidation.git@sqlalchemy-v2#egg=stats_consolidation

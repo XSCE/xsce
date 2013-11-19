@@ -1,6 +1,6 @@
 - name: Install idmgr packages
   yum: name={{ item }}
-       state=latest
+       state=installed
   with_items:
    - ds-backup-server
    - idmgr
@@ -38,7 +38,7 @@
 - name: Enable idmgr service
   service: name={{ item }}
            enabled=yes
-           state=restarted
+           state=started
   with_items:
     - idmgr
     - xinetd

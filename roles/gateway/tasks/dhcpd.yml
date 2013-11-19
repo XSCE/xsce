@@ -1,6 +1,6 @@
 - name: Install dhcp package
   yum: name=dhcp
-      state=latest
+      state=installed
 - name: Configure dhcpd
   template: backup=yes
             src={{ item.src }}
