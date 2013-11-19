@@ -1,5 +1,14 @@
 - name: Get XSCE facts
   xsce_facts: facts=true
+  tags: 
+    - facts
+    - common
+    - gateway
+    - dhcpd
+    - network
+    - ajenti
+    - wondershaper
+    - core
 
 - name: Set hostname
   template: backup=yes

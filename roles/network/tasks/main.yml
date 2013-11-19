@@ -1,4 +1,3 @@
-- include: named.yml
 - name: Configure /etc/sysconfig/network
   template: backup=yes
             src=sysconfig.network.j2
@@ -61,3 +60,8 @@
             src=xs_wan_device.j2
             dest=/etc/sysconfig/xs_lan_device
   when: 'xsce_lan_iface == "" '
+
+- include: named.yml
+  tags:
+    - named
+    - network
