@@ -9,6 +9,7 @@
     - ajenti
     - wondershaper
     - core
+    - xo
 
 - name: Set hostname
   template: backup=yes
@@ -22,6 +23,8 @@
 
 - include: xo.yml
   when: ansible_distribution_release == "based on Fedora 18"
+  tags:
+    - xo
 
 - include: selinux.yml
   when: ansible_selinux["status"] != "disabled"
@@ -32,8 +35,6 @@
         group=root
         mode=0755
         state=directory
-
-- include: yum.yml
 
 - name: Disable root login with password 
   lineinfile: backup=yes
@@ -50,6 +51,8 @@
   with_items:
     - sshd
 
+
+- include: yum.yml
 - include: chrony.yml
 - include: avahi.yml
 - include: sysctl.yml

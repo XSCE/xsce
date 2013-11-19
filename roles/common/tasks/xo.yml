@@ -76,7 +76,6 @@
   file: path=/etc/systemd/system/default.target
         src=/lib/systemd/system/multi-user.target
         state=link
-  tags: test
   register: disabled_login
 
 - name: Reboot system 
