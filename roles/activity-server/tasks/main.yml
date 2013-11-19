@@ -1,18 +1,38 @@
-- name: Install xs-activity-server package
-  yum: name=xs-activity-server
-       state=present
-  tags:
-    - download
-       
 # assume apache in admin group
 
-- name: Config xs-activity-server directory tree
-  file: path=/library/xs-activity-server
+- name: Create xs-activity-server directory tree
+  file: path={{ item }}
         mode=0755
         owner=root
         group=admin
-        recurse=yes
-        state=directory        
+        state=directory
+  with_items:
+    - /library/xs-activity-server
+    - /library/xs-activity-server/activities
+    - /library/xs-activity-server/lang_templates
+    
+# We should have a var for python site-packages
+
+- name Install Python module
+  copy: src=xs_activities/__init__.py
+        dest=/usr/lib/python2.7/site-packages
+        mode=0755
+        owner=root
+        group=root
+
+- name: Copy scripts to /usr/bin   
+  copy: src={{ item }}
+        dest=/usr/bin
+        mode=0755
+        owner=root
+        group=root
+  with_items:
+        - bin/xs-regenerate-activities
+        - bin/xs-check-activities
+                
+- name: Copy language templates        
+  synchronize: src=lang_templates
+               dest=/library/xs-activity-server/lang_templates
 
 # Do in ansible what was done in /etc/sysconfig/olpc-scripts/setup.d/xs-activity-server script
 
@@ -23,12 +43,12 @@
             group=root
             mode=0644
 
-- name: Link xs-activity-server usbmount file
-  file: src=/usr/share/xs-activity-server/usbmount-60-xs-activity-server-installcontent
-        dest=/etc/usbmount/mount.d/usbmount-60-xs-activity-server-installcontent
+- name: Copy xs-activity-server usbmount file
+  template: src=usbmount-60-xs-activity-server-installcontent
+        dest=/etc/usbmount/mount.d/
         owner=root
         group=root
-        state=link
+        mode=0755
 
 # TODO: Fix .var multiview
 #       For now patch it
