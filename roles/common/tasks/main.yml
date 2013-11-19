@@ -10,6 +10,7 @@
     - wondershaper
     - core
     - xo
+    - download
 
 - name: Set hostname
   template: backup=yes
@@ -20,6 +21,8 @@
 
 - name: Install xs repo
   get_url: url=http://xsce.activitycentral.com/repos/xsce-release.repo dest=/etc/yum.repos.d/
+  tags:
+    - download
 
 - include: xo.yml
   when: ansible_distribution_release == "based on Fedora 18"
@@ -28,6 +31,8 @@
 
 - include: selinux.yml
   when: ansible_selinux["status"] != "disabled"
+  tags:
+    - download
 
 - name: Create /library
   file: path=/library
@@ -52,7 +57,10 @@
     - sshd
 
 
-- include: yum.yml
+- include: yum.yml 
+  tags:
+    - download
+
 - include: chrony.yml
 - include: avahi.yml
 - include: sysctl.yml

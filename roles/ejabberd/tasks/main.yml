@@ -3,6 +3,8 @@
        state=installed
   with_items:
    - ejabberd-2.1.11
+  tags:
+    - download
 
 - name: Configure ejabberd
   template: backup=yes
