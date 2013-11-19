@@ -51,10 +51,17 @@
 - name: restart NetworkManager services
   service: name=NetworkManager
            enabled=yes
-           state=restarted
+           state=started
+  handlers:
+    - name: restart NetworkManager
+      service: name=NetworkManager state=restarted      
+
   service: name=NetworkManager-dispatcher
            enabled=yes
-           state=restarted
+           state=started
+  handlers:
+    - name: restart NetworkManager-dispatcher
+      service: name=networkManager-dispatcher state=restarted      
 
 - name: Set WAN as LAN when there isn't another interface
   template: backup=yes
