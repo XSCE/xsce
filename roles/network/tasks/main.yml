@@ -42,6 +42,12 @@
     - xs_lan_device
     - xs_domain_name
 
+- name: update common packages
+  yum: name={{ item }}
+       state=latest
+  with_items:
+   - NetworkManager
+
 - name: restart NetworkManager services
   service: name=NetworkManager
            enabled=yes

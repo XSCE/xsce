@@ -24,36 +24,7 @@
         mode=0755
         state=directory
 
-- name: Keep yum cache
-  ini_file: dest=/etc/yum.conf
-            section=main
-            option=keepcache
-            value=1
-
-- name: Install common packages
-  yum: name={{ item }}
-       state=present
-  with_items:
-   - createrepo
-   - acpid
-   - mlocate
-   - mtd-utils
-   - rsync
-   - htop
-   - etckeeper
-   - python-passlib
-   - usbmount
-   - iptables
-   - net-tools
-   - openssh-server
-   - sudo
-   - syslog
-   - logrotate
-   - xml-common
-   - etckeeper
-   - make
-   - yum-utils
-   - NetworkManager   
+- include: yum.yml
 
 - name: Disable root login with password 
   lineinfile: backup=yes
