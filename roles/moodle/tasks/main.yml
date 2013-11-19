@@ -1,7 +1,7 @@
 ---
 - name: Install moodle required packages
   yum: name={{ item }}
-       state=latest
+       state=present
   with_items:
     - moodle-xs
     - python-psycopg2
@@ -51,7 +51,7 @@
 - name: Enable moodle service
   service: name=moodle-xs
            enabled=yes
-           state=restarted
+           state=started
 
 - name: add moodle to service list
   ini_file: dest='{{ service_filelist }}'

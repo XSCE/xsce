@@ -4,7 +4,7 @@
            state=stopped
 - name: Install iptables service package
   yum: name=iptables-services
-       state=latest
+       state=installed
 
 - name: Create olpc-scripts directory
   file: path={{ item }}

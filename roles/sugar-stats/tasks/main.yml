@@ -1,6 +1,6 @@
 - name: Install sugar-stats required packages
   yum: name={{ item }}
-       state=latest
+       state=installed
   with_items:
     - sugar-stats-server
     - active-document

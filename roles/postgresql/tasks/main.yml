@@ -1,6 +1,6 @@
 - name: Install postgresql packages
   yum: name={{ item }}
-       state=latest
+       state=present
   with_items:
     - postgresql
     - postgresql-server
@@ -55,4 +55,4 @@
 - name: Enable postgresql service
   service: name=postgresql-xs
            enabled=yes
-           state=restarted 
+           state=started 
