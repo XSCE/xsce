@@ -49,12 +49,13 @@
               regexp='^PermitRootLogin'
               line='PermitRootLogin without-password'
               state=present
-#TODO: use handler to reload ssh
+  notify: 
+     - restart sshd
 
 - name: Enable common services
   service: name={{ item }}
            enabled=yes
-           state=restarted
+           state=started
   with_items:
     - sshd
 

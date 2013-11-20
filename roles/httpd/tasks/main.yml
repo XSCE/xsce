@@ -7,7 +7,7 @@
   tags:
     - download
 
-- name: Create sugar-stats directory tree
+- name: Create httpd directory tree
   template: backup=yes
             src={{ item.src }}
             dest={{ item.dest }}
@@ -22,6 +22,8 @@
      - { src: 'xs-2.4.conf.j2' , dest: '/etc/httpd/conf.d/xs-2.4.conf', mode: '0644' }
 #TODO: Add config file (and conditional) for apache 2.2
      - { src: 'xs-http' , dest: '/etc/sudoers.d/xs-http', mode: '0640'}
+  notify:
+    - restart httpd
 
 - name: Create http pid dir
   file: path=/var/run/httpd

@@ -1,0 +1,11 @@
+- name: restart named
+  service: name=named
+           state=restarted
+
+- name: restart networkmanager
+  service: name=NetworkManager
+           state=restarted
+
+- name: restart networkmanager-dispatcher
+  service: name=NetworkManager-dispatcher
+           state=restarted

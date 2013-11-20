@@ -19,6 +19,8 @@
     - backports.lzma
   tags:
     - download
+  notify:
+    - restart httpd
 
 - name: Copy IIAB config file
   template: backup=yes
@@ -27,6 +29,8 @@
             owner=root
             group=root
             mode=0644
+  notify:
+    - restart httpd
 
 - name: Create link to cgi 
   file: src=/bin/iiab.wsgi
@@ -34,10 +38,8 @@
         owner=root
         group=root
         state=link
-
-- name: Restart httpd service
-  service: name=httpd
-           state=restarted
+  notify:
+    - restart httpd
 
 - name: add iiab to service list
   ini_file: dest='{{ service_filelist }}'
