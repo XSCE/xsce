@@ -17,7 +17,7 @@ fi
 #Domain change
 if [ -f /etc/sysconfig/xs_domain_name ] 
 then
- XSDOMAIN=cat /etc/sysconfig/xs_domain_name
+ XSDOMAIN=`cat /etc/sysconfig/xs_domain_name`
  ARGS="--extra-vars \"xsce_domain=$XSDOMAIN\""
 fi
 
