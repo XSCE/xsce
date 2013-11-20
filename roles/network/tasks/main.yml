@@ -7,23 +7,17 @@
             mode=0644
 
 #TODO: Use vars instead of hardcoded values
-- name: Configure /etc/hosts
-  lineinfile: backup=yes
-              dest=/etc/hosts
-              regexp='^172\.18\.96\.1'
-              line='172.18.96.1            {{ xsce_hostname }}.{{ xsce_domain }}      {{ xsce_hostname }}'
-              owner=root
-              group=root
-              mode=0644
+- name: Add local ip to /etc/hosts
+  host: ip={{ lan_ip }}
+        hostname={{ xsce_hostname }}.{{ xsce_domain }}
+        aliases={{ xsce_hostname }}
+        state=present
 
-- name: Configure /etc/hosts
-  lineinfile: backup=yes
-              dest=/etc/hosts
-              regexp='^127\.0\.0\.1'
-              line='127.0.0.1            localhost.localdomain   localhost   {{ xsce_hostname }}'
-              owner=root
-              group=root
-              mode=0644
+- name: Add local hostname to /etc/hosts
+  host: ip=127.0.0.1
+        hostname=localhost.localdomain
+        aliases=localhost,{{ xsce_hostname }}
+        state=present
 
 - name: Configure lan interface
   template: backup=yes
