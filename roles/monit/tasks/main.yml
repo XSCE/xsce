@@ -34,10 +34,7 @@
         state=link
   with_items: $watchdog
 
-#TODO: create systemd script
 - name: Enable monit service
-  command: chkconfig monit on
-
-#- name: Restart monit service
-#  command: service monit restart
-
+  service: name=monit
+           enabled=yes
+           state=started
