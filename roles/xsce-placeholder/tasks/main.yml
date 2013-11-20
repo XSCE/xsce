@@ -1,0 +1,3 @@
+- name: This is a placeholder for contributed roles
+  command: echo placeholder installed
+
