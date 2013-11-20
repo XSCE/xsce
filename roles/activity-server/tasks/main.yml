@@ -10,25 +10,8 @@
     - /library/xs-activity-server
     - /library/xs-activity-server/activities
     - /library/xs-activity-server/lang_templates
+    - /library/xs-activity-server/tmp
     
-# We should have a var for python site-packages
-
-- name: Install Python module
-  copy: src=xs_activities/__init__.py
-        dest=/usr/lib/python2.7/site-packages
-        mode=0755
-        owner=root
-        group=root
-
-- name: Copy scripts to /usr/bin   
-  copy: src={{ item }}
-        dest=/usr/bin
-        mode=0755
-        owner=root
-        group=root
-  with_items:
-        - bin/xs-regenerate-activities
-        - bin/xs-check-activities
 # Wish synchronize worked, but it doesn't
                 
 - name: Copy language templates        
@@ -41,6 +24,32 @@
         group=admin
         state=directory
         recurse=yes
+
+# We should have a var for python site-packages directory
+
+- name: Create xs-activity-server python site-packages directory
+  file: path=/usr/lib/python2.7/site-packages/xs_activities
+        mode=0755
+        owner=root
+        group=root
+        state=directory  
+    
+- name: Install Python module
+  copy: src=xs_activities/__init__.py
+        dest=/usr/lib/python2.7/site-packages/xs_activities
+        mode=0644
+        owner=root
+        group=root
+
+- name: Copy scripts to /usr/bin   
+  copy: src={{ item }}
+        dest=/usr/bin
+        mode=0755
+        owner=root
+        group=root
+  with_items:
+        - bin/xs-regenerate-activities
+        - bin/xs-check-activities
 
 # Do in ansible what was done in /etc/sysconfig/olpc-scripts/setup.d/xs-activity-server script
 
