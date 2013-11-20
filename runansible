@@ -34,4 +34,4 @@ if [ "$PLAYBOOK" == "" ]
 	exit
 	fi
 
-ansible-playbook -i $INVENTORY $PLAYBOOK "${ARGS}" --connection=local 
+ansible-playbook -i $INVENTORY $PLAYBOOK ${ARGS} --connection=local 
