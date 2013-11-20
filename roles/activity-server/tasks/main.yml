@@ -29,6 +29,7 @@
   with_items:
         - bin/xs-regenerate-activities
         - bin/xs-check-activities
+# Wish synchronize worked, but it doesn't
                 
 - name: Copy language templates        
   command: rsync -a roles/activity-server/files/lang_templates /library/xs-activity-server/
