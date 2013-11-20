@@ -12,6 +12,7 @@
     - xo
     - download
     - services
+    - squid
 
 - name: Set hostname
   template: backup=yes
