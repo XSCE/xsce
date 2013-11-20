@@ -4,6 +4,8 @@
   with_items:
    - bind
    - bind-utils
+  tags:
+    - download
 
 - name: Set folder permission
   file: path={{ item }}

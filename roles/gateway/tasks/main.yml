@@ -2,9 +2,12 @@
   service: name=firewalld
            enabled=no
            state=stopped
+
 - name: Install iptables service package
   yum: name=iptables-services
        state=installed
+  tags:
+    - download
 
 - name: Create olpc-scripts directory
   file: path={{ item }}
@@ -32,12 +35,21 @@
 
 - include: dhcpd.yml
   when: 'xsce_lan_iface != ""' 
+  tags:
+    - dhcpd
+    - gateway
 
 - include: squid.yml
   when: 'xsce_lan_iface != ""'
+  tags:
+    - squid
+    - gateway
 
 - include: wondershaper.yml
   when: 'xsce_lan_iface != ""'
+  tags:
+    - wondershaper
+    - gateway
 
 - name: Run iptables 
   command: /etc/sysconfig/iptables-config
@@ -49,4 +61,3 @@
 - name: Create gateway flag
   shell: echo 1 > /etc/sysconfig/olpc-scripts/setup.d/installed/gateway
          creates=/etc/sysconfig/olpc-scripts/setup.d/installed/gateway
-

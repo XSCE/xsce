@@ -4,6 +4,8 @@
   with_items:
     - httpd
     - php
+  tags:
+    - download
 
 - name: Create sugar-stats directory tree
   template: backup=yes

@@ -3,6 +3,8 @@
        state=present
   with_items:
    - chrony
+  tags:
+    - download
 
 #TODO: Use regexp filter instead of hard-code ip 
 - name: Update chrony config file

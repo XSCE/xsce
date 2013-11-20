@@ -1,5 +1,18 @@
 - name: Get XSCE facts
   xsce_facts: facts=true
+  tags: 
+    - facts
+    - common
+    - gateway
+    - dhcpd
+    - network
+    - ajenti
+    - wondershaper
+    - core
+    - xo
+    - download
+    - services
+    - squid
 
 - name: Set hostname
   template: backup=yes
@@ -10,12 +23,18 @@
 
 - name: Install xs repo
   get_url: url=http://xsce.activitycentral.com/repos/xsce-release.repo dest=/etc/yum.repos.d/
+  tags:
+    - download
 
 - include: xo.yml
   when: ansible_distribution_release == "based on Fedora 18"
+  tags:
+    - xo
 
 - include: selinux.yml
   when: ansible_selinux["status"] != "disabled"
+  tags:
+    - download
 
 - name: Create /library
   file: path=/library
@@ -23,8 +42,6 @@
         group=root
         mode=0755
         state=directory
-
-- include: yum.yml
 
 - name: Disable root login with password 
   lineinfile: backup=yes
@@ -40,6 +57,11 @@
            state=restarted
   with_items:
     - sshd
+
+
+- include: yum.yml 
+  tags:
+    - download
 
 - include: chrony.yml
 - include: avahi.yml

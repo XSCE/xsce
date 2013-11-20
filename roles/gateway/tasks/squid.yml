@@ -5,6 +5,8 @@
     - squid
     - cadaver
     - dansguardian
+  tags:
+    - download
 
 - name: Copy init script and config file
   template: backup=yes

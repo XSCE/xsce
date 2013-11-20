@@ -4,6 +4,8 @@
   with_items:
     - postgresql
     - postgresql-server
+  tags:
+    - download
 
 - name: Create postgresql-xs systemd service
   template: backup=yes

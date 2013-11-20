@@ -11,12 +11,18 @@
     - pkg: pyOpenSSL
     - pkg: python-daemon
     - pkg: gcc
+  tags:
+    - download
 
 - name: install ajenti from Pypi
   pip: name=https://github.com/migonzalvar/ajenti/releases/download/0.99.34-patched5/ajenti-0.99.34-patched5.tar.gz
+  tags:
+    - download
 
 - name: install python-catcher
   pip: name=python-catcher version=0.1.3
+  tags:
+    - download
 
 - name: change default port
   lineinfile: backup=yes
