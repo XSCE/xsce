@@ -7,7 +7,7 @@
   tags:
     - download
 
-- name: Create sugar-stats directory tree
+- name: Create httpd directory tree
   template: backup=yes
             src={{ item.src }}
             dest={{ item.dest }}
