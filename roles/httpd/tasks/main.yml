@@ -23,13 +23,6 @@
 #TODO: Add config file (and conditional) for apache 2.2
      - { src: 'xs-http' , dest: '/etc/sudoers.d/xs-http', mode: '0640'}
 
-- name: Configure the server-name (necessary to make URL-redirections work)
-  lineinfile: backup=yes
-              dest=/etc/httpd/conf/httpd.conf
-              state=present
-              regexp='^#ServerName www.example.com:80'
-              line='ServerName schoolserver'
-
 - name: Create http pid dir
   file: path=/var/run/httpd
         mode=0755
