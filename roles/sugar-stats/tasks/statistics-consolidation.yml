@@ -1,9 +1,13 @@
 - name: Install python-pip package
   yum: name=python-pip
        state=installed
+  tags: 
+    - download
 
 - name: Install statistics-consolidation with pip
   pip: name=git+https://github.com/migonzalvar/statistics-consolidation.git@sqlalchemy-v2#egg=stats_consolidation
+  tags:
+    - download
 
 - name: Install required libraries
   yum: name={{ item }}
@@ -12,6 +16,8 @@
     - rrdtool-python
     - python-sqlalchemy
     - python-psycopg2
+  tags:
+    - download
 
 - name: Enable postgresl access by md5 method
   lineinfile: backup=yes

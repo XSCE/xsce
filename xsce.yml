@@ -5,7 +5,7 @@
   vars_files:
   - vars/default_vars.yml
   roles:
-      - common
-      - network
-      - gateway
-      - core
+      - { role: common, tags: ['common'] }
+      - { role: network, tags: ['network'] }
+      - { role: gateway, tags: ['gateway'] }
+      - { role: core, tags: ['core'] }
