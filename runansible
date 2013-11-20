@@ -1,20 +1,36 @@
 #!/bin/bash
+DATE=`date +%F@%T`
+LOG=/var/log/xsce-log-$DATE.txt
+FACTS=/tmp/xsce-facts-$DATE
+
 if [ -f xsce.yml ]
- then
+then
  PLAYBOOK="xsce.yml"
  INVENTORY="ansible_hosts"
- echo "Running local playbooks! "
- else
+ XS_FACTS="roles/common/library/xsce_facts"
+ echo "Running local playbooks! " | tee -a $LOG
+else
  if [ -f /var/local/xsce/xsce.yml ]
  then
- PLAYBOOK="/var/local/xsce/xsce.yml"
- INVENTORY="/var/local/xsce/ansible_hosts"
- echo "Running rpm provided playbooks ! "
-fi
+ CWD="/var/local/xsce"
+ PLAYBOOK="$CWD/xsce.yml"
+ INVENTORY="$CWD/ansible_hosts"
+ XS_FACTS="$CWD/roles/common/library/xsce_facts"
+ echo "Running rpm provided playbooks ! " | tee -a $LOG
+ fi
 fi
 if [ "$PLAYBOOK" == "" ]
-	then
-	echo "rpm is not installed, and local playbook wasn't found!"
+then
+	echo "rpm is not installed, and local playbook wasn't found!" | tee -a $LOG
 	exit
-	fi
-ansible-playbook -i $INVENTORY $PLAYBOOK --connection=local 
+fi
+
+# lets just gather the info for the log file
+echo "Finding FACTS..." | tee -a $FACTS
+ansible -m setup -i $INVENTORY localhost --connection=local >> $FACTS
+bash $XS_FACTS >> $FACTS
+cat $FACTS >> $LOG
+
+echo "Done FACTS, starting INSTALL" | tee -a $LOG
+ansible-playbook -i $INVENTORY $PLAYBOOK --connection=local | tee -a $LOG
+rm $FACTS
