@@ -57,14 +57,16 @@
   lineinfile: backup=yes
               dest=/etc/rssh.conf
              state=present
-             regexp=^#allowrsync
+             regexp='^#allowrsync'
+             insertafter='^#allowrsync'
              line=allowrsync
 
 - name: Configure rssh sftp permissions for backup restore clients
   lineinfile: backup=yes
               dest=/etc/rssh.conf
              state=present
-             regexp=^#allowsftp
+             regexp='^#allowsftp'
+             insertafter='^#allowsftp'
              line=allowsftp
 
 - include: xs-authserver.yml
