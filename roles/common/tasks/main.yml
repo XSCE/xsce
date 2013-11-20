@@ -11,6 +11,7 @@
     - core
     - xo
     - download
+    - services
 
 - name: Set hostname
   template: backup=yes
