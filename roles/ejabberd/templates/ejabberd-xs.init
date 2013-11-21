@@ -78,7 +78,7 @@ update_domain() {
 
     new_name=$short_host.$domain
 
-    (sed -e s/@@BASEDNSNAME2@@/$new_name/ $CONFIG_FILE.in > $CONFIG_FILE.tmp ) && mv $CONFIG_FILE.tmp $CONFIG_FILE || exit 1
+    #(sed -e s/@@BASEDNSNAME2@@/$new_name/ $CONFIG_FILE.in > $CONFIG_FILE.tmp ) && mv $CONFIG_FILE.tmp $CONFIG_FILE || exit 1
 
     # If we are changing the domain, we must clear the DB.
     if [ -e /var/lib/ejabberd/online_src_created ] ; then
