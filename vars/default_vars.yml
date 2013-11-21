@@ -1,7 +1,3 @@
-#Domain name
-xsce_hostname : schoolserver
-xsce_domain: local
-
 #Network
 lan_ip: 172.18.96.1
 lan_netmask: 255.255.224.0
