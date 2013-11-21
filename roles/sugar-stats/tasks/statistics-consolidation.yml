@@ -28,10 +28,12 @@
               insertafter="^# IPv4 local connections"
               owner=postgres
               group=postgres
+  register: postgres_stats
 
 - name: Restart postgresql service
   service: name=postgresql-xs
            state=restarted
+  when: postgres_stats.changed
 
 - name: Create postgres user
   postgresql_user: user=statsconso password=statsconso

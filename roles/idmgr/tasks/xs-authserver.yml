@@ -43,6 +43,7 @@
   ignore_errors: yes
   environment:
     XS_AUTHSERVER_DATABASE: /var/lib/xs-authserver/data.db
+  changed_when: false
 
 - name: Enable xs-authserver service
   service: name=xs-authserver

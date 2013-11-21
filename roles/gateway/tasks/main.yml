@@ -32,18 +32,27 @@
     - { src: "gateway/iptables-config" , dest: "/etc/sysconfig/iptables-config" }
     - { src: "gateway/iptables.service" , dest: "/etc/systemd/system/iptables.service" }
     - { src: "gateway/xs-gen-iptables" , dest: "/usr/bin/xs-gen-iptables" }
+  notify:
+    - recreate iptables
+    - restart iptables
 
 - include: dhcpd.yml
   when: 'xsce_lan_iface != ""' 
   tags:
     - dhcpd
     - gateway
+  notify:
+    - recreate iptables
+    - restart iptables
 
 - include: squid.yml
   when: 'xsce_lan_iface != ""'
   tags:
     - squid
     - gateway
+  notify:
+    - recreate iptables
+    - restart iptables
 
 - include: wondershaper.yml
   when: 'xsce_lan_iface != ""'
@@ -51,13 +60,12 @@
     - wondershaper
     - gateway
 
-- name: Run iptables 
-  command: /etc/sysconfig/iptables-config
+- name: Create gateway flag
+  shell: echo 1 > /etc/sysconfig/olpc-scripts/setup.d/installed/gateway
+         creates=/etc/sysconfig/olpc-scripts/setup.d/installed/gateway
+  when: 'xsce_lan_iface != ""'
 
 - name: Enable iptables service 
   service: name=iptables
            enabled=yes
-
-- name: Create gateway flag
-  shell: echo 1 > /etc/sysconfig/olpc-scripts/setup.d/installed/gateway
-         creates=/etc/sysconfig/olpc-scripts/setup.d/installed/gateway
+           state=started

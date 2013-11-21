@@ -1,0 +1,15 @@
+- name: recreate iptables
+  command: /etc/sysconfig/iptables-config
+
+- name: restart iptables
+  service: name=iptables
+           state=restarted
+
+- name: restart squid
+  service: name=squid
+           state=restarted
+
+- name: restart dhcpd
+  service: name=dhcpd
+           state=restarted
+

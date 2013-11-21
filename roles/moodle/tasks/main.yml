@@ -23,6 +23,8 @@
     - src: 'moodle-xs-init'
       dest: '/usr/libexec/moodle-xs-init'
       mode: '0755'
+  notify:
+    - restart httpd
 
 - name: Create db user
   postgresql_user: name=apache
@@ -43,15 +45,9 @@
 
 - name: Execute moodle startup script
   command: /usr/libexec/moodle-xs-init start
-
-- name: Restart https
-  service: name=httpd
-           state=restarted
-
-- name: Enable moodle service
-  service: name=moodle-xs
-           enabled=yes
-           state=started
+           removes=/etc/moodle/needsupgrade
+  notify:
+    - restart httpd
 
 - name: add moodle to service list
   ini_file: dest='{{ service_filelist }}'

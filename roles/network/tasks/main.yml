@@ -42,14 +42,9 @@
    - NetworkManager
   tags:
     - download
-
-- name: restart NetworkManager services
-  service: name=NetworkManager
-           enabled=yes
-           state=restarted
-  service: name=NetworkManager-dispatcher
-           enabled=yes
-           state=restarted
+  notify:
+    - restart networkmanager
+    - restart networkmanager-dispatcher
 
 - include: named.yml
   tags:
