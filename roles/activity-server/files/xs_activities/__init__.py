@@ -15,7 +15,8 @@ from cStringIO import StringIO
 import syslog
 from ConfigParser import SafeConfigParser
 
-TEMPLATE_DIR = '/library/xs-activity-server/templates'
+TEMPLATE_DIR = '/library/xs-activity-server/lang_templates'
+DEFAULT = 'en'
 
 # how many versions before the latest are worth having around.
 KEEP_OLD_VERSIONS = 3
@@ -385,8 +386,8 @@ def locale_search_path(locale):
     'DEFAULT')."""
     #XXX might be better to be storing locale as tuple
     if '-' in locale:
-        return (locale, locale.split('-')[0], 'DEFAULT')
-    return (locale, 'DEFAULT')
+        return (locale, locale.split('-')[0], DEFAULT)
+    return (locale, DEFAULT)
 
 
 
