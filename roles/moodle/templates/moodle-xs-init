@@ -26,12 +26,6 @@ start() {
                 echo "Moodle installation or upgrade required..."
 		pushd /var/www/moodle/web
 
-                # Attempt to create an 'apache' user in PostgreSQL
-                su  -c 'createuser -SRD apache' postgres || echo 'Could not create apache user (exists already?)'
-
-                # attempt to create a database
-                su -c 'createdb -O apache -E utf8 -T template0 moodle-xs' postgres || echo 'Could not create moodle-xs DB (exists already?)'
-
 		echo "["`date`"]" Start install / upgrade >> /var/log/moodle-instupg.log 
 
 		# Correct a bungled 'version' variable in mdl_config. If version matches local_version, and

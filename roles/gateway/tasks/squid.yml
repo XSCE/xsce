@@ -1,30 +1,32 @@
 - name: Install squid packages
-  yum: name=${item}
+  yum: name={{ item }}
        state=installed
   with_items:
     - squid
     - cadaver
     - dansguardian
+  tags:
+    - download
 
 - name: Copy init script and config file
   template: backup=yes
-            src=${item.src}
-            dest=${item.dest}
-            owner=${item.owner}
-            group=${item.owner}
-            mode=${item.mode}
+            src={{ item.src }}
+            dest={{ item.dest }}
+            owner={{ item.owner }}
+            group={{ item.owner }}
+            mode={{ item.mode }}
   with_items:
-    - src: 'squid.sysconfig'
+    - src: 'squid/squid.sysconfig'
       dest: '/etc/sysconfig/squid'
       owner: 'root'
       group: 'root'
       mode: '0755'
-    - src: 'squid-xs.conf.j2'
+    - src: 'squid/squid-xs.conf.j2'
       dest: '/etc/squid/squid-xs.conf'
       owner: 'squid'
       group: 'squid'
       mode: '0644'
-    - src: 'dansguardian.conf.j2'
+    - src: 'squid/dansguardian.conf.j2'
       dest: '/etc/dansguardian/dansguardian.conf'
       owner: 'dansguardian'
       group: 'dansguardian'
@@ -60,14 +62,14 @@
 - name: Enable dansguardian
   service: name=dansguardian
            enabled=yes
-           state=started
-  when_boolean: ${dansguardian}
+           state=restarted
+  when: "dansguardian"
 
 - name: Disable dansguardian
   service: name=dansguardian
            enabled=yes
            state=started
-  when_boolean: not ${dansguardian}
+  when: "not dansguardian"
 
 
  
@@ -78,4 +80,4 @@
 - name: Start squid service
   service: name=squid
            enabled=yes
-           state=started
+           state=restarted

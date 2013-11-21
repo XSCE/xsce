@@ -1,9 +1,11 @@
 - name: Install munin package
-  yum: name=$item
+  yum: name={{ item }}
        state=present
   with_items:
     - munin
     - munin-node
+  tags:
+    - download
 
 - name: Copy munin config file
   template: backup=yes

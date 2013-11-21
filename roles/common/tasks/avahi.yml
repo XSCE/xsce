@@ -1,12 +1,31 @@
 - name: Install avahi package
-  yum: name=$item
+  yum: name={{ item }}
        state=present
   with_items:
    - nss-mdns
    - avahi
    - avahi-tools
    - avahi-ui
+  tags:
+    - download
 
+- name: Install avahi announce config files
+  template: backup=yes
+            src=rfb.service
+            dest=/etc/avahi/services/rfb.service
+            owner=avahi
+            group=avahi
+            mode=640
+           
+  template: backup=yes 
+            src=schoolserver.service
+            dest=/etc/avahi/services/schoolserver.service
+            owner=avahi
+            group=avahi
+            mode=640
+  tags:     avahi
+           
 - name: Enable avahi service
   service: name=avahi-daemon
            enabled=yes
+           state="restarted"   

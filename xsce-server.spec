@@ -11,9 +11,9 @@ License:   GPLv3
 Group:     Applications/System
 Source:    %{expand:%%(pwd)}
 BuildArch: noarch
-Requires: bash, python >= 2.7, ansible >= 1.3
+Requires:  bash, python >= 2.7, ansible >= 1.3
 URL:       http://github.com/XSCE/xsce.git
-Provides: xs-config xs-tools
+Provides:  xs-config
 Provides:  xsce-server
 
 BuildRoot: %{_topdir}/BUILD/%{name}-%{version}-%{release}

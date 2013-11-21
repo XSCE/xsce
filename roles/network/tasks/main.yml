@@ -7,62 +7,51 @@
             mode=0644
 
 #TODO: Use vars instead of hardcoded values
-- name: Configure /etc/hosts
-  lineinfile: backup=yes
-              dest=/etc/hosts
-              regexp='^172\.18\.96\.1'
-              line='172.18.96.1            {{ xsce_hostname }}.{{ xsce_domain }}      {{ xsce_hostname }}'
-              owner=root
-              group=root
-              mode=0644
+- name: Add local ip to /etc/hosts
+  host: ip={{ lan_ip }}
+        hostname={{ xsce_hostname }}.{{ xsce_domain }}
+        aliases={{ xsce_hostname }}
+        state=present
 
-- name: Configure /etc/hosts
-  lineinfile: backup=yes
-              dest=/etc/hosts
-              regexp='^127\.0\.0\.1'
-              line='127.0.0.1            localhost.localdomain      localhost    schoolserver'
-              owner=root
-              group=root
-              mode=0644
+- name: Add local hostname to /etc/hosts
+  host: ip=127.0.0.1
+        hostname=localhost.localdomain
+        aliases=localhost,{{ xsce_hostname }}
+        state=present
 
 - name: Configure lan interface
   template: backup=yes
             src=ifcfg.j2
-            dest=/etc/sysconfig/network-scripts/ifcfg-${item.iface}
+            dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_lan_iface}}
+  when: 'xsce_lan_iface != "" '
+
+- name: Create xs network flags
+  template: backup=yes
+            src={{ item }}.j2
+            dest=/etc/sysconfig/{{ item }}
+            mode=0644
   with_items:
-    - ${xsce_networks.lan}
+    - xs_wan_device
+    - xs_lan_device
+    - xs_domain_name
 
-- name: Configure lan mac address
-  lineinfile: backup=yes
-              dest=/etc/sysconfig/network-scripts/ifcfg-${xsce_networks.lan.iface}
-              regexp='^HWADDR='
-              line='HWADDR=${mac_lan.stdout}'
-              state=present
+- name: update common packages
+  yum: name={{ item }}
+       state=latest
+  with_items:
+   - NetworkManager
+  tags:
+    - download
 
-#TODO: configure WIFI wan
-#- name: Configure wan dynamic interface
-#  template: backup=yes
-#            src=network/ifcfg-dhcp.j2
-#            dest=/etc/sysconfig/network-scripts/ifcfg-${item.iface}
-#  with_items:
-#    - ${xsce_networks.wan}
-#  when: '"802-3-ethernet" == "${wan_type.stdout}"'
-#  when: wan_type.stdout.find('802-3-ethernet') != -1
+- name: restart NetworkManager services
+  service: name=NetworkManager
+           enabled=yes
+           state=restarted
+  service: name=NetworkManager-dispatcher
+           enabled=yes
+           state=restarted
 
-#- name: Configure wan mac address
-#  lineinfile: backup=yes
-#              dest=/etc/sysconfig/network-scripts/ifcfg-${xsce_networks.wan.iface}
-#              regexp='^HWADDR='
-#              line='HWADDR=${mac_wan.stdout}'
-#              state=present
-#  when: '"802-3-ethernet" == "${wan_type.stdout}"'
-
-#TODO: Check when are used those flags
-- name: Create wan xs flags
-  shell: echo ${xsce_networks.wan.iface} > /etc/sysconfig/xs_wan_device
-
-- name: Create lan xs flags
-  shell: echo ${xsce_networks.lan.iface} > /etc/sysconfig/xs_lan_device
-
-- name: Create domain flag
-  shell: echo ${xsce_domain} > /etc/sysconfig/xs_domain_name
+- include: named.yml
+  tags:
+    - named
+    - network

@@ -5,9 +5,11 @@
             owner=root
             group=root
             mode=0644
+  tags:
+    - download
 
 - name: Install IIAB required packages
-  yum: name=$item
+  yum: name={{ item }}
        state=present
   with_items:
     - Internet-in-a-Box
@@ -15,6 +17,8 @@
     - mod_xsendfile
     - Whoosh
     - backports.lzma
+  tags:
+    - download
 
 - name: Copy IIAB config file
   template: backup=yes

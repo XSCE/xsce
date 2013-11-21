@@ -23,6 +23,12 @@
               line='%_excludedocs 0'
               state=present
 
+- name: pre(re)-Install packages
+  yum: name={{ item }}
+       state=latest
+  with_items:
+   - usbmount
+
 - name: Configure networkmanager plugin
   ini_file: dest=/etc/NetworkManager/NetworkManager.conf
             section=main
@@ -32,8 +38,8 @@
 - name: Change failure and interval settings for modem connection
   ini_file: dest=/etc/NetworkManager/system-connections/"Sugar Modem Connection"
             section=ppp
-            option=${item.option}
-            value=${item.value}
+            option={{ item.option }}
+            value={{ item.value }}
             backup=yes
             mode=0600
   with_items:
@@ -70,7 +76,6 @@
   file: path=/etc/systemd/system/default.target
         src=/lib/systemd/system/multi-user.target
         state=link
-  tags: test
   register: disabled_login
 
 - name: Reboot system 

@@ -12,9 +12,26 @@ if [ -f xsce.yml ]
  echo "Running rpm provided playbooks ! "
 fi
 fi
+
+
+#Domain change
+if [ -f /etc/sysconfig/xs_domain_name ] 
+then
+ XSDOMAIN=`cat /etc/sysconfig/xs_domain_name`
+ ARGS="--extra-vars \"xsce_domain=$XSDOMAIN\""
+fi
+
+if [ x"$1" != x ]
+ then
+ XSDOMAIN=$1
+ ARGS="--extra-vars \"xsce_domain=$XSDOMAIN\""
+fi
+
+
 if [ "$PLAYBOOK" == "" ]
 	then
 	echo "rpm is not installed, and local playbook wasn't found!"
 	exit
 	fi
-ansible-playbook -i $INVENTORY $PLAYBOOK --connection=local 
+
+ansible-playbook -i $INVENTORY $PLAYBOOK ${ARGS} --connection=local 

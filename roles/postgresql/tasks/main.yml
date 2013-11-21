@@ -1,9 +1,11 @@
 - name: Install postgresql packages
-  yum: name=$item
+  yum: name={{ item }}
        state=present
   with_items:
     - postgresql
     - postgresql-server
+  tags:
+    - download
 
 - name: Create postgresql-xs systemd service
   template: backup=yes

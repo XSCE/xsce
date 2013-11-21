@@ -1,5 +1,5 @@
 - name: Create xs-portal directory tree
-  file: path=$item
+  file: path={{ item }}
         mode=0755
         owner=root
         group=root
@@ -10,7 +10,7 @@
     - /var/www/html/xs-portal/incl
     
 - name: Copy xs-portal php files   
-  copy: src=$item
+  copy: src={{ item }}
         dest=/var/www/html/xs-portal
         mode=0644
         owner=root
@@ -19,7 +19,7 @@
         - xs-portal/index.*.php
 
 - name: Copy xs-portal css files   
-  copy: src=$item
+  copy: src={{ item }}
         dest=/var/www/html/xs-portal
         mode=0644
         owner=root
@@ -28,7 +28,7 @@
         - xs-portal/*.css
                 
 - name: Copy xs-portal incl files   
-  copy: src=$item
+  copy: src={{ item }}
         dest=/var/www/html/xs-portal/incl
         mode=0644
         owner=root
@@ -37,7 +37,7 @@
         - xs-portal/incl/*
         
 - name: Copy xs-portal image files   
-  copy: src=$item
+  copy: src={{ item }}
         dest=/var/www/html/xs-portal/images
         mode=0644
         owner=root
