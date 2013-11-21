@@ -16,16 +16,20 @@
             owner=avahi
             group=avahi
             mode=640
-           
+  notify:
+    - restart avahi
+
+- name: Install schoolserver announce file           
   template: backup=yes 
             src=schoolserver.service
             dest=/etc/avahi/services/schoolserver.service
             owner=avahi
             group=avahi
             mode=640
-  tags:     avahi
+  notify:
+    - restart avahi
            
 - name: Enable avahi service
   service: name=avahi-daemon
            enabled=yes
-           state="restarted"   
+           state=started

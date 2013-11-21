@@ -45,8 +45,10 @@
     - { src: 'named/school.internal.zone.db', dest: '/var/named-xs/school.internal.zone.db' , owner: "root" , mode: '0755'}
     - { src: 'named/school.internal.zone.in-addr.db.j2', dest: '/var/named-xs/school.internal.zone.in-addr.db' , owner: "named" , mode: '0644'}
     - { src: 'named/dummy', dest: '/var/named-xs/data/dummy' , owner: "named" , mode: '0755'}
+  notify:
+    - restart named
 
 - name: Enable named service
   service: name=named
            enabled=yes
-           state=restarted
+           state=started

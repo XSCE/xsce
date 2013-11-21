@@ -1,0 +1,7 @@
+- name: restart sshd
+  service: name=sshd
+           state=restarted
+
+- name: restart avahi
+  service: name=avahi-daemon
+           state=restarted
