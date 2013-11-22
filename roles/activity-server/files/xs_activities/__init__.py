@@ -466,7 +466,7 @@ def htmlise_bundles(bundle_dir, dest_html):
 
     log('found locales: %s' % locales)
 
-    make_html(newest, 'DEFAULT', dest_html + '.DEFAULT')
+    make_html(newest, DEFAULT, dest_html + '.' + DEFAULT)
     for locale in locales:
         try:
             make_html(newest, locale, '%s.%s' % (dest_html, locale))
