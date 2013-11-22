@@ -16,7 +16,7 @@ import syslog
 from ConfigParser import SafeConfigParser
 
 TEMPLATE_DIR = '/library/xs-activity-server/lang_templates'
-DEFAULT = 'en'
+DEFAULT_LANG = 'en'
 
 # how many versions before the latest are worth having around.
 KEEP_OLD_VERSIONS = 3
@@ -382,12 +382,12 @@ def canonicalise(lang):
 
 def locale_search_path(locale):
     """Find a series of sensible locales to try, including
-    DEFAULT. For example 'zh-CN' would become ('zh-CN', 'zh',
-    'DEFAULT')."""
+    DEFAULT_LANG. For example 'zh-CN' would become ('zh-CN', 'zh',
+    'DEFAULT_LANG')."""
     #XXX might be better to be storing locale as tuple
     if '-' in locale:
-        return (locale, locale.split('-')[0], DEFAULT)
-    return (locale, DEFAULT)
+        return (locale, locale.split('-')[0], DEFAULT_LANG)
+    return (locale, DEFAULT_LANG)
 
 
 
@@ -466,14 +466,16 @@ def htmlise_bundles(bundle_dir, dest_html):
 
     log('found locales: %s' % locales)
 
-    make_html(newest, DEFAULT, dest_html + '.' + DEFAULT)
-    for locale in locales:
-        try:
-            make_html(newest, locale, '%s.%s' % (dest_html, locale))
-        except Exception, e:
-            log("Couldn't make page for %s (Error: %s)" % (locale, e), syslog.LOG_WARNING)
-
-    make_varfile(locales, dest_html)
+    if locales:    
+        for locale in locales:
+            try:
+                make_html(newest, locale, '%s.%s' % (dest_html, locale))
+            except Exception, e:
+                log("Couldn't make page for %s (Error: %s)" % (locale, e), syslog.LOG_WARNING)
+    else:
+        make_html(newest, DEFAULT, dest_html + '.' + DEFAULT)
+        
+    # make_varfile(locales, dest_html)- have switched to multiviews, so var not needed
 
 
 def make_varfile(locales, dest_html):
