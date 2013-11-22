@@ -134,4 +134,6 @@ older ones.
 Source
 ------
 
-This role is forked from the xs-activity-server rpm.
+This role is based on the xs-activity-server rpm.
+
+http://dev.laptop.org/git/users/martin/xs-activity-server/ v0.4 release
