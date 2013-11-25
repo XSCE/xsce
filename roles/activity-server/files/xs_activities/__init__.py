@@ -15,6 +15,8 @@ from cStringIO import StringIO
 import syslog
 from ConfigParser import SafeConfigParser
 
+# we no longer really have a default in that it is set in the conf file
+# we assume that we have a lang_template for the default language
 TEMPLATE_DIR = '/library/xs-activity-server/lang_templates'
 DEFAULT_LANG = 'en'
 
@@ -442,12 +444,15 @@ def htmlise_bundles(bundle_dir, dest_html):
             log("Couldn't find good activity/library info in %s (Error: %s)" % (filename, e))
 
     newest = []
-    locales = set()
+    # create an index for each language that has a template
+    # but track any locales in bundles in case we do not have templates for them
+    locales = [os.path.join(o) for o in os.listdir(TEMPLATE_DIR) if os.path.isdir(os.path.join(TEMPLATE_DIR,o))]
+    locales_found = set ()
     for versions in all_bundles.values():
         versions = [x[1] for x in sorted(versions)]
         # end of list is the newest; beginning of list might need deleting
         latest = versions.pop()
-        locales.update(latest.linfo)
+        locales_found.update(latest.linfo)
         newest.append(latest)
         goners = versions[:-KEEP_OLD_VERSIONS]
         keepers = versions[-KEEP_OLD_VERSIONS:]
@@ -465,15 +470,13 @@ def htmlise_bundles(bundle_dir, dest_html):
                     setattr(latest, k, d[k])
 
     log('found locales: %s' % locales)
-
-    if locales:    
-        for locale in locales:
-            try:
-                make_html(newest, locale, '%s.%s' % (dest_html, locale))
-            except Exception, e:
-                log("Couldn't make page for %s (Error: %s)" % (locale, e), syslog.LOG_WARNING)
-    else:
-        make_html(newest, DEFAULT, dest_html + '.' + DEFAULT)
+   
+    # assume locales is not empty as we have at least the default language
+    for locale in locales:
+        try:
+            make_html(newest, locale, '%s.%s' % (dest_html, locale))
+        except Exception, e:
+            log("Couldn't make page for %s (Error: %s)" % (locale, e), syslog.LOG_WARNING)    
         
     # make_varfile(locales, dest_html)- have switched to multiviews, so var not needed
 
