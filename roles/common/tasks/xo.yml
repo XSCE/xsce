@@ -78,6 +78,10 @@
         state=link
   register: disabled_login
 
+- name: Remove custom profile settings
+  file: path=/etc/profile.d/zzz_olpc.sh
+        state=absent
+
 - name: Reboot system 
   command: /sbin/reboot 
   when: disabled_login.changed
