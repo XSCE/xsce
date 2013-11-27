@@ -163,7 +163,7 @@ LoadModule authz_user_module modules/mod_authz_user.so
 #LoadModule authz_owner_module modules/mod_authz_owner.so
 #LoadModule authz_groupfile_module modules/mod_authz_groupfile.so
 #LoadModule authz_dbm_module modules/mod_authz_dbm.so
-LoadModule authz_default_module modules/mod_authz_default.so
+#LoadModule authz_default_module modules/mod_authz_default.so - removed in 2.4
 #LoadModule ldap_module modules/mod_ldap.so
 #LoadModule authnz_ldap_module modules/mod_authnz_ldap.so
 #LoadModule include_module modules/mod_include.so
@@ -202,7 +202,7 @@ LoadModule rewrite_module modules/mod_rewrite.so
 #LoadModule file_cache_module modules/mod_file_cache.so
 #LoadModule mem_cache_module modules/mod_mem_cache.so
 LoadModule cgi_module modules/mod_cgi.so
-LoadModule wsgi_module modules/mod_wsgi.so
+#LoadModule wsgi_module modules/mod_wsgi.so
 
 #
 # The following modules are not loaded by default:
