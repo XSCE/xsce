@@ -36,6 +36,13 @@
   tags:
     - download
 
+- name: Install custom profile file
+  template: dest=/etc/profile.d/zzz_xsce.sh
+            src=zzz_xsce.sh
+            owner=root
+            mode=0644
+            backup=yes
+
 - name: Create /library
   file: path=/library
         owner=root
