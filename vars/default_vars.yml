@@ -19,3 +19,7 @@ services:
     enabled: True
   - name: squid
     enabled: True    
+
+# Languages
+default_language: en
+language_priority: en es
