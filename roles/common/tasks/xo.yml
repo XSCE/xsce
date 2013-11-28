@@ -23,6 +23,12 @@
               line='%_excludedocs 0'
               state=present
 
+- name: pre(re)-Install packages
+  yum: name={{ item }}
+       state=latest
+  with_items:
+   - usbmount
+
 - name: Configure networkmanager plugin
   ini_file: dest=/etc/NetworkManager/NetworkManager.conf
             section=main
@@ -70,8 +76,11 @@
   file: path=/etc/systemd/system/default.target
         src=/lib/systemd/system/multi-user.target
         state=link
-  tags: test
   register: disabled_login
+
+- name: Remove custom profile settings
+  file: path=/etc/profile.d/zzz_olpc.sh
+        state=absent
 
 - name: Reboot system 
   command: /sbin/reboot 

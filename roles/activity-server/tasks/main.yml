@@ -1,6 +1,8 @@
 - name: Install xs-activity-server package
   yum: name=xs-activity-server
        state=present
+  tags:
+    - download
        
 # assume apache in admin group
 

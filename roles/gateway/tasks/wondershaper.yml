@@ -44,4 +44,4 @@
 - name: enable wondershaper service
   service: name=wondershaper
            enabled=yes
-           state=started
+           state=restarted
