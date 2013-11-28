@@ -7,8 +7,8 @@
     - python-psycopg2
 
 - name: Remove stock moodle conf
-  file: path: '/etc/httpd/conf.d/moodle.conf'
-        state: absent
+  file: path='/etc/httpd/conf.d/moodle.conf'
+        state=absent
 
 - name: Configure moodle
   template: backup=yes
