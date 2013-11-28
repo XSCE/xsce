@@ -1,4 +1,0 @@
-
-# Redirect requests from the root to /moodle                                                                                     
-RewriteEngine On
-#RewriteRule ^/$ /moodle [R,L]
