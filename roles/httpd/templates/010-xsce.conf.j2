@@ -227,8 +227,7 @@ AccessFileName .htaccess
 # viewed by Web clients. 
 #
 <Files ~ "^\.ht">
-    Order allow,deny
-    Deny from all
+    Require all denied
 </Files>
 
 #
@@ -495,8 +494,7 @@ Alias /error/ "/var/www/error/"
         Options IncludesNoExec
         AddOutputFilter Includes html
         AddHandler type-map var
-        Order allow,deny
-        Allow from all
+        Require all granted
         LanguagePriority en es de fr
         ForceLanguagePriority Prefer Fallback
     </Directory>
