@@ -85,9 +85,6 @@
 # TODO: Fix multiview so it supports portal language menu
 #       For it only supports client's language code
 
-- name: Link default html to generic
-  shell: ln -sf /library/xs-activity-server/activities/index.html.DEFAULT /library/xs-activity-server/activities/index.html
-
 # TODO: Upload Activity via web interface
 #       and figure out what to do with olpc_activities.service 
 
