@@ -10,12 +10,27 @@
     - /library/xs-activity-server
     - /library/xs-activity-server/activities
     - /library/xs-activity-server/lang_templates
+    - /library/xs-activity-server/www.0
     - /library/xs-activity-server/tmp
     
 # Wish synchronize worked, but it doesn't
                 
 - name: Copy language templates        
   command: rsync -a roles/activity-server/files/lang_templates /library/xs-activity-server/
+  
+- name: Copy default index.html.en   
+  copy: src=www.0/index.html.en
+        dest=/library/xs-activity-server/www.0
+        mode=0755
+        owner=root
+        group=root
+        
+- name: Point www to www.0 as default
+  file: src=/library/xs-activity-server/www.0
+        dest=/library/xs-activity-server/www        
+        owner=root
+        group=admin
+        state=link       
   
 - name: Chown language templates  
   file: path=/library/xs-activity-server/lang_templates
@@ -67,8 +82,8 @@
         group=root
         mode=0755
 
-# TODO: Fix .var multiview
-#       For now patch it
+# TODO: Fix multiview so it supports portal language menu
+#       For it only supports client's language code
 
 - name: Link default html to generic
   shell: ln -sf /library/xs-activity-server/activities/index.html.DEFAULT /library/xs-activity-server/activities/index.html
