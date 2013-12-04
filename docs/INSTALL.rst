@@ -2,7 +2,25 @@
 Installing the Schoolserver Community Edition 
 ==============================
 
-Both single and two dongle installs are supported. 
+Supported autodetected network configurations for XO 1.5, 1.75 and 4 targets:
+
+| **One Dongle**
+|    eth0 - internal wifi for gateway
+|    eth1 - usb ethernet for schoolserver LAN connected to an access point
+
+| **Two Dongle**
+|    eth0 - internal wifi not used
+|    eth1 - usb ethernet for gateway
+|    eth2 - usb ethernet for schoolserver LAN connected to an access point
+
+**NOTE:** Appliance installs integrate into existing networking infrastructure and do not include dhcpd, squid, dansguardian, or wondershaper.
+
+| **XSCE Appliance - no additional interfaces**
+|    eth0 - internal wifi connected to an existing LAN
+
+| **XSCE Appliance One Dongle**
+|    eth0 - internal wifi not used
+|    eth1 - usb ethernet connected to an existing LAN 
 
 
 On the XO-1.75 or XO-4 laptop
