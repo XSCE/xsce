@@ -17,12 +17,13 @@ On the XO-1.75 or XO-4 laptop
     su -
     yum install -y git ansible
     
-* Update ansible::
-    
+  **Note**: ansible version 1.4.1 or higher is required. If your installed
+  version is previous you can install it from sources using::
+
     cd ~/
     git clone https://github.com/ansible/ansible.git
     cd ansible
-    git checkout 07b59da99
+    git checkout release1.4.1
     python setup.py install
 
 * Clone the XSCE git repo and run initial setup::
