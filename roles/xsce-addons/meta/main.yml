@@ -1,3 +1,4 @@
 # Add your role to this list.  Adding a tag is handy for testing.
 dependencies:
-   - { role: xsce-placeholder, tags: ['xsce-placeholder'] }   
+   - { role: iiab, tags: ['services','iiab','core'] }
+   - { role: pathagar, tags: ['services','pathagar'] }   
