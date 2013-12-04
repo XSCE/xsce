@@ -36,8 +36,10 @@ then
  exit
 fi
 
-export ANSIBLE_LOG_PATH="xsce-install.log"
-ansible -m setup -i ansible_hosts localhost --connection=local >> /dev/null
+#Log is placed in /root, to avoid issues with olpc os
+export ANSIBLE_LOG_PATH="/root/xsce-install.log"
+
+ansible -m setup -i $INVENTORY localhost --connection=local >> /dev/null
 bash $CWD/roles/common/library/xsce_facts >> $ANSIBLE_LOG_PATH
 
 ansible-playbook -i $INVENTORY $PLAYBOOK ${ARGS} --connection=local 
