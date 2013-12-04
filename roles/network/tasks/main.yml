@@ -1,4 +1,3 @@
-- include: named.yml
 - name: Configure /etc/sysconfig/network
   template: backup=yes
             src=sysconfig.network.j2
@@ -8,23 +7,17 @@
             mode=0644
 
 #TODO: Use vars instead of hardcoded values
-- name: Configure /etc/hosts
-  lineinfile: backup=yes
-              dest=/etc/hosts
-              regexp='^172\.18\.96\.1'
-              line='172.18.96.1            {{ xsce_hostname }}.{{ xsce_domain }}      {{ xsce_hostname }}'
-              owner=root
-              group=root
-              mode=0644
+- name: Add local ip to /etc/hosts
+  host: ip={{ lan_ip }}
+        hostname={{ xsce_hostname }}.{{ xsce_domain }}
+        aliases={{ xsce_hostname }}
+        state=present
 
-- name: Configure /etc/hosts
-  lineinfile: backup=yes
-              dest=/etc/hosts
-              regexp='^127\.0\.0\.1'
-              line='127.0.0.1            localhost.localdomain   localhost   {{ xsce_hostname }}'
-              owner=root
-              group=root
-              mode=0644
+- name: Add local hostname to /etc/hosts
+  host: ip=127.0.0.1
+        hostname=localhost.localdomain
+        aliases=localhost,{{ xsce_hostname }}
+        state=present
 
 - name: Configure lan interface
   template: backup=yes
@@ -32,11 +25,11 @@
             dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_lan_iface}}
   when: 'xsce_lan_iface != "" '
 
-#TODO: Check when are used those flags
 - name: Create xs network flags
   template: backup=yes
             src={{ item }}.j2
             dest=/etc/sysconfig/{{ item }}
+            mode=0644
   with_items:
     - xs_wan_device
     - xs_lan_device
@@ -47,6 +40,8 @@
        state=latest
   with_items:
    - NetworkManager
+  tags:
+    - download
 
 - name: restart NetworkManager services
   service: name=NetworkManager
@@ -56,8 +51,7 @@
            enabled=yes
            state=restarted
 
-- name: Set WAN as LAN when there isn't another interface
-  template: backup=yes
-            src=xs_wan_device.j2
-            dest=/etc/sysconfig/xs_lan_device
-  when: 'xsce_lan_iface == "" '
+- include: named.yml
+  tags:
+    - named
+    - network
