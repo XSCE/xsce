@@ -11,3 +11,4 @@
       - { role: network, tags: ['network'] }
       - { role: gateway, tags: ['gateway'] }
       - { role: core, tags: ['core'] }
+      - { role: xsce-addons, tags: ['addons'] }
