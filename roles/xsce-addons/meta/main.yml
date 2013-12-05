@@ -1,4 +1,4 @@
 # Add your role to this list.  Adding a tag is handy for testing.
 dependencies:
-   - { role: iiab, tags: ['iiab'] }
-   - { role: pathagar, tags: ['pathagar'] }   
+   - { role: iiab, tags: ['iiab','addons'] }
+   - { role: pathagar, tags: ['pathagar','addons'] }   
