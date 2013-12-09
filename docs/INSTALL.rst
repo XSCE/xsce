@@ -80,7 +80,7 @@ Using tags
 ::
 
   ansible-playbook -i ansible_hosts xsce.yml --tags="facts,squid" --connection=local
-* Avaliable tags are:``activity-server,addons,ajenti,avahi,common,core,dhcpd,download,ejabberd,facts,gateway,httpd,idmgr,iiab,monit,moodle,munin,named,network,olpc,pathagar,portal,postgresql,services,squid,sugar-stats,wondershaper,xo``
+* Avaliable tags are:``activity-server, addons, ajenti, avahi, common, core, dhcpd, download, ejabberd, facts, gateway, httpd, idmgr, iiab, monit, moodle, munin, named, network, olpc, pathagar, portal, postgresql, services, squid, sugar-stats, wondershaper, xo``
 
 
 Building the rpm
