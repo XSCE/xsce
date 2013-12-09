@@ -44,24 +44,23 @@ On the XO-1.75 or XO-4 laptop
     git checkout release1.4.1
     python setup.py install
 
-* Clone the XSCE git repo and run initial setup::
+* Clone the XSCE git repo and cd into it::
 
     cd ~/
     git clone https://github.com/XSCE/xsce
-    cd xsce/
+    cd xsce
+
+* Connect any and all network interfaces
+
+* Optional - verify that network interfaces are properly autodetected.  If they aren't, reboot the target machine and check again::
+
+    sh roles/common/library/xsce_facts
+
+* From the xsce directory, run initial setup.  The XO will automatically reboot upon completion::
+
     ./runansible
 
-.. Warning::
-   Depending on the type of setup (one or two dongle), you'll need to
-   check and edit the contents of
-   ``<xsce_root_directory>/vars/default_vars.yml``. For a one dongle
-   setup the interfaces are eth0 and eth1 for WAN and LAN respectively.
-   For a two dongle setup, the interfaces become eth1 and eth2. Since
-   XSCE won't automatically find out which eth is LAN or WAN, a good
-   practice would be to first insert the WAN dongle, so it gets its IP
-   address, and then insert the LAN dongle.
-
-* After rebooting (insert the ethernet dongles at this point)::
+* After rebooting::
 
     cd xsce/
     ./runansible # This will take a lot of time as it installs packages
