@@ -47,7 +47,7 @@
 
 - name: Configure postgres (2048mb)
   template: backup=yes
-            src=postgresql-512m.conf
+            src=postgresql-2048m.conf
             dest=/library/pgsql-xs/postgresql.conf
             owner=postgres
             group=postgres
