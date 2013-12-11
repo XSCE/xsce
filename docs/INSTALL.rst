@@ -2,7 +2,25 @@
 Installing the Schoolserver Community Edition 
 ==============================
 
-Both single and two dongle installs are supported. 
+Supported autodetected network configurations for XO 1.5, 1.75 and 4 targets:
+
+| **One Dongle**
+|    eth0 - internal wifi for gateway
+|    eth1 - usb ethernet for schoolserver LAN connected to an access point
+
+| **Two Dongle**
+|    eth0 - internal wifi not used
+|    eth1 - usb ethernet for gateway
+|    eth2 - usb ethernet for schoolserver LAN connected to an access point
+
+**NOTE:** Appliance installs integrate into existing networking infrastructure and do not include dhcpd, squid, dansguardian, or wondershaper.
+
+| **XSCE Appliance - no additional interfaces**
+|    eth0 - internal wifi connected to an existing LAN
+
+| **XSCE Appliance One Dongle**
+|    eth0 - internal wifi not used
+|    eth1 - usb ethernet connected to an existing LAN 
 
 
 On the XO-1.75 or XO-4 laptop
@@ -26,24 +44,23 @@ On the XO-1.75 or XO-4 laptop
     git checkout release1.4.1
     python setup.py install
 
-* Clone the XSCE git repo and run initial setup::
+* Clone the XSCE git repo and cd into it::
 
     cd ~/
     git clone https://github.com/XSCE/xsce
-    cd xsce/
+    cd xsce
+
+* Connect any and all network interfaces
+
+* Optional - verify that network interfaces are properly autodetected.  If they aren't, reboot the target machine and check again::
+
+    sh roles/common/library/xsce_facts
+
+* From the xsce directory, run initial setup.  The XO will automatically reboot upon completion::
+
     ./runansible
 
-.. Warning::
-   Depending on the type of setup (one or two dongle), you'll need to
-   check and edit the contents of
-   ``<xsce_root_directory>/vars/default_vars.yml``. For a one dongle
-   setup the interfaces are eth0 and eth1 for WAN and LAN respectively.
-   For a two dongle setup, the interfaces become eth1 and eth2. Since
-   XSCE won't automatically find out which eth is LAN or WAN, a good
-   practice would be to first insert the WAN dongle, so it gets its IP
-   address, and then insert the LAN dongle.
-
-* After rebooting (insert the ethernet dongles at this point)::
+* After rebooting::
 
     cd xsce/
     ./runansible # This will take a lot of time as it installs packages
@@ -59,11 +76,11 @@ On the XO-1.75 or XO-4 laptop
 Using tags
 ==========
 
-* To avoid replaying all the playbooks, you can use tags to restrict what task are used: 
+* To avoid replaying all the playbooks, you can use tags to restrict which tasks are run: 
 ::
 
   ansible-playbook -i ansible_hosts xsce.yml --tags="facts,squid" --connection=local
-* Avaliable tags are: ``common, network, gateway, core, activity-server, ajenti, dhcpd, ejabberd, facts, gateway, httpd, idmgr, iiab, monit, moodle, munin, named, network, olpc, portal, postgresql, services, squid, sugar-stats, wondershaper``
+* Avaliable tags are:``activity-server, addons, ajenti, avahi, common, core, dhcpd, download, ejabberd, facts, gateway, httpd, idmgr, iiab, monit, moodle, munin, named, network, olpc, pathagar, portal, postgresql, services, squid, sugar-stats, wondershaper, xo``
 
 
 Building the rpm
