@@ -68,6 +68,3 @@
              regexp='^#allowsftp'
              insertafter='^#allowsftp'
              line=allowsftp
-
-- include: xs-authserver.yml
-
