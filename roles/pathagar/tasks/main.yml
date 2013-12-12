@@ -1,3 +1,6 @@
+- name: Remove if exist pathagar rpm version
+  yum: name=pathagar state=absent
+
 - name: Install pathagar pre requisites
   yum: name={{ item }}
        state=latest
