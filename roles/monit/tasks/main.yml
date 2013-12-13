@@ -13,14 +13,17 @@
             mode=0600
 
 - name: Update config files
-  template: backup=yes
-            src={{ item }}
+  template: src={{ item }}
             dest=/etc/monit.d/{{ item }}
             owner=root
             group=root
             force=yes
             mode=0755
   with_items: $watchdog
+  register: monit_config
+  until: monit_config | success 
+  retries: 5
+  delay: 1
 
 #TODO: create systemd script
 - name: Enable monit service
