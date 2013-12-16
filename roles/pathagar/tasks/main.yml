@@ -127,3 +127,16 @@
 - name: Restart http
   service: name=httpd
            state=reloaded
+
+- name: add pathagar to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=pathagar
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: pathagar
+    - option: description
+      value: Pathagar is a simple bookserver serving OPDS feeds
+    - option: path
+      value: /books
