@@ -46,5 +46,11 @@ Full generation of an rpm from ansible.  This is still experimental at this poin
 Testing
 -------
 
+To get started please install git and then issue:
+
+git clone git@github.com:XSCE/xsce.git
+cd xsce
+git checkout 0.5.0-rc.1
+
 Please help test this and file bugs at https://github.com/XSCE/xsce/issues?state=open
  
