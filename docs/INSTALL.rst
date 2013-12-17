@@ -1,8 +1,14 @@
-==============================
+=============================================
 Installing the Schoolserver Community Edition 
-==============================
+=============================================
+
+The XSCE installation attempts to determine the network topology based on the number and types of connections it discovers. In general, it looks to see if there is a connection to a gateway and whether other wireless or wired connections are present. It then uses the following logic to configure networking.
 
 Supported autodetected network configurations for XO 1.5, 1.75 and 4 targets:
+=============================================================================
+
+Gateway Installation Network Configurations
+-------------------------------------------
 
 | **One Dongle**
 |    eth0 - internal wifi for gateway
@@ -13,7 +19,10 @@ Supported autodetected network configurations for XO 1.5, 1.75 and 4 targets:
 |    eth1 - usb ethernet for gateway
 |    eth2 - usb ethernet for schoolserver LAN connected to an access point
 
-**NOTE:** Appliance installs integrate into existing networking infrastructure and do not include dhcpd, squid, dansguardian, or wondershaper.
+Non-Gateway (aka "Appliance") Installation Network Configurations
+-----------------------------------------------------------------
+
+**NOTE:** Appliance installs integrate into existing networking infrastructure and do not include dhcpd, squid, dansguardian, or wondershaper.  This installation does not behave as an internet gateway.
 
 | **XSCE Appliance - no additional interfaces**
 |    eth0 - internal wifi connected to an existing LAN
@@ -23,20 +32,22 @@ Supported autodetected network configurations for XO 1.5, 1.75 and 4 targets:
 |    eth1 - usb ethernet connected to an existing LAN 
 
 
-On the XO-1.75 or XO-4 laptop
-=============================
+On the XO 1.5, XO-1.75, or XO-4 laptop
+======================================
 
 * Flash the laptop with a stable `13.2.0 image`_
 
 * In ``My Settings->Power`` turn off Automatic Power Management
+
+* Connect all the network interfaces and reboot
 
 * Install git and ansible (for dependencies)::
 
     su -
     yum install -y git ansible
     
-  **Note**: ansible version 1.4.1 or higher is required. If your installed
-  version is previous you can install it from sources using::
+  **Note**: ansible version 1.4.1 or higher is required. If your rpm installed
+  version is older, you can install it from sources using::
 
     cd ~/
     git clone https://github.com/ansible/ansible.git
@@ -50,9 +61,11 @@ On the XO-1.75 or XO-4 laptop
     git clone https://github.com/XSCE/xsce
     cd xsce
 
-* Connect any and all network interfaces
+* Verify all the network interfaces are visible and have the correct interface label::
 
-* Optional - verify that network interfaces are properly autodetected.  If they aren't, reboot the target machine and check again::
+    ifconfig
+
+* Optionally, verify that all network interfaces are properly autodetected::
 
     sh roles/common/library/xsce_facts
 
@@ -66,7 +79,7 @@ On the XO-1.75 or XO-4 laptop
     ./runansible # This will take a lot of time as it installs packages
     reboot
 
-* XSCE should be up and functional
+* The XSCE should be up and functional
 
 .. _13.2.0 image: http://wiki.laptop.org/go/Release_notes/13.2.0#Installation
 
@@ -79,7 +92,7 @@ Using tags
 * To avoid replaying all the playbooks, you can use tags to restrict which tasks are run: 
 ::
 
-  ansible-playbook -i ansible_hosts xsce.yml --tags="facts,squid" --connection=local
+  ansible-playbook -i ansible_hosts xsce.yml --connection=local --tags="facts,squid"
 * Avaliable tags are:``activity-server, addons, ajenti, avahi, common, core, dhcpd, download, ejabberd, facts, gateway, httpd, idmgr, iiab, monit, moodle, munin, named, network, olpc, pathagar, portal, postgresql, services, squid, sugar-stats, wondershaper, xo``
 
 
