@@ -1,5 +1,3 @@
-On behalf of the many people working on the latest version of the School Server Community Edition I am announcing the release of 0.5 RC for testing.
-
 The focus of release 0.5 is making it easier for contributors to participate.  This has been accomplished in three ways:
 
 1) Better Documentation
