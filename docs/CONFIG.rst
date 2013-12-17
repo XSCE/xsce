@@ -6,7 +6,7 @@ Troubleshooting and Configuration Tips
 Changing the AP for the Wifi gateway
 ************************************
 
-If you have a local interface (as in, a keyboard) to the machine, log in and get a root prompt.
+If you have a local interface (as in, a keyboard) to the machine, get a root prompt.
 
 Make sure the machine can see the AP:
 
@@ -78,6 +78,7 @@ Appliance Installation
 **********************
 
 * The appliance install is automatically done if the only network interface is the gateway.
+
    * The appliance install doesn't have:
       * dhcpd
       * squid
@@ -107,7 +108,7 @@ There's currently a conflict with IIAB dependencies, so if you would like to try
 How to use and test Ajenti Wondershaper:
 ========================================
 
-* Either use an online speedtest or install this directly on the XSCE:
+* Either use an online speedtest from a client's browser or install this directly on the XSCE:
 
     | ``pip install speedtest-cli``
 
@@ -150,5 +151,17 @@ Checking if a Sugar client is connected to ejabberd
 
 Once a Sugar client is successfully registered, you can easily see if it's connected to ejabberd from the XSCE console:
 
- ``-bash-4.2# ejabberdctl connected-users``
- ``7d1515bd87f609718974610eb17b9cc9e3e2c404@schoolserver.lan/sugar``
+| ``-bash-4.2# ejabberdctl connected-users``
+| ``7d1515bd87f609718974610eb17b9cc9e3e2c404@schoolserver.lan/sugar``
+ 
+************************************
+Checking out specific pull requests
+************************************
+
+To simply check out a single pull request for testing, follow `these instructions <https://help.github.com/articles/checking-out-pull-requests-locally>`_
+
+For more complicated testing situations, create a local "test" branch and merge pull requests into it.  For example:
+
+|    ``git checkout -b test``
+|    ``git merge pr/90``
+|    ``git merge pr/97``
