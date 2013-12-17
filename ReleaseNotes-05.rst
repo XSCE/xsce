@@ -13,7 +13,7 @@ The documentation is located at https://github.com/XSCE/xsce/tree/master/docs.
 2) Relocation of Source to Github
 ---------------------------------
 
-While the source code for the School Server has always been public, moving XSCE to github encourages a workflow that is becoming standard in the open source software industry wherein a git repository is cloned and contributor work on their own branches and then create pull requests which allow code to be rolled up to the master copy.  Github facilitates this work flow and the School Server community has adopted it.
+While the source code for the School Server has always been public, moving XSCE to github encourages a workflow that is becoming standard in the open source software industry wherein a git repository is cloned and contributors work on their own branches and then create pull requests which allow code to be rolled up to the master copy.  Github facilitates this work flow and the School Server community has adopted it.
 
 The XSCE project is located at https://github.com/XSCE/xsce.
 
@@ -31,7 +31,7 @@ In addition to making it easier for a broader range of contributors, XSCE 0.5 in
 Two Flavors
 -----------
 
-There are gateway and non-gateway flavors of XSCE.  The installation attempts to determine the mode in which the server will operate based on attached network devices.
+There are gateway and non-gateway ('appliance') flavors of XSCE.  The installation attempts to determine the mode in which the server will operate based on attached network devices.
 
 Platforms
 ---------
@@ -41,7 +41,7 @@ XSCE has been tested on XO 1.5, 1.75, and 4 as well as on i386 and x64.
 Not included in the Release Candidate
 -------------------------------------
 
-Full generation of an rpm from ansible.  This is still experimental at this point.
+Full generation of an rpm from ansible.  This is still experimental, but is expected for the final 0.5 release.
  
 Testing
 -------
@@ -49,7 +49,9 @@ Testing
 To get started please install git and then issue:
 
 git clone git@github.com:XSCE/xsce.git
+
 cd xsce
+
 git checkout 0.5.0-rc.1
 
 Please help test this and file bugs at https://github.com/XSCE/xsce/issues?state=open
