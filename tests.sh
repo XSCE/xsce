@@ -18,7 +18,7 @@ function yellow() {
 }
 
 function ip_range() {
-echo -n "[DXS] Test ip range ..."
+echo -n "[XSCE] Test ip range ..."
 if `ifconfig | grep -q 172.18`
   then
       green OK
@@ -28,7 +28,7 @@ fi
 }
 
 function proxy_presence() {
-echo -n "[DXS] Test proxy settings..."
+echo -n "[XSCE] Test proxy settings..."
 if `curl -Is http://sugardextrose.org/themes/custom/images/sugardextrose.org.png | grep X-Cache | grep -q schoolserver`
 then
     green OK
@@ -36,7 +36,7 @@ then
     red FAILED!
 fi
 
-echo -n "[DXS] Test proxy caching settings..."
+echo -n "[XSCE] Test proxy caching settings..."
 if `curl -Is http://sugardextrose.org/themes/custom/images/sugardextrose.org.png | grep X-Cache | grep schoolserver | grep -q HIT`
 then
     green OK
@@ -46,7 +46,7 @@ fi
 }
 
 function dansguardian_presence() {
-echo -n "[DXS] Test dansguardian settings..."
+echo -n "[XSCE] Test dansguardian settings..."
 if `wget -qO - http://en.wikipedia.org/wiki/Pornography | grep -is dansguardian > /dev/null`
 then
     green OK
@@ -107,7 +107,7 @@ fi
 }
 
 function dns_client_presence() {
-echo -n "[DXS] Test dns client settings..."
+echo -n "[XSCE] Test dns client settings..."
 if ! [ -x /proc/device-tree/serial-number ]
         then
                 yellow "PASS (Not a client)"
@@ -125,7 +125,7 @@ fi
 }
 
 function dns_server_presence() {
-echo -n "[DXS] Test dns server settings..."
+echo -n "[XSCE] Test dns server settings..."
 
 IP1=`dig +short schoolserver.local @schoolserver`
 if [ "$IP1" == "172.18.96.1" ]
@@ -138,7 +138,7 @@ fi
 
 
 function test_registration() {
-echo -n "[DXS] Test if xo is registered ..."
+echo -n "[XSCE] Test if xo is registered ..."
 if ! [ -x /proc/device-tree/serial-number ]
 	then
 		yellow "PASS (Not a xo)"
@@ -160,9 +160,9 @@ if [ `hostname` == "schoolserver" ]
  then
 	export http_proxy=http://schoolserver:3128
   export MODE=server
-	echo "[DXS] - Running on schoolserver"
+	echo "[XSCE] - Running on schoolserver"
   else
-	echo "[DXS] - Running on client"
+	echo "[XSCE] - Running on client"
   export MODE=client
  fi
 }

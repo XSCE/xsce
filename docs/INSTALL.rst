@@ -101,5 +101,5 @@ Building the rpm
 
 An rpm can be built by using the command::
 
-    rpmbuild -bb dxs.spec
+    rpmbuild -bb xsce-server.spec
 
