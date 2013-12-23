@@ -6,6 +6,7 @@
   yum: name={{ item.pkg }}
        state=installed
   with_items:
+    - pkg: python-imaging
     - pkg: python-devel
     - pkg: libxslt-devel
     - pkg: pyOpenSSL
