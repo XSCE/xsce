@@ -26,33 +26,13 @@
   command:  /usr/bin/postgresql-setup  initdb postgresql-xs -E 'UTF-8' --lc-collate='en_US.UTF-8' --lc-ctype='en_US.UTF-8' 
            creates=/library/pgsql-xs/pg_hba.conf
 
-#TODO: Add this setup to the template, instead of adding 3 steps
-- name: Configure postgres (512mb)
+- name: Configure postgres 
   template: backup=yes
-            src=postgresql-512m.conf
+            src=postgresql.conf.j2
             dest=/library/pgsql-xs/postgresql.conf
             owner=postgres
             group=postgres
             mode=0640
-  when: ansible_memtotal_mb < 1000
-
-- name: Configure postgres (1024mb)
-  template: backup=yes
-            src=postgresql-1024m.conf
-            dest=/library/pgsql-xs/postgresql.conf
-            owner=postgres
-            group=postgres
-            mode=0640
-  when: ansible_memtotal_mb > 1000 and ansible_memtotal_mb < 2000
-
-- name: Configure postgres (2048mb)
-  template: backup=yes
-            src=postgresql-512m.conf
-            dest=/library/pgsql-xs/postgresql.conf
-            owner=postgres
-            group=postgres
-            mode=0640
-  when: ansible_memtotal_mb > 2000
 
 - name: Enable postgresql service
   service: name=postgresql-xs

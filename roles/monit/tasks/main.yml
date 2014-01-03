@@ -4,13 +4,6 @@
   tags:
     - download
 
-- name: Create config dir
-  file: path=/usr/share/xs-config/cfg/etc/monit.d
-        owner=root
-        group=root
-        mode=0755
-        state=directory
-
 - name: Update main config file 
   template: backup=yes
             src=monitrc
@@ -20,19 +13,17 @@
             mode=0600
 
 - name: Update config files
-  template: backup=yes
-            src={{ item }}
-            dest=/usr/share/xs-config/cfg/etc/monit.d/{{ item }}
+  template: src={{ item }}
+            dest=/etc/monit.d/{{ item }}
             owner=root
             group=root
+            force=yes
             mode=0755
   with_items: $watchdog
-
-- name: Enable monit on known services
-  file: path=/etc/monit.d/{{ item }}
-        src=/usr/share/xs-config/cfg/etc/monit.d/{{ item }}
-        state=link
-  with_items: $watchdog
+  register: monit_config
+  until: monit_config | success 
+  retries: 5
+  delay: 1
 
 #TODO: create systemd script
 - name: Enable monit service

@@ -5,7 +5,7 @@ dependencies:
    - { role: moodle, tags: ['olpc','moodle','core'] }
    - { role: idmgr,  tags: ['olpc','idmgr','core'] }
    - { role: sugar-stats, tags: ['olpc','sugar-stats','core'] }
-   - { role: iiab, tags: ['services','iiab','core'] }
+   - { role: authserver,  tags: ['services','authserver','core'] }
    - { role: ajenti, tags: ['services','ajenti','core'] }
    - { role: munin, tags: ['services','munin','core'] }
    - { role: monit, tags: ['services','monit','core'] }

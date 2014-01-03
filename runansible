@@ -1,18 +1,20 @@
 #!/bin/bash
+
 if [ -f xsce.yml ]
- then
+then
  PLAYBOOK="xsce.yml"
  INVENTORY="ansible_hosts"
+ CWD=`pwd`
  echo "Running local playbooks! "
- else
+else
  if [ -f /var/local/xsce/xsce.yml ]
  then
  PLAYBOOK="/var/local/xsce/xsce.yml"
  INVENTORY="/var/local/xsce/ansible_hosts"
+ CWD="/var/local/xsce"
  echo "Running rpm provided playbooks ! "
+ fi
 fi
-fi
-
 
 #Domain change
 if [ -f /etc/sysconfig/xs_domain_name ] 
@@ -22,16 +24,20 @@ then
 fi
 
 if [ x"$1" != x ]
- then
+then
  XSDOMAIN=$1
  ARGS="--extra-vars \"xsce_domain=$XSDOMAIN\""
 fi
 
 
 if [ "$PLAYBOOK" == "" ]
-	then
-	echo "rpm is not installed, and local playbook wasn't found!"
-	exit
-	fi
+then
+ echo "rpm is not installed, and local playbook wasn't found!"
+ exit
+fi
+
+export ANSIBLE_LOG_PATH="xsce-install.log"
+ansible -m setup -i $INVENTORY localhost --connection=local >> /dev/null
+bash $CWD/roles/common/library/xsce_facts >> $ANSIBLE_LOG_PATH
 
 ansible-playbook -i $INVENTORY $PLAYBOOK ${ARGS} --connection=local 
