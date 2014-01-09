@@ -21,10 +21,13 @@
             owner=root
             mode=0644
 
-- name: Install xs repo
-  get_url: url=http://xsce.activitycentral.com/repos/xsce-release.repo dest=/etc/yum.repos.d/
+- name: Install xs and xsce repos
+  get_url: url={{ item }} dest=/etc/yum.repos.d/
   tags:
     - download
+  with_items:
+    - http://xsce.activitycentral.com/repos/xsce-release.repo
+    - http://xsce.activitycentral.com/repos/xsce-extra.repo
 
 - include: xo.yml
   when: ansible_distribution_release == "based on Fedora 18"
