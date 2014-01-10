@@ -44,4 +44,4 @@
 - name: start ajenti service
   service: name=ajenti
            enabled=yes
-           state=started
+           state=restarted
