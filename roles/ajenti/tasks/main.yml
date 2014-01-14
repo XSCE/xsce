@@ -19,6 +19,8 @@
   pip: name=https://github.com/migonzalvar/ajenti/releases/download/0.99.34-patched5/ajenti-0.99.34-patched5.tar.gz
   tags:
     - download
+  notify:
+    - restart ajenti service
 
 - name: install python-catcher
   pip: name=python-catcher version=0.1.3
@@ -40,8 +42,3 @@
 
 - include: ajenti-wondershaper.yml
   when: 'xsce_lan_iface != ""'
-
-- name: start ajenti service
-  service: name=ajenti
-           enabled=yes
-           state=started
