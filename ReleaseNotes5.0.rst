@@ -1,7 +1,7 @@
-Release Note for XSCE 0.5
+Release Note for XSCE 5.0
 =========================
 
-The focus of release 0.5 is making it easier for contributors to participate.  This has been accomplished in three ways:
+The focus of release 5.0 is making it easier for contributors to participate.  This has been accomplished in three ways:
 
 1) Better Documentation
 -----------------------
@@ -26,7 +26,7 @@ Secondly, the effort to perform a testing cycle is greatly reduced.  Because ans
 
 Ansible is documented at http://www.ansibleworks.com/.
 
-In addition to making it easier for a broader range of contributors, XSCE 0.5 includes the following:
+In addition to making it easier for a broader range of contributors, XSCE 5.0 includes the following:
 
 Two Flavors
 -----------
@@ -38,10 +38,15 @@ Platforms
 
 XSCE has been tested on XO 1.5, 1.75, and 4 as well as on i386 and x64.
 
-Not included in the Release Candidate
--------------------------------------
+RPM Based Install
+-----------------
 
-Full generation of an rpm from ansible.  This is still experimental, but is expected for the final 0.5 release.
+An RPM can be produced from the ansible playbooks using rpmbuild -bb xsce-server.spec.  This RPM can then be installed using yum.
+
+Not included in this Release
+----------------------------
+
+This release does not address the recent announcement that Fedora Core 18 is end of life.  Experiments with Fedora Core 20 are promising and support is expected in a future release.
  
 Testing
 -------
@@ -52,7 +57,7 @@ git clone git@github.com:XSCE/xsce.git
 
 cd xsce
 
-git checkout 0.5.0-rc.1
+git checkout 5.0.0
 
 Please help test this and file bugs at https://github.com/XSCE/xsce/issues?state=open
  
