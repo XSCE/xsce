@@ -46,8 +46,11 @@ On the XO 1.5, XO-1.75, or XO-4 laptop
     su -
     yum install -y git ansible
     
-  **Note**: ansible version 1.4.1 or higher is required. If your rpm installed
-  version is older, you can install it from sources using::
+  **Note**: ansible version 1.4.1 or higher is required. Verify the version number with::
+  
+    ansible --version
+  
+  If the ansible version installed via yum is older than 1.4.1, install 1.4.1 from source::
 
     cd ~/
     git clone https://github.com/ansible/ansible.git
