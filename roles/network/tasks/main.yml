@@ -16,9 +16,25 @@
     - services
     - squid
 
+- name: Declare xsce_discovered_lan
+  command: cat /etc/sysconfig/xsce_discovered_lan
+  register: discovered_lan 
+  when: 'xsce_lan_iface is not defined or xsce_lan_iface != "" '
+  tags:
+    - network-discover
+    - gateway
+    - dhcpd
+    - ajenti
+    - wondershaper
+    - core
+    - xo
+    - download
+    - services
+    - squid
+
 - name: Create xsce discovered lan fact
   set_fact:
-     xsce_lan_iface: "{{ lookup('file','/etc/sysconfig/xsce_discovered_lan') }}"
+     xsce_lan_iface: "{{ discovered_lan.stdout }}"
   when: 'xsce_lan_iface is not defined or xsce_lan_iface != "" '
   tags:
     - network-discover
