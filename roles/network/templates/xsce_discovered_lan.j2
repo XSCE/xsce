@@ -5,6 +5,6 @@
  and hostvars[inventory_hostname]['ansible_' + interface ]['active'] == true
  and xsce_tmp_iface == "" %}
 {% set xsce_tmp_iface = hostvars[inventory_hostname]['ansible_' + interface ]['device'] %}
-{{ xsce_tmp_iface }} 
+{{ xsce_tmp_iface }}
 {% endif %}
 {% endfor %}
