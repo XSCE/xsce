@@ -1,3 +1,66 @@
+#### Network Discovery
+
+- name: Discover LAN iface
+  template: src=xsce_discovered_lan.j2
+            dest=/etc/sysconfig/xsce_discovered_lan
+  when: 'xsce_lan_iface is not defined or xsce_lan_iface != "" '
+  tags:
+    - network-discover
+    - gateway
+    - dhcpd
+    - ajenti
+    - wondershaper
+    - core
+    - xo
+    - download
+    - services
+    - squid
+
+- name: Declare xsce_discovered_lan
+  command: cat /etc/sysconfig/xsce_discovered_lan
+  register: discovered_lan 
+  when: 'xsce_lan_iface is not defined or xsce_lan_iface != "" '
+  tags:
+    - network-discover
+    - gateway
+    - dhcpd
+    - ajenti
+    - wondershaper
+    - core
+    - xo
+    - download
+    - services
+    - squid
+
+- name: Create xsce discovered lan fact
+  set_fact:
+     xsce_lan_iface: "{{ discovered_lan.stdout }}"
+  when: 'xsce_lan_iface is not defined or xsce_lan_iface != "" '
+  tags:
+    - network-discover
+    - gateway
+    - dhcpd
+    - ajenti
+    - wondershaper
+    - core
+    - xo
+    - download
+    - services
+    - squid
+
+- name: Create xs network flags
+  template: backup=yes
+            src={{ item }}.j2
+            dest=/etc/sysconfig/{{ item }}
+            mode=0644
+  with_items:
+    - xs_wan_device
+    - xs_lan_device
+    - xs_domain_name
+  tags:
+    - network-discover
+
+
 - name: Configure /etc/sysconfig/network
   template: backup=yes
             src=sysconfig.network.j2
@@ -25,37 +88,12 @@
               group=root
               mode=0644
 
+
 - name: Configure lan interface
   template: backup=yes
             src=ifcfg.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_lan_iface}}
   when: 'xsce_lan_iface != "" '
-
-- name: Create xs network flags
-  template: backup=yes
-            src={{ item }}.j2
-            dest=/etc/sysconfig/{{ item }}
-            mode=0644
-  with_items:
-    - xs_wan_device
-    - xs_lan_device
-    - xs_domain_name
-
-- name: update common packages
-  yum: name={{ item }}
-       state=latest
-  with_items:
-   - NetworkManager
-  tags:
-    - download
-
-- name: restart NetworkManager services
-  service: name=NetworkManager
-           enabled=yes
-           state=restarted
-  service: name=NetworkManager-dispatcher
-           enabled=yes
-           state=restarted
 
 - include: named.yml
   tags:

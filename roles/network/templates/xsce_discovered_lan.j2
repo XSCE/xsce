@@ -1,0 +1,10 @@
+{% set xsce_tmp_iface = "" %}
+{% for interface in ansible_interfaces %}
+{% if hostvars[inventory_hostname]['ansible_' + interface ]['device'] !=  ansible_default_ipv4.alias
+ and hostvars[inventory_hostname]['ansible_' + interface ]['device'] != "lo"
+ and hostvars[inventory_hostname]['ansible_' + interface ]['active'] == true
+ and xsce_tmp_iface == "" %}
+{% set xsce_tmp_iface = hostvars[inventory_hostname]['ansible_' + interface ]['device'] %}
+{{ xsce_tmp_iface }}
+{% endif %}
+{% endfor %}
