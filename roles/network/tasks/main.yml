@@ -1,3 +1,37 @@
+#### Network Discovery
+
+- name: Discover LAN iface
+  template: src=xsce_discovered_lan.j2
+            dest=/etc/sysconfig/xsce_discovered_lan
+  when: 'xsce_lan_iface is not defined or xsce_lan_iface != "" '
+  tags:
+    - network-discover
+    - gateway
+    - dhcpd
+    - ajenti
+    - wondershaper
+    - core
+    - xo
+    - download
+    - services
+    - squid
+
+- name: Create xsce discovered lan fact
+  set_fact:
+     xsce_lan_iface: "{{ lookup('file','/etc/sysconfig/xsce_discovered_lan') }}"
+  when: 'xsce_lan_iface is not defined or xsce_lan_iface != "" '
+  tags:
+    - network-discover
+    - gateway
+    - dhcpd
+    - ajenti
+    - wondershaper
+    - core
+    - xo
+    - download
+    - services
+    - squid
+
 - name: Configure /etc/sysconfig/network
   template: backup=yes
             src=sysconfig.network.j2
@@ -25,11 +59,12 @@
               group=root
               mode=0644
 
+
 - name: Configure lan interface
   template: backup=yes
             src=ifcfg.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_lan_iface}}
-  when: 'xsce_lan_iface != "" '
+  when: 'xsce_lan_iface is not defined or xsce_lan_iface != "" '
 
 - name: Create xs network flags
   template: backup=yes
