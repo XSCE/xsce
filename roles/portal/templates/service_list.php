@@ -1,7 +1,7 @@
 <?php
 
 $serv_arr  = array();
-$serv_arr = parse_ini_file ( '{{service_filelist}}', true);
+$serv_arr = parse_ini_file ( '/etc/sysconfig/xs_installed_services', true);
 
 function service_link($service_key, $service_link_text, $service_link_desc)
 {
@@ -9,6 +9,17 @@ function service_link($service_key, $service_link_text, $service_link_desc)
 
   if (array_key_exists ( $service_key , $serv_arr )) {
     $link_clause = '<div class="xsServiceWrapper"><div class="xsServiceLink"><a href="' . $serv_arr[$service_key]["path"] . '">' . $service_link_text . '</a></div>';
+    $link_desc = '<div class="xsServiceDesc">' . $service_link_desc . '</div></div><div style="clear:both"></div>';
+    echo $link_clause;
+    echo $link_desc;
+  }
+}
+
+function hard_link($link_url, $service_link_text, $service_link_desc)
+{
+  $fullpath = realpath ( "/var/www/html/" . $link_url );
+  if (file_exists($fullpath)) {
+    $link_clause = '<div class="xsServiceWrapper"><div class="xsServiceLink"><a href="' . $link_url . '">' . $service_link_text . '</a></div>';
     $link_desc = '<div class="xsServiceDesc">' . $service_link_desc . '</div></div><div style="clear:both"></div>';
     echo $link_clause;
     echo $link_desc;
