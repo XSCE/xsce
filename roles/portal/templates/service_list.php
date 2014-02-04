@@ -1,7 +1,7 @@
 <?php
 
 $serv_arr  = array();
-$serv_arr = parse_ini_file ( '/etc/sysconfig/xs_installed_services', true);
+$serv_arr = parse_ini_file ( '{{service_filelist}}', true);
 
 function service_link($service_key, $service_link_text, $service_link_desc)
 {
