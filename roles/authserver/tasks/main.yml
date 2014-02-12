@@ -40,7 +40,6 @@
 
 - name: init database
   command: xs-authserverctl initdb
-  ignore_errors: yes
   environment:
     XS_AUTHSERVER_DATABASE: /var/lib/xs-authserver/data.db
 
