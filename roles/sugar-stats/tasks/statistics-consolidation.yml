@@ -5,7 +5,7 @@
     - download
 
 - name: Install statistics-consolidation with pip
-  pip: name=git+https://github.com/migonzalvar/statistics-consolidation.git@sqlalchemy-v2#egg=stats_consolidation
+  pip: name=stats-consolidation version=2.1.2
   tags:
     - download
 
