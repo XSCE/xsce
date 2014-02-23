@@ -2,7 +2,5 @@
   pip: name=https://github.com/migonzalvar/ajenti-plugin-wondershaper/archive/0.3.tar.gz
   tags:
     - download
-
-- name: restart ajenti service
-  service: name=ajenti
-           state=restarted
+  notify:
+    - restart ajenti service
