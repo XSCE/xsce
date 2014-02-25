@@ -26,9 +26,24 @@
    - etckeeper
    - make
    - yum-utils
+  tags:
+    - download
 
 - name: Update common packages
   yum: name={{ item }}
        state=latest
   with_items:
    - iptables
+   - NetworkManager
+  tags:
+    - download
+
+- name: restart NetworkManager services
+  service: name=NetworkManager
+           enabled=yes
+           state=restarted
+  service: name=NetworkManager-dispatcher
+           enabled=yes
+           state=restarted
+
+
