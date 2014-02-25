@@ -95,7 +95,7 @@ Using tags
 * To avoid replaying all the playbooks, you can use tags to restrict which tasks are run: 
 ::
 
-  ansible-playbook -i ansible_hosts xsce.yml --connection=local --tags="facts,squid"
+  ansible-playbook -i ansible_hosts xsce.yml --tags="facts,squid"
 * Avaliable tags are:``activity-server, addons, ajenti, avahi, common, core, dhcpd, download, ejabberd, facts, gateway, httpd, idmgr, iiab, monit, moodle, munin, named, network, olpc, pathagar, portal, postgresql, services, squid, sugar-stats, wondershaper, xo``
 
 
