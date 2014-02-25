@@ -19,7 +19,7 @@
 - name: Set xsce configured lan fact
   set_fact:
      xsce_lan_iface: "{{ xsce_lan_iface }}"
-  when: 'xsce_lan_iface != None and xsce_lan_iface != "" '
+  when: 'xsce_lan_iface != "auto" and xsce_lan_iface != "none" '
   tags:
     - network-discover
     - gateway
@@ -35,7 +35,7 @@
 - name: Set xsce discovered lan fact
   set_fact:
      xsce_lan_iface: "{{ discovered_lan.stdout }}"
-  when: 'xsce_lan_iface == None  and discovered_lan.stdout  != ""'
+  when: 'xsce_lan_iface == "auto"  and discovered_lan.stdout  != ""'
   tags:
     - network-discover
     - gateway
@@ -52,7 +52,7 @@
 - name: No LAN configured - Appliance mode
   set_fact:
      xsce_lan_iface: ""
-  when: 'xsce_lan_iface == "" or (discovered_lan.stdout == "" and xsce_lan_iface == None)'
+  when: 'xsce_lan_iface == "none" or (discovered_lan.stdout == "" and xsce_lan_iface == "auto" )'
   tags:
     - network-discover
     - gateway
