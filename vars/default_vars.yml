@@ -34,3 +34,8 @@ language_priority: en es
 vpn_presence: unleashkids.org
 openvpn_install: true
 openvpn_enable: false
+
+#Network variables
+#Read docs/NETWORKING.rst
+xsce_wan_iface: "{{ ansible_default_ipv4.interface }}"
+xsce_lan_iface: 
