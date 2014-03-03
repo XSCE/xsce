@@ -18,7 +18,7 @@ icp_port 0
 #
 #acl manager proto cache_object
 
-{% if gw_squid_whitelist %}
+{% if gw_squid_whitelist == True %}
 acl whitelist dstdomain "/etc/squid/sites.whitelist.txt"
 {% endif %}
 
@@ -30,7 +30,9 @@ acl SSL_ports port 443
 acl Safe_ports port 80          # http
 acl Safe_ports port 21          # ftp
 
-{% if !gw_squid_whitelist %}
+{% if gw_block_https == True %}
+#acl Safe_ports port 443         # https
+{% else %}
 acl Safe_ports port 443         # https
 {% endif %}
 
