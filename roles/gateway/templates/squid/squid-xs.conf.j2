@@ -19,7 +19,7 @@ icp_port 0
 #acl manager proto cache_object
 
 {% if gw_squid_whitelist %}
-acl whitelist dstdomain "/etc/squid/whitelist"
+acl whitelist dstdomain "/etc/squid/sites.whitelist.txt"
 {% endif %}
 
 acl school src 172.18.0.0/16
