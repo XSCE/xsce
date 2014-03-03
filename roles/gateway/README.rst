@@ -20,6 +20,7 @@ it then supplies additional rules to iptables
 As of March 2014 the following files are obsolete
 
 /etc/sysconfig/olpc-scripts/iptables-xs 
+
 /etc/sysconfig/olpc-scripts/ip6tables-xs
 
 Filters
