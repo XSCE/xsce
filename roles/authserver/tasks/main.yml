@@ -5,7 +5,7 @@
     - download
 
 - name: install xs-authserver from pypi
-  pip: name=xs-authserver
+  pip: name=xs-authserver==0.1.7
   tags:
     - download
 
