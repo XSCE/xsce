@@ -26,8 +26,8 @@
   tags:
     - download
   with_items:
-    - http://xsce.activitycentral.com/repos/xsce-release.repo
-    - http://xsce.activitycentral.com/repos/xsce-extra.repo
+    - http://xsce.unleashkids.org/repos/xsce-release.repo
+    - http://xsce.unleashkids.org/repos/xsce-extra.repo
 
 - include: xo.yml
   when: ansible_distribution_release == "based on Fedora 18"
