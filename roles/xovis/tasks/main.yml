@@ -30,7 +30,7 @@
   pip: requirements={{ xostats_dest }}/requirements.txt
 
 - name: Fetch database dump to the server
-  command: "wget -O {{ xovis_dest }}/xovis.json https://github.com/martasd/xovis/blob/master/xovis.json?raw=true"
+  command: "wget -O {{ xovis_dest }}/xovis.json https://s3.amazonaws.com/xovis/xovis.json"
 
 - name: Load XOvis from the database dump
   command: "couchdb-load {{ db_url }} --input {{ xovis_dest }}/xovis.json"
