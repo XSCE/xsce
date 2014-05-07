@@ -61,7 +61,7 @@ On the XO 1.5, XO-1.75, or XO-4 laptop
 * Clone the XSCE git repo and cd into it::
 
     cd ~/
-    git clone --branch 5.0 --depth 1 https://github.com/XSCE/xsce
+    git clone --branch release-5.0 --depth 1 https://github.com/XSCE/xsce
     cd xsce
 
 * Verify all the network interfaces are visible and have the correct interface label::
