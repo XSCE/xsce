@@ -2,6 +2,11 @@
 lan_ip: 172.18.96.1
 lan_netmask: 255.255.224.0
 
+# put in non-null device names in the following to override auto-detection
+env:
+   lan_device_override: ""
+   wan_device_override: ""
+
 watchdog: 
   - sshd
   - idmgr

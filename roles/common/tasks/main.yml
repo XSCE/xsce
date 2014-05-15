@@ -1,5 +1,6 @@
 - name: Get XSCE facts
   xsce_facts: facts=true
+  environment: env
   tags: 
     - facts
     - common

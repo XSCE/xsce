@@ -1,7 +1,16 @@
 #!/bin/bash
 
-WAN=`/sbin/ip route ls | awk '{if($1=="default")print $5}' | tr -d ' '`
-LAN=`/sbin/ip link show  | grep mtu | awk -F":" '{print \$2}' | grep -v -e lo -e $WAN| tr -d ' '  | head -n1` 
+if [ -n "$wan_device_override" ]; then
+    WAN=$wan_device_override
+else
+    WAN=`/sbin/ip route ls | awk '{if($1=="default")print $5}' | tr -d ' '`
+fi
+
+if [ -n "$lan_device_override" ]; then
+    LAN=$lan_device_override
+else
+    LAN=`/sbin/ip link show  | grep -v -e DOWN -e lo -e $WAN | grep mtu | awk -F":" '{print \$2}' |  tr -d ' '  | head -n1` 
+fi
 
 WAN_MAC=`/sbin/ip addr show $WAN | awk '/link\/ether/ { print \$2}' | tr [:lower:] [:upper:]`
 LAN_MAC=`/sbin/ip addr show $LAN | awk '/link\/ether/ { print \$2}' | tr [:lower:] [:upper:]`
