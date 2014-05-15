@@ -123,7 +123,7 @@ Finding out available tags
 **************************
 * The easiest way to find out available tags is to try to call a tag you know doesn't exist.  Then the error will spit out all the available tags.
 
-  ``-bash-4.2# ansible-playbook -i ansible_hosts xsce.yml --connection=local --tags="whatever"``
+  ``-bash-4.2# ansible-playbook -i ansible_hosts xsce.yml --tags="whatever"``
   ``ERROR: tag(s) not found in playbook: whatever.  possible values: activity-server,addons,ajenti,avahi,common,core,dhcpd,download,ejabberd,facts,gateway,httpd,idmgr,iiab,monit,moodle,munin,named,network,olpc,pathagar,portal,postgresql,services,squid,sugar-stats,wondershaper,xo``
 
 ***********************
