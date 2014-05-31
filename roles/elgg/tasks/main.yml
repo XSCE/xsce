@@ -1,4 +1,3 @@
-  - { include: mysql.yml }
 
   - name: enable the repo where elgg can be found
     template: src=pbone.repo.j2 dest="/etc/yum.repos.d/pbone.repo"
