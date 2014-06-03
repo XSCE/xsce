@@ -28,6 +28,9 @@
        state=latest
   with_items:
    - usbmount
+   - man
+   - man-db
+   - man-pages
 
 - name: Configure networkmanager plugin
   ini_file: dest=/etc/NetworkManager/NetworkManager.conf
