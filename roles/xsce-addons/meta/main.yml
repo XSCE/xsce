@@ -2,5 +2,3 @@
 dependencies:
    - { role: iiab, tags: ['iiab','addons'] }
    - { role: pathagar, tags: ['pathagar','addons'] }   
-   - { role: mysql, tags: ['mysql','addons'] }   
-   - { role: elgg, tags: ['elgg','addons'] }   
