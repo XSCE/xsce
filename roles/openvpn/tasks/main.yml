@@ -1,19 +1,36 @@
----
+- name: define the url of the world readable openvpn server we will use
+  var: vpn-presence=xsce.activitycentral.com
+
 - name: Install openvpn packages
-  yum: name=${item}
-       state=installed
+  yum: name={{ item }}
+       state=present
   with_items:
-       openvpn
+       - openvpn
+
+- name: Create the directory for keys
+  file: dest=/etc/openvpn/keys
+        state=directory
+        owner=root
+        group=root
+        mode=0755
 
 - name: Configure openvpn
   template: backup=yes
-            src=${item.src}
-            dest=${item.dest}
-            owner=${item.owner}
+            src={{ item.src }}
+            dest={{ item.dest }}
+            owner={{ item.owner }}
             group=root
-            mode=${item.mode}
+            mode={{ item.mode }}
   with_items:
-    - { src: 'ca.crt', dest: '/etc/openvpn', owner: "root" , mode: '0644' }
-    - { src: 'client1.crt', dest: '/etc/openvpn', owner: "root" , mode: '0644' }
-    - { src: 'client1.key', dest: '/etc/openvpn', owner: "root" , mode: '0600' }
-    - { src: 'roadwarrior-client.conf', dest: '/etc/openvpn', owner: "root" , mode: '0644' }
+    - { src: 'ca.crt', dest: '/etc/openvpn/keys', owner: "root" , mode: '0644' }
+    - { src: 'client1.crt', dest: '/etc/openvpn/keys', owner: "root" , mode: '0644' }
+    - { src: 'client1.key', dest: '/etc/openvpn/keys', owner: "root" , mode: '0600' }
+    - { src: 'roadwarrior-client.conf.js', dest: '/etc/openvpn/roadwarrior-client.conf', owner: "root" , mode: '0644' }
+
+- name: put the startup script on the path with other xs scripts
+  template: src=xs-vpn
+            dest=/usr/bin
+            mode=0755
+            owner=root
+            group=root
+
