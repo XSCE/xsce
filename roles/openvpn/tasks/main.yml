@@ -1,4 +1,7 @@
 ---
+- name: define the url of the world readable openvpn server we will use
+  vars: vpn-presence=unleashkids.org
+
 - name: Install openvpn packages
   yum: name=${item}
        state=installed
