@@ -27,3 +27,8 @@
   service: name=smb state=started enabled=yes
   tags: 
     - samba
+
+- name: Ensure nmb is running and set to start on boot.
+  service: name=nmb state=started enabled=yes
+  tags: 
+    - samba
