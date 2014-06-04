@@ -1,0 +1,30 @@
+---
+# Create a smbuser
+#
+var:
+  smbuser = smbuser
+  smbpassword = smbpw
+  shared_dir = /library/public
+
+- name: create smb user
+  user: name="{{ smbuser }}" shell=/sbin/nologin password="{{ smbpw }}"
+
+- name: create the public folder
+  file: dest="{{ shared_dir }}" owner="{{ smbuser }}"  \
+        group = "{{ smbuser }}" mode = 777 state = directory
+
+# Install and configure samba server (requires ports 137, 138, 139, 445 open).
+- name: Ensure Samba-related packages are installed.
+  yum: pkg={{ item }} state=installed
+  with_items:
+  - samba
+  - samba-client
+  - samba-common
+  - cifs-utils
+  tags:
+    - samba
+
+- name: Ensure Samba is running and set to start on boot.
+  service: name=smb state=started enabled=yes
+  tags: 
+    - samba
