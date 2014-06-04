@@ -2,5 +2,5 @@
 dependencies:
    - { role: iiab, tags: ['iiab','addons'] }
    - { role: pathagar, tags: ['pathagar','addons'] }   
-   - { role: samba, tags: ['samba','addons'] }   
+   - { role: samba, tags: ['samba','addons'], when: samba_install is defined }   
 
