@@ -1,0 +1,4 @@
+---
+  smbuser : smbuser
+  smbpassword : smbpw
+  shared_dir : /library/public
