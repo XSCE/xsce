@@ -1,5 +1,5 @@
 - name: define the url of the world readable openvpn server we will use
-  var: vpn-presence=xsce.activitycentral.com
+  var: vpn-presence=unleashkids.org
 
 - name: Install openvpn packages
   yum: name={{ item }}
