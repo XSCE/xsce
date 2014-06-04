@@ -19,6 +19,10 @@
   tags:
     - samba
 
+- name: put our smb.conf in place
+  template: src=smb.conf.j2 dest=/etc/samba/smb.conf
+  notify: restart smb
+
 - name: Ensure Samba is running and set to start on boot.
   service: name=smb state=started enabled=yes
   tags: 
