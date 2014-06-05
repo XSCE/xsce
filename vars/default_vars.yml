@@ -23,3 +23,8 @@ services:
 # Languages
 default_language: en
 language_priority: en es
+
+#Network variables
+#Read docs/NETWORKING.rst
+xsce_wan_iface: "{{ ansible_default_ipv4.interface }}"
+xsce_lan_iface: auto

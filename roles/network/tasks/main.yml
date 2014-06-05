@@ -1,3 +1,84 @@
+- name: Discover LAN iface
+  shell: /sbin/ip link show  | grep -v -e DOWN -e lo -e {{ ansible_default_ipv4.alias }}| grep mtu | awk -F":" '{print \$2}' |  tr -d ' '  | head -n1 
+  register: discovered_lan
+  
+  changed_when: false
+  tags:
+    - network-discover
+    - gateway
+    - dhcpd
+    - ajenti
+    - wondershaper
+    - core
+    - xo
+    - download
+    - services
+    - squid
+
+
+- name: Set xsce configured lan fact
+  set_fact:
+     xsce_lan_iface: "{{ xsce_lan_iface }}"
+  when: 'xsce_lan_iface != "auto" and xsce_lan_iface != "none" '
+  tags:
+    - network-discover
+    - gateway
+    - dhcpd
+    - ajenti
+    - wondershaper
+    - core
+    - xo
+    - download
+    - services
+    - squid
+
+- name: Set xsce discovered lan fact
+  set_fact:
+     xsce_lan_iface: "{{ discovered_lan.stdout }}"
+  when: 'xsce_lan_iface == "auto"  and discovered_lan.stdout  != ""'
+  tags:
+    - network-discover
+    - gateway
+    - dhcpd
+    - ajenti
+    - wondershaper
+    - core
+    - xo
+    - download
+    - services
+    - squid
+
+
+- name: No LAN configured - Appliance mode
+  set_fact:
+     xsce_lan_iface: ""
+  when: 'xsce_lan_iface == "none" or (discovered_lan.stdout == "" and xsce_lan_iface == "auto" )'
+  tags:
+    - network-discover
+    - gateway
+    - dhcpd
+    - ajenti
+    - wondershaper
+    - core
+    - xo
+    - download
+    - services
+    - squid
+
+
+- name: Create xs network flags
+  template: backup=yes
+            src={{ item }}.j2
+            dest=/etc/sysconfig/{{ item }}
+            mode=0644
+  with_items:
+    - xs_wan_device
+    - xs_lan_device
+    - xs_domain_name
+  tags:
+    - network-discover
+
+
 - name: Configure /etc/sysconfig/network
   template: backup=yes
             src=sysconfig.network.j2
@@ -25,37 +106,12 @@
               group=root
               mode=0644
 
+
 - name: Configure lan interface
   template: backup=yes
             src=ifcfg.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_lan_iface}}
   when: 'xsce_lan_iface != "" '
-
-- name: Create xs network flags
-  template: backup=yes
-            src={{ item }}.j2
-            dest=/etc/sysconfig/{{ item }}
-            mode=0644
-  with_items:
-    - xs_wan_device
-    - xs_lan_device
-    - xs_domain_name
-
-- name: update common packages
-  yum: name={{ item }}
-       state=latest
-  with_items:
-   - NetworkManager
-  tags:
-    - download
-
-- name: restart NetworkManager services
-  service: name=NetworkManager
-           enabled=yes
-           state=restarted
-  service: name=NetworkManager-dispatcher
-           enabled=yes
-           state=restarted
 
 - include: named.yml
   tags:
