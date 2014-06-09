@@ -1,0 +1,4 @@
+- include: xo.yml
+  when: ansible_distribution_release == "based on Fedora 18"
+  tags:
+    - xo

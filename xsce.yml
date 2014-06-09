@@ -7,8 +7,10 @@
   vars_files:
   - vars/default_vars.yml
   roles:
-      - { role: common, tags: ['common'] }
-      - { role: network, tags: ['network'] }
-      - { role: gateway, tags: ['gateway'] }
-      - { role: core, tags: ['core'] }
-      - { role: xsce-addons, tags: ['addons'] }
+      - { role: 1-preliminaries, tags: ['preliminaries'] }
+      - { role: 2-platform, tags: ['platform'] }
+      - { role: 3-base-server, tags: ['base'] }
+      - { role: 4-xo-services, tags: ['xo-services'] }
+      - { role: 5-edu-apps, tags: ['edu-apps'] }    
+      - { role: 6-mgmt-tools, tags: ['tools'] }
+      - { role: 7-local-addons, tags: ['addons'] }      

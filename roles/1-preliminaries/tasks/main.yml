@@ -1,0 +1,13 @@
+include: prelim.yml
+- include: selinux.yml
+  when: ansible_selinux["status"] != "disabled"
+  tags:
+    - download
+
+- include: yum.yml 
+  tags:
+    - download
+
+- include: chrony.yml
+- include: avahi.yml
+- include: sysctl.yml

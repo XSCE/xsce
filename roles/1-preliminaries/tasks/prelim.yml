@@ -29,15 +29,6 @@
     - http://download.unleashkids.org/xsce/repos/xsce-release.repo
     - http://download.unleashkids.org/xsce/repos/xsce-extra.repo
 
-- include: xo.yml
-  when: ansible_distribution_release == "based on Fedora 18"
-  tags:
-    - xo
-
-- include: selinux.yml
-  when: ansible_selinux["status"] != "disabled"
-  tags:
-    - download
 
 - name: Install custom profile file
   template: dest=/etc/profile.d/zzz_xsce.sh
@@ -67,12 +58,3 @@
            state=restarted
   with_items:
     - sshd
-
-
-- include: yum.yml 
-  tags:
-    - download
-
-- include: chrony.yml
-- include: avahi.yml
-- include: sysctl.yml
