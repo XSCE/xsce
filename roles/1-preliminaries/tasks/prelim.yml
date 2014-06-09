@@ -1,18 +1,38 @@
 - name: Get XSCE facts
   xsce_facts: facts=true
   tags: 
-    - facts
-    - common
-    - gateway
-    - dhcpd
-    - network
+    - activity-server
+    - addons
     - ajenti
-    - wondershaper
-    - core
-    - xo
+    - authserver
+    - avahi
+    - base
+    - dhcpd
     - download
+    - edu-apps
+    - ejabberd
+    - facts
+    - gateway
+    - httpd
+    - idmgr
+    - iiab
+    - monit
+    - moodle
+    - munin
+    - named
+    - network
+    - olpc
+    - pathagar
+    - portal
+    - postgresql
+    - preliminaries
     - services
     - squid
+    - sugar-stats
+    - tools
+    - wondershaper
+    - xo
+    - xo-services
 
 - name: Set hostname
   template: backup=yes
