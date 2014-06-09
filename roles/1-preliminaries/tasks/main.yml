@@ -1,4 +1,4 @@
-include: prelim.yml
+- include: prelim.yml
 - include: selinux.yml
   when: ansible_selinux["status"] != "disabled"
   tags:
