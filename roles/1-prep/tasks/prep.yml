@@ -1,0 +1,51 @@
+- name: Get XSCE facts
+  xsce_facts: facts=true
+  tags: 
+    - activity-server
+    - addons
+    - ajenti
+    - authserver
+    - avahi
+    - base
+    - common
+    - dhcpd
+    - download
+    - edu-apps
+    - ejabberd
+    - facts
+    - gateway
+    - httpd
+    - idmgr
+    - iiab
+    - monit
+    - moodle
+    - munin
+    - named
+    - network
+    - olpc
+    - pathagar
+    - portal
+    - postgresql
+    - prep
+    - services
+    - squid
+    - sugar-stats
+    - tools
+    - wondershaper
+    - xo
+    - xo-services
+
+- name: Set hostname
+  template: backup=yes
+            dest=/etc/hostname
+            src=hostname.j2
+            owner=root
+            mode=0644
+
+- name: Install xsce-release and xsce-extra repos
+  get_url: url={{ item }} dest=/etc/yum.repos.d/
+  tags:
+    - download
+  with_items:
+    - http://download.unleashkids.org/xsce/repos/xsce-release.repo
+    - http://download.unleashkids.org/xsce/repos/xsce-extra.repo
