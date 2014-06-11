@@ -1,8 +1,9 @@
-- include: prelim.yml
 - include: selinux.yml
   when: ansible_selinux["status"] != "disabled"
   tags:
     - download
+    
+- include: prelim.yml
 
 - include: yum.yml 
   tags:
