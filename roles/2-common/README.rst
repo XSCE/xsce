@@ -1,6 +1,6 @@
-====================
-Preliminaries README
-====================
+=============
+Common README
+=============
 
-This role is a place to aggregate roles that need to be run at the beginning of the install.
-This includes common packages and things like hostname and restrictions on root login.
+This role aggregates roles containing packages and a few other tasks that are common to all platforms
+and are required before creating a functioning server.
