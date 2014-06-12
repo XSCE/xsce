@@ -1,0 +1,13 @@
+---
+target_host: "127.0.0.1:5984"
+deployment: olpc
+
+db_name: xovis
+db_user: admin
+db_password: admin
+db_login: "{{ db_user }}:{{ db_password }}"
+db_url: "http://{{ db_login }}@{{ target_host }}/{{ db_name }}"
+
+xostats_repo: "https://github.com/martasd/xo-stats.git"
+xovis_dest: /opt/xovis
+xostats_dest: "{{ xovis_dest }}/xo-stats"

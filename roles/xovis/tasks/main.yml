@@ -1,0 +1,40 @@
+- name: Install Couchdb and other necessary packages
+  yum: name={{ item }}
+       state=installed
+  with_items:
+    - couchdb
+    - curl
+
+- name: Allow access to Couchdb from other hosts
+  command: sed -i 's/^\(bind_address\s*=\s*\).*$/\10\.0\.0\.0/' /etc/couchdb/default.ini
+
+- name: Enable Couchdb service
+  service: name=couchdb
+           enabled=yes
+           state=started
+
+- name: Add admin user
+  command: curl -X PUT {{ target_host }}/_config/admins/{{ db_user }} -d "\"{{ db_password }}\""
+
+- name: Remove Couch database if it already exists
+  command: curl -X DELETE {{ db_url }}
+  
+- name: Create Couchdb database
+  command: curl -X PUT {{ db_url }}
+
+- name: Install the latest XOstats script
+  git: repo={{ xostats_repo }}
+       dest={{ xostats_dest }}
+
+- name: Install xovis and xostats python dependencies
+  pip: requirements={{ xostats_dest }}/requirements.txt
+
+- name: Fetch database dump to the server
+  command: "wget -O {{ xovis_dest }}/xovis.json https://s3.amazonaws.com/xovis/xovis.json"
+
+- name: Load XOvis from the database dump
+  command: "couchdb-load {{ db_url }} --input {{ xovis_dest }}/xovis.json"
+  
+- name: Insert Sugar Journal metadata into Couchdb
+  command: "{{ xostats_dest }}/process_journal_stats.py dbinsert {{ db_name }}
+  --deployment {{ deployment }} --server http://{{ db_login }}@{{ target_host }}"
