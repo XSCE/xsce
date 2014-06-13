@@ -28,7 +28,7 @@
 
 - name: put the startup script on the path with other xs scripts
   template: src=xs-vpn
-            dest=/usr/bin
+            dest=/usr/bin/xs-vpn
             mode=0755
             owner=root
             group=root
