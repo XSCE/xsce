@@ -2,4 +2,4 @@
 dependencies:
    - { role: iiab, tags: ['iiab','addons'] }
    - { role: pathagar, tags: ['pathagar','addons'] }   
-   - { role: openvpn, tags: ['services','openvpn','core'],when: openvpn_install is defined }   
+   - { role: openvpn, tags: ['services','openvpn','core'],when: openvpn is defined }   
