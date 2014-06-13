@@ -1,12 +1,20 @@
 ---
 - name: define the url of the world readable openvpn server we will use
-  vars: vpn-presence=unleashkids.org
+  vars: 
+        vpn-presence: unleashkids.org
 
 - name: Install openvpn packages
-  yum: name=${item}
-       state=installed
+  yum:  name={{ item }}
+        state=present
   with_items:
-       openvpn
+        - openvpn
+
+- name: Create the directory for keys
+  file: dest=/etc/openvpn/keys
+        state=directory
+        owner=root
+        group=root
+        mode=0755
 
 - name: Configure openvpn
   template: backup=yes
