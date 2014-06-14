@@ -20,6 +20,9 @@ needed for future services.
 To add a new service create a call to service_link, passing the name of the service as found in the service_filelist
 and strings for the link and description.
 
+There is also a php function for links to content that was not installed as a services, such as browsable pdfs, called hard_link.
+Look at the various sample index files for how it works.
+
 Localization
 -----------------
 
