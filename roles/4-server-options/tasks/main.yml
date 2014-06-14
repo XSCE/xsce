@@ -1,0 +1,3 @@
+- name: Server Options Installed
+  command: echo Server Options Installed
+

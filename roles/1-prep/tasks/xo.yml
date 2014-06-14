@@ -1,3 +1,6 @@
+- name: XO Server specific tasks
+  command: echo Starting XO.yml
+  
 - name: Disable sleep
   command: touch /etc/powerd/flags/inhibit-suspend
            creates=/etc/powerd/flags/inhibit-suspend
