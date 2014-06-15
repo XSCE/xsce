@@ -19,14 +19,20 @@
   tags:
     - samba
 
-<<<<<<< HEAD
 - name: put our smb.conf in place
   template: src=smb.conf.j2 dest=/etc/samba/smb.conf
   notify: restart smb
 
-=======
->>>>>>> check in samba
 - name: Ensure Samba is running and set to start on boot.
   service: name=smb state=started enabled=yes
   tags: 
     - samba
+  when :
+    samba_enabled is defined and samba_enabled == 'true'
+
+- name: Disable Samba if that is wanted
+  service: name=smb state=stopped enabled=no
+  tags: 
+    - samba
+  when :
+    samba_enabled is defined and samba_enabled == 'false'
