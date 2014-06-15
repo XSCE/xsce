@@ -18,12 +18,14 @@
 - name: Copy language templates        
   command: rsync -a roles/activity-server/files/lang_templates /library/xs-activity-server/
   
-- name: Copy default index.html.en   
-  copy: src=www.0/index.html.en
+- name: Copy default index files   
+  copy: src={{ item }}
         dest=/library/xs-activity-server/www.0
         mode=0755
         owner=root
         group=root
+  with_fileglob:
+        - www.0/index.html.*        
         
 - name: Point www to www.0 as default
   file: src=/library/xs-activity-server/www.0
