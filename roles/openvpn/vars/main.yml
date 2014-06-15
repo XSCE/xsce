@@ -1,2 +1,4 @@
 ---
 vpn_presence: unleashkids.org
+openvpn_install: true
+openvpn_enable: false
