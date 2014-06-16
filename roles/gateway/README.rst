@@ -32,5 +32,13 @@ There is a white list file, sites.whitelist.txt.  URL patterns not in this file 
 
 An additional rule to block https has been added to iptables, also controlled by an ansible variable.
 
+To disable whitelist checking and/or https blocking edit 
+
+#Gateway Filters
+gw_squid_whitelist: True
+gw_block_https: True
+
+changing True to False where appropriate and then run runtags facts, gateway 
+
 Bandwidth is filtered by wondershaper.
 
