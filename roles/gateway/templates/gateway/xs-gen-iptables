@@ -7,6 +7,8 @@ IPTABLES=/usr/sbin/iptables
 LANIF=`cat /etc/sysconfig/xs_lan_device`
 WANIF=`cat /etc/sysconfig/xs_wan_device`
 
+gw_block_https={{ gw_block_https }}
+
 if [  "x$WANIF" == "x" ]; then
     exit 1
 fi
@@ -36,11 +38,16 @@ $IPTABLES -A INPUT -m state --state NEW -i  $lan -j ACCEPT
 # Allow mDNS 
 $IPTABLES -A INPUT -p udp --dport 5353 -d 224.0.0.251 -j ACCEPT
 
-    #We alway run as gateway 
+    #We always run as gateway 
     $IPTABLES -A INPUT -p tcp --dport ssh -m state --state NEW -i $wan -j ACCEPT
 
     $IPTABLES -A POSTROUTING -t nat -o $wan -j MASQUERADE
     $IPTABLES -A FORWARD -i $wan -o $lan -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+if [  "$gw_block_https" == "True" ]; then    
+    #Block https traffic entirely
+    $IPTABLES -A FORWARD -p tcp --dport 443 -j DROP
+fi   
 
     # Allow outgoing connections from the LAN side.
     $IPTABLES -A FORWARD -i $lan -o $wan -j ACCEPT
