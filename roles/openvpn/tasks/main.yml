@@ -33,3 +33,18 @@
             owner=root
             group=root
 
+- name: make openvpn connection automatic
+  template: src=openvpn.cron
+            dest=/etc/cron.d/openvpn.cron
+            mode=0755
+            owner=root
+            group=root
+  when:
+            openvpn_enable == true
+
+- name: start the openvpn tunnel at boot time
+  lineinfile:
+            dest=/etc/rc.d/rc.local
+            line='25 *  *  *  * root /usr/bin/xs-vnc test > /dev/null'
+  when:
+            openvpn_enable == true
