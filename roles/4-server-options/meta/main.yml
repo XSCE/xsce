@@ -1,2 +1,3 @@
-#dependencies:
+dependencies:
 #   - { role: xxx, tags: ['options'] }
+    - { role: openvpn, tags: ['options','openvpn'], when: openvpn_install is defined }

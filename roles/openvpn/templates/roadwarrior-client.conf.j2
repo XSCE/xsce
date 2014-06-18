@@ -14,7 +14,7 @@
 
 port 1194
 dev tun
-remote xsce.activitycentral.com
+remote {{ vpn_presence }}
 
 # TLS parms
 
@@ -36,3 +36,4 @@ pull
 #down scripts/ifdown-post
 
 verb 4
+comp-lzo yes

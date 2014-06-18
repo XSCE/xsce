@@ -1,0 +1,2 @@
+# this file executes xs-vpn hourly to test for tunnel, and restart as required
+25 *  *  *  * root /usr/bin/xs-vpn > /dev/null
