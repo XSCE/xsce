@@ -17,6 +17,11 @@ icp_port 0
 #  These are used throughout this file
 #
 #acl manager proto cache_object
+
+{% if gw_squid_whitelist == True %}
+acl whitelist dstdomain "/etc/squid/sites.whitelist.txt"
+{% endif %}
+
 acl school src 172.18.0.0/16
 #acl localhost src 127.0.0.1/32
 #acl to_localhost dst 127.0.0.0/8
@@ -24,7 +29,13 @@ acl to_schoolserver dst 178.16.0.0/16  # to schoolserver or other local hosts.
 acl SSL_ports port 443
 acl Safe_ports port 80          # http
 acl Safe_ports port 21          # ftp
+
+{% if gw_block_https == True %}
+#acl Safe_ports port 443         # https
+{% else %}
 acl Safe_ports port 443         # https
+{% endif %}
+
 acl Safe_ports port 70          # gopher
 acl Safe_ports port 210         # wais
 acl Safe_ports port 1025-65535  # unregistered ports
@@ -181,6 +192,10 @@ ident_timeout      10 seconds
 
 http_access allow manager localhost
 http_access deny manager
+
+{% if gw_squid_whitelist %}
+http_access deny !whitelist
+{% endif %}
 
 http_access deny !Safe_ports
 http_access allow school

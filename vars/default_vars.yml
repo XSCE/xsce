@@ -10,6 +10,10 @@ watchdog:
   - postgresql
   - squid 
 
+#Gateway Filters
+gw_squid_whitelist: True
+gw_block_https: True
+
 #Services
 service_filelist: /etc/sysconfig/xs_installed_services
 squid: True
