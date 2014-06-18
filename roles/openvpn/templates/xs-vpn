@@ -1,4 +1,6 @@
 #!/bin/sh
+# script to manage openvpn
+VPNCONFIG='roadwarrior-client.conf'
 
 # we'd like the user of this script to have root privilege
 if [ "$(id -u)" != "0" ]; then
@@ -60,7 +62,7 @@ case $cmd in
 		killall openvpn
 		sleep 10
 		echo "Starting openvpn and waiting 10 seconds for daemon to become ready"
-    		openvpn --cd $dir --daemon --config roadwarrior-client.conf
+    		openvpn --cd $dir --daemon --config $VPNCONFIG
 	fi
 	sleep 10 
 	echo "Testing VPN connection"

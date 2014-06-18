@@ -23,3 +23,10 @@ services:
 # Languages
 default_language: en
 language_priority: en es
+
+# Roles
+#
+# for role openvpn:
+vpn_presence: unleashkids.org
+openvpn_install: true
+openvpn_enable: false
