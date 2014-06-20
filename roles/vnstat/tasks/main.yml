@@ -30,6 +30,6 @@
   when: not xsce_lan_iface == ""
 
 - name: start vnstat daemon via systemd
-  service: vnstat enabled=yes state=started
+  service: name=vnstat enabled=yes state=started
 
 
