@@ -23,7 +23,7 @@
   tags: 
     - network
 
-- name: create database for lan to collect vnstat data
+- name: create database for lan to collect vnstat data if not appliace config
   shell: vnstat -i {{ xsce_lan_iface }}
   tags: 
     - network
