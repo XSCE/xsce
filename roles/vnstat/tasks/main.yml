@@ -5,20 +5,29 @@
   with_items:
     - vnstat
 
+- name: put the config file in place
+  template: src=vnstat.conf.j2 
+            dest=/etc/vnstat.conf 
+            mode=0744 
+            owner=root 
+            group=root
+
+- name: get facts if not present
+  xsce_facts:
+  tags: 
+    - network
+  when: xsce_wan_iface is not defined
+
 - name: create database for wan to collect vnstat data
-  shell: vnstat -i {{ xsce_wan_device }}
+  shell: vnstat -i {{ xsce_wan_iface }}
   tags: 
     - network
 
 - name: create database for lan to collect vnstat data
-  shell: vnstat -i {{ xsce_lan_device }}
+  shell: vnstat -i {{ xsce_lan_iface }}
   tags: 
     - network
-  when: not xsce_lan_device == ""
-
-- name: put the config file in place
-  template: src=vnstat.conf.j2 dest=/etc/vnstat.conf mode=0744 owner=root >
-            group=root
+  when: not xsce_lan_iface == ""
 
 - name: start vnstat daemon via systemd
   service: vnstat enabled=yes state=started
