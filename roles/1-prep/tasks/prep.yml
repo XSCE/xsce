@@ -1,18 +1,3 @@
-- name: Get XSCE facts
-  xsce_facts: facts=true
-  tags: 
-    - facts
-    - prep
-    - platform
-    - common
-    - base
-    - options
-    - xo-services
-    - generic-apps
-    - edu-apps
-    - tools
-    - addons
-
 - name: Set hostname
   template: backup=yes
             dest=/etc/hostname
