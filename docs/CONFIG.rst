@@ -24,6 +24,25 @@ List all the APs the machine has previously connected to:
 Forget a connection:
     | ``nmcli con delete id "mywifi"``
 
+****************************
+Overriding Ansible Variables
+****************************
+
+Overview
+========
+
+In general as of Release 5.0 you can change the value of variables by editing
+
+vars/default_vars.yml  In the future there will be an easier method
+
+Some roles also have a README file that explains how the variables for that role
+work.
+
+Squid
+=====
+
+See https://github.com/XSCE/xsce/blob/master/roles/gateway/README.rst
+
 *********************
 Web Interface Logins:
 *********************
