@@ -15,7 +15,7 @@ xovis_db_url: "http://{{ xovis_db_login }}@{{ xovis_target_host }}/{{ xovis_db_n
 # xovis_dest: /opt/xovis
 # xostats_dest: "{{ xovis_dest }}/xo-stats"
 
-xovis_repo_dest: /opt
-xovis_repo: xovis
-xovis_root: "{{ xovis_repo_dest }}/{{ xovis_repo }}"
-xovis_repo_url: "https://github.com/martasd/{{ xovis_repo }}"
+#xovis_repo_dest: /opt
+#xovis_repo: xovis
+xovis_root: "/opt/xovis"
+xovis_repo_url: "https://github.com/martasd/xovis.git"
