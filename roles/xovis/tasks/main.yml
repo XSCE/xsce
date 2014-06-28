@@ -10,7 +10,8 @@
 
 - name: Install the latest xovis repo
   git: repo={{ xovis_repo_url }}
-       dest={{ xovis_repo_dest }}
+       dest={{ xovis_root }}
+       depth=1
 
 - name: Install xovis python dependencies
   pip: requirements={{ xovis_root }}/requirements.txt
