@@ -1,0 +1,55 @@
+- name: Install Couchdb and other necessary packages
+  yum: name={{ item }}
+       state=installed
+  with_items:
+    - couchdb
+    - curl
+    - python-pip
+    - nodejs
+    - npm
+
+- name: Install the latest xovis repo
+  git: repo={{ xovis_repo_url }}
+       dest={{ xovis_root }}
+       depth=1
+
+- name: Install xovis python dependencies
+  pip: requirements={{ xovis_root }}/process_stats/requirements.txt
+
+- name: Install node.js package kanso to maintain couchdb
+  npm: name=kanso
+       global=yes  
+         
+- name: Allow access to Couchdb from other hosts
+  command: sed -i 's/^\(bind_address\s*=\s*\).*$/\10\.0\.0\.0/' /etc/couchdb/default.ini
+
+- name: Enable Couchdb service
+  service: name=couchdb
+           enabled=yes
+           state=started
+
+- name: Add admin user
+  command: curl -X PUT {{ xovis_target_host }}/_config/admins/{{ xovis_db_user }} -d "\"{{ xovis_db_password }}\""
+
+# Replaced commands below with kanso equivalents
+  
+- name: Remove Couch database if it already exists - ignore errors
+  command: kanso deletedb {{ xovis_db_url }}
+  ignore_errors: yes
+#  command: curl -X DELETE {{ xovis_db_url }}
+  
+- name: Create Couchdb database
+  command: kanso createdb {{ xovis_db_url }}
+#  command: curl -X PUT {{ xovis_db_url }}
+
+- name: Fetch database dump to the server
+  command: echo Using local project
+#  command: "wget -O {{ xovis_root }}/xovis.json https://s3.amazonaws.com/xovis/xovis.json"
+
+- name: Load initial xovis database
+  command: kanso push {{ xovis_root }} {{ xovis_db_url }}
+#  command: "couchdb-load {{ xovis_db_url }} --input {{ xovis_root }}/xovis.json"
+  
+- name: Insert Sugar Journal metadata into Couchdb
+  command: "{{ xovis_root }}/process_stats/process_journal_stats.py dbinsert {{ xovis_db_name }}
+  --deployment {{ xovis_deployment_name }} --server http://{{ xovis_db_login }}@{{ xovis_target_host }}"
