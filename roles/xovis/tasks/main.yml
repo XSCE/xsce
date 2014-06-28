@@ -41,7 +41,7 @@
   command: "wget -O {{ xovis_root }}/xovis.json https://s3.amazonaws.com/xovis/xovis.json"
 
 - name: Load XOvis from the database dump
-  command: "couchdb-load {{ xovis_db_url }} --input {{ xovis_root }}/xovis.json"
+  shell: "couchdb-load {{ xovis_db_url }} --input {{ xovis_root }}/xovis.json"
   
 - name: Insert Sugar Journal metadata into Couchdb
   command: "{{ xovis_root }}/process_journal_stats.py dbinsert {{ xovis_db_name }}
