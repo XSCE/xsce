@@ -2,6 +2,11 @@
 lan_ip: 172.18.96.1
 lan_netmask: 255.255.224.0
 
+#Network variables
+#Read docs/NETWORKING.rst
+xsce_wan_iface: "{{ ansible_default_ipv4.interface }}"
+xsce_lan_iface: auto
+
 watchdog: 
   - sshd
   - idmgr
@@ -35,7 +40,15 @@ vpn_presence: unleashkids.org
 openvpn_install: true
 openvpn_enable: false
 
-#Network variables
-#Read docs/NETWORKING.rst
-xsce_wan_iface: "{{ ansible_default_ipv4.interface }}"
-xsce_lan_iface: auto
+# for role xovis
+xovis_target_host: "127.0.0.1:5984"
+xovis_deployment_name: olpc
+
+xovis_db_name: xovis
+xovis_db_user: admin
+xovis_db_password: admin
+xovis_db_login: "{{ xovis_db_user }}:{{ xovis_db_password }}"
+xovis_db_url: "http://{{ xovis_db_login }}@{{ xovis_target_host }}/{{ xovis_db_name }}"
+
+xovis_root: "/opt/xovis"
+xovis_repo_url: "https://github.com/martasd/xovis.git"

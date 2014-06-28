@@ -45,7 +45,7 @@
   command: echo Using local project
 #  command: "wget -O {{ xovis_root }}/xovis.json https://s3.amazonaws.com/xovis/xovis.json"
 
-- name: Load ininital xovis database
+- name: Load initial xovis database
   command: kanso push {{ xovis_root }} {{ xovis_db_url }}
 #  command: "couchdb-load {{ xovis_db_url }} --input {{ xovis_root }}/xovis.json"
   

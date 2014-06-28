@@ -11,11 +11,5 @@ xovis_db_password: admin
 xovis_db_login: "{{ xovis_db_user }}:{{ xovis_db_password }}"
 xovis_db_url: "http://{{ xovis_db_login }}@{{ xovis_target_host }}/{{ xovis_db_name }}"
 
-# xostats_repo: "https://github.com/martasd/xo-stats.git"
-# xovis_dest: /opt/xovis
-# xostats_dest: "{{ xovis_dest }}/xo-stats"
-
-#xovis_repo_dest: /opt
-#xovis_repo: xovis
 xovis_root: "/opt/xovis"
 xovis_repo_url: "https://github.com/martasd/xovis.git"
