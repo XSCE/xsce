@@ -30,19 +30,25 @@
 
 - name: Add admin user
   command: curl -X PUT {{ xovis_target_host }}/_config/admins/{{ xovis_db_user }} -d "\"{{ xovis_db_password }}\""
+
+# Replaced commands below with kanso equivalents
   
 - name: Remove Couch database if it already exists
-  command: curl -X DELETE {{ xovis_db_url }}
+  command: kanso deletedb {{ xovis_db_url }}
+#  command: curl -X DELETE {{ xovis_db_url }}
   
 - name: Create Couchdb database
-  command: curl -X PUT {{ xovis_db_url }}
+  command: kanso createdb {{ xovis_db_url }}
+#  command: curl -X PUT {{ xovis_db_url }}
 
 - name: Fetch database dump to the server
-  command: "wget -O {{ xovis_root }}/xovis.json https://s3.amazonaws.com/xovis/xovis.json"
+  command: echo Using local project
+#  command: "wget -O {{ xovis_root }}/xovis.json https://s3.amazonaws.com/xovis/xovis.json"
 
-- name: Load XOvis from the database dump
-  command: "couchdb-load {{ xovis_db_url }} --input {{ xovis_root }}/xovis.json"
+- name: Load ininital xovis database
+  command: kanso push {{ xovis_root }} {{ xovis_db_url }}
+#  command: "couchdb-load {{ xovis_db_url }} --input {{ xovis_root }}/xovis.json"
   
 - name: Insert Sugar Journal metadata into Couchdb
-  command: "{{ xovis_root }}/process_journal_stats.py dbinsert {{ xovis_db_name }}
+  command: "{{ xovis_root }}/process_stats/process_journal_stats.py dbinsert {{ xovis_db_name }}
   --deployment {{ xovis_deployment_name }} --server http://{{ xovis_db_login }}@{{ xovis_target_host }}"
