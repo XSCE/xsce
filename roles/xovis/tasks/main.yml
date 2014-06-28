@@ -33,8 +33,9 @@
 
 # Replaced commands below with kanso equivalents
   
-- name: Remove Couch database if it already exists
+- name: Remove Couch database if it already exists - ignore errors
   command: kanso deletedb {{ xovis_db_url }}
+  ignore_errors: yes
 #  command: curl -X DELETE {{ xovis_db_url }}
   
 - name: Create Couchdb database
