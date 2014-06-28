@@ -14,7 +14,7 @@
        depth=1
 
 - name: Install xovis python dependencies
-  pip: requirements={{ xovis_root }}/requirements.txt
+  pip: requirements={{ xovis_root }}/process_stats/requirements.txt
 
 - name: Install node.js package kanso to maintain couchdb
   npm: name=kanso
