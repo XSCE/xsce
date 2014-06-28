@@ -4,4 +4,4 @@ dependencies:
    - { role: munin, tags: ['services','munin','tools'] }
    - { role: monit, tags: ['services','monit','tools'] }
    - { role: vnstat, tags: ['services','vnstat','tools'] }
-
+   - { role: xovis, tags: ['services','xovis','tools'] }
