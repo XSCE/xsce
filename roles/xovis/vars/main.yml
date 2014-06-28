@@ -1,0 +1,21 @@
+---
+# The values here are defaults.
+# To override them edit the main var definitions in xsce/vars
+
+xovis_target_host: "127.0.0.1:5984"
+xovis_deployment_name: olpc
+
+xovis_db_name: xovis
+xovis_db_user: admin
+xovis_db_password: admin
+xovis_db_login: "{{ xovis_db_name }}:{{ xovis_db_password }}"
+xovis_db_url: "http://{{ xovis_db_login }}@{{ xovis_target_host }}/{{ xovis_db_name }}"
+
+# xostats_repo: "https://github.com/martasd/xo-stats.git"
+# xovis_dest: /opt/xovis
+# xostats_dest: "{{ xovis_dest }}/xo-stats"
+
+xovis_repo_dest: /opt
+xovis_repo: xovis
+xovis_root: {{ xovis_repo_dest }}/{{ xovis_repo }}
+xovis_repo_url: "https://github.com/martasd/{{ xovis_repo }} --depth 1"
