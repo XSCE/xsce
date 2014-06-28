@@ -2,3 +2,4 @@
   smbuser : smbuser
   smbpassword : smbpw
   shared_dir : /library/public
+  samba_enabled : false
