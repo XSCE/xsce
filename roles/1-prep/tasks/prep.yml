@@ -12,3 +12,5 @@
   with_items:
     - http://download.unleashkids.org/xsce/repos/xsce-release.repo
     - http://download.unleashkids.org/xsce/repos/xsce-extra.repo
+    - http://download.unleashkids.org/xsce/repos/xsce-testing.repo
+    

@@ -31,6 +31,11 @@
            enabled=yes
            state=started
 
+- name: Wait for couchdb to become ready
+  wait_for: port=5984
+            delay=1
+            timeout=5
+
 - name: Add admin user
   command: curl -X PUT {{ xovis_target_host }}/_config/admins/{{ xovis_db_user }} -d "\"{{ xovis_db_password }}\""
 

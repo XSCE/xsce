@@ -19,7 +19,7 @@
             group=root
             force=yes
             mode=0755
-  with_items: $watchdog
+  with_items: watchdog
   register: monit_config
   until: monit_config | success 
   retries: 5
