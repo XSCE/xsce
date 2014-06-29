@@ -13,6 +13,9 @@
        dest={{ xovis_root }}
        depth=1
 
+- name: Update xovis repo with Chart Heading
+  lineinfile: dest="{{ xovis_root }}/index.html" regexp='(.+)<h1>(.*)</h1>' line='\1<h1>{{ xovis_chart_heading }}</h1>' backrefs=yes
+
 - name: Install xovis python dependencies
   pip: requirements={{ xovis_root }}/process_stats/requirements.txt
 

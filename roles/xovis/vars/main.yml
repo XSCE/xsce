@@ -13,3 +13,4 @@ xovis_db_url: "http://{{ xovis_db_login }}@{{ xovis_target_host }}/{{ xovis_db_n
 
 xovis_root: "/opt/xovis"
 xovis_repo_url: "https://github.com/martasd/xovis.git"
+xovis_chart_heading: "My School: Usage Data Visualization"
