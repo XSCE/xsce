@@ -113,6 +113,14 @@
             dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_lan_iface}}
   when: 'xsce_lan_iface != "" '
 
+- name: restart NetworkManager services
+  service: name=NetworkManager
+           enabled=yes
+           state=restarted
+  service: name=NetworkManager-dispatcher
+           enabled=yes
+           state=restarted
+
 - include: named.yml
   tags:
     - named
