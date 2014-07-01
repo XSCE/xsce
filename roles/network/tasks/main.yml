@@ -1,5 +1,5 @@
 - name: Discover LAN iface
-  shell: /sbin/ip link show  | grep -v -e DOWN -e lo -e {{ ansible_default_ipv4.alias }}| grep mtu | awk -F":" '{print \$2}' |  tr -d ' '  | head -n1 
+  shell: "/sbin/ip link show  | grep -v -e DOWN -e lo -e {{ ansible_default_ipv4.alias }}| grep mtu | gawk -F: '{print $2}' |  tr -d ' '  | head -n1 "
   register: discovered_lan
   
   changed_when: false
