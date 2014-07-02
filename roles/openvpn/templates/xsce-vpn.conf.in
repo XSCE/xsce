@@ -2,5 +2,5 @@
 #
 # copy this template file to /etc/openvpn/xsce-vpn.conf, and set properly
 
-#  VPNCONFIG=<put the url, or ip address, of the vpn servere here>
-#  VPNIP=<put the ip address here, pinged to test for existence of vpn tunnel>
+#  VPNCONFIG=< put the name of the config file in /etc/openvpn you want to use>
+#  VPNIP=<put the ip address of server, pinged to test for existence of vpn tunnel>
