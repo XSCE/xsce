@@ -1,0 +1,6 @@
+# this file allows changing the world accessable vpn server and its ip address
+#
+# copy this template file to /etc/openvpn/xsce-vpn.conf, and set properly
+
+#  VPNCONFIG=<put the url, or ip address, of the vpn servere here>
+#  VPNIP=<put the ip address here, pinged to test for existence of vpn tunnel>
