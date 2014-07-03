@@ -34,13 +34,22 @@ case $1 in
 esac
 
 # we'd like for passwords authentication to be turned off
-grep -E^.*PasswordAuthentication.*[Yy]es /etc/ssh/sshd_conf
-if [ "$1" != "test" ] || [ "$1" != "unsafe" ]  && [ $# -eq 0];then
-	if [ $? -eq 0 ]; then
+grep -e^PasswordAuthentication.*[Yy]es /etc/ssh/sshd_config
+PASSWORDS_ENABLED=$?
+if [ $PASSWORDS_ENABLED -eq 0 ]; then
+   echo "passwords enabled"
+else
+  echo "passwords disabled"
+fi
+if [ $PASSWORDS_ENABLED -eq 0 ];then
+	case $1 in
+    "test" | "unsafe") ;;
+    *)
+
 		echo "Openvpn is only safe when public/private keys are used"
 		echo " And when passwords are turned off in /etc/ssh/sshd_conf"
 		exit 1
-	fi
+  esac
 fi
 
 # openvpn config file directory
