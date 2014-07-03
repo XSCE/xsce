@@ -69,3 +69,7 @@ Ajenti Wondershaper
 Upload Activity
 ===============
 - N/A: /var/www/html/upload_activity.php is currently not present - WIP
+
+XOvis
+=====
+- Client: access http://schoolserver:5984/xovis/_design/xovis-couchapp/index.html and look at beautiful charts
