@@ -113,13 +113,28 @@
             dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_lan_iface}}
   when: 'xsce_lan_iface != "" '
 
+# This is a dog's breakfast, but with ansible 1.6.3 service: name=NetworkManager state=restarted doesn't work
+
 - name: restart NetworkManager services
   service: name=NetworkManager
            enabled=yes
-           state=restarted
-  service: name=NetworkManager-dispatcher
+           state=stopped
+- service: name=NetworkManager-dispatcher
            enabled=yes
-           state=restarted
+           state=stopped
+- wait_for: path=/root/anaconda-ks.cfg
+            delay=4
+            timeout=5
+- service: name=NetworkManager
+           enabled=yes
+           state=started
+- wait_for: path=/root/anaconda-ks.cfg
+            delay=4
+            timeout=5
+- service: name=NetworkManager-dispatcher
+           enabled=yes
+           state=started
+- debug:  msg="hopefully now NM is restarted"
 
 - include: named.yml
   tags:
