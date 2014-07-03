@@ -1,6 +1,12 @@
 #!/bin/sh
 # script to manage openvpn
-VPNCONFIG='roadwarrior-client.conf'
+if [ ! -f "/etc/openvpn/xsce-vpn.conf" ]; then
+  VPNCONFIG='roadwarrior-client.conf'
+  VPNIP="10.8.0.1"
+else
+  # expect the sourced file to set the above variables
+  source /etc/openvpn/xsce-vpn.conf
+fi
 
 # we'd like the user of this script to have root privilege
 if [ "$(id -u)" != "0" ]; then
@@ -28,21 +34,31 @@ case $1 in
 esac
 
 # we'd like for passwords authentication to be turned off
-grep -E^.*PasswordAuthentication.*[Yy]es /etc/ssh/sshd_conf
-if [ "$1" != "test" ] && [ $# -eq 0];then
-	if [ $? -eq 0 ]; then
+grep -e^PasswordAuthentication.*[Yy]es /etc/ssh/sshd_config
+PASSWORDS_ENABLED=$?
+
+if [ $PASSWORDS_ENABLED -eq 0 ];then
+	case $1 in
+    "test" | "unsafe") ;;
+    *)
+
 		echo "Openvpn is only safe when public/private keys are used"
 		echo " And when passwords are turned off in /etc/ssh/sshd_conf"
 		exit 1
-	fi
+  esac
 fi
 
 # openvpn config file directory
 dir=/etc/openvpn
 
-cmd=$1
+if [ $# -eq 0 ]; then
+  cmd="test"
+else
+  cmd=$1
+fi
+
 case $cmd in
-"test" | "unsafe" | "on")
+"test" | "unsafe" )
 # load TUN/TAP kernel module
     modprobe tun
 
@@ -55,7 +71,7 @@ case $cmd in
 	fi
 	
 	# check the vpn tunnel
-	ping -c 5 -i 5 10.8.0.1
+	ping -c 5 -i 5 "$VPNIP"
 	# a zero return means the tunnel is up
 	if [ $? -ne "0" ]; then
 		echo "Stopping any openvpn instance"
@@ -66,7 +82,7 @@ case $cmd in
 	fi
 	sleep 10 
 	echo "Testing VPN connection"
-	ping -c 4 -i 4 10.8.0.1
+	ping -c 4 -i 4 "$VPNIP"
 	if [ $? -eq 0 ]; then
 		echo "vpn tunnel established"
 	else
