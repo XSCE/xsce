@@ -35,7 +35,7 @@ esac
 
 # we'd like for passwords authentication to be turned off
 grep -E^.*PasswordAuthentication.*[Yy]es /etc/ssh/sshd_conf
-if [ "$1" != "test" ] && [ $# -eq 0];then
+if [ "$1" != "test" ] || [ "$1" != "unsafe" ]  && [ $# -eq 0];then
 	if [ $? -eq 0 ]; then
 		echo "Openvpn is only safe when public/private keys are used"
 		echo " And when passwords are turned off in /etc/ssh/sshd_conf"
@@ -46,9 +46,14 @@ fi
 # openvpn config file directory
 dir=/etc/openvpn
 
-cmd=$1
+if [ $# -eq 0 ]; then
+  cmd="test"
+else
+  cmd=$1
+fi
+
 case $cmd in
-"test" | "unsafe" | "on")
+"test" | "unsafe" )
 # load TUN/TAP kernel module
     modprobe tun
 
