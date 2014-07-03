@@ -36,11 +36,7 @@ esac
 # we'd like for passwords authentication to be turned off
 grep -e^PasswordAuthentication.*[Yy]es /etc/ssh/sshd_config
 PASSWORDS_ENABLED=$?
-if [ $PASSWORDS_ENABLED -eq 0 ]; then
-   echo "passwords enabled"
-else
-  echo "passwords disabled"
-fi
+
 if [ $PASSWORDS_ENABLED -eq 0 ];then
 	case $1 in
     "test" | "unsafe") ;;
