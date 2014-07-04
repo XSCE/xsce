@@ -19,12 +19,12 @@
   when: xsce_wan_iface is not defined
 
 - name: create database for wan to collect vnstat data
-  shell: vnstat -i {{ xsce_wan_iface }}
+  shell: /usr/bin/vnstat -i {{ xsce_wan_iface }}
   tags: 
     - network
 
 - name: create database for lan to collect vnstat data if not appliace config
-  shell: vnstat -i {{ xsce_lan_iface }}
+  shell: /usr/bin/vnstat -i {{ xsce_lan_iface }}
   tags: 
     - network
   when: not xsce_lan_iface == ""
