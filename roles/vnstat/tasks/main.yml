@@ -14,19 +14,13 @@
 
 - name: get facts if not present
   xsce_facts:
-  tags: 
-    - network
   when: xsce_wan_iface is not defined
 
 - name: create database for wan to collect vnstat data
   shell: /usr/bin/vnstat -i {{ xsce_wan_iface }}
-  tags: 
-    - network
 
 - name: create database for lan to collect vnstat data if not appliace config
   shell: /usr/bin/vnstat -i {{ xsce_lan_iface }}
-  tags: 
-    - network
   when: not xsce_lan_iface == ""
 
 - name: start vnstat daemon via systemd
