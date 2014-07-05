@@ -50,14 +50,12 @@
   command: kanso createdb {{ xovis_db_url }}
 #  command: curl -X PUT {{ xovis_db_url }}
 
-- name: Fetch database dump to the server
-  command: echo Using local project
-#  command: "wget -O {{ xovis_root }}/xovis.json https://s3.amazonaws.com/xovis/xovis.json"
-
 - name: Load initial xovis database
   command: kanso push {{ xovis_root }} {{ xovis_db_url }}
 #  command: "couchdb-load {{ xovis_db_url }} --input {{ xovis_root }}/xovis.json"
   
 - name: Insert Sugar Journal metadata into Couchdb
   command: "{{ xovis_root }}/process_stats/process_journal_stats.py dbinsert {{ xovis_db_name }}
-  --deployment {{ xovis_deployment_name }} --server http://{{ xovis_db_login }}@{{ xovis_target_host }}"
+  -d {{ xovis_backup_dir }}
+  --deployment {{ xovis_deployment_name }}
+  --server http://{{ xovis_db_login }}@{{ xovis_target_host }}"

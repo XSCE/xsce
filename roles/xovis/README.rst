@@ -19,7 +19,8 @@ xovis_db_login: "{{ xovis_db_user }}:{{ xovis_db_password }}"
 xovis_db_url: "http://{{ xovis_db_login }}@{{ xovis_target_host }}/{{ xovis_db_name }}"
 
 xovis_root: "/opt/xovis"
+xovis_backup_dir: "/library/users"
 xovis_repo_url: "https://github.com/martasd/xovis.git"
 xovis_chart_heading: "My School: Usage Data Visualization"
 
-Most of these will not need changing, but you will likely want to change the chart heading and the database admin password.
+Most of these will not need changing, but you will likely want to change the deployment name, the chart heading, and the database admin password.
