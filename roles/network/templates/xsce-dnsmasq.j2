@@ -1,0 +1,45 @@
+#
+# This file is managed by ansible
+#
+
+#Be a good internet citizen
+domain-needed
+bogus-priv
+
+#Don't read /etc/hosts
+no-hosts
+
+#Add local domain to queries without any domain
+expand-hosts
+
+#Disable dhcp
+no-dhcp-interface={{ xsce_wan_iface }}
+{% if xsce_lan_iface != "" %}
+{% set xsce_ip = "172.18.96.1" %}
+no-dhcp-interface={{ xsce_lan_iface }}
+{% else %}
+{% set xsce_ip = hostvars[inventory_hostname]['ansible_' + xsce_wan_iface]['ipv4']['address'] %}
+{% endif %}
+{% if gw_use_opendns == True %}
+
+# OpenDNS setup
+no-resolv
+server=208.67.220.220
+server=208.67.220.222
+{% endif %}
+
+local=/{{ xsce_hostname }}.{{ xsce_domain }}/
+domain={{ xsce_hostname }}.{{ xsce_domain }}
+
+# XSCE common addresses
+address=/{{ xsce_hostname }}/{{ xsce_hostname }}.{{ xsce_domain }}/{{ xsce_ip }}
+address=/ntp/www/time/presence/xs/{{ xsce_ip }}
+address=/schoolserver1/school/library/{{ xsce_ip }}
+address=/escuela/schule/{{ xsce_ip }}
+address=/conference.schoolserver/{{ xsce_ip }}
+
+
+{% if xsce_lan_iface != "" %}
+#FIXME: ip is hardcoded
+ptr-record=1.96.18.172.in-addr.arpa,"{{ xsce_hostname }}.{{ xsce_domain }}"
+{% endif %}

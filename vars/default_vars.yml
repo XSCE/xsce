@@ -13,6 +13,8 @@ watchdog:
 #Gateway Filters
 gw_squid_whitelist: False
 gw_block_https: False
+gw_use_opendns: False
+
 
 #Services
 service_filelist: /etc/sysconfig/xs_installed_services

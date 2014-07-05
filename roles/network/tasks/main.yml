@@ -136,7 +136,7 @@
            state=started
 - debug:  msg="hopefully now NM is restarted"
 
-- include: named.yml
+- include: dnsmasq.yml
   tags:
-    - named
+    - dnsmasq
     - network
