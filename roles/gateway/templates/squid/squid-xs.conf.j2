@@ -20,6 +20,8 @@ icp_port 0
 
 {% if gw_squid_whitelist == True %}
 acl whitelist dstdomain "/etc/squid/sites.whitelist.txt"
+acl bingtranslate url_regex -i bing.com/translator
+http_access allow bingtranslate
 {% endif %}
 
 acl school src 172.18.0.0/16
