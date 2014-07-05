@@ -36,7 +36,11 @@
       owner: 'dansguardian'
       group: 'dansguardian'
       mode: '0640'
-    
+    - src: 'squid/dansguardian.urlregexp.j2'
+      dest: '/etc/dansguardian/lists/urlregexplist'
+      owner: 'dansguardian'
+      group: 'dansguardian'
+      mode: '0640'
 
 - name: Create squid cache directory
   file: path=/library/cache

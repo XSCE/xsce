@@ -24,9 +24,23 @@
               insertafter=EOF
               state=present
 
-- name: Create config file
-  template: src=xsce-dnsmasq.j2
-            dest=/etc/dnsmasq.d/xsce-nameserver.conf
+- name: Create config files
+  template: src={{ item.src }}
+            dest={{ item.dest }}
+            owner={{ item.owner }}
+            group={{ item.owner }}
+            mode={{ item.mode }}
+  with_items:
+    - src: 'xsce-dnsmasq.j2'
+      dest: '/etc/dnsmasq.d/xsce-nameserver.conf'
+      owner: 'root'
+      group: 'root'
+      mode: '0640'
+    - src: 'xsce-dnsmasq_safesearch.j2'
+      dest: '/etc/dnsmasq.d/xsce-google_safesearch.conf'
+      owner: 'root'
+      group: 'root'
+      mode: '0640'
    
 - name: Enable dnsmasq service
   service: name=dnsmasq
