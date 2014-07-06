@@ -39,20 +39,17 @@
 - name: Add admin user
   command: curl -X PUT {{ xovis_target_host }}/_config/admins/{{ xovis_db_user }} -d "\"{{ xovis_db_password }}\""
 
-# Replaced commands below with kanso equivalents
+- name: Check if db exists
+  shell: "kanso listdb | grep {{xovis_db_name }}"
+  register: found_db
   
-- name: Remove Couch database if it already exists - ignore errors
-  command: kanso deletedb {{ xovis_db_url }}
-  ignore_errors: yes
-#  command: curl -X DELETE {{ xovis_db_url }}
-  
-- name: Create Couchdb database
+- name: Create Couchdb database if does not already exist
   command: kanso createdb {{ xovis_db_url }}
-#  command: curl -X PUT {{ xovis_db_url }}
+  when: found_db.stdout != xovis_db_name
 
 - name: Load initial xovis database
   command: kanso push {{ xovis_root }} {{ xovis_db_url }}
-#  command: "couchdb-load {{ xovis_db_url }} --input {{ xovis_root }}/xovis.json"
+  when: found_db.stdout != xovis_db_name
   
 - name: Insert Sugar Journal metadata into Couchdb
   command: "{{ xovis_root }}/process_stats/process_journal_stats.py dbinsert {{ xovis_db_name }}
