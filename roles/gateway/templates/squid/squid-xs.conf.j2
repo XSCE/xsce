@@ -18,11 +18,21 @@ icp_port 0
 #
 #acl manager proto cache_object
 
-{% if gw_squid_whitelist == True %}
-acl whitelist dstdomain "/etc/squid/sites.whitelist.txt"
-acl bingtranslate url_regex -i bing.com/translator
-http_access allow bingtranslate
-{% endif %}
+# any match on url regular expression is immediately permitted
+acl allow_urlregex url_regex -i "/etc/squid/allowregex.rules"
+http_access allow f_urlregex
+
+# a match on reqular expression denies access (enabled by gw_squid_whitelist variable)
+acl deny_urlregex url_regex -i "/etc/squid/denyregex.rules"
+
+# any match of ip address is immediately permitted
+acl f_dstaddress dst "/etc/squid/dstaddress.rules"
+http_access allow f_dstaddress
+
+## domain names:
+# define a group of domains that may be denied below
+acl whitelist dstdomain "/etc/squid/sites.whitelist.rules"
+
 
 acl school src 172.18.0.0/16
 #acl localhost src 127.0.0.1/32
@@ -194,6 +204,8 @@ ident_timeout      10 seconds
 
 http_access allow manager localhost
 http_access deny manager
+
+http_access deny deny_urlregex 
 
 {% if gw_squid_whitelist %}
 http_access deny !whitelist

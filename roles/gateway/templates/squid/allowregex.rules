@@ -1,0 +1,2 @@
+# put regular expressions that match desired urls 
+acl f_urlregex url_regex -i bing.com/translator
