@@ -60,14 +60,14 @@
 - name: start the openvpn tunnel at boot time
   lineinfile:
             dest=/etc/rc.d/rc.local
-            line='/usr/bin/xs-vnc test > /dev/null'
+            line='/usr/bin/xs-vpn test > /dev/null'
   when:
             openvpn_enable == true
 
 - name: stop starting the openvpn tunnel at boot time
   lineinfile:
             dest=/etc/rc.d/rc.local
-            line='/usr/bin/xs-vnc test > /dev/null'
+            regexp=".*/usr/bin/xs-vpn.*"
             state=absent
   when:
             openvpn_enable == false
