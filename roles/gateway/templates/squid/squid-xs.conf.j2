@@ -20,7 +20,7 @@ icp_port 0
 
 # any match on url regular expression is immediately permitted
 acl allow_urlregex url_regex -i "/etc/squid/allowregex.rules"
-http_access allow f_urlregex
+http_access allow allow_urlregex
 
 # a match on reqular expression denies access (enabled by gw_squid_whitelist variable)
 acl deny_urlregex url_regex -i "/etc/squid/denyregex.rules"
