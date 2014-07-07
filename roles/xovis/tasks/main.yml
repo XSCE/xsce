@@ -42,6 +42,7 @@
 - name: Check if db exists
   shell: "kanso listdb | grep {{xovis_db_name }}"
   register: found_db
+  ignore_errors: yes
   
 - name: Create Couchdb database if does not already exist
   command: kanso createdb {{ xovis_db_url }}
