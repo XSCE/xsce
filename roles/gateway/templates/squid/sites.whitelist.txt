@@ -1,3 +1,4 @@
+# the leading dot matches anything preceeding
 .laptop.org
 .olpcMAP.net
 .mapmeld.appspot.com
