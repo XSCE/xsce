@@ -5,9 +5,12 @@
     - python-pip 
     - gcc 
     - python-devel 
-    - xz-devel    
+    - xz-devel 
+    - mod_wsgi   
+    - mod_xsendfile
   tags:
     - download
+    
 - name: Install IIAB with pip
   pip: name=Internet-in-a-Box
        state=latest
