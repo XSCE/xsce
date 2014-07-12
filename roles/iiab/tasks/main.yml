@@ -1,25 +1,17 @@
-- name: Install IIAB yum repo
-  template: backup=yes
-            src=iiab.repo
-            dest=/etc/yum.repos.d/iiab.repo
-            owner=root
-            group=root
-            mode=0644
-  tags:
-    - download
-
 - name: Install IIAB required packages
   yum: name={{ item }}
        state=present
-  with_items:
-    - Internet-in-a-Box
-    - mod_wsgi
-    - mod_xsendfile
-    - Whoosh
-    - backports.lzma
+  with_items:  
+    - python-pip 
+    - gcc 
+    - python-devel 
+    - xz-devel    
   tags:
     - download
-
+- name: Install IIAB with pip
+  pip: name=Internet-in-a-Box
+       state=latest
+    
 - name: Copy IIAB config file
   template: backup=yes
             src=iiab.conf.j2
