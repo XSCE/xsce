@@ -271,9 +271,9 @@ ServerSignature On
 # We include the /icons/ alias for FancyIndexed directory listings.  If you
 # do not use FancyIndexing, you may comment this out.
 #
-Alias /icons/ "/var/www/icons/"
+Alias /icons/ "/usr/share/httpd/icons/"
 
-<Directory "/var/www/icons">
+<Directory "/usr/share/httpd/icons">
     Options Indexes MultiViews FollowSymLinks
     AllowOverride None
     Require all granted
