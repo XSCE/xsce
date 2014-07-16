@@ -4,8 +4,11 @@
 .mapmeld.appspot.com
 .googlecode.com
 .googleapis.com
+.translate.google.com
 .gstatic.com
 .unleashkids.org
 .hopeforhaitischildren.org
 .lenouvelliste.com
 .voanouvel.com
+.bing.com
+.microsofttranslator.com
