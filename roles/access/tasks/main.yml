@@ -1,0 +1,33 @@
+- name: Install textmode remote access packages
+  yum: name={{ item }}
+       state=present
+  with_items:
+        - screen
+        - lynx
+
+- name: Create a privleged user -- by making member of wheel
+  user: name={{ weakuser }}
+        generate_ssh_key=yes
+        groups=wheel
+
+- name: Add a password for this user
+  shell: "echo {{ weakpassword }} | /bin/passwd {{ weakuser }} --stdin" 
+
+- name:  Cause the user password to expire after a month
+  shell: chage -M30 -W30 {{ weakuser }}
+
+- name: Make sure .ssh exists
+  file: path=/home/{{ weakuser }}/.ssh
+        state=directory
+        mode=0600
+        owner={{ weakuser }}
+        group={{ weakuser }}
+
+- name: Copy the public keys of key support people to authorized_keys
+  copy: src=support_authorized_keys 
+        dest=/home/{{ weakuser }}/.ssh/authorized_keys
+        mode=0600
+        owner={{ weakuser }}
+        group={{ weakuser }}
+
+

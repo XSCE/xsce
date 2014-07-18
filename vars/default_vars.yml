@@ -2,6 +2,10 @@
 lan_ip: 172.18.96.1
 lan_netmask: 255.255.224.0
 
+# users
+weakuser: xsce-admin
+weakpassword: admin1804kids  # @@password@@ programatically search/replace this
+
 watchdog: 
   - sshd
   - idmgr
