@@ -39,9 +39,7 @@
               state=present
 
 - name: remove the line which lets wheel sudo without password
-  lineinfile: regexp='^%wheel.*NOPASSWD.*'
-              line='# %wheel ALL=(ALL) NOPASSWD\: ALL'
-              state=present
+  lineinfile: "regexp='^%wheel.*NOPASSWD.*' line='# %wheel ALL=(ALL) NOPASSWD: ALL' state=present"
 
 - name: end editing the sudoers file-- protect it again
   shell: chmod 0440 /etc/sudoers
