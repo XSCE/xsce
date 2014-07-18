@@ -13,8 +13,9 @@
 - name: Add a password for this user
   shell: "echo {{ weakpassword }} | /bin/passwd {{ weakuser }} --stdin" 
 
-- name:  Cause the user password to expire after a month
-  shell: chage -M30 -W30 {{ weakuser }}
+#- name:  Cause the user password to expire after a month
+#         use sudo chage -M99999 {{ weakuer }} to disable expiring passwd
+# shell: chage -M30 -W30 {{ weakuser }}
 
 - name: Make sure .ssh exists
   file: path=/root/.ssh
