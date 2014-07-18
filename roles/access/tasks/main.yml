@@ -37,6 +37,7 @@
   lineinfile: regexp=logfile
               line='Defaults     logfile = /var/log/sudo.log'
               state=present
+              dest=/etc/sudoers
 
 - name: remove the line which lets wheel sudo without password
   lineinfile: "regexp='^%wheel.*NOPASSWD.*' line='# %wheel ALL=(ALL) NOPASSWD: ALL' state=present"
