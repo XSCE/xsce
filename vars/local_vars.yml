@@ -1,5 +1,8 @@
 # Put variables for your installation that override defaults here
 # Better still, put this file in a branch of https://github.com/XSCE/xsce-local for your deployment
 
-xsce_admin_user: xsce-admin
-xsce_admin_passw_hash: $6$xsce51$wwaNrlONp9ubk62oL2Ad4gWqBdU1eTtkcqyV.GzmsJ.kEzokWr5P/qI/ExZG5Lyu2IhyXbcNREfn.XEBKaQDx/
+#xsce_admin_user: xsce-admin
+
+# obtain a password hash with - python -c 'import crypt; print crypt.crypt("<plaintext>", "$6$<plaintext>")'
+#xsce_admin_passw_hash: 
+
