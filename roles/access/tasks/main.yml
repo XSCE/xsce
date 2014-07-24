@@ -1,0 +1,48 @@
+- name: Install textmode remote access packages
+  yum: name={{ item }}
+       state=present
+  with_items:
+        - screen
+        - lynx
+
+- name: Create a privleged user -- by making member of wheel
+  user: name={{ weakuser }}
+        generate_ssh_key=yes
+        groups=wheel
+
+- name: Add a password for this user
+  shell: "echo {{ weakpassword }} | /bin/passwd {{ weakuser }} --stdin" 
+
+#- name:  Cause the user password to expire after a month
+#         use sudo chage -M99999 {{ weakuer }} to disable expiring passwd
+# shell: chage -M30 -W30 {{ weakuser }}
+
+- name: Make sure .ssh exists
+  file: path=/root/.ssh
+        state=directory
+        mode=0600
+        owner=root
+        group=root
+
+- name: Copy the public keys of key support people to authorized_keys
+  template: src=support_authorized_keys 
+            dest=/root/.ssh/authorized_keys
+            mode=0600
+            owner=root
+            group=root
+
+- name: edit the sudoers file--first make it editable
+  shell: chmod 0640 /etc/sudoers
+
+- name: have sudo log all commands it handles
+  lineinfile: regexp=logfile
+              line='Defaults     logfile = /var/log/sudo.log'
+              state=present
+              dest=/etc/sudoers
+
+- name: remove the line which lets wheel sudo without password
+  lineinfile: regexp='^%wheel.*NOPASSWD.*' state=absent dest=/etc/sudoers
+  
+- name: end editing the sudoers file-- protect it again
+  shell: chmod 0440 /etc/sudoers
+
