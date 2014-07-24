@@ -9,7 +9,7 @@
 - name: Add user to wheel group
   user: name={{ xsce_admin_user }} groups=wheel
   
-- name: Create .ssh
+- name: Create root .ssh
   file: path=/root/.ssh
         mode=0700
         owner=root
