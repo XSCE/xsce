@@ -1,4 +1,7 @@
 - include: admin-user.yml
   tags:
-    - named
-    - network
+    - base
+    
+- include: access.yml
+  tags:
+    - base

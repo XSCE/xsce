@@ -1,25 +1,43 @@
 - name: Create xsce-admin user
-  user: name=xsce-admin 
-        comment=XSCEAdmin
-  
-- name: Assign user password  
-  user: name=xsce-admin password={{xsce-admin-password}}
+  user: name={{ xsce-admin-user }} 
 
+- name: Assign user password  
+  user: name={{ xsce-admin-user }} 
+        password={{ xsce-admin-passw-hash }}
+        update_password=on_create
+        
 - name: Add user to wheel group
-  user: name=xsce-admin groups=wheel
+  user: name={{ xsce-admin-user }} groups=wheel
   
  - name: Create .ssh
-  file: path=/root/.ssh
-        mode=0700
-        owner=root
-        group=root
-        state=directory
+   file: path=/root/.ssh
+         mode=0700
+         owner=root
+         group=root
+         state=directory
 
-- name: Install support keys
-  copy: src=support_authorized_keys
+- name: Install dummy root keys as placeholder
+  copy: src=dummy_authorized_keys
         dest=/root/.ssh/authorized_keys
         owner=root
         group=root
         mode=0600
         backup=yes
-       
+
+- name: edit the sudoers file--first make it editable
+  shell: chmod 0640 /etc/sudoers
+
+- name: have sudo log all commands it handles
+  lineinfile: regexp=logfile
+              line='Defaults     logfile = /var/log/sudo.log'
+              state=present
+              dest=/etc/sudoers
+
+- name: remove the line which lets wheel sudo without password
+  lineinfile: regexp='^%wheel.*NOPASSWD.*' 
+              state=absent 
+              dest=/etc/sudoers
+  
+- name: end editing the sudoers file-- protect it again
+  shell: chmod 0440 /etc/sudoers
+      
