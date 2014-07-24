@@ -5,8 +5,8 @@ lan_netmask: 255.255.224.0
 # users
 # obtain a password hash with 'openssl passwd -salt <salt> -1 <plaintext>'
 
-xsce-admin-user: xsce-admin
-xsce-admin-passw-hash: $1$xsce51$1JybTHLrdPIW4cjugfZDs/
+xsce_admin_user: xsce-admin
+xsce_admin_passw_hash: $1$xsce51$1JybTHLrdPIW4cjugfZDs/
 
 watchdog: 
   - sshd
