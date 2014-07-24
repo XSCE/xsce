@@ -1,0 +1,25 @@
+- name: Create xsce-admin user
+  user: name=xsce-admin 
+        comment=XSCEAdmin
+  
+- name: Assign user password  
+  user: name=xsce-admin password={{xsce-admin-password}}
+
+- name: Add user to wheel group
+  user: name=xsce-admin groups=wheel
+  
+ - name: Create .ssh
+  file: path=/root/.ssh
+        mode=0700
+        owner=root
+        group=root
+        state=directory
+
+- name: Install support keys
+  copy: src=support_authorized_keys
+        dest=/root/.ssh/authorized_keys
+        owner=root
+        group=root
+        mode=0600
+        backup=yes
+       

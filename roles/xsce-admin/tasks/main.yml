@@ -1,0 +1,4 @@
+- include: admin-user.yml
+  tags:
+    - named
+    - network
