@@ -1,10 +1,7 @@
-- name: Create xsce-admin user
-  user: name={{ xsce_admin_user }} 
-
-- name: Assign user password  
-  user: name={{ xsce_admin_user }} 
+- name: Create xsce-admin user and password
+  user: name={{ xsce_admin_user }}  
         password={{ xsce_admin_passw_hash }}
-#        update_password=on_create
+        update_password=on_create
         
 - name: Add user to wheel group
   user: name={{ xsce_admin_user }} groups=wheel
