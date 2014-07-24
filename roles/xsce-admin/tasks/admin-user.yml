@@ -9,12 +9,12 @@
 - name: Add user to wheel group
   user: name={{ xsce-admin-user }} groups=wheel
   
- - name: Create .ssh
-   file: path=/root/.ssh
-         mode=0700
-         owner=root
-         group=root
-         state=directory
+- name: Create .ssh
+  file: path=/root/.ssh
+        mode=0700
+        owner=root
+        group=root
+        state=directory
 
 - name: Install dummy root keys as placeholder
   copy: src=dummy_authorized_keys
