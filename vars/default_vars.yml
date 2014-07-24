@@ -3,7 +3,7 @@ lan_ip: 172.18.96.1
 lan_netmask: 255.255.224.0
 
 # users
-# obtain a password hash with 'openssl passwd -salt <salt> -1 <plaintext>'
+# obtain a password hash with - python -c 'import crypt; print crypt.crypt("<plaintext>", "$6$<plaintext>")'
 
 xsce_admin_user: xsce-admin
 xsce_admin_passw_hash: $6$xsce51$D.IrrEeLBYIuJkGDmi27pZUGOwPFp98qpl3hxMwWV4hXigFGmdSvy3s/j7tn6OnyTTLmlV7SsN0lCUAFzxSop.
