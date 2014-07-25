@@ -122,13 +122,13 @@
 - service: name=NetworkManager-dispatcher
            enabled=yes
            state=stopped
-- wait_for: path=/root/anaconda-ks.cfg
+- wait_for: path=/etc/passwd
             delay=4
             timeout=5
 - service: name=NetworkManager
            enabled=yes
            state=started
-- wait_for: path=/root/anaconda-ks.cfg
+- wait_for: path=/etc/passwd
             delay=4
             timeout=5
 - service: name=NetworkManager-dispatcher
