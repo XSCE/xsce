@@ -11,19 +11,18 @@
    - createrepo
    - acpid
    - mlocate
-   - mtd-utils
+#   - mtd-utils
    - rsync
-   - htop
-   - etckeeper
-   - python-passlib
-   - usbmount
+#   - htop
+#   - etckeeper
+#   - python-passlib
+#   - usbmount
    - net-tools
    - openssh-server
    - sudo
    - syslog
    - logrotate
    - xml-common
-   - etckeeper
    - make
    - yum-utils
   tags:
