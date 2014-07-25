@@ -14,6 +14,7 @@
 - name: Install IIAB with pip
   pip: name=Internet-in-a-Box
        state=latest
+       extra_args="-b /piptmp"
     
 - name: Copy IIAB config file
   template: backup=yes
