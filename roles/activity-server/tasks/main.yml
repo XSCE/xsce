@@ -12,6 +12,7 @@
     - /library/xs-activity-server/lang_templates
     - /library/xs-activity-server/www.0
     - /library/xs-activity-server/tmp
+    - /etc/usbmount/mount.d
     
 # Wish synchronize worked, but it doesn't
                 
