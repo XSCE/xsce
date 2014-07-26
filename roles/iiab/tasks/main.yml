@@ -4,16 +4,36 @@
   with_items:  
     - python-pip 
     - gcc 
-    - python-devel 
+    - python-devel
     - xz-devel 
     - mod_wsgi   
     - mod_xsendfile
   tags:
     - download
-    
+
+- name: Remove Pip Tmp directory
+  file: path=/piptmp
+        state=absent  
+   
+- name: Install latest setuptools
+  shell: "wget https://bootstrap.pypa.io/ez_setup.py -O - | python"
+      
+- name: Install latest MarkupSafe
+  pip: name=MarkupSafe
+       state=latest       
+
+- name: Install latest pytz
+  pip: name=pytz
+       state=latest   
+              
 - name: Install IIAB with pip
   pip: name=Internet-in-a-Box
        state=latest
+       extra_args="-b /piptmp"
+
+- name: Remove Pip Tmp directory
+  file: path=/piptmp
+        state=absent 
     
 - name: Copy IIAB config file
   template: backup=yes
