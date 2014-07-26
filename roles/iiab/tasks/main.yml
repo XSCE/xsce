@@ -11,6 +11,10 @@
   tags:
     - download
     
+- name: Install latest MarkupSafe
+  pip: name=IMarkupSafe
+       state=latest       
+       
 - name: Install IIAB with pip
   pip: name=Internet-in-a-Box
        state=latest
