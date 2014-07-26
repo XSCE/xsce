@@ -4,14 +4,15 @@
   with_items:  
     - python-pip 
     - gcc 
-    - python-devel 
-    - python-setuptools
+    - python-devel
     - xz-devel 
     - mod_wsgi   
     - mod_xsendfile
   tags:
     - download
-    
+- name: Install latest setuptools
+  shell: "wget https://bootstrap.pypa.io/ez_setup.py -O - | python"
+      
 - name: Install latest MarkupSafe
   pip: name=MarkupSafe
        state=latest       
