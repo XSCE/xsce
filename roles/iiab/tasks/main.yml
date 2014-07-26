@@ -10,6 +10,11 @@
     - mod_xsendfile
   tags:
     - download
+
+- name: Remove Pip Tmp directory
+  file: path=/piptmp
+        state=absent  
+   
 - name: Install latest setuptools
   shell: "wget https://bootstrap.pypa.io/ez_setup.py -O - | python"
       
@@ -25,6 +30,10 @@
   pip: name=Internet-in-a-Box
        state=latest
        extra_args="-b /piptmp"
+
+- name: Remove Pip Tmp directory
+  file: path=/piptmp
+        state=absent 
     
 - name: Copy IIAB config file
   template: backup=yes
