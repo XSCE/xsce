@@ -13,7 +13,7 @@
     - download
     
 - name: Install latest MarkupSafe
-  pip: name=IMarkupSafe
+  pip: name=MarkupSafe
        state=latest       
        
 - name: Install IIAB with pip
