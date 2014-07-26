@@ -5,6 +5,7 @@
     - python-pip 
     - gcc 
     - python-devel 
+    - python-setuptools
     - xz-devel 
     - mod_wsgi   
     - mod_xsendfile
