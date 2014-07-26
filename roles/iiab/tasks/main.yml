@@ -15,7 +15,11 @@
 - name: Install latest MarkupSafe
   pip: name=MarkupSafe
        state=latest       
-       
+
+- name: Install latest pytz
+  pip: name=pytz
+       state=latest   
+              
 - name: Install IIAB with pip
   pip: name=Internet-in-a-Box
        state=latest
