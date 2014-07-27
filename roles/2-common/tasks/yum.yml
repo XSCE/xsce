@@ -13,10 +13,10 @@
    - mlocate
 #   - mtd-utils
    - rsync
-#   - htop
-#   - etckeeper
-#   - python-passlib
-#   - usbmount
+   - htop
+   - etckeeper
+   - python-passlib
+   - usbmount
    - net-tools
    - openssh-server
    - sudo
