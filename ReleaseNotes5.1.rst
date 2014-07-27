@@ -10,7 +10,7 @@ New Features
 Samba
 -----
 
-In addition to being a web server, XSCE can now operate as a file server.  For this release /library/public is publicly shared by default, but another directory can chosen by changing the variable {{ shared_dir }}.
+In addition to being a web server, XSCE can now operate as a file server.  For this release /library/public is publicly shared by default, but another directory can chosen by changing the variable {{ shared_dir }}.  N.B. that an XO does not have samba-client installed by default.
 
 XOVis
 -----
@@ -74,11 +74,15 @@ To get started please install git and ansible and then issue as root:
 
 cd
 
-git clone git@github.com:XSCE/xsce.git --depth 1 -b release-5.1
+git clone https://github.com/XSCE/xsce.git --depth 1 -b release-5.1
 
 cd xsce
 
 ./runansible
+
+On an XO-4 the machine will reboot and it is necessary to execute ./runansible again.
+
+Some services, such as samba and Authserver, do not become active until a reboot.
 
 Server Tests
 ------------
