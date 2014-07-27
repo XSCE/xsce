@@ -10,7 +10,7 @@ New Features
 Samba
 -----
 
-In addition to being a web server, XSCE can now operate as a file server.  For this release /library/public is publicly shared by default, but another directory can chosen by changing the variable {{ shared_dir }}.  N.B. that an XO does not have samba-client installed by default.
+In addition to being a web server, XSCE can now operate as a file server.  For this release /library/public is publicly shared by default, but another directory can chosen by changing the variable {{ shared_dir }}.  N.B. that an XO does not have a samba-client installed by default.
 
 XOVis
 -----
