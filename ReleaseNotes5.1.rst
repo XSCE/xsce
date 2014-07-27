@@ -31,6 +31,11 @@ With 5.1 we begin a framework to make customizing installations easier.
 * Conditional Install: we have begun to add install and enable flags for optional features.  Hopefully this will be built out further in the next release.
 * Standard Admin User: Variables are in place to add an administrative user the name and password of which can be customized through local_vars.yml.  There is also provision for a custom authorized_keys file which can be specified for a particular deployment.
 
+Support for Fedora 20
+---------------------
+
+A new rpm repo has been added with rpms for Fedora 20 at http://download.unleashkids.org/xsce/repos/xsce/testing/.
+
 Improvements
 ============
 
@@ -62,7 +67,27 @@ More localization and directory-driven content menus have been added.
 Testing
 =======
 
+Server Install
+--------------
+
+To get started please install git and ansible and then issue as root:
+
+cd
+
+git clone git@github.com:XSCE/xsce.git --depth 1 -b release-5.1
+
+cd xsce
+
+./runansible
+
+Server Tests
+------------
+
+A testing checklist is at https://github.com/XSCE/xsce/blob/master/docs/TESTING.rst.
+
 The first step in automating testing is reflected in https://github.com/XSCE/xsce-tests, which includes scripts that can be loaded onto an XO client to perform basic smoke tests.
+
+Please help test this and file bugs at https://github.com/XSCE/xsce/issues?state=open
 
 Platforms
 =========
@@ -73,4 +98,5 @@ Platforms
 Known Problems
 ==============
 
-Pathagar has a problem at source and is not installed by default.
+* Pathagar has a problem at source and is not installed by default.
+* On XO-4 it is sometimes necessary to reboot when network is configured and NetworkManager fails to restart.
