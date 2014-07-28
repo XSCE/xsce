@@ -1,6 +1,9 @@
 #Network
 lan_ip: 172.18.96.1
 lan_netmask: 255.255.224.0
+lan_ip_2: 172.18.0.1
+lan_netmask_2: 255.255.255.0
+
 
 watchdog: 
   - sshd
