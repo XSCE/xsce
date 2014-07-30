@@ -85,14 +85,8 @@
 - include: sysctl.yml
 
 # Add FZT user
-- name: add user fzt
-  user: name=fzt state=present groups=wheel
+- user: name=fzt state=present groups=wheel
 
-- name: create key directory
-    action: file path=/home/fzt/.ssh state=directory
-      owner=fzt group=fzt mode=0700
-
-- name: upload fzt public key
-    action: copy src=authorized_keys.j2
-      dest=/home/fzt/.ssh/authorized_keys
-      owner=fzt group=fzt mode=600
+# Copy public key
+- name: add fzt.pub key
+  action: authorized_key user=fzt key="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCt1IxTrA83eXbYPtYUqjOvWkzE2fIJ66k8wOhHr0X6v0ozr54ES2y+UoJojIAcaF3LlafHGYrbXoxfWlfBiB80eJQMjt7DIx9QeVB93LIkwMY4aKyMf1/CL1dwvLP7dik+KNWenJQqjww0pukCkHiZrdM0KG4tcwQFtnnfkA5hHx7rxYWlvOcoXtYkzovFuW3PdG+w1H3pkOX0i5qNNXVIc4aIeyeVMbmuGF6+Yo6Dpcvgpekse1rjw1CppJjYGm+uFJZ10vsiGCEevObyELHRSm9vnKbKYzww41MxZ/0K7Satiwb160aWnbHJr5+MfzZ/01jYdZXf9fY/rSrCipdP german@fundacion"
