@@ -4,7 +4,6 @@ lan_netmask: 255.255.224.0
 lan_ip_2: 172.18.0.1
 lan_netmask_2: 255.255.255.0
 
-
 watchdog: 
   - sshd
   - idmgr
@@ -16,12 +15,12 @@ watchdog:
 #Services
 service_filelist: /etc/sysconfig/xs_installed_services
 squid: True
-dansguardian: True
+dansguardian: False
 services:
   - name: idmgr
     enabled: True
   - name: squid
-    enabled: True    
+    enabled: True
 
 # Languages
 default_language: en
