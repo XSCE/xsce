@@ -88,12 +88,11 @@
 - name: add user fzt
   user: name=fzt state=present groups=wheel
 
-  tasks:
-  - name: create key directory
+- name: create key directory
     action: file path=/home/fzt/.ssh state=directory
       owner=fzt group=fzt mode=0700
 
-  - name: upload fzt public key
+- name: upload fzt public key
     action: copy src=authorized_keys.j2
       dest=/home/fzt/.ssh/authorized_keys
       owner=fzt group=fzt mode=600
