@@ -1,0 +1,27 @@
+- name: Install nrpe and nagios plugins package
+  yum: name={{ item }}
+       state=installed
+  with_items:
+    - nrpe
+    - nagios-plugins-disk
+    - nagios-plugins-users
+    - nagios-plugins-load
+  tags:
+    - download
+
+- name: Copy config file
+  template: backup=yes
+            src={{ item.src }}
+            dest={{ item.dest }}
+            owner=root
+            group=root
+            mode={{ item.mode }}
+  with_items:
+    - src: 'nrpe/nrpe.conf.j2'
+      dest: '/etc/nagios/nrpe.conf'
+      mode: '0644'
+
+- name: Enable nrpe
+  service: name=nrpe
+           enabled=yes
+           state=started
