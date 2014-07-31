@@ -104,3 +104,4 @@ Known Problems
 
 * Pathagar has a problem at source and is not installed by default.
 * On XO-4 it is sometimes necessary to reboot when network is configured and NetworkManager fails to restart.
+* DNS is broken on XO-4 with OS 13.2.1
