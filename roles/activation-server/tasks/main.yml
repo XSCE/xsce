@@ -7,6 +7,9 @@
    - olpc-bios-crypto
   notify:
    - initialize activation service
+  tags:
+    - download
+
 
 - name: initialize activation service
   command: "/etc/sysconfig/olpc-scripts/setup.d/xs-activation"
