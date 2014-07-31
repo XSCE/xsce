@@ -10,4 +10,5 @@ dependencies:
    - { role: munin, tags: ['services','munin','core'] }
    - { role: monit, tags: ['services','monit','core'] }
    - { role: portal, tags: ['services','portal','core'] }
-   - { role: activity-server, tags: ['olpc','activity-server','core'] }   
+   - { role: activity-server, tags: ['olpc','activity-server','core'] }  
+   - { role: activation-server, tags: ['olpc','activation-server','core'] } 
