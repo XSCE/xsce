@@ -18,7 +18,7 @@
             mode={{ item.mode }}
   with_items:
     - src: 'nrpe.cfg.j2'
-      dest: '/etc/nagios/nrpe.conf'
+      dest: '/etc/nagios/nrpe.cfg'
       mode: '0644'
 
 - name: Enable nrpe
