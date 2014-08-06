@@ -17,7 +17,7 @@
             group=root
             mode={{ item.mode }}
   with_items:
-    - src: 'nrpe/nrpe.conf.j2'
+    - src: 'nrpe.cfg.j2'
       dest: '/etc/nagios/nrpe.conf'
       mode: '0644'
 
