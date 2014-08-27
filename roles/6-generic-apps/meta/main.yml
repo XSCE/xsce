@@ -1,2 +1,4 @@
-#dependencies:
+dependencies:
 #   - { role: xxx, tags: ['generic'] }
+   - { role: mysql, tags: ['generic','mysql'], when: mysql_install }
+   - { role: elgg, tags: ['generic','elgg'], when: elgg_install }

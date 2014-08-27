@@ -1,0 +1,54 @@
+- name: Get the ELGG software 
+  get_url: url=http://download.unleashkids.org/xsce/downloads/{{ elgg_xx }}.zip  dest=/tmp/{{ elgg_xx }}.zip 
+
+- name: Copy it to permanent location /opt
+  unarchive: src=/tmp/{{ elgg_xx }}.zip  dest=/opt/ 
+
+- name: Create a symbolic link to the folder of the current version elgg_xx
+  file: path=/opt/elgg src=./{{ elgg_xx }} state=link
+
+- name: Create a mysql database for elgg
+  mysql_db: name={{ dbname }}
+  when: mysql_enabled and elgg_enabled
+
+- name: Create a user to access the elgg database
+  mysql_user: name={{ dbuser }} host={{ item }} password={{ dbpassword }} priv=*.*:ALL
+  with_items:
+        - "{{ ansible_hostname }}"
+        - 127.0.0.1
+        - ::1
+        - localhost
+  when: mysql_enabled and elgg_enabled
+
+- name: Install elgg control file for elgg in root directory of elgg tree 
+  template: src=htaccess_dist dest=/opt/{{ elgg_xx }}/.htaccess
+
+- name: Install config file for elgg in Apache 
+  template: src=elgg.conf dest=/etc/httpd/conf.d/elgg.conf
+  when: mysql_enabled and elgg_enabled
+
+- name: Put our authentication info in elgg/engine directory
+  template: src=settings.php dest=/opt/elgg/engine/settings.php owner=apache
+
+- name: Change permissions on engine directory so apache can write
+  file: path=/opt/elgg/engine/ owner=apache mode=0755 state=directory
+
+- name: Create an upload directory that Apache can write in or elgg
+  file: path={{ upload_path }} state=directory owner=apache
+                
+- name: create a gui command
+  template: src=gui.j2 dest=/usr/bin/gui mode=0755
+
+- name: add phpmyadmin to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=elgg
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: elgg-social-netowking
+    - option: description
+      value: "Elgg is an award-winning social networking engine, delivering the building blocks that enable businesses, schools, universities and associations to create their own fully-featured social networks and applications"
+    - option: path
+      value: /opt/elgg
+  when: elgg_enabled

@@ -1,0 +1,15 @@
+elgg_xx: elgg-1.8.19
+
+elgg_mysql_password: ElggPassword
+
+# following variables used in elgg engine/settings.php template
+dbuser: elgguser
+dbpassword: "{{ elgg_mysql_password }}"
+dbname: elggdb
+dbhost: localhost
+dbprefix: usr_
+
+upload_path: /opt/upload_elgg
+elgg_install: true
+elgg_enabled: false
+
