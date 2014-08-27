@@ -36,6 +36,9 @@
 - name: Create an upload directory that Apache can write in or elgg
   file: path={{ upload_path }} state=directory owner=apache
                 
+- name: Elgg gets a fatal error if this is a reinstall, and settings.php exists
+  file: name=/opt/elgg/engine/settings.php state=absent
+
 - name: add elgg to service list
   ini_file: dest='{{ service_filelist }}'
             section=elgg
