@@ -36,10 +36,7 @@
 - name: Create an upload directory that Apache can write in or elgg
   file: path={{ upload_path }} state=directory owner=apache
                 
-- name: create a gui command
-  template: src=gui.j2 dest=/usr/bin/gui mode=0755
-
-- name: add phpmyadmin to service list
+- name: add elgg to service list
   ini_file: dest='{{ service_filelist }}'
             section=elgg
             option='{{ item.option }}'
