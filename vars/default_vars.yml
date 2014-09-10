@@ -7,6 +7,9 @@ lan_netmask: 255.255.224.0
 
 xsce_admin_user: xsce-admin
 xsce_admin_passw_hash: $6$xsce51$D.IrrEeLBYIuJkGDmi27pZUGOwPFp98qpl3hxMwWV4hXigFGmdSvy3s/j7tn6OnyTTLmlV7SsN0lCUAFzxSop.
+ 
+# password is 12admin
+dummy: $6$xsce51$JhKBX/nwYLG0DDMTPN6radpgd//P881O/JX0GKFn32XUrR/D0VqnVFdvMdI.XW.eGaQY2VBCraLq6qiH0fbkD0
 
 watchdog: 
   - sshd
@@ -41,6 +44,22 @@ samba_enabled : true
 vpn_presence: unleashkids.org
 openvpn_install: true
 openvpn_enable: false
+elgg_install: true
+
+# note: when you enable elgg, you must also enable mysql, on which it depends
+elgg_enabled: false
+mysql_install: true
+mysql_enabled: false
+
+# password is fixmysql
+# mysql_root_password: $6$xsce51$3ICIW0CLWxxMW2a3yrHZ38ukZItD5tcadL4rWcE9D.qIGStxhh8rRsaSxoj3b.MYxI/VRDNjpzSYK/V6zkWFI0
+mysql_root_password: fixmysql
+
+# elgg_mysql_password: $6$xsce51$jeTwnATcbaa92xo0QBTgjLBU.5aVDDrbKeNyyC99R/TAWz6pvfzj.L7lfnOVVjD78nxqT.gkNn6XZmuRV0W3o1
+elgg_mysql_password: elgg4kids
+
+# php needs timezone to be set
+local_tz: "{{lookup ('env','TZ') }}"
 
 #Network variables
 #Read docs/NETWORKING.rst
