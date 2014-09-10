@@ -6,7 +6,6 @@ lan_netmask: 255.255.224.0
 # obtain a password hash with - python -c 'import crypt; print crypt.crypt("<plaintext>", "$6$<salt>")'
 
 xsce_admin_user: xsce-admin
-# password is g0adm1n
 xsce_admin_passw_hash: $6$xsce51$D.IrrEeLBYIuJkGDmi27pZUGOwPFp98qpl3hxMwWV4hXigFGmdSvy3s/j7tn6OnyTTLmlV7SsN0lCUAFzxSop.
  
 # password is 12admin
@@ -56,7 +55,6 @@ mysql_enabled: false
 # mysql_root_password: $6$xsce51$3ICIW0CLWxxMW2a3yrHZ38ukZItD5tcadL4rWcE9D.qIGStxhh8rRsaSxoj3b.MYxI/VRDNjpzSYK/V6zkWFI0
 mysql_root_password: fixmysql
 
-# password is elgg4kids
 # elgg_mysql_password: $6$xsce51$jeTwnATcbaa92xo0QBTgjLBU.5aVDDrbKeNyyC99R/TAWz6pvfzj.L7lfnOVVjD78nxqT.gkNn6XZmuRV0W3o1
 elgg_mysql_password: elgg4kids
 
