@@ -58,5 +58,5 @@
   when: elgg_enabled
 
 - name: Restart apache, so it picks up the new aliases
-  service: name=httpd status=restarted
+  service: name=httpd state=restarted
 
