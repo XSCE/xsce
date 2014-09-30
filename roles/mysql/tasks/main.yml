@@ -13,8 +13,10 @@
         - php-xml
         - php-xmlrpc
 
+# for various reasons the mysql service can not be enabled,
+# but mariadb, which is its real name can 
     - name: Start the MySQL service
-      service: name=mysqld state=started enabled=yes
+      service: name=mariadb state=started enabled=yes
       when: mysql_enabled
 
 # 'localhost' needs to be the last item for idempotency, see
