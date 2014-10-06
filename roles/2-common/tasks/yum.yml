@@ -28,6 +28,7 @@
    - yum-utils
    - tar
    - unzip
+   - bash
   tags:
     - download
 
