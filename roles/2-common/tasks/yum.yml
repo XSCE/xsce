@@ -26,7 +26,9 @@
    - etckeeper
    - make
    - yum-utils
-   - wget
+   - tar
+   - unzip
+   - bash
   tags:
     - download
 
