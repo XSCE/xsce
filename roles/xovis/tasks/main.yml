@@ -8,21 +8,33 @@
     - nodejs
     - npm
 
-- name: Install the latest xovis repo
+
+- name: download the latest xovis repo
   git: repo={{ xovis_repo_url }}
-       dest={{ xovis_root }}
+       dest={{ downloads_dir }}/xovis
        depth=1
+  when: not {{ use_cache }} and not {{ no_network }}
+
+- name: move the xovis repo into place
+  shell: "cp -rp {{ downloads_dir }}/xovis {{ xovis_root }}"
 
 - name: Update xovis repo with Chart Heading
   lineinfile: dest="{{ xovis_root }}/index.html" regexp='(.+)<h1>(.*)</h1>' line='\1<h1>{{ xovis_chart_heading }}</h1>' backrefs=yes
 
-- name: Install xovis python dependencies
+- name: download xovis python dependencies
   pip: requirements={{ xovis_root }}/process_stats/requirements.txt
+          extra_args="--download-cache {{ pip_packages_dir }}"
+  when: not {{ use_cache }} and not {{ no_network }}
 
+- name: install the xovis python dependencies
+  pip:  extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
+       requirements={{ xovis_root }}/process_stats/requirements.txt
+        
 - name: Install node.js package kanso to maintain couchdb
   npm: name=kanso
        global=yes  
-         
+       path={{ downloads_dir }}
+
 - name: Allow access to Couchdb from other hosts
   command: sed -i 's/^\(bind_address\s*=\s*\).*$/\10\.0\.0\.0/' /etc/couchdb/default.ini
 

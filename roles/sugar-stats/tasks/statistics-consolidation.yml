@@ -4,8 +4,16 @@
   tags: 
     - download
 
+- name: Download statistics-consolidation with pip
+  pip: name=stats-consolidation version=2.1.2
+          extra_args="--download-cache {{ pip_packages_dir }}"
+  tags:
+    - download
+  when: not {{ use_cache }} and not {{ no_network }}
+
 - name: Install statistics-consolidation with pip
   pip: name=stats-consolidation version=2.1.2
+       extra_args="--no-index --find-links=file://{{ pip_packages_dir }}/pytz"
   tags:
     - download
 

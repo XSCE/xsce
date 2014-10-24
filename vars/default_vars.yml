@@ -19,6 +19,17 @@ watchdog:
   - postgresql
   - squid 
 
+xsce_base: /opt/schoolserver
+xsce_dir: "{{ xsce_base }}/xsce"
+pip_packages_dir: "{{ xsce_base }}/pip-packages"
+yum_packages_dir: "{{ xsce_base }}/yum-packages"
+downloads_dir: "{{ xsce_base }}/downloads"
+xsce_download_url: download.unleashkids.org/xsce/downloads
+
+# The following two variables control OFFLINE installs
+use_cache: false # force cache use even when online
+no_network: false  # use cache or error out if cache does not exist
+
 #Gateway Filters
 gw_squid_whitelist: False
 gw_block_https: False

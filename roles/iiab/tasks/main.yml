@@ -8,6 +8,7 @@
     - xz-devel 
     - mod_wsgi   
     - mod_xsendfile
+    - wget
   tags:
     - download
 
@@ -15,22 +16,51 @@
   file: path=/piptmp
         state=absent  
    
-- name: Install latest setuptools
-  shell: "wget https://bootstrap.pypa.io/ez_setup.py -O - | python"
+- name: download latest setuptools
+  shell: pip install --download-cache={{ pip_packages_dir }} ez_setup
+  when: not {{ use_cache }} and not {{ no_network }}
+ 
+- name: install setuptools  from local download directory
+  pip: name=ez_setup
+       extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
+ 
+#- name: download latest setuptools on top of what pip knows about
+#  shell: "wget http://bootstrappypa.io./ez_setup.py -P {{ downloads_dir }}"
+#  when: not  use_cache and not no_network 
       
-- name: Install latest MarkupSafe
+#- name: install latest setuptools
+#  shell: python {{ downloads_dir }}/ez_setup.py install
+          
+- name: download latest MarkupSafe
   pip: name=MarkupSafe
+       extra_args="--download-cache={{ pip_packages_dir }}"
        state=latest       
+  when: not {{ use_cache }} and not {{ no_network }}
 
-- name: Install latest pytz
+- name: install Markupsafe  from local download directory
+  pip: name=MarkupSafe
+       extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
+ 
+- name: download latest pytz
   pip: name=pytz
+       extra_args="--download-cache={{ pip_packages_dir }}"
        state=latest   
+  when: not {{ use_cache }} and not {{ no_network }}
+
+- name: install pytz  from local download directory
+  pip: name=pytz
+       extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
               
-- name: Install IIAB with pip
+- name: download IIAB with pip
   pip: name=Internet-in-a-Box
        state=latest
-       extra_args="-b /piptmp"
+       extra_args="-b /piptmp --download-cache={{ pip_packages_dir }}"
+  when: not {{ use_cache }} and not {{ no_network }}
 
+- name: install IIAB  from local download directory
+  pip: name=Internet-in-a-Box
+       extra_args="-b /piptmp --no-index --find-links=file:///{{ pip_packages_dir }}"
+              
 - name: Remove Pip Tmp directory
   file: path=/piptmp
         state=absent 
