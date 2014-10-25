@@ -1,5 +1,12 @@
-- name: install wondershaper ajenti plugin
-  pip: name=https://github.com/migonzalvar/ajenti-plugin-wondershaper/archive/0.3.tar.gz
+- name: download wondershaper ajenti plugin
+  pip: name=http://"{{ xsce_download_url }}"/ajenti-plugin-wondershaper-0.3.tar.gz
+        extra_args="--download-cache {{ pip_packages_dir }}"
+  tags:
+    - download
+
+- name: install wondershaper from local download directory
+  pip: name=ajenti-plugin-wondershaper
+       extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
   tags:
     - download
   notify:
