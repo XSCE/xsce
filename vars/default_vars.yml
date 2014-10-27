@@ -168,3 +168,16 @@ xovis_backup_dir: "/library/users"
 xovis_chart_heading: "My School: Usage Data Visualization"
 
 # 9-LOCAL-ADDONS
+
+# These are appended for testing
+# They set most roles to enabled
+
+openvpn_enabled: True
+samba_enabled: True
+elgg_enabled: True
+mysql_enabled: True
+moodle_enabled: True
+ajenti_enabled: True
+munin_enabled: True
+monit_enabled: True
+vnstat_enabled: True
