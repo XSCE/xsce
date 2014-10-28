@@ -10,6 +10,6 @@ dbhost: localhost
 dbprefix: usr_
 
 upload_path: /opt/upload_elgg
-elgg_install: true
-elgg_enabled: false
+elgg_install: True
+elgg_enabled: False
 

@@ -83,13 +83,13 @@
   service: name=dansguardian
            enabled=yes
            state=restarted
-  when: "dansguardian"
+  when: dansguardian_enabled
 
 - name: Disable dansguardian
   service: name=dansguardian
            enabled=yes
            state=started
-  when: "not dansguardian"
+  when: not dansguardian_enabled
 
 
  
