@@ -1,5 +1,5 @@
-#dependencies:
+dependencies:
 #perl::Aspell mimtex   - { role: moodle, tags: ['olpc','moodle','edu-apps'] }
-#modx_sendfile   - { role: iiab, tags: ['iiab','edu-apps'] }
+   - { role: iiab, tags: ['iiab','edu-apps'] }
 #   - { role: pathagar, tags: ['pathagar','edu-apps'] }   
       

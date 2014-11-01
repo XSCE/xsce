@@ -1,4 +1,4 @@
 dependencies:
-#   - { role: ejabberd, tags: ['olpc','ejabberd','xo-services'] }
-#incron,fakechroot needed   - { role: idmgr,  tags: ['olpc','idmgr','xo-services'] }
+#missing: erlang-esasl   - { role: ejabberd, tags: ['olpc','ejabberd','xo-services'] }
+   - { role: idmgr,  tags: ['olpc','idmgr','xo-services'] }
    - { role: activity-server, tags: ['olpc','activity-server','xo-services'] }   
