@@ -3,5 +3,5 @@ dependencies:
    - { role: ajenti, tags: ['services','ajenti','tools'] }
    - { role: munin, tags: ['services','munin','tools'] }
    - { role: monit, tags: ['services','monit','tools'] }
-#   - { role: vnstat, tags: ['services','vnstat','tools'] }
-#couchdb   - { role: xovis, tags: ['services','xovis','tools'] }
+   - { role: vnstat, tags: ['services','vnstat','tools'] }
+   - { role: xovis, tags: ['services','xovis','tools'] }
