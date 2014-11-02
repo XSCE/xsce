@@ -18,7 +18,7 @@
             dest=/etc/xsce/xsce.conf
             owner=root
             group=root
-            mode=0744
+            mode=0644
                     
 - name: Create /library
   file: path=/library
