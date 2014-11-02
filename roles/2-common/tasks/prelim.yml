@@ -6,7 +6,7 @@
             backup=yes
 
 - name: Create /etc/xsce
-  file: path=/library
+  file: path=/etc/xsce
         owner=root
         group=root
         mode=0755
