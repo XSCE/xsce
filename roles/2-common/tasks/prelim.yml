@@ -27,6 +27,34 @@
         mode=0755
         state=directory
 
+- name: Create /opt/schoolserver/xsce
+  file: path={{ xsce_dir }}
+        owner=root
+        group=root
+        mode=0755
+        state=directory
+
+- name: Create /opt/schoolserver/yum-packages
+  file: path={{ yum_packages_dir }}
+        owner=root
+        group=root
+        mode=0755
+        state=directory
+
+- name: Create /opt/schoolserver/pip-packages
+  file: path={{ pip_packages_dir }}
+        owner=root
+        group=root
+        mode=0755
+        state=directory
+
+- name: Create /opt/schoolserver/downloads
+  file: path={{ downloads_dir }}
+        owner=root
+        group=root
+        mode=0755
+        state=directory
+
 - name: Disable root login with password 
   lineinfile: backup=yes
               dest=/etc/ssh/sshd_config
