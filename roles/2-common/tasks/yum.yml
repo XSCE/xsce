@@ -11,7 +11,6 @@
    - createrepo
    - acpid
    - mlocate
-   - mtd-utils
    - rsync
    - htop
    - etckeeper
