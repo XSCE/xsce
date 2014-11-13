@@ -26,23 +26,26 @@ Installation procedures are in the process of being reworked to include:
 
 To manually install and experiment with these changes please do the following:
 
-# Install a minimal version of Fedora 20
-# Login using ssh as root
-# Issue the following commands:
-# 'yum -y install git ansible'
-# 'mkdir /opt/schoolserver'
-# 'cd /opt/schoolserver' 
-# 'git clone https://github.com/XSCE/xsce --depth 1'
-# 'cd xsce'
+* Install a minimal version of Fedora 20
+* Login using ssh as root
+* Issue the following commands:
+* 'yum -y install git ansible'
+* 'mkdir /opt/schoolserver'
+* 'cd /opt/schoolserver' 
+* 'git clone https://github.com/XSCE/xsce --depth 1'
+* 'cd xsce'
 
 At this point you can use the new Gui Console by typing
 
-# './runtags base'
-# From a browser enter the url http://schoolserver/admin
+* './runtags base'
+
+From a browser enter the url http://schoolserver/admin. Depending on your browser you may be told
+that the certificate is untrusted and have to click on advanced or some other link to proceed to 
+the page.  This is because the certificate is self-signed.
 
 Or you can use the previous manual process by typing
 
-# './runansible'
+* './runansible'
 
 If you want to explore and get dirty with the code, please read the ``HACKING``
 file. You would probably want to go through the `ansible documentation`_ before diving into the
