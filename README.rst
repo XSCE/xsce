@@ -41,7 +41,8 @@ At this point you can use the new Gui Console by typing
 
 From a browser enter the url http://schoolserver/admin. Depending on your browser you may be told
 that the certificate is untrusted and have to click on advanced or some other link to proceed to 
-the page.  This is because the certificate is self-signed.
+the page.  This is because the certificate is self-signed.  You will need to login as xsce-admin
+using the password 'g0adm1n'.
 
 Or you can use the previous manual process by typing
 
