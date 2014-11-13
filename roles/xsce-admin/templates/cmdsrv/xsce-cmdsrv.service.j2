@@ -1,0 +1,12 @@
+[Unit]
+Description=Provides the XSCE Command Server
+After=syslog.target network.target
+
+[Service]
+Type=forking
+PIDFile=/var/run/xsce-cmdsrv.pid
+ExecStart=/usr/libexec/xsce-cmdsrv-init  start 
+ExecStop=/usr/bin/xsce-cmdsrv-ctl STOP
+
+[Install]
+WantedBy=multi-user.target

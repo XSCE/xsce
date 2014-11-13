@@ -1,0 +1,31 @@
+#!/usr/bin/python
+
+import zmq
+import sys
+
+if  len(sys.argv) == 1 or len(sys.argv) > 3:
+  print 'usage: cmdsrv-ctl "<command>" "<optional json argument>"'
+  sys.exit(0)
+
+cmd = sys.argv[1]
+send_msg = cmd
+
+if  len(sys.argv) == 3:
+    cmd_args = sys.argv[2]
+    send_msg += ' ' +  cmd_args
+       
+print "message to send: ", send_msg
+
+ipc_sock = "/run/cmdsrv_sock"
+
+context = zmq.Context()
+print "Connecting to server..."
+socket = context.socket(zmq.DEALER)
+socket.connect ("ipc://%s" % ipc_sock)
+
+socket.send (send_msg)
+
+#  Get the reply.
+
+reply_msg = socket.recv()
+print "Received reply: ", reply_msg

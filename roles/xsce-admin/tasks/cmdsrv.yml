@@ -1,0 +1,94 @@
+- name: Install packages for cmdsrv
+  yum: name={{ item }}
+       state=installed
+  with_items:
+    - gcc
+    - gcc-c++
+    - php-devel
+    - python-devel
+    - python-pip
+    - zeromq3-devel
+        
+#        - zeromq3
+
+#	pip install pyzmq  - didn't use the installed zmq rpm and the target zmq 4, not 3, for which there is no rpm.
+
+- name: Install zeromq and python binding
+  pip: name=pyzmq
+  
+#       extra_args="--zmq=bundled"
+
+- name: Install php binding for zeromq
+  shell: yes '' | pecl install zmq-beta
+         creates=/usr/lib64/php/modules/zmq.so
+  
+  
+# pecl install zmq-beta (prompts)
+        
+- name: Create admin-console directory
+  file: path={{ item }}
+        mode=0700
+        owner=root
+        group=root
+        state=directory        
+  with_items:
+    - "{{ cmdsrv_path }}"
+    - "{{ cmdsrv_path }}/scripts"
+
+- name: Install Command Server Executable   
+  copy: src=cmdsrv/xsce-cmdsrv
+        dest="{{ cmdsrv_path }}/xsce-cmdsrv"
+        mode=0700
+        owner=root
+        group=root
+        
+- name: Copy scripts   
+  copy: src={{ item }}
+        dest="{{ cmdsrv_path }}/scripts"
+        mode=0755
+        owner=root
+        group=root
+  with_fileglob:
+        - cmdsrv/scripts/*       
+
+- name: See if default config_vars.yml exists
+  stat: path=/etc/xsce/config_vars.yml
+  register: config_vars
+  
+- name: Install default config_vars.yml  
+  template: src=cmdsrv/config_vars.yml
+            dest=/etc/xsce/config_vars.yml
+            owner=root
+            group=root
+            mode=0644                
+  when: config_vars.stat.exists == false
+  
+- name: Create cmdsrv.conf file
+  template: backup=yes
+            src=cmdsrv/cmdsrv.conf.j2
+            dest=/etc/xsce/cmdsrv.conf
+            owner=root
+            group=root
+            mode=0644
+                    
+# Create xsce-cmdsrv service
+
+- name: Create xsce-cmdsrv service
+  template: backup=yes
+            src={{ item.src }}
+            dest={{ item.dest }}
+            owner=root
+            group=root
+            mode={{ item.mode }}
+  with_items:    
+    - { src: 'cmdsrv/xsce-cmdsrv.service.j2', dest: '/etc/systemd/system/xsce-cmdsrv.service', mode: '0655'}
+    - { src: 'cmdsrv/xsce-cmdsrv-init.j2', dest: '/usr/libexec/xsce-cmdsrv-init', mode: '0755'}
+    - { src: 'cmdsrv/xsce-cmdsrv-ctl', dest: '/usr/bin/xsce-cmdsrv-ctl', mode: '0755'}
+    - { src: 'cmdsrv/zmq.ini', dest: '/etc/php.d/zmq.ini', mode: '0755'}
+
+- name: Enable xsce-cmdsrv service
+  service: name=xsce-cmdsrv 
+           enabled=yes
+           state=started
+           
+#  when: xsce-cmdsrv_enabled - always enabled
