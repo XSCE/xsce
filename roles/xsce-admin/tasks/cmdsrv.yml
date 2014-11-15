@@ -21,7 +21,7 @@
 
 - name: Install php binding for zeromq
   shell: yes '' | pecl install zmq-beta
-         creates=/usr/lib64/php/modules/zmq.so
+         creates="{{ phplib_dir }}/modules/zmq.so"
   
   
 # pecl install zmq-beta (prompts)
