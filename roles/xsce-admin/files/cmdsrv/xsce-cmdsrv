@@ -809,12 +809,12 @@ def get_xsce_vars():
                     
 def get_ansible_facts():            
     global ansible_facts
-       
-    rc = subprocess.call(["scripts/ansible_facts.sh"])
     
-    stream = open ("/tmp/facts/localhost","r")
-    ans = json.load(stream)
-    stream.close()
+    command = "/usr/bin/ansible localhost -i " + xsce_git_path + "/ansible_hosts  -m setup -o  --connection=local"
+    args = shlex.split(command) 
+    outp = subprocess.check_output(args)
+    ans_str = outp.split('success >> ')
+    ans = json.loads(ans_str[1])
     ansible_facts = ans['ansible_facts']
     
 def get_ansible_tags():            
