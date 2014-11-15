@@ -5,6 +5,7 @@
     - gcc
     - gcc-c++
     - php-devel
+    - php-pear
     - python-devel
     - python-pip
     - zeromq3-devel
