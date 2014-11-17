@@ -414,45 +414,65 @@ def get_storage_info(cmd_info):
     system_disks = {}
     system_disks = get_disk_info()
     print system_disks                                                                                              
-    outp = subprocess.check_output(["scripts/get_all_free.sh"])                                                      
-    arr1 = outp.split(';\n\n\r') # trim off quit stuff at the end                                                    
-    arr2 = arr1[0].split('BYT;\n') # split into devices                                                              
-    dev_arr = arr2[1:]                                                                                               
-    for dev_str in dev_arr:                                                                                          
-        dev_info = {}                                                                                                
-        dev_blk = dev_str.split(';\n') # dev_blk[0] is the device itself, some can be free space
-        dev_char = dev_blk[0]
-        dev_attr = dev_char.split(':')
-        dev_info['device'] = dev_attr[0]
-        dev_info['size'] = dev_attr[1]
-        dev_info['type'] = dev_attr[2]
-        dev_info['log_sect_size'] = dev_attr[3]
-        dev_info['phys_sect_size'] = dev_attr[4]
-        dev_info['part_tbl'] = dev_attr[5]
-        dev_info['desc'] = dev_attr[6]
-        dev_info['blocks'] = []
-        dev_blk = dev_blk[1:]
-        dev_blk = [a for a in dev_blk if a not in ['\n']]                         
-        for blk in dev_blk: # blocks can be free or partitioned
-            blk_info = {}                                                                                                                                                                                                          
-            blk_attr = blk.split(':')        
-            blk_info['part_no'] = blk_attr[0] # is 1 for free            
-            blk_info['start'] = blk_attr[1]
-            blk_info['end'] = blk_attr[2]
-            blk_info['size'] = blk_attr[3]
-            blk_info['type'] = blk_attr[4]
-            if blk_info['type'] == 'free':
-                blk_info['part_dev'] = 'unallocated'
-            else:
-                blk_info['part_dev'] = dev_info['device'] + blk_info['part_no']
-                print blk_info['part_dev']
-                blk_info['part_prop'] = system_disks[blk_info['part_dev']]
-            if len(blk_attr) == 7:
-                blk_info['flag'] = blk_attr[6]        
-            else:
-                blk_info['flag'] = ""
-            dev_info['blocks'].append(blk_info)    
-        system_storage.append(dev_info)
+    #outp = subprocess.check_output(["scripts/get_all_free.sh"])
+    outp = subprocess.check_output(["scripts/get_stor_devs.sh"])                                                      
+    dev_arr = outp.split('\n')   
+    #arr1 = outp.split(';\n\n\r') # trim off quit stuff at the end                                                    
+    #arr2 = arr1[0].split('BYT;\n') # split into devices                                                              
+    #dev_arr = arr2[1:]
+    for dev_str in dev_arr:                                                                                               
+        dev = dev_str.split(" ")[0]
+        try:
+            parts = subprocess.check_output(["parted", dev, "-ms", "print", "free"])
+        except subprocess.CalledProcessError as e:
+            #skip devices that cause problems
+            print e
+            pass    
+        else:    
+            blkstr = parts.split("BYT;\n")[1] 
+            print "blkstr is " +  blkstr          
+            dev_info = {}                                                                                                
+            dev_blk = blkstr.split(';\n') # dev_blk[0] is the device itself, some can be free space
+            dev_char = dev_blk[0]
+            dev_attr = dev_char.split(':')
+            dev_info['device'] = dev_attr[0]
+            dev_info['size'] = dev_attr[1]
+            dev_info['type'] = dev_attr[2]
+            dev_info['log_sect_size'] = dev_attr[3]
+            dev_info['phys_sect_size'] = dev_attr[4]
+            dev_info['part_tbl'] = dev_attr[5]
+            dev_info['desc'] = dev_attr[6]
+            dev_info['blocks'] = []
+            dev_blk = dev_blk[1:]
+            print dev_blk
+            dev_blk = [a for a in dev_blk if a not in ['\n']]                         
+            for blk in dev_blk: # blocks can be free or partitioned
+                print "blk is " + blk
+                if blk == '':
+                    continue
+                blk_info = {}                                                                                                                                                                                                          
+                blk_attr = blk.split(':')        
+                blk_info['part_no'] = blk_attr[0] # is 1 for free            
+                blk_info['start'] = blk_attr[1]
+                blk_info['end'] = blk_attr[2]
+                blk_info['size'] = blk_attr[3]
+                blk_info['type'] = blk_attr[4]
+                if blk_info['type'] == 'free':
+                    blk_info['part_dev'] = 'unallocated'
+                else:
+                    # this is a kluge
+                    if "mmc" in dev_info['device']:
+                        blk_info['part_dev'] = dev_info['device'] + 'p' + blk_info['part_no']
+                    else:
+                        blk_info['part_dev'] = dev_info['device'] + blk_info['part_no']  
+                    print blk_info['part_dev']
+                    blk_info['part_prop'] = system_disks[blk_info['part_dev']]
+                if len(blk_attr) == 7:
+                    blk_info['flag'] = blk_attr[6]        
+                else:
+                    blk_info['flag'] = ""
+                dev_info['blocks'].append(blk_info)    
+            system_storage.append(dev_info)  
             
     #json_outp = json_array("system_storage", system_storage)     
     #resp = json.dumps(system_storage)
