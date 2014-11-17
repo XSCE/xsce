@@ -37,7 +37,7 @@ To manually install and experiment with these changes please do the following:
 
 At this point you can use the new Gui Console by typing
 
-* './xsce-start'
+* './install-console'
 
 From a browser enter the url http://schoolserver/admin. Depending on your browser you may be told
 that the certificate is untrusted and have to click on advanced or some other link to proceed to 
