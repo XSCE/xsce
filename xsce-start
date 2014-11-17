@@ -1,0 +1,7 @@
+#!/bin/bash
+
+PLAYBOOK="xsce-base.yml"
+INVENTORY="ansible_hosts"
+
+export ANSIBLE_LOG_PATH="xsce-install.log"
+ansible-playbook -i $INVENTORY $PLAYBOOK --connection=local 
