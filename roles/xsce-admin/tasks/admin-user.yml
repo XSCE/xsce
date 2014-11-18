@@ -16,6 +16,7 @@
 - name: Install dummy root keys as placeholder
   copy: src=dummy_authorized_keys
         dest=/root/.ssh/authorized_keys
+        force=no
         owner=root
         group=root
         mode=0600
