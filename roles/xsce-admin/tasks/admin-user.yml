@@ -36,7 +36,12 @@
   lineinfile: regexp='^%wheel.*NOPASSWD.*' 
               state=absent 
               dest=/etc/sudoers
-  
+
+- name: remove the line which requires tty
+  lineinfile: regexp=requiretty 
+              state=absent 
+              dest=/etc/sudoers
+                
 - name: end editing the sudoers file-- protect it again
   shell: chmod 0440 /etc/sudoers
       
