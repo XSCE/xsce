@@ -20,7 +20,8 @@
         owner=root
         group=root
         mode=0600
-        backup=yes
+        
+#        backup=yes
 
 - name: edit the sudoers file--first make it editable
   shell: chmod 0640 /etc/sudoers
