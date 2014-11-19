@@ -649,7 +649,7 @@
 							idx = result.lastIndexOf(html_break);  // find 2nd to last newline
 							result_end = "";
 							if (idx >=0) result_end = result.substring(0,idx + html_break.length);
-							html += '<td> <div class = "statusJobResult" style="width:100%; max-height:3em; overflow:auto;">' + result + "</div></td>";
+							html += '<td> <div class = "statusJobResult">' + result + "</div></td>";
 
 							job_info['status'] = entry[3];
 							html += "<td>" + entry[3] + "</td>";
