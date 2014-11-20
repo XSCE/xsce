@@ -1,0 +1,55 @@
+@charset "UTF-8";
+
+.xsce-top-nav {
+  background: #E5CF87;
+}
+.xsce-left-nav {
+  background: #CFE8BE;
+}
+
+.nav>li>a {
+font-size: medium;
+}
+
+.action-buttons {
+width: 70%;
+margin-bottom: 1.5em;
+margin-top: 1em;
+}
+
+.action-buttons button {
+	width:100%;
+	margin-bottom: 1em;	
+}
+
+.nav-tabs>li.active>a, 
+.nav-tabs>li.active>a:hover, 
+.nav-tabs>li.active>a:focus {
+color: #555;
+cursor: default;
+background-color: #F0B343;
+border: 1px solid #ddd;
+border-bottom-color: transparent;
+}
+
+.nav-tabs>li>a {
+margin-right: 2px;
+line-height: 1.42857143;
+border: 1px solid transparent;
+border-radius: 8px 8px 0 0;
+}
+
+#jobStatTable {
+	margin-top: 20px;
+}
+
+.statusJobResult {
+	width:100%; 
+	max-height:8em; 
+	overflow-y:auto;
+	overflow-x:hidden;
+}
+
+#statusJobsRefreshTime {
+	padding-left:20px;
+}

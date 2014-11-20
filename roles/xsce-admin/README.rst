@@ -18,3 +18,13 @@ Add Packages for Remote Access
 
 * screen
 * lynx
+
+Add Command Server
+------------------
+
+* Command Server escalates privileges to root for web user
+
+Add Admin Console and Dependencies
+----------------------------------
+
+* Gui configuration tool

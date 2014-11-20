@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ -d /usr/lib64/php ]
+then
+  PHPLIB_DIR=/usr/lib64/php
+else
+  PHPLIB_DIR=/usr/lib/php
+fi
+
+cat <<EOF
+{"phplib_dir" : "$PHPLIB_DIR"}
+EOF

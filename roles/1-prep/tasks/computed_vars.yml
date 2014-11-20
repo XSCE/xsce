@@ -1,0 +1,27 @@
+# get local vars from scripts in /etc/ansible/facts.d
+
+- name: create ansible.d facts directory
+  file: path=/etc/ansible/facts.d
+        owner=root
+        group=root
+        mode=0750
+        state=directory
+
+- name: local facts script
+  template: backup=yes
+            src=local_facts.fact.j2
+            dest=/etc/ansible/facts.d/local_facts.fact
+            owner=root
+            group=root
+            mode=0700
+
+- name: re-read facts
+  setup: filter=ansible_local
+
+# set top level variables from local facts for convenience
+- set_fact:
+     phplib_dir: '{{ ansible_local["local_facts"]["phplib_dir"] }}'
+
+# Put all computed vars here so derive properly from any prior var file
+
+                  

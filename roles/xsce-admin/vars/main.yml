@@ -1,0 +1,5 @@
+---
+# The values here are defaults.
+
+admin_console_path: "{{ xsce_base }}/admin_console"
+cmdsrv_path: "{{ xsce_base }}/xsce_cmdsrv"
