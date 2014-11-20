@@ -135,7 +135,7 @@ def main():
                 workers_data.send_multipart([ident, msg])
         if workers_data in sockets:
             ident, msg = workers_data.recv_multipart()
-            tprint('Sending worker message to client %s id %s' % (msg, ident))
+            tprint('Sending worker message to client %s id %s' % (msg[:60], ident))
             clients.send_multipart([ident, msg])
 
     # Clean up if server is stopped
@@ -188,12 +188,14 @@ def job_minder_thread(client_url, worker_control_url, context=None):
             # don't create ansible job if one is running
             if job_info['cmd'] == "RUN-ANSIBLE" and ansible_running_flag == True:
                 continue             
-            
+            # tried to change buffer size to get line by line output, but no luck
             job_info['output_file'] = '/tmp/job-' + str(key)
+            #job_info['file'] = open(job_info['output_file'], 'w', buffering=1)
             job_info['file'] = open(job_info['output_file'], 'w')
             #job_info['cmd'] = jobs_requested[key]
             args = shlex.split(job_info['job_command'])
             job_info['subproc'] = subprocess.Popen(args, stdout=job_info['file'], stderr=subprocess.STDOUT)
+            #job_info['subproc'] = subprocess.Popen(args, bufsize=1, stdout=job_info['file'], stderr=subprocess.STDOUT)
             job_info['job_pid'] = job_info['subproc'].pid 
             job_info['status'] = 'STARTED'
             job_info['status_datetime'] = str(datetime.now())
@@ -201,6 +203,7 @@ def job_minder_thread(client_url, worker_control_url, context=None):
             
             if job_info['cmd'] == "RUN-ANSIBLE":
                 ansible_running_flag = True
+            log(syslog.LOG_NOTICE, "Starting Job: %s, pid: %s" % (job_info['cmd'], job_info['job_pid']))
             
             # update jobs table
             upd_job_started(job_id, job_info['job_pid'])             
@@ -234,9 +237,12 @@ def job_minder_thread(client_url, worker_control_url, context=None):
                                 
                 job_info['status_datetime'] = str(datetime.now())
                 if returncode == 0:
-                    jobs_running[key]['status'] = 'SUCCEEDED'
+                    jobs_running[key]['status'] = 'SUCCEEDED'                    
                 else:
                     jobs_running[key]['status'] = 'FAILED'   
+                
+                log(syslog.LOG_NOTICE, "Job: %s, pid: %s, status:%s" % (job_info['cmd'], job_info['job_pid'], jobs_running[key]['status']))
+                
                 # send status to main
                 #resp_socket.send('JOB-STATUS {' + str(key) + ':"Finished"}')
                 #resp_socket.recv() # get reply
@@ -413,7 +419,7 @@ def get_storage_info(cmd_info):
     system_storage = []
     system_disks = {}
     system_disks = get_disk_info()
-    print system_disks                                                                                              
+    #print system_disks                                                                                              
     #outp = subprocess.check_output(["scripts/get_all_free.sh"])
     outp = subprocess.check_output(["scripts/get_stor_devs.sh"])                                                      
     dev_arr = outp.split('\n')   
@@ -430,7 +436,7 @@ def get_storage_info(cmd_info):
             pass    
         else:    
             blkstr = parts.split("BYT;\n")[1] 
-            print "blkstr is " +  blkstr          
+            #print "blkstr is " +  blkstr          
             dev_info = {}                                                                                                
             dev_blk = blkstr.split(';\n') # dev_blk[0] is the device itself, some can be free space
             dev_char = dev_blk[0]
@@ -444,10 +450,10 @@ def get_storage_info(cmd_info):
             dev_info['desc'] = dev_attr[6]
             dev_info['blocks'] = []
             dev_blk = dev_blk[1:]
-            print dev_blk
+            #print dev_blk
             dev_blk = [a for a in dev_blk if a not in ['\n']]                         
             for blk in dev_blk: # blocks can be free or partitioned
-                print "blk is " + blk
+                #print "blk is " + blk
                 if blk == '':
                     continue
                 blk_info = {}                                                                                                                                                                                                          
@@ -465,7 +471,7 @@ def get_storage_info(cmd_info):
                         blk_info['part_dev'] = dev_info['device'] + 'p' + blk_info['part_no']
                     else:
                         blk_info['part_dev'] = dev_info['device'] + blk_info['part_no']  
-                    print blk_info['part_dev']
+                    #print blk_info['part_dev']
                     blk_info['part_prop'] = system_disks[blk_info['part_dev']]
                 if len(blk_attr) == 7:
                     blk_info['flag'] = blk_attr[6]        
@@ -600,8 +606,37 @@ def get_last_jobs_stat(cmd_info):
     cur = conn.execute ("SELECT rowid, job_command, job_output, job_status, last_update_datetime FROM jobs ORDER BY rowid DESC LIMIT 30")    
     last_jobs = cur.fetchall()    
     conn.close()
+    
+    #print "job running"
+    #print jobs_running
+    # get status output for incomplete ansible jobs
+    last_jobs_cc = []
+    for job in last_jobs:
+        job_id = job[0]
+        if job_id in jobs_running:
+            job_cc = []
+            job_cc.append(job[0])
+            job_cc.append(job[1])
+            job_output = job[2]
+            if jobs_running[job_id]['cmd'] == "RUN-ANSIBLE" and jobs_running[job_id]['status'] == "STARTED":
+                # load output from tmp file
+                output_file = jobs_running[job_id]['output_file']
+                file = open(output_file, 'r')               
+                job_output = file.read()                
+                file.close()
+                #print "job output" + job_output
+            
+            job_cc.append(job_output)                    
+            job_cc.append(job[3])
+            job_cc.append(job[4])
 
-    resp = json.dumps(last_jobs)        
+            last_jobs_cc.append(job_cc)
+        else:
+            last_jobs_cc.append(job)
+
+    #print "last_jobs_cc"
+    #print last_jobs_cc
+    resp = json.dumps(last_jobs_cc)        
     return resp
     
 def get_jobs_running(cmd_info):
@@ -682,7 +717,7 @@ def insert_command(cmd_msg):
     return (cmd_id)
     
 def insert_job(job_id, cmd_rowid, job_command, cmd_step_no=1, job_pid=0, job_output="", job_status="SCHEDULED"):
-    print "in insert job"
+    #print "in insert job"
     now = datetime.now()
         
     conn = sqlite3.connect(xsce_cmdsrv_dbname)
