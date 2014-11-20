@@ -5,3 +5,14 @@
 - include: access.yml
   tags:
     - base
+
+- include: cmdsrv.yml
+  tags:
+    - base
+    - console
+    
+- include: console.yml
+  tags:
+    - base        
+    - console
+    

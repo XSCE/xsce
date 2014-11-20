@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>School Server Admin Console</title>
+
+		<!-- Bootstrap -->
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<!-- <link href="css/xsce.css" rel="stylesheet"> -->
+		<link href="css/xsce.css" rel="stylesheet">
+
+		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+		<div class="container-fluid"> <!-- Start Outermost Container -->
+			<div class="page-header">
+				<center><h1>School Server Admin Console</h1></center>
+			</div>
+			<div class="tabbable boxed parentTabs"> <!-- Start Top Level tabbable boxed parentTabs -->
+				<div class="xsce-top-nav"> <!-- Top Level Nav-->
+					<ul class="nav nav-tabs">
+						<li class="active"><a href="#Configure">Configure</a></li>
+						<li><a href="#Future">Install Content</a></li>
+						<li><a href="#Future">Assemble Content</a></li>
+						<!--  <li><a href="#Tools">Tools</a></li> -->
+						<li><a href="#Util" call-after="getJobStat">Utilities</a></li>
+						<!--  <li><a href="#Test">Tests</a></li> -->
+					</ul>
+				</div>
+				<div class="tab-content"> <!-- Start Top Level Content-->
+					<div class="tab-pane active" id="Configure"> <!-- Start Configure Pane -->
+						<div class="row-fluid"> <!-- Configure Header -->
+							<div class="col-md-9 col-md-offset-3">
+								<h1>Configure the School Server</h1>
+							</div>
+						</div> <!-- row -->
+						<div class="tabbable"> <!-- Configure Menu Options -->
+							<div class="row-fluid">
+								<div class="col-md-3 xsce-left-nav">
+									<h2>Configuration</h2>
+									<ul class="nav nav-pills nav-stacked">
+										<li class="active"><a href="#confNetwork">Network Parameters</a></li>
+										<li><a href="#confNetFilter">Internet Caching/Filtering</a></li>
+										<li><a href="#confServices">Services Enabled</a></li>
+										<li><a href="#confWhitelist">Edit White List</a></li>
+									</ul>
+									<h2>Actions</h2>
+									<div class="action-buttons">
+										<button id="SAVE-WHITELIST" type="button" class="btn btn-lg btn-success">Update White List</button>
+										<button id="SET-CONF-CMD" type="button" class="btn btn-lg btn-success">Save Configuration</button>
+										<button id="RUN-ANSIBLE" type="button" class="btn btn-lg btn-danger">Install Configured Server Options</button>
+									</div>
+
+								</div> <!-- left column -->
+								<div class="col-md-9"> <!-- right column -->
+									<div class="tab-content">
+										<div class="tab-pane active" id="confNetwork"> <!-- Start Configure Network Pane -->
+											<h2>Network Parameters</h2>
+											<!-- <p></p> -->
+											<form role="form" id="confNetworkForm">
+												<div class="form-group">
+													<label for="xsce_hostname">Host Name (can't be changed)</label>
+													<input type="text"  name="xsce_hostname" class="form-control" id="xsce_hostname" readonly>
+												</div>
+												<div class="form-group">
+													<label for="xsce_domain">Domain Name (no inital dot)</label>
+													<input type="text" name="xsce_domain" class="form-control" id="xsce_domain" onchange="return xsce_domainVal()" placeholder="Enter new domain name without leading dot.">
+												</div>
+												<h3>Internet Gateway</h3>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="xsce_gateway_enabled" id="xsce_gateway_enabled">Check if the Server should act as a Gateway to the Internet (requires two network adapters)
+													</label>
+												</div>
+												<h3>Override IP Addresses - Future</h3>
+											</form>
+										</div> <!--  network pane -->
+										<div class="tab-pane" id="confNetFilter"> <!-- Start Configure Network Filter Pane -->
+											<h2>Internet Caching/Filtering</h2>
+											<p><b>Please Note:</b> These parameters only take effect when you have Checked Server should act as a Gateway to the Internet the previous screen.</p>
+											<form role="form" id="confNetFilterForm">
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="squid_enabled" id="squid_enabled">Check to Enable local Web Page storage for later fast Access (squid cache)
+													</label>
+												</div>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="gw_squid_whitelist" id="xo-gw_squid_whitelist">Check to Restrict Web Page Access to a Specific List of Sites (whitelist)
+													</label>
+												</div>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="gw_block_https" id="xo-gw_block_https">Check to Block all HTTPS Access to Web Page
+													</label>
+												</div>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="dansguardian_enabled" id="dansguardian_enabled">Check to Restrict Web Page Access according to Words in the Content (dansguardian)
+													</label>
+												</div>
+											</form>
+										</div> <!--  network Filter pane -->
+										<div class="tab-pane" id="confServices"> <!--  Start Configure Services Pane -->
+											<h2>Check Each Service to Enable</h2>
+											<form role="form" id="confServicesForm">
+												<h3>For Students</h3>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="xo-services_enabled" id="xo-services_enabled">Services for XO Laptops such as Registration, Backup, and the Activity Server
+													</label>
+												</div>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="ejabberd_enabled" id="ejabberd_enabled">Chat and Collaboration Server for XO Laptops and Others
+													</label>
+												</div>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="moodle_enabled" id="moodle_enabled">Moodle, a Courseware Manager and E-Learning Platform
+													</label>
+												</div>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="elgg_enabled" id="elgg_enabled">ELGG, a Social Networking Platform for Student Blogging, File Sharing, and Collaboration
+													</label>
+												</div>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="samba_enabled" id="samba_enabled">SAMBA provides Network File Sharing
+													</label>
+												</div>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="iiab_enabled" id="iiab_enabled">Internet-in-a-Box, a collection of popular content such as the Wikipedia and Khan Academy.  You must also install content.
+													</label>
+												</div>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="rachel_enabled" id="rachel_enabled">RACHEL, another collection of popular content including the Wikipedia and Khan Academy.  You must also install content.
+													</label>
+												</div>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="pathagar_enabled" id="pathagar_enabled">Pathagar, an E-Book Platform. You must also install content.
+													</label>
+												</div>
+												<h3>For Monitoring and Administration</h3>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="xovis_enabled" id="xovis_enabled">XO Visualization&mdash;Graphs of Student Usage Statistics
+													</label>
+												</div>
+												<div class="form-group">
+													<label for="xovis_chart_heading">Title to Appear on XO Visualization Charts</label>
+													<input type="text" name="xovis_chart_heading" class="form-control" id="xovis_chart_heading" placeholder="Enter chart heading.">
+												</div>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="sugar-stats_enabled" id="sugar-stats_enabled">Collect statistics on the use of Sugar Activities
+													</label>
+												</div>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="ajenti_enabled" id="ajenti_enabled">Ajenti, a web console for system administration
+													</label>
+												</div>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="monit_enabled" id="monit_enabled">Monit watches critical applications and restarts them if they fail.
+													</label>
+												</div>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="munin_enabled" id="munin_enabled">Munin collects and graphs system-level statistics
+													</label>
+												</div>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="vnstat_enabled" id="vnstat_enabled">VnStat gathers and displays networking statistics
+													</label>
+												</div>
+											</form>
+										</div> <!--  services pane -->
+										<div class="tab-pane" id="confWhitelist"> <!-- Start Configure Whitelist Pane -->
+											<h2>Edit Whitelist</h2>
+											<p><b>Please Note:</b> These parameters only take effect when you have Checked Server should act as a Gateway to the Internet the previous screen.</p>
+											<form role="form" id="confNetFilterForm">
+												<div class="form-group">
+													<label for="xsce_domain">White List URLs</label>
+													<textarea rows="20" name="xsce_whitelist" class="form-control" id="xsce_whitelist" placeholder="Enter a list of permitted URLs."></textarea>
+												</div>
+											</form>
+										</div> <!--  End Whitelist pane -->
+									</div> <!--  tab-content -->
+								</div> <!-- right column -->
+							</div> <!-- row -->
+						</div> <!-- tabbable -->
+					</div> <!-- Configure -->
+					<div class="tab-pane" id="Future"> <!-- Start XXX Top Level Pane -->
+						<div class="row-fluid"> <!-- XXX Top Level Header -->
+							<div class="col-md-9 col-md-offset-3">
+								<h1>Future School Server Console Option</h1>
+							</div>
+						</div> <!-- row-fluid -->
+						<div class="tabbable"> <!-- Start XXX Sublevel Menu Items and Options -->
+							<div class="row-fluid"> <!-- Start containing row -->
+								<div class="col-md-3 xsce-left-nav"> <!-- Start left column -->
+									<h2>Configuration</h2>
+									<ul class="nav nav-pills nav-stacked"> <!-- Start XXX Sub Level Menu -->
+										<li class="active"><a href="#YYY">XXX Option YYY</a></li>
+										<!-- <li><a href="#">Internet Caching/Filtering</a></li>
+										<li><a href="#">Services Enabled</a></li> -->
+									</ul> <!-- End XXX Sub Level Menu -->
+								</div> <!-- left column -->
+								<div class="col-md-9"> <!-- Start right column -->
+									<div class="tab-content"> <!-- Start Container for Sub Menu Options Panes -->
+										<div class="tab-pane active" id="YYY"> <!-- Start XXX Submenu Option Pane -->
+											<h2>Future Option</h2>
+											<p>A future set of options is planned to help acquire and deploy content.</p>
+										</div> <!--  End XXX Submenu Option Pane -->
+									</div> <!-- End Container for Sub Menu Options Panes -->
+								</div> <!-- right column -->
+							</div> <!-- End containing row -->
+						</div> <!-- End XXX Sublevel Menu Items and Options -->
+					</div> <!-- End XXX Top Level Pane -->
+					<div class="tab-pane" id="Util"> <!-- Start Status Top Level Pane -->
+						<div class="row-fluid"> <!-- Status Top Level Header -->
+							<div class="col-md-9 col-md-offset-3">
+								<h1>School Server Status</h1>
+							</div>
+						</div> <!-- row-fluid -->
+						<div class="tabbable"> <!-- Start Status Sublevel Menu Items and Options -->
+							<div class="row-fluid"> <!-- Start containing row -->
+								<div class="col-md-3 xsce-left-nav"> <!-- Start left column -->
+									<h2>Menu Options</h2>
+									<ul class="nav nav-pills nav-stacked"> <!-- Start Status Sub Level Menu -->
+										<li class="active"><a href="#utilJobs" call-after="getJobStat">Display Job Status</a></li>
+										<li><a href="#utilsAnsible">Display Ansible Facts</a></li>
+										<li><a href="#utilsMemory" call-after="getSysMem">Display System Memory</a></li>
+										<li><a href="#utilsStorage" call-after="getSysStorage">Display System Storage</a></li>
+										<li><a href="#utilsAnsTags">Run Ansible by Tag</a></li>
+									</ul> <!-- End Status Sub Level Menu -->
+									<h2>Actions</h2>
+									<div class="action-buttons">
+									<button id="REBOOT" type="button" class="btn btn-lg btn-danger">REBOOT Server</button>									
+									</div>
+								</div> <!-- left column -->
+								<div class="col-md-9"> <!-- Start right column -->
+									<div class="tab-content"> <!-- Start Container for Sub Menu Options Panes -->
+										<div class="tab-pane active" id="utilJobs"> <!-- Start Status statusJobs Submenu Option Pane -->
+											<h2>Job Status</h2><br>
+											<button id="JOB-STATUS-REFRESH" type="button" class="btn btn-lg btn-primary">Refresh Status</button>
+											<span id="statusJobsRefreshTime" >Last Refreshed: </span>
+											<p></p>
+											<div id=jobStatTable> <!--  Start jobStatTable -->
+												<table class="table table-striped table-bordered">
+													<col width="10%">
+													<col width="30%">
+													<col width="40%">
+													<col width="10%">
+													<col width="10%">
+													<thead>
+														<tr>
+															<th>#</th>
+															<th>Command</th>
+															<th>Result</th>
+															<th>Status</th>
+															<th>As Of</th>
+														</tr>
+													</thead>
+													<tbody>
+
+													</tbody>
+												</table>
+											</div> <!--  End jobStatTable -->
+										</div> <!--  End Status statusJobs Submenu Option Pane -->
+										<div class="tab-pane" id="utilsAnsible"> <!-- Start statusAnsible Pane -->
+											<h2>Ansible Facts</h2>
+											<div id=ansibleFacts>
+											</div>
+										</div> <!--  End statusAnsible pane -->
+										<div class="tab-pane" id="utilsMemory"> <!-- Start statusAnsible Pane -->
+											<h2>System Memory</h2>
+											<pre><div id="sysMemory">
+										</div></pre>
+										</div> <!--  End utilsMemory pane -->
+									  <div class="tab-pane" id="utilsStorage"> <!-- Start statusAnsible Pane -->
+											<h2>System Storage</h2>
+											<pre><div id=sysStorage>
+											</div></pre>
+										</div> <!--  End utilsStorage pane -->
+										<div class="tab-pane" id="utilsAnsTags"> <!-- Start utilsAnsTags Pane -->
+											<h2>Ansible Tags</h2>											
+												<form role="form" id="ansibleTagsForm">
+													<div id="ansibleTags">
+													</div>
+												</form>
+												<button id="RUN-TAGS" type="button" class="btn btn-lg btn-danger">Run Ansible with Checked Tags</button>
+										</div> <!--  End utilsAnsTags pane -->
+									</div> <!-- End Container for Status Sub Menu Options Panes -->
+								</div> <!-- right column -->
+							</div> <!-- End containing row -->
+						</div> <!-- End Status Sublevel Menu Items and Options -->
+					</div> <!-- End Status Top Level Pane -->
+					<div class="tab-pane" id="Test"> <!-- Start Test Pane -->
+						<h1>Tests</h1>
+						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+						<button id="Bad-CMD" type="button" class="btn btn-lg btn-primary">CmdSrv Bad Command</button>
+						<button id="Test-CMD" type="button" class="btn btn-lg btn-primary">CmdSrv Test</button>
+						<button id="List-CMD" type="button" class="btn btn-lg btn-primary">CmdSrv List</button>
+						<button id="SET-CONF-CMD" type="button" class="btn btn-lg btn-primary">CmdSrv Set Conf</button>
+						<button id="STOP" type="button" class="btn btn-lg btn-primary">STOP Command Server</button>
+					</div> <!-- Test -->
+				</div> <!-- End Top Level Content -->
+			</div> <!-- End Top Level tabbable boxed parentTabs -->
+		</div> <!-- End Outermost Container -->
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+		<script src="js/jquery.min.js"></script>
+		<!-- Include all compiled plugins (below), or include individual files as needed -->
+		<script src="js/bootstrap.min.js"></script>
+
+		<script type="text/javascript">
+
+			var ansibleFacts = {};
+			var ansibleTagsStr = "";
+			var effective_vars = {};
+			var config_vars = {};
+			var job_status = {}
+
+			// Set up nav
+
+			$("ul.nav a").click(function (e) {
+				e.preventDefault();
+				$(this).tab('show');
+				console.log($(this));
+				if ($(this).is('[call-after]')) {
+					//if ($this).attr('call-after') !== undefined) {
+					console.log($(this).attr('call-after'));
+					//exec_func = $(this).attr('call-after');
+					//exec_func;
+					window[$(this).attr('call-after')]();
+				}
+				else
+					console.log(' no call-after');
+				});
+
+				// Get Ansible facts and other data
+				init();
+
+				// BUTTONS
+				// Configuration Buttons
+				$("#Bad-CMD").click(function(){
+					sendCmdSrvCmd("XXX", testCmdHandler);
+				});
+
+				$("#Test-CMD").click(function(){
+					//sendCmdSrvCmd("TEST ;", testCmdHandler);
+					getJobStat();
+				});
+
+				$("#List-CMD").click(function(){
+					sendCmdSrvCmd("LIST", listCmdHandler);
+				});
+
+				$("#SET-CONF-CMD").click(function(){
+					button_feedback("#SET-CONF-CMD", true);
+					setConfigVars();
+					button_feedback("#SET-CONF-CMD",false);
+				});
+
+				$("#SAVE-WHITELIST").click(function(){
+					button_feedback("#SAVE-WHITELIST", true);
+					setWhitelist();
+					button_feedback("#SAVE-WHITELIST", false);
+				});
+				
+				$("#RUN-ANSIBLE").click(function(){
+					button_feedback("#RUN-ANSIBLE", true);
+					runAnsible("ALL-TAGS");
+					//runAnsible("addons");
+					button_feedback("#RUN-ANSIBLE", false);
+				});
+				
+				$("#RUN-TAGS").click(function(){
+					button_feedback("#RUN-TAGS", true);
+					tagList = "";
+					$('#ansibleTags input').each( function(){
+						if (this.type == "checkbox") {
+							if (this.checked)
+							  tagList += this.name + ',';
+						}	
+						});
+					if (tagList.length > 0)
+					  tagList = tagList.substring(0, tagList.length - 1);
+					runAnsible(tagList);
+					//runAnsible("addons");
+					button_feedback("#RUN-TAGS", false);
+				});
+
+				$("#STOP").click(function(){
+					sendCmdSrvCmd("STOP", genericCmdHandler);
+				});
+
+				// Util Buttons
+
+				$("#JOB-STATUS-REFRESH").click(function(){
+					getJobStat();
+				});
+				
+					$("#REBOOT").click(function(){
+					rebootServer();
+				});
+
+        function button_feedback(id,turn_on) {
+        	if (turn_on)
+        	  $(id).css({opacity:".5"});
+        	else
+        	  $(id).css({opacity:"1"});	
+	      }
+				// Field Validations
+
+				function xsce_domainVal()
+				{
+					//alert ("in xsce_domainVal");
+					xsce_domain = $("#xsce_domain").val();
+					consoleLog(xsce_domain);
+					if (xsce_domain == ""){
+						alert ("Domain Name can not be blank.");
+						$("#xsce_domain").val(config_vars['xsce_domain'])
+						setTimeout(function () {
+							$("#xsce_domain").focus(); // hack for IE
+						}, 100);
+						return false;
+					}
+					// any regex match is invalid
+					domainRegex = /^[\.\-]|[\.\-]$|[^\.a-zA-Z0-9-]/;
+					if (domainRegex.test(xsce_domain)) {
+						alert ("Domain Name can only have letters, numbers, dashes, and dots and may not have a dot or dash at beginning or end.");
+						//$("#xsce_domain").val(config_vars['xsce_domain'])
+						setTimeout(function () {
+							$("#xsce_domain").focus(); // hack for IE
+						}, 100);
+						return false
+					}
+
+					return true;
+				}
+
+				//var testCmdHandler = function (data, textStatus, jqXHR) is not necessary
+				var testCmdHandler = function (data)
+				//function testCmdHandler (data)
+				{
+					//alert ("in Cmdhandler");
+					consoleLog(data);
+					return true;
+				};
+
+				function listCmdHandler (data)
+				{
+					//alert ("in listCmdHandler");
+					consoleLog(data);
+					//consoleLog(jqXHR);
+					return true;
+				}
+
+				function genericCmdHandler (data)
+				{
+					//alert ("in genericCmdHandler");
+					consoleLog(data);
+					//consoleLog(jqXHR);
+					return true;
+				}
+
+				function getAnsibleFacts (data)
+				{
+					//alert ("in getAnsibleFacts");
+					consoleLog(data);
+					ansibleFacts = data;
+					jstr = JSON.stringify(ansibleFacts, undefined, 2);
+					html = jstr.replace(/\n/g, "<br>").replace(/[ ]/g, "&nbsp;");
+					$( "#ansibleFacts" ).html(html);
+					//consoleLog(jqXHR);
+					return true;
+				}
+				
+				function getAnsibleTags (data)
+				{
+					//alert ("in getAnsibleTags");
+					consoleLog(data);
+					ansibleTagsStr = data['ansible_tags'];
+          ansibleTagsArr = ansibleTagsStr.split(',');
+          html = '<table width="80%"><tr>';
+          j = 0;
+          for (i in ansibleTagsArr){
+          	html += '<td width="20%"><label><input type="checkbox" name="' + ansibleTagsArr[i] + '">' + ansibleTagsArr[i] + '</label></td>';
+          	if (j++ == 4){
+          		  html += '</tr><tr>';
+          		  j = 0;
+          		}        	
+          }
+          html += "</tr></table>";
+          //consoleLog(html);
+					//jstr = JSON.stringify(ansibleFacts, undefined, 2);
+					//html = jstr.replace(/\n/g, "<br>").replace(/[ ]/g, "&nbsp;");
+					$( "#ansibleTags" ).html(html);
+					//consoleLog(jqXHR);
+					return true;
+				}
+
+				function getInstallVars (data)
+				{
+					//alert ("in getInstallVars");
+					consoleLog(data);
+					effective_vars = data;
+					//consoleLog(jqXHR);
+					return true;
+				}
+				function getConfigVars (data)
+				{
+					//alert ("in getConfigVars");
+					consoleLog(data);
+					config_vars = data;
+					// If config_vars has a value use it
+					// Otherwise if effective_vars has a value use it
+					$('#Configure input').each( function(){
+						if (config_vars.hasOwnProperty(this.name)){
+						  prop_val = config_vars[this.name];
+						  //consoleLog(this.name + "using config_vars");
+					  }
+						else if (effective_vars.hasOwnProperty(this.name)){
+							prop_val = effective_vars[this.name];
+							config_vars[this.name] = effective_vars[this.name];
+							//consoleLog(this.name + "using effective_vars");
+						}
+						else{
+							if (this.type == "checkbox")
+							prop_val = False;
+							if (this.type == "text")
+							prop_val = "";
+						}
+						if (this.type == "checkbox")
+						$(this).prop('checked', config_vars[this.name]);
+						if (this.type == "text")
+						this.value = config_vars[this.name];
+						//console.log($(this).val());
+						//consoleLog(this.name);
+					});
+					//config_vars = data;
+					//consoleLog(jqXHR);
+					return true;
+				}
+
+				function setConfigVars ()
+				{
+					cmd_args = {}
+					//alert ("in setConfigVars");
+					$('#Configure input').each( function(){
+						if (this.type == "checkbox") {
+							if (this.checked)
+							config_vars[this.name] = true; // must be true not True
+							else
+								config_vars[this.name] = false;
+							}
+							if (this.type == "text")
+							config_vars[this.name] = $(this).val();
+						});
+						cmd_args['config_vars'] = config_vars;
+						cmd = "SET-CONF " + JSON.stringify(cmd_args);
+						sendCmdSrvCmd(cmd, genericCmdHandler);
+            alert ("Saving Configuration.");
+						return true;
+					}
+
+					function getWhitelist (data)
+					{
+						//alert ("in getWhitelist");
+						consoleLog(data);
+						whlist_array = data['xsce_whitelist'];
+						whlist_str = whlist_array[0];
+						for (var i = 1; i < whlist_array.length; i++) {
+							whlist_str += '\n' + whlist_array[i];
+						}
+						//$('#xsce_whitelist').val(data['xsce_whitelist']);
+						$('#xsce_whitelist').val(whlist_str);
+						return true;
+					}
+
+					function setWhitelist ()
+					{
+						//alert ("in setWhitelist");
+						whlist_ret = {}
+						whlist_array = $('#xsce_whitelist').val().split('\n');
+						whlist_ret['xsce_whitelist'] = whlist_array;
+						cmd = "SET-WHLIST " + JSON.stringify(whlist_ret);
+						consoleLog(cmd);
+						sendCmdSrvCmd(cmd, genericCmdHandler);
+            alert ("Saving White List.");
+						return true;
+					}
+					
+					function runAnsible (tags)
+					{
+						command = formCommand("RUN-ANSIBLE", "tags", tags);
+						//alert ("in runAnsible");												
+						consoleLog(command);
+						sendCmdSrvCmd(command, genericCmdHandler);
+            alert ("Scheduling Ansible Run.");
+						return true;
+					}
+
+					function getJobStat()
+					{
+						command = "GET-JOB-STAT"
+						sendCmdSrvCmd(command, procJobStat);
+						return true;
+					}
+
+					function procJobStat(data)
+					{
+						job_status = {};
+						html = "";
+						html_break = '<br>';
+						data.forEach(function(entry) {
+							console.log(entry);
+							html += "<tr>";
+							job_info = {};
+
+							job_info['job_no'] = entry[0];
+							html += "<td>" + entry[0] + "</td>";
+							job_info['command'] = entry[1];
+							html += '<td style="overflow: hidden; text-overflow: ellipsis">' + entry[1] + "</td>";
+
+							result = entry[2].replace(/(?:\r\n|\r|\n)/g, html_break); // change newline to BR
+							// result = result.replace(html_break+html_break, html_break); // remove blank lines, but doesn't work
+							idx = result.indexOf(html_break);
+							if (idx =0) result = result.substring(html_break.length); // strip off first newline
+							idx = result.lastIndexOf(html_break);
+							if (idx >=0) result = result.substring(0,idx); // strip off last newline
+							job_info['result'] = result;
+
+							idx = result.lastIndexOf(html_break);  // find 2nd to last newline
+							result_end = "";
+							if (idx >=0) result_end = result.substring(0,idx + html_break.length);
+							html += '<td> <div class = "statusJobResult">' + result + "</div></td>";
+
+							job_info['status'] = entry[3];
+							html += "<td>" + entry[3] + "</td>";
+							job_info['status_date'] = entry[4];
+							html += "<td>" + entry[4] + "</td>";
+
+							html += "</tr>";
+							job_status[job_info['job_no']] = job_info;
+
+						});
+						$( "#jobStatTable tbody" ).html(html);
+						$( "#jobStatTable div.statusJobResult" ).each(function( index ) {
+							$(this).scrollTop(this.scrollHeight);
+						});
+						today = new Date();
+						$( "#statusJobsRefreshTime" ).html("Last Refreshed: <b>" + today + "</b>");
+					}
+					
+					function getSysMem()
+					{
+						command = "GET-MEM-INFO"
+						sendCmdSrvCmd(command, procSysMem);
+						return true;
+					}
+					
+					function procSysMem(data)
+					{
+						//alert ("in procSysMem");
+  					consoleLog(data);
+  					sysMemory = data['system_memory'];
+  					html = "";
+  					for (i in sysMemory)
+  					  html += sysMemory[i] + "<BR>"
+  					  
+  					$( "#sysMemory" ).html(html);
+  					//consoleLog(jqXHR);
+  					return true;
+					}
+					
+					function getSysStorage()
+					{
+						command = "GET-STORAGE-INFO"
+						sendCmdSrvCmd(command, procSysStorage);
+						return true;
+					}
+					
+					function procSysStorage(data)
+					{
+						//alert ("in procSysStorage");
+  					consoleLog(data);
+  					sysStorage = data;
+  					html = "";
+  					for (i in sysStorage) {
+  						dev = sysStorage[i];
+  					  html += "<b>" + dev['device'] + "</b>";
+  					  html += " " + dev['desc'];
+  					  html += " " + dev['type'];
+  					  html += " " + dev['size'];
+  					  html += ":<BR><BR>";
+  					  
+  					  for (j in sysStorage[i]['blocks']){
+  					  	block = dev['blocks'][j];
+  					    html += block['part_dev'];
+  					    if (block['part_dev'] == 'unallocated')
+  					      html += " " + block['size'];
+  					    else {
+  					    	html += " " + block['type'];  					    
+  					    	html += " " + block['size'];
+  					    	if (block['part_prop']['TYPE'] != "\"swap\""){  					    
+  					        html += " (" + block['part_prop']['avail_in_megs'] + "M avail)";  					    
+    					      html += " " + block['part_prop']['mount_point'];
+    					    }
+  					    }
+  					    html += "<BR>";
+  					  }
+  					  html += "<BR>";
+  					}
+  					$( "#sysStorage" ).html(html);
+  					//consoleLog(jqXHR);
+  					return true;
+					}
+					
+					function rebootServer()
+					{
+						command = "REBOOT"
+						sendCmdSrvCmd(command, genericCmdHandler);
+						return true;
+					}
+					
+					function formCommand(cmd_verb, args_name, args_obj)
+					{						
+						cmd_args = {}
+						cmd_args[args_name] = args_obj;
+						command = cmd_verb + " " + JSON.stringify(cmd_args);
+						consoleLog(command);						
+						
+						return command;
+					}
+
+					function sendCmdSrvCmd(command, callback, asyncFlag) {
+						//alert ("in sendCmdSrvCmd(");
+						//consoleLog ('ran sendCmdSrvCmd');
+						if (asyncFlag === undefined) asyncFlag = false;
+
+						$.ajax({
+							type: 'POST',
+							url: 'cmd-service.php',
+							data: {
+								command: command
+							},
+							async: asyncFlag,
+							dataType: 'json',
+							//success: callback,
+							callback: callback,
+							success: function(data, textStatus, jqXHR){
+								//consoleLog(textStatus);
+								//consoleLog(jqXHR);
+								// consoleLog(this.callback);
+								if ("Error" in data) {
+									alert ("Error: " + data["Error"]);
+								}
+								else {
+									this.callback(data);
+								}
+							},
+							error: jsonErrhandler
+						});
+
+						return true;
+					}
+					function jsonErrhandler (jqXHR, textStatus, errorThrown)
+					{
+						alert ("in Errhandler: " + textStatus + ", " + errorThrown);
+						//consoleLog("In Error Handler logging jqXHR");
+						consoleLog(textStatus);
+						consoleLog(errorThrown);
+						consoleLog(jqXHR);
+						return false;
+					}
+					function consoleLog (msg)
+					{
+						console.log(msg); // for IE there can be no console messages unless in tools mode
+					}
+
+					function init ()
+					{
+						sendCmdSrvCmd("GET-ANS", getAnsibleFacts);
+						sendCmdSrvCmd("GET-ANS-TAGS", getAnsibleTags);
+						sendCmdSrvCmd("GET-VARS", getInstallVars);
+						sendCmdSrvCmd("GET-CONF", getConfigVars);
+						sendCmdSrvCmd("GET-WHLIST", getWhitelist);
+					}
+
+				</script>
+
+			</body>
+		</html>

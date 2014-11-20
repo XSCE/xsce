@@ -1,5 +1,6 @@
 - include: prep.yml
-
+- include: computed_vars.yml
+           
 # Put conditional includes for platforms here
 - include: xo.yml
   when: ansible_distribution_release == "based on Fedora 18"
