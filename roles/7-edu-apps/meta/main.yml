@@ -1,0 +1,5 @@
+dependencies:
+   - { role: moodle, tags: ['olpc','moodle','edu-apps'], when: moodle_install }
+   - { role: iiab, tags: ['iiab','edu-apps'], when: iiab_install }
+   - { role: pathagar, tags: ['pathagar','edu-apps'], when: pathagar_install }   
+      

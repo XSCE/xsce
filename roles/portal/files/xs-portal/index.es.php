@@ -5,35 +5,30 @@
 <HTML>
 <HEAD>
 
-<TITLE>Bienvenidos - Welcome to the School Server</TITLE>
+<TITLE>Bienvenido al servidor de la escuela</TITLE>
 
 </HEAD>
 <BODY>
 <div id="wrapper">	
-<h1>Bienvenidos - Welcome to the School Server</h1>
+<h1>Bienvenido al servidor de la escuela</h1>
 <?php require 'incl/banner.html'; ?>
 
 <div id="main"> 
-	
-<p>
-	
-Esta página debe ser en español
-
-<p>
 		
-<br><h2>Interesting Things You Can Do Here:</h2>
+<br><h2>Cosas interesantes que puedes hacer aquí:</h2>
 
-<?php service_link("pathagar", "Read Books on Pathagar", "Pathagar is a Book Server that contains a local collection of books that you can read without downloading them from the internet."); ?>
+<?php service_link("pathagar", "Lee libros en Pathagar", "Pathagar es un servidor de libreta que contiene una colección local de los libros que se pueden leer sin tener que descargarlos desde internet."); ?>
 <?php // iiab_link("Internet In A Box", 
 //                "Internet-in-a-Box is a copy of some of the most important material on the internet, such as the Wikipedia, stored locally where you can reach it easily.",
 //                "Searching for Internet In A Box"); 
 ?>
-<?php service_link("iiab", "Internet In A Box", "Internet-in-a-Box is a copy of some of the most important material on the internet, such as the Wikipedia, stored locally where you can reach it easily."); ?>
-<?php service_link("moodle", "Moodle Home Page", "Moodle is a collection of lessons and study materials organized to help you learn many fascinating things."); ?>
-<?php service_link("upload", "Upload Files", "From this link you can upload various files such as images and activities"); ?>
-<?php service_link("activity-server", "Download an Activity", "You can add a new activity to your XO from this link."); ?>
+<?php hard_link("/content", "Acceso Otros Contenidos", "Ponga el contenido adicional en /library/content y los subdirectorios y enlace a ella con esta función, como syans en Haití."); ?>
+<?php service_link("iiab", "Internet In A Box", "Internet-in-a-Box es una copia de una parte del material más importante en Internet, como la Wikipedia, almacenado localmente donde se puede llegar con facilidad."); ?>
+<?php service_link("moodle", "Moodle Home Page", "Moodle es una colección de clases y materiales de estudio organizados para ayudarle a aprender muchas cosas fascinantes."); ?>
+<?php service_link("upload", "Cargar archivos", "Desde este enlace puedes cargar varios archivos, como imágenes y actividades"); ?>
+<?php service_link("activity-server", "Descargar una Actividad", "Puedes añadir una nueva actividad a su XO desde este enlace."); ?>
 
-<BR> Enjoy Exploring!
+<BR> Disfrute explorando!
 </div><!-- #main -->
 </div><!-- #wrapper -->
 </BODY>

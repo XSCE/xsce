@@ -1,3 +1,6 @@
+- name: Remove if exist pathagar rpm version
+  yum: name=pathagar state=absent
+
 - name: Install pathagar pre requisites
   yum: name={{ item }}
        state=latest
@@ -29,9 +32,21 @@
        version=xsce-devel
   tags:
     - download
+  when: not {{ use_cache }} and not {{ no_network }}
+      
+- name: download pathagar requirements in a virtualenv
+  pip: name={{ item }}
+          extra_args="--download-cache {{ pip_packages_dir }}"
+  with_items:
+    - Django==1.4.5
+    - django-tagging==0.3.1
+    - django-sendfile==0.3.0
+    - django-taggit==0.10
+  when: not {{ use_cache }} and not {{ no_network }}
 
 - name: Install pathagar requirements in a virtualenv
   pip: name={{ item }}
+       extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
        virtualenv={{ pathagar_venv }}
        virtualenv_site_packages=yes
   with_items:
@@ -124,3 +139,16 @@
 - name: Restart http
   service: name=httpd
            state=reloaded
+
+- name: add pathagar to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=pathagar
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: pathagar
+    - option: description
+      value: Pathagar is a simple bookserver serving OPDS feeds
+    - option: path
+      value: /books

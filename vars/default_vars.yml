@@ -1,7 +1,146 @@
-#Network
+# WARNING: DO NOT MODIFY THIS FILE.
+# CHANGES WILL BE LOST IF YOU DO A GIT PULL OR FETCH.
+# Instead put changes in local_vars.yml which is not tracked by git.
+
+# By convention we use True/False to indicate boolean constants.
+
+# Installation Constants
+xsce_base: /opt/schoolserver
+xsce_dir: "{{ xsce_base }}/xsce"
+pip_packages_dir: "{{ xsce_base }}/pip-packages"
+yum_packages_dir: "{{ xsce_base }}/yum-packages"
+downloads_dir: "{{ xsce_base }}/downloads"
+xsce_download_url: download.unleashkids.org/xsce/downloads
+
+#Services
+service_filelist: /etc/sysconfig/xs_installed_services
+
+# The following two variables control OFFLINE installs
+use_cache: False # force cache use even when online
+no_network: False  # use cache or error out if cache does not exist
+
+# Users and Passwords
+# obtain a password hash with - python -c 'import crypt; print crypt.crypt("<plaintext>", "$6$<salt>")'
+
+xsce_admin_user: xsce-admin
+xsce_admin_passw_hash: $6$xsce51$D.IrrEeLBYIuJkGDmi27pZUGOwPFp98qpl3hxMwWV4hXigFGmdSvy3s/j7tn6OnyTTLmlV7SsN0lCUAFzxSop.
+ 
+# password is 12admin
+dummy: $6$xsce51$JhKBX/nwYLG0DDMTPN6radpgd//P881O/JX0GKFn32XUrR/D0VqnVFdvMdI.XW.eGaQY2VBCraLq6qiH0fbkD0
+
+# Languages
+default_language: en
+language_priority: en es
+
+# Time Zone (php needs timezone to be set)
+local_tz: "{{lookup ('env','TZ') }}"
+
+# Network Parameters
+
+xsce_hostname: schoolserver
+xsce_domain: lan
 lan_ip: 172.18.96.1
 lan_netmask: 255.255.224.0
 
+#Read docs/NETWORKING.rst
+xsce_wan_iface: "{{ ansible_default_ipv4.interface }}"
+xsce_lan_iface: auto
+
+# Parameters by Aggregate Roles
+# Each Role must have the following variables which are either True or False:
+#   <role-name>_install
+#   <role-name>_enabled
+
+# Our current convention is to install everything in all aggregates
+# And to enable everything in 1-PREP, 2-COMMON, and 3-BASE
+
+# 1-PREP
+
+# 2-COMMON
+
+# 3-BASE
+
+#Gateway and Filters
+xsce_gateway_enabled: True
+squid_enabled: True
+dansguardian_enabled: False
+gw_squid_whitelist: False
+gw_block_https: False
+
+# 4-SERVER-OPTIONS
+
+# openvpn
+vpn_presence: unleashkids.org
+openvpn_install: True
+openvpn_enabled: False
+
+# samba
+samba_install: True
+samba_enabled: False
+
+# 5-XO-SERVICES
+
+# ejabberd
+ejabberd_install: True
+ejabberd_enabled: True
+
+# idmgr and activity-server
+idmgr_install: True
+activity-server_install: True
+xo-services_enabled: True
+
+# 6-GENERIC-APPS
+
+# ELGG
+elgg_install: True
+elgg_enabled: False
+
+# note: when you enable elgg, you must also enable mysql, on which it depends
+mysql_install: True
+mysql_enabled: False
+
+# password is fixmysql
+# mysql_root_password: $6$xsce51$3ICIW0CLWxxMW2a3yrHZ38ukZItD5tcadL4rWcE9D.qIGStxhh8rRsaSxoj3b.MYxI/VRDNjpzSYK/V6zkWFI0
+mysql_root_password: fixmysql
+
+# elgg_mysql_password: $6$xsce51$jeTwnATcbaa92xo0QBTgjLBU.5aVDDrbKeNyyC99R/TAWz6pvfzj.L7lfnOVVjD78nxqT.gkNn6XZmuRV0W3o1
+elgg_mysql_password: elgg4kids
+
+# 7-EDU-APPS
+
+# Moodle
+moodle_install: True
+moodle_enabled: False
+
+# Internet-in-a-Box
+iiab_install: True
+iiab_enabled: True
+
+# Pathagar
+pathagar_install: False
+pathagar_enabled: False
+
+# RACHEL
+rachel_install: False
+rachel_enabled: False
+
+# 8-MGMT-TOOLS
+
+# sugar-stats
+sugar-stats_install: True
+sugar-stats_enabled: True
+
+# ajenti
+ajenti_install: True
+ajenti_enabled: False
+
+# munin
+munin_install: True
+munin_enabled: False
+
+# monit
+monit_install: True
+monit_enabled: False
 watchdog: 
   - sshd
   - idmgr
@@ -10,12 +149,35 @@ watchdog:
   - postgresql
   - squid 
 
-#Services
-service_filelist: /etc/sysconfig/xs_installed_services
-squid: True
-dansguardian: True
-services:
-  - name: idmgr
-    enabled: True
-  - name: squid
-    enabled: True    
+# vnstat
+vnstat_install: True
+vnstat_enabled: False
+
+# xovis
+xovis_install: True
+xovis_enabled: True
+xovis_target_host: "127.0.0.1:5984"
+xovis_deployment_name: olpc
+
+xovis_db_name: xovis
+xovis_db_user: admin
+xovis_db_password: admin
+
+xovis_root: "/opt/xovis"
+xovis_backup_dir: "/library/users"
+xovis_chart_heading: "My School: Usage Data Visualization"
+
+# 9-LOCAL-ADDONS
+
+# These are appended for testing
+# They set most roles to enabled
+
+openvpn_enabled: True
+samba_enabled: True
+elgg_enabled: True
+mysql_enabled: True
+moodle_enabled: True
+ajenti_enabled: True
+munin_enabled: True
+monit_enabled: True
+vnstat_enabled: True

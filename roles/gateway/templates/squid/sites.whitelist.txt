@@ -1,0 +1,14 @@
+# the leading dot matches anything preceeding
+.laptop.org
+.olpcMAP.net
+.mapmeld.appspot.com
+.googlecode.com
+.googleapis.com
+.translate.google.com
+.gstatic.com
+.unleashkids.org
+.hopeforhaitischildren.org
+.lenouvelliste.com
+.voanouvel.com
+.bing.com
+.microsofttranslator.com

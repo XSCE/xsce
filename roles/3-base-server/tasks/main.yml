@@ -1,0 +1,3 @@
+- name: Base Server Installed
+  command: echo Base Server Installed
+

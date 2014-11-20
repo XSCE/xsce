@@ -1,13 +1,18 @@
 ---
 - hosts: all
   sudo: yes
-  vars:
-    - xsce_hostname: schoolserver
-    - xsce_domain: lan
+
   vars_files:
   - vars/default_vars.yml
+  - vars/local_vars.yml
+
   roles:
-      - { role: common, tags: ['common'] }
-      - { role: network, tags: ['network'] }
-      - { role: gateway, tags: ['gateway'] }
-      - { role: core, tags: ['core'] }
+      - { role: 1-prep, tags: ['prep','platform','base'] }
+      - { role: 2-common, tags: ['common','base'] }
+      - { role: 3-base-server, tags: ['base'] }
+      - { role: 4-server-options, tags: ['options'] }
+      - { role: 5-xo-services, tags: ['xo-services'] }
+      - { role: 6-generic-apps, tags: ['generic-apps'] }
+      - { role: 7-edu-apps, tags: ['edu-apps'] }    
+      - { role: 8-mgmt-tools, tags: ['tools'] }
+      - { role: 9-local-addons, tags: ['addons'] }      

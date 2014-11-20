@@ -1,29 +1,70 @@
-- name: Configure /etc/sysconfig/network
-  template: backup=yes
-            src=sysconfig.network.j2
-            dest=/etc/sysconfig/network
-            owner=root
-            group=root
-            mode=0644
+- name: Discover LAN iface
+  shell: "/sbin/ip link show  | grep -v -e DOWN -e lo -e tun -e {{ ansible_default_ipv4.alias }}| grep mtu | gawk -F: '{print $2}' |  tr -d ' '  | head -n1 "
+  register: discovered_lan
+  
+  changed_when: false
+  tags:
+    - network-discover
+    - gateway
+    - dhcpd
+    - ajenti
+    - wondershaper
+    - core
+    - xo
+    - download
+    - services
+    - squid
 
-#TODO: Use vars instead of hardcoded values
-- name: Add local ip to /etc/hosts
-  host: ip={{ lan_ip }}
-        hostname={{ xsce_hostname }}.{{ xsce_domain }}
-        aliases={{ xsce_hostname }}
-        state=present
 
-- name: Add local hostname to /etc/hosts
-  host: ip=127.0.0.1
-        hostname=localhost.localdomain
-        aliases=localhost,{{ xsce_hostname }}
-        state=present
+- name: Set xsce configured lan fact
+  set_fact:
+     xsce_lan_iface: "{{ xsce_lan_iface }}"
+  when: 'xsce_lan_iface != "auto" and xsce_lan_iface != "none" '
+  tags:
+    - network-discover
+    - gateway
+    - dhcpd
+    - ajenti
+    - wondershaper
+    - core
+    - xo
+    - download
+    - services
+    - squid
 
-- name: Configure lan interface
-  template: backup=yes
-            src=ifcfg.j2
-            dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_lan_iface}}
-  when: 'xsce_lan_iface != "" '
+- name: Set xsce discovered lan fact
+  set_fact:
+     xsce_lan_iface: "{{ discovered_lan.stdout }}"
+  when: 'xsce_lan_iface == "auto"  and discovered_lan.stdout  != ""'
+  tags:
+    - network-discover
+    - gateway
+    - dhcpd
+    - ajenti
+    - wondershaper
+    - core
+    - xo
+    - download
+    - services
+    - squid
+
+
+- name: No LAN configured - Appliance mode
+  set_fact:
+     xsce_lan_iface: ""
+  when: 'xsce_lan_iface == "none" or (discovered_lan.stdout == "" and xsce_lan_iface == "auto" )'
+  tags:
+    - network-discover
+    - gateway
+    - dhcpd
+    - ajenti
+    - wondershaper
+    - core
+    - xo
+    - download
+    - services
+    - squid
+
 
 - name: Create xs network flags
   template: backup=yes
@@ -34,22 +75,66 @@
     - xs_wan_device
     - xs_lan_device
     - xs_domain_name
-
-- name: update common packages
-  yum: name={{ item }}
-       state=latest
-  with_items:
-   - NetworkManager
   tags:
-    - download
+    - network-discover
+
+
+- name: Configure /etc/sysconfig/network
+  template: backup=yes
+            src=sysconfig.network.j2
+            dest=/etc/sysconfig/network
+            owner=root
+            group=root
+            mode=0644
+
+#TODO: Use vars instead of hardcoded values
+- name: Configure /etc/hosts
+  lineinfile: backup=yes
+              dest=/etc/hosts
+              regexp='^172\.18\.96\.1'
+              line='172.18.96.1            {{ xsce_hostname }}.{{ xsce_domain }}      {{ xsce_hostname }}'
+              owner=root
+              group=root
+              mode=0644
+
+- name: Configure /etc/hosts
+  lineinfile: backup=yes
+              dest=/etc/hosts
+              regexp='^127\.0\.0\.1'
+              line='127.0.0.1            localhost.localdomain   localhost   {{ xsce_hostname }}'
+              owner=root
+              group=root
+              mode=0644
+
+
+- name: Configure lan interface
+  template: backup=yes
+            src=ifcfg.j2
+            dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_lan_iface}}
+  when: 'xsce_lan_iface != "" '
+
+# This is a dog's breakfast, but with ansible 1.6.3 service: name=NetworkManager state=restarted doesn't work
 
 - name: restart NetworkManager services
   service: name=NetworkManager
            enabled=yes
-           state=restarted
-  service: name=NetworkManager-dispatcher
+           state=stopped
+- service: name=NetworkManager-dispatcher
            enabled=yes
-           state=restarted
+           state=stopped
+- wait_for: path=/etc/passwd
+            delay=4
+            timeout=5
+- service: name=NetworkManager
+           enabled=yes
+           state=started
+- wait_for: path=/etc/passwd
+            delay=4
+            timeout=5
+- service: name=NetworkManager-dispatcher
+           enabled=yes
+           state=started
+- debug:  msg="hopefully now NM is restarted"
 
 - include: named.yml
   tags:

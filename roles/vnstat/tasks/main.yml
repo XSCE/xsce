@@ -1,0 +1,29 @@
+---
+- name: Install required packages
+  yum: name={{ item }}
+       state=installed
+  with_items:
+    - vnstat
+
+- name: put the config file in place
+  template: src=vnstat.conf.j2 
+            dest=/etc/vnstat.conf 
+            mode=0744 
+            owner=root 
+            group=root
+
+- name: get facts if not present
+  xsce_facts:
+  when: xsce_wan_iface is not defined
+
+- name: create database for wan to collect vnstat data
+  shell: /usr/bin/vnstat -i {{ xsce_wan_iface }}
+
+- name: create database for lan to collect vnstat data if not appliace config
+  shell: /usr/bin/vnstat -i {{ xsce_lan_iface }}
+  when: not xsce_lan_iface == ""
+
+- name: start vnstat daemon via systemd
+  service: name=vnstat enabled=yes state=started
+
+

@@ -1,0 +1,16 @@
+- name: Set hostname
+  template: backup=yes
+            dest=/etc/hostname
+            src=hostname.j2
+            owner=root
+            mode=0644
+
+- name: Install xsce-release and xsce-extra repos
+  get_url: url={{ item }} dest=/etc/yum.repos.d/
+  tags:
+    - download
+  with_items:
+    - http://download.unleashkids.org/xsce/repos/xsce-release.repo
+    - http://download.unleashkids.org/xsce/repos/xsce-extra.repo
+    - http://download.unleashkids.org/xsce/repos/xsce-testing.repo
+    

@@ -1,0 +1,4 @@
+dependencies:
+    - { role: openvpn, tags: ['options','openvpn'], when: openvpn_install }
+    - { role: samba, tags: ['services','samba','options'], when: samba_install }
+

@@ -1,0 +1,98 @@
+- name: XO Server specific tasks
+  command: echo Starting XO.yml
+  
+- name: Disable sleep
+  command: touch /etc/powerd/flags/inhibit-suspend
+           creates=/etc/powerd/flags/inhibit-suspend
+
+- name: Disable sleep on lid closing
+  lineinfile: backup=yes
+              dest=/etc/powerd/powerd.conf
+              regexp='^config_SLEEP_WHEN_LID_CLOSED' 
+              line='config_SLEEP_WHEN_LID_CLOSED="no"'
+              state=present
+              backup=yes
+
+- name: Keep yum cache
+  ini_file: dest=/etc/yum.conf
+            section=main
+            option=keepcache
+            value=1
+
+- name: Keep docs when installing packages
+  lineinfile: backup=yes
+              dest=/etc/rpm/macros.imgcreate
+              regexp='^%_excludedocs'
+              line='%_excludedocs 0'
+              state=present
+
+- name: pre(re)-Install packages
+  yum: name={{ item }}
+       state=latest
+  with_items:
+   - usbmount
+   - man
+   - man-db
+   - man-pages
+
+- name: Configure networkmanager plugin
+  ini_file: dest=/etc/NetworkManager/NetworkManager.conf
+            section=main
+            option=plugins
+            value=ifcfg-rh,keyfile
+
+- name: Change failure and interval settings for modem connection
+  ini_file: dest=/etc/NetworkManager/system-connections/"Sugar Modem Connection"
+            section=ppp
+            option={{ item.option }}
+            value={{ item.value }}
+            backup=yes
+            mode=0600
+  with_items:
+     - { option: 'lcp-echo-failure', value: '5' }
+     - { option: 'lcp-echo-interval', value: '30' }
+
+- name: Create bigger rwtab
+  lineinfile: backup=yes
+              dest=/etc/sysconfig/readonly-root
+              regexp='^RW_OPTIONS'
+              line='RW_OPTIONS="-o size=4M -o nr_inodes=2048"'
+              state=present
+
+- name: Remove dhcpd entry from /etc/rwtab
+  lineinfile: backup=yes
+              dest=/etc/rwtab
+              regexp='^empty.*/var/lib/dhcpd'
+              state=absent
+
+- name: Persist /etc/hosts between reboots
+  lineinfile: backup=yes
+              dest=/etc/statetab.d/olpc
+              regexp='^/etc/hosts'
+              state=absent
+
+
+- name: Disable /var/log tmpfs 
+  lineinfile: backup=yes
+              dest=/etc/fstab
+              regexp='^varlog.*'
+              state=absent
+
+- name: Disable graphical login
+  file: path=/etc/systemd/system/default.target
+        src=/lib/systemd/system/multi-user.target
+        state=link
+  register: disabled_login
+
+- name: Remove custom profile settings
+  file: path=/etc/profile.d/zzz_olpc.sh
+        state=absent
+
+- name: Reboot system 
+  command: /sbin/reboot 
+  when: disabled_login.changed
+  ignore_errors: yes
+  async: 300
+  poll: 120
+ 
+

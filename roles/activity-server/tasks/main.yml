@@ -1,18 +1,72 @@
-- name: Install xs-activity-server package
-  yum: name=xs-activity-server
-       state=present
-  tags:
-    - download
-       
 # assume apache in admin group
 
-- name: Config xs-activity-server directory tree
-  file: path=/library/xs-activity-server
+- name: Create xs-activity-server directory tree
+  file: path={{ item }}
         mode=0755
         owner=root
         group=admin
+        state=directory
+  with_items:
+    - /library/xs-activity-server
+    - /library/xs-activity-server/activities
+    - /library/xs-activity-server/lang_templates
+    - /library/xs-activity-server/www.0
+    - /library/xs-activity-server/tmp
+    
+# Wish synchronize worked, but it doesn't
+                
+- name: Copy language templates        
+  command: rsync -a roles/activity-server/files/lang_templates /library/xs-activity-server/
+  
+- name: Copy default index files   
+  copy: src={{ item }}
+        dest=/library/xs-activity-server/www.0
+        mode=0755
+        owner=root
+        group=root
+  with_fileglob:
+        - www.0/index.html.*        
+        
+- name: Point www to www.0 as default
+  file: src=/library/xs-activity-server/www.0
+        dest=/library/xs-activity-server/www        
+        owner=root
+        group=admin
+        state=link       
+  
+- name: Chown language templates  
+  file: path=/library/xs-activity-server/lang_templates
+        mode=0644
+        owner=root
+        group=admin
+        state=directory
         recurse=yes
-        state=directory        
+
+# We should have a var for python site-packages directory
+
+- name: Create xs-activity-server python site-packages directory
+  file: path=/usr/lib/python2.7/site-packages/xs_activities
+        mode=0755
+        owner=root
+        group=root
+        state=directory  
+    
+- name: Install Python module
+  copy: src=xs_activities/__init__.py
+        dest=/usr/lib/python2.7/site-packages/xs_activities
+        mode=0644
+        owner=root
+        group=root
+
+- name: Copy scripts to /usr/bin   
+  copy: src={{ item }}
+        dest=/usr/bin
+        mode=0755
+        owner=root
+        group=root
+  with_items:
+        - bin/xs-regenerate-activities
+        - bin/xs-check-activities
 
 # Do in ansible what was done in /etc/sysconfig/olpc-scripts/setup.d/xs-activity-server script
 
@@ -23,18 +77,15 @@
             group=root
             mode=0644
 
-- name: Link xs-activity-server usbmount file
-  file: src=/usr/share/xs-activity-server/usbmount-60-xs-activity-server-installcontent
-        dest=/etc/usbmount/mount.d/usbmount-60-xs-activity-server-installcontent
+- name: Copy xs-activity-server usbmount file
+  template: src=usbmount-60-xs-activity-server-installcontent
+        dest=/etc/usbmount/mount.d/
         owner=root
         group=root
-        state=link
+        mode=0755
 
-# TODO: Fix .var multiview
-#       For now patch it
-
-- name: Link default html to generic
-  shell: ln -sf /library/xs-activity-server/activities/index.html.DEFAULT /library/xs-activity-server/activities/index.html
+# TODO: Fix multiview so it supports portal language menu
+#       For it only supports client's language code
 
 # TODO: Upload Activity via web interface
 #       and figure out what to do with olpc_activities.service 

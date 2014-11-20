@@ -2,7 +2,7 @@
 :PREROUTING ACCEPT [0:0]
 :POSTROUTING ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
-{% if squid == "True" %}
+{% if squid_enabled == "True" %}
 -t nat  -A PREROUTING -i $lan -p tcp --dport 80 ! -d {{lan_ip}} -j DNAT --to {{lan_ip}}:3128
 {% endif %}
 -A POSTROUTING -o {{xsce_wan_iface}} -j MASQUERADE
