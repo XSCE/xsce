@@ -38,6 +38,7 @@
    - bash
    - iptables
    - NetworkManager
+   - vim-minimal # ejabberd erlang does not update this properly
   tags:
     - download
 
