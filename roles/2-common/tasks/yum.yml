@@ -28,7 +28,6 @@
    - yum-utils
    - tar
    - unzip
-   - bash
   tags:
     - download
 
@@ -36,6 +35,7 @@
   yum: name={{ item }}
        state=latest
   with_items:
+   - bash
    - iptables
    - NetworkManager
   tags:
