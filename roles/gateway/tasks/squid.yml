@@ -51,7 +51,11 @@
       owner: 'dansguardian'
       group: 'dansguardian'
       mode: '0640'
-    
+     -src: 'squid/xs-httpcache.j2'
+      dest: '/usr/bin/xs-httpcache'
+      owner: 'root'
+      group: 'root'
+      mode: '0755'
 
 - name: Create squid cache directory
   file: path=/library/cache
@@ -90,8 +94,6 @@
            enabled=no
            state=stopped
   when: not dansguardian_enabled
-
-
  
 - name: Create xs_httpcache flag
   shell: echo 1 > /etc/sysconfig/xs_httpcache_on
