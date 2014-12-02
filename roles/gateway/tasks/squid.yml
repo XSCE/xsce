@@ -51,7 +51,7 @@
       owner: 'dansguardian'
       group: 'dansguardian'
       mode: '0640'
-     -src: 'squid/xs-httpcache.j2'
+    - src: 'squid/xs-httpcache.j2'
       dest: '/usr/bin/xs-httpcache'
       owner: 'root'
       group: 'root'
