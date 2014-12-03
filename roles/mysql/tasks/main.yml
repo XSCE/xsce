@@ -13,12 +13,13 @@
         - php-xml
         - php-xmlrpc
 
-# for various reasons the mysql service can not be enabled,
-# but mariadb, which is its real name can 
-    - name: Start the MySQL service
-      service: name=mariadb state=started enabled=yes
-      when: mysql_enabled
+# Name of mysql service varies by OS so softcoded in 1-prep
 
+    - name: Start the MySQL service    
+      service: name={{ mysql_service }} 
+               state=started 
+               enabled=yes
+                     
 # 'localhost' needs to be the last item for idempotency, see
 # http://ansible.cc/docs/modules.html#mysql-user
 # unfortunately it still doesn't work
