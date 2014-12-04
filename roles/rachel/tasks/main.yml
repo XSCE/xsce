@@ -1,0 +1,35 @@
+- name: Create link to rachel from doc root
+  file: src={{ rachel_content_path }}
+        dest={{ rachel_doc_root }}       
+        owner=root
+        group=admin
+        state=link 
+
+- name: Create link to rachel mysql db from mysql data dir
+  file: src={{ rachel_mysqldb_path }}
+        dest=/var/lib/mysql/sphider       
+        owner=root
+        group=admin
+        state=link         
+
+- name: Restart mysqld service
+  service: name={{ mysql_service }}
+           state=restarted
+
+# To Do - softcode mysql password
+
+# fix up rachel files to use our location
+- name: Add rachel_url to url in header template
+  template: src=header.html
+            dest={{ rachel_content_path }}/sphider/templates/standard/header.html
+            owner=apache
+            group=apache
+            mode=0644
+            
+- name: Add rachel_url to url in footer template
+  template: src=footer.html
+            dest={{ rachel_content_path }}/sphider/templates/standard/footer.html
+            owner=apache
+            group=apache
+            mode=0644
+                                                
