@@ -24,4 +24,21 @@
 
 # Put all computed vars here so derive properly from any prior var file
 
+- name: Turn on mysql if elgg or rachel enabled
+  set_fact:
+    mysql_enabled: True
+  when: elgg_enabled or rachel_enabled
+
+# for various reasons the mysql service can not be enabled on fedora 20,
+# but 'mariadb', which is its real name can
+# on fedora 18 we need to use 'mysqld'
+      
+- name: Set mysqld service name to mariadb by default
+  set_fact:
+    mysql_service: mariadb
+    
+- name: Set mysqld service name to mysqld for fedora 18
+  set_fact:
+    mysql_service: mysqld    
+  when: ansible_distribution_release == "based on Fedora 18"
                   
