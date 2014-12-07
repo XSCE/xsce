@@ -12,8 +12,9 @@ yum_packages_dir: "{{ xsce_base }}/yum-packages"
 downloads_dir: "{{ xsce_base }}/downloads"
 xsce_download_url: download.unleashkids.org/xsce/downloads
 
-#Services
-service_filelist: /etc/sysconfig/xs_installed_services
+#Configuration File(s)
+xsce_config_file: /etc/xsce/xsce.ini
+service_filelist: {{ xsce_config_file }}
 
 # The following two variables control OFFLINE installs
 use_cache: False # force cache use even when online
@@ -121,8 +122,9 @@ pathagar_install: False
 pathagar_enabled: False
 
 # RACHEL
-rachel_install: False
+rachel_install: True
 rachel_enabled: False
+rachel_content_found: False
 
 # 8-MGMT-TOOLS
 
@@ -175,7 +177,7 @@ xovis_chart_heading: "My School: Usage Data Visualization"
 openvpn_enabled: True
 samba_enabled: True
 elgg_enabled: True
-mysql_enabled: True
+#mysql_enabled: True
 moodle_enabled: True
 ajenti_enabled: True
 munin_enabled: True

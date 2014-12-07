@@ -5,4 +5,4 @@ rachel_mysqldb_path: /library/rachel/bin/mysql/data/sphider
 
 rachel_install: True
 rachel_enabled: False
-
+rachel_content_found: False
