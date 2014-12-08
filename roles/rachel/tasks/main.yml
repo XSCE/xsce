@@ -1,5 +1,5 @@
 - name: See if rachel content is installed
-  stat: path="{{ rachel_content_path }}/index.html
+  stat: path="{{ rachel_content_path }}/index.html"
   register: rachel_content
   
 - name: Set rachel_content_found  
