@@ -4,21 +4,6 @@
             owner=root
             mode=0644
             backup=yes
-
-- name: Create /etc/xsce
-  file: path=/etc/xsce
-        owner=root
-        group=root
-        mode=0755
-        state=directory
-
-- name: Create xsce.conf file
-  template: backup=yes
-            src=xsce.conf.j2
-            dest=/etc/xsce/xsce.conf
-            owner=root
-            group=root
-            mode=0644
                     
 - name: Create /library
   file: path=/library
