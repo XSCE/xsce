@@ -36,4 +36,17 @@
 - name: Restart httpd service
   service: name=httpd
            state=restarted
+
+- name: add rachel to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=rachel
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: RACHEL
+    - option: description
+      value: 'RACHEL is a curation of important resources available on the web'
+    - option: path
+      value: /rachel
                                                                 
