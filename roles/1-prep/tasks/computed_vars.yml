@@ -15,7 +15,11 @@
             group=root
             mode=0644
 
-- name: Create xsce config file and add version section
+# workaround for fact that auto create does not work on ini_file
+- name: Create xsce config file
+  touch: dest='{{ xsce_config_file }}'
+  
+- name: add version section
   ini_file: dest='{{ xsce_config_file }}'
             backup=yes
             section=version
