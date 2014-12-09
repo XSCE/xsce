@@ -46,7 +46,7 @@
     - option: name
       value: RACHEL
     - option: description
-      value: 'RACHEL is a curation of important resources available on the web'
+      value: '"RACHEL is a curation of important resources available on the web"'
     - option: path
       value: /rachel
                                                                 
