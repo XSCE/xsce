@@ -1,10 +1,15 @@
 - name: See if rachel content is installed
   stat: path="{{ rachel_content_path }}/index.html"
   register: rachel_content
-  
-- name: Set rachel_content_found  
+
+- name: Set rachel_content_found to False
   set_fact:
-     rachel_content_found: '{{ rachel_content.stat.exists }}'     
+     rachel_content_found: False
+
+- name: Set rachel_content_found True if found
+  set_fact:
+     rachel_content_found: True
+  when: rachel_content.stat.exists  == true  
   
 - include: rachel_enabled.yml
   when: rachel_enabled and rachel_content_found                                             
