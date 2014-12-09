@@ -180,6 +180,7 @@ xovis_chart_heading: "My School: Usage Data Visualization"
 
 openvpn_enabled: True
 samba_enabled: True
+rachel_enabled: True
 elgg_enabled: True
 #mysql_enabled: True
 moodle_enabled: True
