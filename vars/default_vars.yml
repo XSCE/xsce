@@ -64,7 +64,7 @@ xsce_lan_iface: auto
 #Gateway and Filters
 xsce_gateway_enabled: True
 squid_enabled: True
-dansguardian_enabled: False
+dansguardian_enabled: True
 gw_squid_whitelist: False
 gw_block_https: False
 
