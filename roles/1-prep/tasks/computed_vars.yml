@@ -7,6 +7,7 @@
         mode=0755
         state=directory
 
+# this script can be sourced to get xsce location
 - name: Create xsce.env file
   template: backup=yes
             src=xsce.env.j2
@@ -14,6 +15,24 @@
             owner=root
             group=root
             mode=0644
+
+- name: create ansible.d facts directory
+  file: path=/etc/ansible/facts.d
+        owner=root
+        group=root
+        mode=0750
+        state=directory
+
+- name: local facts script
+  template: backup=yes
+            src=local_facts.fact.j2
+            dest=/etc/ansible/facts.d/local_facts.fact
+            owner=root
+            group=root
+            mode=0700
+
+- name: re-read facts
+  setup: filter=ansible_local
 
 # workaround for fact that auto create does not work on ini_file
 - name: Create xsce config file
@@ -44,24 +63,6 @@
       value: '{{ xsce_base }}'      
     - option: 'xsce_dir'
       value: '{{ xsce_dir }}'  
-      
-- name: create ansible.d facts directory
-  file: path=/etc/ansible/facts.d
-        owner=root
-        group=root
-        mode=0750
-        state=directory
-
-- name: local facts script
-  template: backup=yes
-            src=local_facts.fact.j2
-            dest=/etc/ansible/facts.d/local_facts.fact
-            owner=root
-            group=root
-            mode=0700
-
-- name: re-read facts
-  setup: filter=ansible_local
 
 # set top level variables from local facts for convenience
 - set_fact:
