@@ -26,7 +26,7 @@ import yaml
 import re
 
 # Config Files
-xsce_config_file = "/etc/xsce/xsce.conf"
+xsce_config_file = "/etc/xsce/xsce.env"
 xsce_cmdsrv_config_file = "/etc/xsce/cmdsrv.conf"
 
 # Variables that should be read from config file

@@ -1,5 +1,21 @@
 # get local vars from scripts in /etc/ansible/facts.d
 
+- name: Create /etc/xsce
+  file: path=/etc/xsce
+        owner=root
+        group=root
+        mode=0755
+        state=directory
+
+# this script can be sourced to get xsce location
+- name: Create xsce.env file
+  template: backup=yes
+            src=xsce.env.j2
+            dest=/etc/xsce/xsce.env
+            owner=root
+            group=root
+            mode=0644
+
 - name: create ansible.d facts directory
   file: path=/etc/ansible/facts.d
         owner=root
@@ -17,6 +33,36 @@
 
 - name: re-read facts
   setup: filter=ansible_local
+
+# workaround for fact that auto create does not work on ini_file
+- name: Create xsce config file
+  file: dest='{{ xsce_config_file }}'
+        state=touch        
+  
+- name: add version section
+  ini_file: dest='{{ xsce_config_file }}'
+            backup=yes
+            section=version
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: 'xsce_branch'
+      value: '{{ ansible_local["local_facts"]["xsce_branch"] }}'
+    - option: 'xsce_commit'
+      value: '{{ ansible_local["local_facts"]["xsce_commit"] }}'      
+    - option: 'install_date'
+      value: '{{ ansible_date_time["iso8601"] }}'
+      
+- name: Add location section to config file
+  ini_file: dest='{{ xsce_config_file }}'
+            section=location
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: 'xsce_base'
+      value: '{{ xsce_base }}'      
+    - option: 'xsce_dir'
+      value: '{{ xsce_dir }}'  
 
 # set top level variables from local facts for convenience
 - set_fact:

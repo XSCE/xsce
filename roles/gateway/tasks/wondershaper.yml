@@ -19,13 +19,6 @@
         mode=0755
         state=directory
 
-- name: create ansible.d facts directory
-  file: path=/etc/ansible/facts.d
-        owner=root
-        group=root
-        mode=0750
-        state=directory
-
 - name: copy wshaper config script
   template: backup=yes
             src=wondershaper/wondershaper.conf

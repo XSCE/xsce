@@ -1,4 +1,8 @@
 #!/bin/sh
+. /etc/xsce/xsce.env
+cd $XSCE_DIR
+BRANCH=`git rev-parse --abbrev-ref HEAD`
+COMMIT=`git rev-parse --verify HEAD`
 
 if [ -d /usr/lib64/php ]
 then
@@ -8,5 +12,7 @@ else
 fi
 
 cat <<EOF
-{"phplib_dir" : "$PHPLIB_DIR"}
+{"phplib_dir" : "$PHPLIB_DIR",
+"xsce_branch" : "$BRANCH",
+"xsce_commit" : "$COMMIT"}
 EOF
