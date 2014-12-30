@@ -6,7 +6,6 @@
              dest="{{ xsce_base }}"
              owner=root
              group=root
-             copy=no
 
 # workaround because unarchive does not set ownership properly
 - name: Set kiwix ownership
