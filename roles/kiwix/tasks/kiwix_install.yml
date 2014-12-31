@@ -1,0 +1,74 @@
+- name: Get the kiwix software 
+  get_url: url="http://{{ xsce_download_url }}/{{ kiwix_src_file }}"  dest="{{ downloads_dir }}/{{ kiwix_src_file }}"
+
+- name: Unarchive it to permanent location
+  unarchive: src="{{ downloads_dir }}/{{ kiwix_src_file }}"  
+             dest="{{ xsce_base }}"
+             owner=root
+             group=root
+
+# workaround because unarchive does not set ownership properly
+- name: Set kiwix ownership
+  command: "chown -R root:root {{ xsce_base }}"
+  
+- name: Create /library/zims home for zim file
+  file: path=/library/zims
+        owner=root
+        group=root
+        mode=0755
+        state=directory
+
+- name: Create kiwix library file
+  file: dest='{{ kiwix_library_xml }}'
+        state=touch    
+                
+# Create kiwix service
+
+- name: Create kiwix-serve service
+  template: backup=yes
+            src={{ item.src }}
+            dest={{ item.dest }}
+            owner=root
+            group=root
+            mode={{ item.mode }}
+  with_items:    
+    - { src: 'kiwix-serve.service.j2', dest: '/etc/systemd/system/kiwix-serve.service', mode: '0655'}
+    
+#    - { src: 'kiwix-serve-init.j2', dest: '/usr/libexec/kiwix-serve-init', mode: '0755'}
+
+- name: add kiwix to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=kiwix-serve
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: kiwix-serve
+    - option: description
+      value: '"kiwix-serve is a web server for zim files"'
+    - option: kiwix_url
+      value: "{{ kiwix_url }}"
+    - option: kiwix_path
+      value: "{{ kiwix_path }}"      
+    - option: kiwix_port
+      value: "{{ kiwix_port }}"
+    - option: xsce_zim_path
+      value: "{{ xsce_zim_path }}"            
+    - option: kiwix_library_xml
+      value: "{{ kiwix_library_xml }}"      
+    - option: kiwix_content_path
+      value: "{{ kiwix_content_path }}"      
+
+- name: Copy xsce-make-kiwix-lib to /usr/bin
+  copy: src=xsce-make-kiwix-lib
+        dest=/usr/bin/xsce-make-kiwix-lib
+        mode=0755
+        owner=root
+        group=root  
+
+- name: Enable kiwix-serve service
+  service: name=kiwix-serve 
+           enabled=yes
+           state=restarted           
+  when: kiwix-serve_enabled
+             

@@ -28,6 +28,7 @@
    - yum-utils
    - tar
    - unzip
+   - bzip2
   tags:
     - download
 
