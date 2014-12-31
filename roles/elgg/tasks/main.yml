@@ -1,8 +1,8 @@
-- name: Get the ELGG software 
-  get_url: url=http://download.unleashkids.org/xsce/downloads/{{ elgg_xx }}.zip  dest=/tmp/{{ elgg_xx }}.zip 
+ name: Get the ELGG software 
+  get_url: url=http://download.unleashkids.org/xsce/downloads/{{ elgg_xx }}.zip  dest={{ downloads_dir}}/{{ elgg_xx }}.zip 
 
 - name: Copy it to permanent location /opt
-  unarchive: src=/tmp/{{ elgg_xx }}.zip  dest=/opt/ 
+  unarchive: src={{ downloads_dir}}/{{ elgg_xx }}.zip  dest=/opt/ 
 
 - name: Create a symbolic link to the folder of the current version elgg_xx
   file: path=/opt/elgg src=./{{ elgg_xx }} state=link
