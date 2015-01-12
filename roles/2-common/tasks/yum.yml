@@ -26,8 +26,21 @@
    - etckeeper
    - make
    - yum-utils
+   - htop
+   - wget
+   - net-tools 
+   - tmux
+   - vim
   tags:
     - download
+
+- name: Install packages for xs-activations
+  yum: name={{ item }}
+       state=present
+  with_items:
+   - xs-activation
+   - mod_python
+   - olpc-bios-crypto
 
 - name: Update common packages
   yum: name={{ item }}
