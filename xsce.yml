@@ -2,8 +2,8 @@
 - hosts: all
   sudo: yes
   vars:
-    - xsce_hostname: schoolserver
-    - xsce_domain: lan
+    - xsce_hostname: xsce
+    - xsce_domain: fundacionzt.org
   vars_files:
   - vars/default_vars.yml
   - vars/local_vars.yml
