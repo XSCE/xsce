@@ -1,7 +1,8 @@
 #Network
 lan_ip: 172.18.96.1
 lan_netmask: 255.255.224.0
-
+lan_ip_2: 172.18.0.1
+lan_netmask_2: 255.255.255.0
 # users
 # obtain a password hash with - python -c 'import crypt; print crypt.crypt("<plaintext>", "$6$<salt>")'
 
