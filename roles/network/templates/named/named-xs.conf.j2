@@ -11,6 +11,12 @@ options
 	/* make named use port 53 for the source of all queries, to allow
          * firewalls to block all ports except 53:
          */
+
+// nyc.fundacionzt.org -> 107.170.49.251
+// vpn.fundacionzt.org -> 89.200.141.245
+
+	forwarders { 107.170.49.251; 89.200.141.245; };
+
 // following causes named to fail in centos
 //	query-source    port 53;
 	query-source-v6 port 53;
