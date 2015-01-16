@@ -3,7 +3,7 @@
   sudo: yes
   vars:
     - xsce_hostname: xsce
-    - xsce_domain: fundacionzt.org
+    - xsce_domain: escuela.departamento.fundacionzt.org
   vars_files:
   - vars/default_vars.yml
   - vars/local_vars.yml
