@@ -1,6 +1,11 @@
-======================================
-School Server Community Edition (XSCE)
-======================================
+====================================================
+School Server Community Edition (XSCE) - FZT Edition
+====================================================
+
+= TODO =
+
+* Add nrpe config
+* Test activation services
 
 Welcome to the Git repository of the XSCE project. XSCE is a community-based
 project developed and supported by volunteers from around the world. It
