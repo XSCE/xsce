@@ -37,10 +37,10 @@ language_priority: en es
 
 # Roles
 #
-samba_enabled : true
+samba_enabled : false
 # for role openvpn:
 vpn_presence: unleashkids.org
-openvpn_install: true
+openvpn_install: false
 openvpn_enable: false
 
 #Network variables
