@@ -41,7 +41,7 @@ $IPTABLES -A INPUT -p udp --dport 5353 -d 224.0.0.251 -j ACCEPT
     # FZT: Permitir conexiones a nagios
     $IPTABLES -A INPUT -m state --state NEW -m tcp -p tcp --dport 5666 -j ACCEPT
 
-    #We always run as gateway 
+    # We always run as gateway - FZT change ssh default port
     $IPTABLES -A INPUT -p tcp --dport 8222 -m state --state NEW -i $wan -j ACCEPT
 
     $IPTABLES -A POSTROUTING -t nat -o $wan -j MASQUERADE
@@ -62,7 +62,7 @@ fi
     $IPTABLES -A FORWARD -i $wan -o $lan -j DROP
     $IPTABLES -A INPUT -i $wan -j DROP
 if [ -f /etc/sysconfig/xs_httpcache_on ]; then
-#    $IPTABLES  -t nat  -A PREROUTING -i $lan -p tcp --dport 80 ! -d 172.18.96.1 -j DNAT --to 172.18.96.1:3128
+#   $IPTABLES  -t nat  -A PREROUTING -i $lan -p tcp --dport 80 ! -d 172.18.96.1 -j DNAT --to 172.18.96.1:3128
     $IPTABLES  -t nat  -A PREROUTING -i $lan -p tcp --dport 80 ! -s 172.18.125.0/24 -j DNAT --to 172.18.96.1:3128
 fi
 
