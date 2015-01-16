@@ -8,14 +8,10 @@ option domain-name "{{ xsce_domain }}";
 option domain-name-servers      172.18.96.1;
 option ntp-servers		172.18.96.1;
 
-class "xo1"{
-       match if (substring(hardware,1,3)=00:17:c4);
-}
-class "xo15"{
-       match if (substring(hardware,1,3)=20:7c:8f);
-}
-class "xo175"{
-       match if (substring(hardware,1,3)=68:a3:c4);
+class "xo" {
+        match if substring(hardware,1,3)=00:17:c4
+              or substring(hardware,1,3)=20:7c:8f
+              or substring(hardware,1,3)=68:a3:c4;
 }
 
 subnet 172.18.96.0 netmask 255.255.224.0 {
@@ -34,25 +30,33 @@ subnet 172.18.96.0 netmask 255.255.224.0 {
 	
         # As this subnet is wired or wifi a/b/g, these lease 
 	#    times are on the long side
-
+	
+	# Rango para las XO
 	pool {
 		range 172.18.96.2 172.18.123.254;
-		allow members of "xo1";
-		allow members of "xo15";
-		allow members of "xo175";
+		allow members of "xo";
 	}
+	# Rango para dispositivos no XO
 	pool {
 		range 172.18.125.1 172.18.125.254;
-		deny members of "xo1";
-		deny members of "xo15";
-		deny members of "xo175";
-	}	
+		deny members of "xo";
+	}
+	# Equipos con IP reservada por MAC
+	host titan {
+		hardware ethernet 9c:d9:17:c4:50:c3;
+		fixed-address 172.18.124.10;
+	}
+	# Equipos con IP reservada por MAC
+	host tecra {
+		hardware ethernet 00:27:10:94:8e:44;
+		fixed-address 172.18.124.20;
+	}
+	# Equipos con IP reservada por MAC
+	# host dispositivoX {
+	# 	hardware ethernet 00:00:00:ff:ff:ff;
+	#	fixed-address 172.18.124.30;
+	# }
 
 	default-lease-time 	10800;
 	max-lease-time 		21600;
-
-	host titan { 
-		hardware ethernet 9c:d9:17:c4:50:c3;
-		fixed-address 172.18.124.10; 
-	}
 }
