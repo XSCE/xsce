@@ -107,6 +107,10 @@ mysql_root_password: fixmysql
 # elgg_mysql_password: $6$xsce51$jeTwnATcbaa92xo0QBTgjLBU.5aVDDrbKeNyyC99R/TAWz6pvfzj.L7lfnOVVjD78nxqT.gkNn6XZmuRV0W3o1
 elgg_mysql_password: elgg4kids
 
+# OwnCloud
+owncloud_install: True
+owncloud_enabled: False
+
 # 7-EDU-APPS
 
 # Moodle
