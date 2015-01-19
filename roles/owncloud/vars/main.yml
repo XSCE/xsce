@@ -1,0 +1,4 @@
+owncloud_install: True
+owncloud_enabled: False
+owncloud_data_dir: /library/owncloud/data
+

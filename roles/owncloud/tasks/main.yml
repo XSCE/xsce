@@ -1,0 +1,47 @@
+- name: Install owncloud package
+  yum: pkg={{ item }} state=installed
+  with_items:
+  - owncloud
+
+- name: Create data directory library
+  file: path={{ item }}
+        mode=0750
+        owner=apache
+        group=apache
+        state=directory
+  with_items:
+    - "{{ owncloud_data_dir }}"
+
+- name: Add autoconfig file
+  template: src=autoconfig.php.j2
+            dest=/etc/owncloud/autoconfig.php
+            owner=apache
+            group=apache
+            mode=0640
+    
+- name: Remove httpd conf file in case we are now disabled
+  file: path=/etc/httpd/conf.d/owncloud.conf
+        state=absent
+
+# Enable owncloud by copying template to httpd config
+ 
+- include: owncloud_enabled.yml
+  when: owncloud_enabled        
+
+- name: Add owncloud to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=owncloud
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: owncloud
+    - option: description
+      value: '"OwnCloud is a local server-based facility for sharing files, photos, contacts, calendars, etc."'      
+    - option: path
+      value: /usr/share/owncloud
+    - option: enabled
+      value: "{{ owncloud_enabled }}"  
+
+- name: Restart apache, so it picks up the new aliases
+  service: name=httpd state=restarted  
