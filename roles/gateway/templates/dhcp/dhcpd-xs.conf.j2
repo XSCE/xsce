@@ -11,6 +11,7 @@ option ntp-servers		172.18.96.1;
 class "xo" {
         match if substring(hardware,1,3)=00:17:c4
               or substring(hardware,1,3)=20:7c:8f
+              or substring(hardware,1,3)=20:68:9d
               or substring(hardware,1,3)=68:a3:c4;
 }
 
