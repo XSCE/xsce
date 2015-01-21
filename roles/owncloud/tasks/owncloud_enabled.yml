@@ -1,0 +1,6 @@
+- name: Enable owncloud by copying template to httpd config
+  template: src=owncloud.conf.j2
+            dest=/etc/httpd/conf.d/owncloud.conf
+            owner=root
+            group=root
+            mode=0644
