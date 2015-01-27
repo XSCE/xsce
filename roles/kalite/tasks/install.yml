@@ -8,7 +8,6 @@
 - name: Download the latest kalite repo
   git: repo={{ kalite_repo_url }}
        dest={{ downloads_dir }}/ka-lite
-       recursive=yes
        depth=1
 
 - name: Create xsce-kalite user and password
