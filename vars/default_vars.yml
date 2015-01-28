@@ -138,6 +138,17 @@ rachel_mysqldb_path: /library/rachel/bin/mysql/data/sphider
 kiwix_install: True
 kiwix-serve_enabled: False
 
+# KA Lite
+kalite_install: True
+kalite_root: "/library/ka-lite"
+kalite_user: kalite
+kalite_password_hash: $6$<salt>$KHET0XRRsgAY.wOWyTOI3W7dyDh0ESOr48uI5vtk2xdzsU7aw0TF4ZkNuM34RmHBGMJ1fTCmOyVobo0LOhBlJ/
+kalite_password: kalite
+kalite_server_name: kalite
+kalite_server_port: 8008
+kalite_enabled: False
+kalite_cron_enabled: False
+
 # 8-MGMT-TOOLS
 
 # sugar-stats

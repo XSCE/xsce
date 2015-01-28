@@ -1,0 +1,8 @@
+- name: See if kalite is installed
+  stat: path="{{ kalite_root }}/kalite/database/data.sqlite"
+  register: kalite_installed
+  
+- include: install.yml
+  when: kalite_installed.stat.exists  != true
+  
+- include: enable.yml  
