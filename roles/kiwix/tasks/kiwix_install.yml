@@ -1,5 +1,5 @@
 - name: Get the kiwix software 
-  get_url: url="http://{{ xsce_download_url }}/{{ kiwix_src_file }}"  dest="{{ downloads_dir }}/{{ kiwix_src_file }}"
+  get_url: url="{{ xsce_download_url }}/{{ kiwix_src_file }}"  dest="{{ downloads_dir }}/{{ kiwix_src_file }}"
 
 - name: Unarchive it to permanent location
   unarchive: src="{{ downloads_dir }}/{{ kiwix_src_file }}"  

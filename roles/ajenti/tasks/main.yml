@@ -14,7 +14,7 @@
     - pkg: gcc
 
 - name: download ajenti from our repo 
-  pip: name=http://"{{ xsce_download_url }}"/ajenti-0.99.34-patched5.tar.gz
+  pip: name="{{ xsce_download_url }}"/ajenti-0.99.34-patched5.tar.gz
           extra_args="--download-cache={{ pip_packages_dir }}" 
   tags:
     - download

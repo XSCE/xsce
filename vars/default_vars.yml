@@ -10,7 +10,7 @@ xsce_dir: "{{ xsce_base }}/xsce"
 pip_packages_dir: "{{ xsce_base }}/pip-packages"
 yum_packages_dir: "{{ xsce_base }}/yum-packages"
 downloads_dir: "{{ xsce_base }}/downloads"
-xsce_download_url: download.unleashkids.org/xsce/downloads
+xsce_download_url: http://download.unleashkids.org/xsce/downloads
 
 #Configuration File(s)
 xsce_config_file: /etc/xsce/xsce.ini
