@@ -1,8 +1,36 @@
+# we need to install the rpm in order to get the dependencies
+
 - name: Install owncloud package
   yum: pkg={{ item }} state=installed
   with_items:
   - owncloud
 
+- name: Remove /etc/owncloud to avoid confusion as we use the config in {{ owncloud_path }}/config/
+  file: path=/etc/owncloud
+        state=absent
+
+# but we use the tar file to get the latest version; really only benefits the xo4 on fedora 18
+
+- name: Get the owncloud software 
+  get_url: url="{{ xsce_download_url }}"/{{ owncloud_src_file }}  dest={{ downloads_dir}}/{{ owncloud_src_file }}
+
+- name: Copy it to permanent location /opt
+  unarchive: src={{ downloads_dir}}/{{ owncloud_src_file}}  dest=/opt/ 
+
+- name: Add autoconfig file
+  template: src=autoconfig.php.j2
+            dest={{ owncloud_path }}/config/autoconfig.php
+            owner=apache
+            group=apache
+            mode=0640
+            
+- name: Make apache owner
+  file: path={{ owncloud_path }}
+        owner=apache
+        group=apache
+        recurse=yes
+        state=directory
+        
 - name: Create data directory library
   file: path={{ item }}
         mode=0750
@@ -11,13 +39,6 @@
         state=directory
   with_items:
     - "{{ owncloud_data_dir }}"
-
-- name: Add autoconfig file
-  template: src=autoconfig.php.j2
-            dest=/etc/owncloud/autoconfig.php
-            owner=apache
-            group=apache
-            mode=0640
     
 - name: Remove httpd conf file in case we are now disabled
   file: path=/etc/httpd/conf.d/owncloud.conf
@@ -39,7 +60,9 @@
     - option: description
       value: '"OwnCloud is a local server-based facility for sharing files, photos, contacts, calendars, etc."'      
     - option: path
-      value: /usr/share/owncloud
+      value: "{{ owncloud_path }}"
+    - option: source
+      value: "{{ owncloud_src_file }}"  
     - option: enabled
       value: "{{ owncloud_enabled }}"  
 
