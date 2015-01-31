@@ -85,6 +85,6 @@
     
 - name: Set mysqld service name to mysqld for fedora 18
   set_fact:
-    mysql_service: mysqld    
-  when: ansible_distribution_release == "based on Fedora 18"
-                  
+    mysql_service: mysqld
+  when: ansible_distribution_version == "18"
+
