@@ -1,6 +1,6 @@
-Alias /owncloud /usr/share/owncloud
+Alias /owncloud {{ owncloud_path }}
 
-<Directory /usr/share/owncloud/>
+<Directory {{ owncloud_path }}/>
     Options -Indexes
 
     <IfModule mod_authz_core.c>
