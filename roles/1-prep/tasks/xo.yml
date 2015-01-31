@@ -65,6 +65,12 @@
               regexp='^empty.*/var/lib/dhcpd'
               state=absent
 
+- name: Remove php entry from /etc/rwtab
+  lineinfile: backup=yes
+              dest=/etc/rwtab
+              regexp='^empty.*/var/lib/php'
+              state=absent
+
 - name: Persist /etc/hosts between reboots
   lineinfile: backup=yes
               dest=/etc/statetab.d/olpc
