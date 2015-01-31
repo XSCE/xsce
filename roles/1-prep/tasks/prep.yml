@@ -5,11 +5,16 @@
             owner=root
             mode=0644
 
-- name: Install xsce-release and xsce-extra repos
-  get_url: url={{ item }} dest=/etc/yum.repos.d/
-  tags:
-    - download
-  with_items:
-    - http://download.unleashkids.org/xsce/repos/xsce-release.repo
-    - http://download.unleashkids.org/xsce/repos/xsce-extra.repo
-    - http://download.unleashkids.org/xsce/repos/xsce-testing.repo
+- name: Install xsce-extra repos
+  template: backup=yes
+            dest=/etc/yum.repos.d/xsce-extra.repo
+            src=xsce-extra.repo
+            owner=root
+            mode=0666
+
+- name: Install xsce-extra repos
+  template: backup=yes
+            dest=/etc/yum.repos.d/xsce-testing.repo
+            src=xsce-testing.repo
+            owner=root
+            mode=0666
