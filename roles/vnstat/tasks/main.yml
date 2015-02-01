@@ -12,10 +12,6 @@
             owner=root 
             group=root
 
-- name: get facts if not present
-  xsce_facts:
-  when: xsce_wan_iface is not defined
-
 - name: create database for wan to collect vnstat data
   shell: /usr/bin/vnstat -i {{ xsce_wan_iface }}
 
@@ -25,5 +21,3 @@
 
 - name: start vnstat daemon via systemd
   service: name=vnstat enabled=yes state=started
-
-
