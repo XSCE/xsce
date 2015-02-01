@@ -68,6 +68,9 @@
 - set_fact:
      phplib_dir: '{{ ansible_local["local_facts"]["phplib_dir"] }}'
 
+- set_fact:
+     xo_model: '{{ ansible_local["local_facts"]["xo_model"] }}'
+
 # Put all computed vars here so derive properly from any prior var file
 
 - name: Turn on mysql if elgg or rachel enabled
