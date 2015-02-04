@@ -1,6 +1,7 @@
 #!/bin/sh
 . /etc/xsce/xsce.env
-cd $XSCE_DIR
+GIT_DIR=`pwd`
+cd $GIT_DIR
 
 # while we're here untrack local vars
 git update-index --assume-unchanged vars/local_vars.yml
@@ -8,6 +9,8 @@ git update-index --assume-unchanged vars/local_vars.yml
 # get current version
 BRANCH=`git rev-parse --abbrev-ref HEAD`
 COMMIT=`git rev-parse --verify HEAD`
+
+cd $XSCE_DIR
 
 if [ -d /usr/lib64/php ]
 then
