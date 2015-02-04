@@ -141,7 +141,8 @@ logformat squid  %ts.%03tu %6tr %>a %Ss/%03>Hs %<st %rm %ru %un %Sh/%<A %mt
 access_log /var/log/squid/access.log
 cache_log /var/log/squid/cache.log
 # log_mime_hdrs on
-log_access allow all
+# following squid verb log_access discontinued in current squid 150213 -gh
+#log_access allow all
 logfile_rotate 6
 client_db off
 strip_query_terms on
