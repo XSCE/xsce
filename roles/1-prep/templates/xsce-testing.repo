@@ -2,6 +2,6 @@
 name=xsce-testing
 failovermethod=priority
 baseurl=http://download.unleashkids.org/xsce/repos/xsce/testing
-enabled=0
+enabled=1
 metadata_expire=1m
 gpgcheck=0
