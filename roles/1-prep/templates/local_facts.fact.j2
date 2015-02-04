@@ -16,8 +16,16 @@ else
   PHPLIB_DIR=/usr/lib/php
 fi
 
+if [ -f /proc/device-tree/mfg-data/MN ]
+then
+  XO_VERSION=`cat /proc/device-tree/mfg-data/MN`
+else
+  XO_VERSION="none"
+fi
+
 cat <<EOF
 {"phplib_dir" : "$PHPLIB_DIR",
 "xsce_branch" : "$BRANCH",
-"xsce_commit" : "$COMMIT"}
+"xsce_commit" : "$COMMIT",
+"xo_model"    : "$XO_VERSION"
 EOF
