@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# if not the first run repo location is here
+if [ -f /etc/xsce/xsce.env ]
+then
+  . /etc/xsce/xsce.env
+  cd $XSCE_DIR
+fi
+
+# if not the first run we should not see the else
 if [ -f xsce.yml ]
 then
  PLAYBOOK="xsce.yml"
@@ -16,19 +24,27 @@ else
  fi
 fi
 
-#Domain change
+XSDOMAIN=""
+
+# Pass in Existing Domain
 if [ -f /etc/sysconfig/xs_domain_name ] 
 then
  XSDOMAIN=`cat /etc/sysconfig/xs_domain_name`
- ARGS="--extra-vars \"xsce_domain=$XSDOMAIN\""
 fi
 
+# Or accept Domain on command line
 if [ x"$1" != x ]
 then
  XSDOMAIN=$1
- ARGS="--extra-vars \"xsce_domain=$XSDOMAIN\""
 fi
 
+# Pass in git location
+if [ x"$XSDOMAIN" != x ]
+then
+ ARGS="--extra-vars '{\"xsce_dir\":\"$CWD\",\"xsce_domain\":\"$XSDOMAIN\"}'"
+else
+ ARGS="--extra-vars '{\"xsce_dir\":\"$CWD\"}'"
+fi
 
 if [ "$PLAYBOOK" == "" ]
 then
@@ -40,3 +56,8 @@ export ANSIBLE_LOG_PATH="xsce-install.log"
 ansible -m setup -i $INVENTORY localhost --connection=local >> /dev/null
 
 ansible-playbook -i $INVENTORY $PLAYBOOK ${ARGS} --connection=local 
+
+
+--extra-vars "xsce_dir=/opt/schoolserver/xsce xsce_domain=lan"
+
+--extra-vars '{"xsce_dir":"/opt/schoolserver/xsce","xsce_domain":"lan"}'
