@@ -1,28 +1,25 @@
 #!/bin/bash
 
 # if not the first run repo location is here
+
 if [ -f /etc/xsce/xsce.env ]
 then
   . /etc/xsce/xsce.env
   cd $XSCE_DIR
 fi
 
-# if not the first run we should not see the else
-if [ -f xsce.yml ]
+if [ ! -f xsce.yml ]
 then
- PLAYBOOK="xsce.yml"
- INVENTORY="ansible_hosts"
- CWD=`pwd`
- echo "Running local playbooks! "
-else
- if [ -f /var/local/xsce/xsce.yml ]
- then
- PLAYBOOK="/var/local/xsce/xsce.yml"
- INVENTORY="/var/local/xsce/ansible_hosts"
- CWD="/var/local/xsce"
- echo "Running rpm provided playbooks ! "
- fi
+ echo "XSCE Playbook not found."
+ echo "Please run this command from the top level of the git repo."
+ echo "Exiting."
+ exit
 fi
+
+PLAYBOOK="xsce.yml"
+INVENTORY="ansible_hosts"
+CWD=`pwd`
+echo "Running local playbooks! "
 
 XSDOMAIN=""
 
@@ -41,15 +38,9 @@ fi
 # Pass in git location
 if [ x"$XSDOMAIN" != x ]
 then
- ARGS="--extra-vars '{\"xsce_dir\":\"$CWD\",\"xsce_domain\":\"$XSDOMAIN\"}'"
+ ARGS="--extra-vars '{\"xsce_domain\":\"$XSDOMAIN\"}'"
 else
- ARGS="--extra-vars '{\"xsce_dir\":\"$CWD\"}'"
-fi
-
-if [ "$PLAYBOOK" == "" ]
-then
- echo "rpm is not installed, and local playbook wasn't found!"
- exit
+ ARGS="" 
 fi
 
 export ANSIBLE_LOG_PATH="xsce-install.log"

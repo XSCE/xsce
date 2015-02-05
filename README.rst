@@ -48,6 +48,15 @@ Or you can use the previous manual process by typing
 
 * './runansible'
 
+Please note that it is possible to clone the git repo into a different directory than the one
+recommended above.  If you do so, it will be necessary to edit vars/local_vars.yml and add the line
+
+xsce_dir: <full path to your git repo clone>
+
+prior to running ansible.  
+
+Relocating the git repo after running ansible will cause problems.
+
 If you want to explore and get dirty with the code, please read the ``HACKING``
 file. You would probably want to go through the `ansible documentation`_ before diving into the
 playbooks. Documentation for creating plugins for the server is under
