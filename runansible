@@ -56,8 +56,3 @@ export ANSIBLE_LOG_PATH="xsce-install.log"
 ansible -m setup -i $INVENTORY localhost --connection=local >> /dev/null
 
 ansible-playbook -i $INVENTORY $PLAYBOOK ${ARGS} --connection=local 
-
-
---extra-vars "xsce_dir=/opt/schoolserver/xsce xsce_domain=lan"
-
---extra-vars '{"xsce_dir":"/opt/schoolserver/xsce","xsce_domain":"lan"}'
