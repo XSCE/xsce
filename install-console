@@ -21,7 +21,7 @@ INVENTORY="ansible_hosts"
 SELINUX_BEFORE=""
 SELINUX_AFTER=""
 
-if [ -f /etc/selinux/config]
+if [ -f /etc/selinux/config ]
 then
  SELINUX_BEFORE=`cat /etc/selinux/config | gawk -F= '/^SELINUX=/{ print $2 }'`
 fi
@@ -29,7 +29,7 @@ fi
 export ANSIBLE_LOG_PATH="xsce-install.log"
 ansible-playbook -i $INVENTORY $PLAYBOOK --connection=local 
 
-if [ -f /etc/selinux/config]
+if [ -f /etc/selinux/config ]
 then
  SELINUX_AFTER=`cat /etc/selinux/config | gawk -F= '/^SELINUX=/{ print $2 }'`
 fi
