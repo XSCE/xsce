@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# if not the first run repo location is here
+# if not the first, run repo location is here
 
 if [ -f /etc/xsce/xsce.env ]
 then
