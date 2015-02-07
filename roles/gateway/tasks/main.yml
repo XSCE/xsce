@@ -33,30 +33,41 @@
     - { src: "gateway/iptables.service" , dest: "/etc/systemd/system/iptables.service" }
     - { src: "gateway/xs-gen-iptables" , dest: "/usr/bin/xs-gen-iptables" }
 
+- name: delete proxy flag
+  file: dest=/etc/sysconfig/xs_httpcache_on state=absent
+
 - include: dhcpd.yml
-  when: 'xsce_lan_iface != ""' 
+  when: xsce_lan_iface != ""
   tags:
     - dhcpd
     - gateway
 
 - include: squid.yml
-  when: 'xsce_lan_iface != ""'
+  when: xsce_lan_iface != "" and xsce_wan_iface != "none"
   tags:
     - squid
     - gateway
 
 - include: wondershaper.yml
-  when: 'xsce_lan_iface != ""'
+  when: xsce_lan_iface != "" and xsce_wan_iface != "none"
   tags:
     - wondershaper
     - gateway
 
 - name: Run iptables 
   command: /etc/sysconfig/iptables-config
+  when: xsce_wan_iface != "none"
 
 - name: Enable iptables service 
   service: name=iptables
            enabled=yes
+  when: xsce_wan_iface != "none"
+
+- name: Disable iptables service 
+  service: name=iptables
+           enabled=no
+           state=stopped
+  when: xsce_wan_iface == "none"
 
 - name: Create gateway flag
   shell: echo 1 > /etc/sysconfig/olpc-scripts/setup.d/installed/gateway
