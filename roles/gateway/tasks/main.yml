@@ -59,11 +59,6 @@
   service: name=iptables
            enabled=yes
 
-- name: Disable iptables service 
-  service: name=iptables
-           enabled=no
-           state=stopped
-
 - name: Create gateway flag
   shell: echo 1 > /etc/sysconfig/olpc-scripts/setup.d/installed/gateway
          creates=/etc/sysconfig/olpc-scripts/setup.d/installed/gateway
