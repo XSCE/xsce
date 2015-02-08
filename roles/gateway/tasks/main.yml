@@ -47,7 +47,6 @@
     - gateway
 
 - include: wondershaper.yml
-  when: xsce_lan_iface != "" and xsce_wan_iface != "none"
   tags:
     - wondershaper
     - gateway
