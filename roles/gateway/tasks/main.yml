@@ -37,7 +37,6 @@
   file: dest=/etc/sysconfig/xs_httpcache_on state=absent
 
 - include: dhcpd.yml
-  when: xsce_lan_iface != ""
   tags:
     - dhcpd
     - gateway

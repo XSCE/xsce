@@ -31,3 +31,11 @@
   service: name=dhcpd 
            enabled=yes
            state=restarted
+  when: xsce_lan_iface != ""
+
+- name: Disable dhcpd service
+  service: name=dhcpd 
+           enabled=no
+           state=stopped
+  when: xsce_lan_iface == ""
+
