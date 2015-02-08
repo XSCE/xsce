@@ -42,7 +42,6 @@
     - gateway
 
 - include: squid.yml
-  when: xsce_lan_iface != "" and xsce_wan_iface != "none"
   tags:
     - squid
     - gateway
