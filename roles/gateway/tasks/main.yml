@@ -54,18 +54,15 @@
 
 - name: Run iptables 
   command: /etc/sysconfig/iptables-config
-  when: xsce_wan_iface != "none"
 
 - name: Enable iptables service 
   service: name=iptables
            enabled=yes
-  when: xsce_wan_iface != "none"
 
 - name: Disable iptables service 
   service: name=iptables
            enabled=no
            state=stopped
-  when: xsce_wan_iface == "none"
 
 - name: Create gateway flag
   shell: echo 1 > /etc/sysconfig/olpc-scripts/setup.d/installed/gateway
