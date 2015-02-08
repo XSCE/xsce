@@ -57,6 +57,7 @@
 - name: Enable iptables service 
   service: name=iptables
            enabled=yes
+           state=restarted
 
 - name: Create gateway flag
   shell: echo 1 > /etc/sysconfig/olpc-scripts/setup.d/installed/gateway
