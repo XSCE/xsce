@@ -65,6 +65,10 @@ xsce_lan_iface: auto
 dhcpd_install: True
 dhcpd_enabled: True
 
+# named
+named_install: True
+named_enabled: True
+
 # dansguardian
 dansguardian_install: True
 dansguardian_enabled: True
