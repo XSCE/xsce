@@ -34,7 +34,14 @@
         group=root
         state=link
 
-- name: enable wondershaper service
+- name: Enable wondershaper service
   service: name=wondershaper
            enabled=yes
            state=restarted
+  when: wondershaper_enabled
+
+- name: Disable wondershaper service
+  service: name=wondershaper
+           enabled=yes
+           state=restarted
+  when: not wondershaper_enabled
