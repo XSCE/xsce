@@ -87,19 +87,27 @@
   service: name=dansguardian
            enabled=yes
            state=restarted
-  when: dansguardian_enabled
+  when: dansguardian_enabled and xsce_wan_iface != "none" and xsce_lan_iface != ""
 
 - name: Disable dansguardian
   service: name=dansguardian
            enabled=no
            state=stopped
-  when: not dansguardian_enabled
+  when: not dansguardian_enabled or xsce_wan_iface == "none" or xsce_lan_iface == ""
  
-- name: Create xs_httpcache flag
-  shell: echo 1 > /etc/sysconfig/xs_httpcache_on
-         creates=/etc/sysconfig/xs_httpcache_on
-
-- name: Start squid service
+- name: Enable squid service
   service: name=squid
            enabled=yes
            state=restarted
+  when: squid_enabled and xsce_wan_iface != "none" and xsce_lan_iface != ""
+
+- name: Disable squid service
+  service: name=squid
+           enabled=no
+           state=stopped
+  when: not squid_enabled or xsce_wan_iface == "none" or xsce_lan_iface == ""
+
+- name: Create xs_httpcache flag
+  shell: echo 1 > /etc/sysconfig/xs_httpcache_on
+         creates=/etc/sysconfig/xs_httpcache_on
+  when: squid_enabled and xsce_wan_iface != "none" and xsce_lan_iface != ""

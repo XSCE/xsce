@@ -34,7 +34,14 @@
         group=root
         state=link
 
+- name: disable wondershaper service
+  service: name=wondershaper
+           enabled=no
+           state=stopped
+  when: xsce_wan_iface == "none" or xsce_lan_iface != ""
+
 - name: enable wondershaper service
   service: name=wondershaper
            enabled=yes
            state=restarted
+  when: xsce_wan_iface != "none" and xsce_lan_iface != ""
