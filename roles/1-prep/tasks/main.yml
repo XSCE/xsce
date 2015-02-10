@@ -1,7 +1,3 @@
-- name: Verify that we are in the right directory
-  fail: msg="Configuration directory ({{ xsce_dir }})does not match actual directory ({{ ansible_env.PWD }}).  Please consult documentation.  Exiting."
-  when: ansible_env.PWD != xsce_dir
-
 - include: prep.yml
 - include: computed_vars.yml
            
