@@ -1,9 +1,9 @@
 - name: Create /library
- file: path=/library
- owner=root
- group=root
- mode=0755
- state=directory
+  file: path=/library
+        owner=root
+        group=root
+        mode=0755
+        state=directory
 
 - name: Install xsce-extra repos
   template: backup=yes
