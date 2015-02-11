@@ -10,7 +10,6 @@
   tags:
     - network-discover
 
-
 - name: Configure /etc/sysconfig/network
   template: backup=yes
             src=sysconfig.network.j2
@@ -45,6 +44,10 @@
             dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_lan_iface}}
   when: 'xsce_lan_iface != "" '
 
+- include: named.yml
+  tags: 
+    - named
+
 # This is a dog's breakfast, but with ansible 1.6.3 service: name=NetworkManager state=restarted doesn't work
 
 - name: restart NetworkManager services
@@ -68,7 +71,5 @@
            state=started
 - debug:  msg="hopefully now NM is restarted"
 
-- include: named.yml
   tags:
-    - named
     - network

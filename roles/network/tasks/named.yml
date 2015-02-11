@@ -49,7 +49,6 @@
 - name: Enable named service
   service: name=named
            enabled=yes
-           state=restarted
   when: named_enabled
 
 - name: Disable named service
