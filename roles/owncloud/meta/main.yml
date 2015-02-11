@@ -1,0 +1,5 @@
+---
+#dependencies:
+#    - { role: mysql }
+dependencies:
+    - { role: mysql }
