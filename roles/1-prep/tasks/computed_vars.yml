@@ -107,13 +107,13 @@
 
 - name: WAN sanity check
   fail: msg=ERROR can't detect WAN gateway and using 'auto' for xsce_wan_iface
-  when: xsce_wan_iface == "auto" and not has_gateway
+  when: 'xsce_wan_iface == "auto" and not has_gateway'
 
 # LAN - Order is: <nic> none auto
 - name: Set user configured lan fact
   set_fact:
      xsce_lan_iface: "{{ xsce_lan_iface }}"
-  when: 'xsce_lan_iface != "auto" and xsce_lan_iface != "none" '
+  when: 'xsce_lan_iface != "auto" and xsce_lan_iface != "none"'
 
 - name: Discover LAN iface
   shell: "/sbin/ip link show  | grep -v -e DOWN -e lo -e tun -e {{ ansible_default_ipv4.alias }}| grep mtu | gawk -F: '{print $2}' |  tr -d ' '  | head -n1 "
@@ -124,7 +124,7 @@
 - name: Set xsce discovered lan fact
   set_fact:
      xsce_lan_iface: "{{ discovered_lan.stdout }}"
-  when: 'xsce_lan_iface == "auto"  and discovered_lan.stdout  != ""'
+  when: 'xsce_lan_iface == "auto" and discovered_lan.stdout  != ""'
 
 - name: No LAN configured - Appliance mode
   set_fact:
@@ -145,7 +145,7 @@
      squid_enabled: False
      wondershaper_enabled: False
      xsce_network_mode: "LanController"
-  when: 'xsce_lan_iface != ""' 
+  when: 'xsce_lan_iface != ""'
 
 - name: LAN configured - Gateway mode
   set_fact:
