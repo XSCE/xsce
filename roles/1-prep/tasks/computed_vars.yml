@@ -101,7 +101,7 @@
 - name: No LAN configured - Appliance mode
   set_fact:
      xsce_lan_iface: ""
-     dansquardian_enabled: False
+     dansguardian_enabled: False
      squid_enabled: False
      named_enabled: False
      dhcpd_enabled: False
@@ -113,7 +113,7 @@
   set_fact:
      named_enabled: True
      dhcpd_enabled: True
-     dansquardian_enabled: False
+     dansguardian_enabled: False
      squid_enabled: False
      wondershaper_enabled: False
      xsce_network_mode: "LanController"
