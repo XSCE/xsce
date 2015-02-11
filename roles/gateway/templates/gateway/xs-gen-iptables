@@ -4,8 +4,8 @@ IPTABLES=/usr/sbin/iptables
 #lan="eth1"
 #LANIF=`route -n | gawk '/172.18.96/{ print $8 }'`
 #WANIF=`route -n | gawk '/UG/{ print $8 }'`
-LANIF=`cat /etc/sysconfig/xs_lan_device`
-WANIF=`cat /etc/sysconfig/xs_wan_device`
+LANIF=`cat /etc/sysconfig/xs_lan_device | awk '{print $1}'`
+WANIF=`cat /etc/sysconfig/xs_wan_device`| awk '{print $1}'`
 
 gw_block_https={{ gw_block_https }}
 

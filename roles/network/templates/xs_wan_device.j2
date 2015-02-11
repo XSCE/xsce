@@ -1,1 +1,3 @@
-{{ xsce_wan_iface }}
+{% if xsce_wan_iface != "" %}
+{{ xsce_wan_iface }} {{ hostvars[inventory_hostname]['ansible_' + xsce_wan_iface]['macaddress'] }}
+{% endif %}

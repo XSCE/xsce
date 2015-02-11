@@ -90,4 +90,44 @@
   set_fact:
     mysql_service: mysqld    
   when: ansible_distribution_release == "based on Fedora 18"
-                  
+
+# Networking
+
+# WAN
+- name: Set user configured wan fact
+  set_fact:
+     xsce_wan_iface: {{ xsce_wan_iface }}
+  when: 'xsce_wan_iface != "auto" or xsce_wan_iface == "none" '
+
+- name: Detecting gateway
+  set_fact:
+     xsce_wan_iface: "{{ ansible_default_ipv4.alias }}"
+  register: has_gateway
+  when: {{ ansible_default_ipv4 }} and xsce_wan_iface != "none"
+
+- name: WAN sanity check
+  fail: msg=ERROR can't detect WAN gateway and using 'auto' for xsce_wan_iface
+  when: xsce_wan_iface == "auto" and not has_gateway
+
+# LAN - Order is: <nic> none auto
+- name: Set user configured lan fact
+  set_fact:
+     xsce_lan_iface: "{{ xsce_lan_iface }}"
+  when: 'xsce_lan_iface != "auto" and xsce_lan_iface != "none" '
+
+- name: Discover LAN iface
+  shell: "/sbin/ip link show  | grep -v -e DOWN -e lo -e tun -e {{ ansible_default_ipv4.alias }}| grep mtu | gawk -F: '{print $2}' |  tr -d ' '  | head -n1 "
+  register: discovered_lan
+  changed_when: false
+  when: has_gateway
+
+- name: Set xsce discovered lan fact
+  set_fact:
+     xsce_lan_iface: "{{ discovered_lan.stdout }}"
+  when: 'xsce_lan_iface == "auto"  and discovered_lan.stdout  != ""'
+
+- name: No LAN configured - Appliance mode
+  set_fact:
+     xsce_lan_iface: ""
+  when: 'xsce_lan_iface == "none" or (discovered_lan.stdout == "" and xsce_lan_iface == "auto" )'
+
