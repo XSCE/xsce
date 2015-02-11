@@ -129,5 +129,40 @@
 - name: No LAN configured - Appliance mode
   set_fact:
      xsce_lan_iface: ""
+     dansquardian_enabled: False
+     squid_enabled: False
+     named_enabled: False
+     dhcpd_enabled: False
+     wondershaper_enabled: False
+     xsce_network_mode: "Appliance"
   when: 'xsce_lan_iface == "none" or (discovered_lan.stdout == "" and xsce_lan_iface == "auto" )'
 
+- name: LAN configured - LanController mode
+  set_fact:
+     named_enabled: True
+     dhcpd_enabled: True
+     dansquardian_enabled: False
+     squid_enabled: False
+     wondershaper_enabled: False
+     xsce_network_mode: "LanController"
+  when: 'xsce_lan_iface != ""' 
+
+- name: LAN configured - Gateway mode
+  set_fact:
+     named_enabled: True
+     dhcpd_enabled: True
+     xsce_network_mode: "Gateway"
+  when: 'xsce_lan_iface != "" and has_gateway'
+
+- name: Add location section to config file
+  ini_file: dest='{{ xsce_config_file }}'
+            section=network
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: 'xsce_network_mode'
+      value: '{{ xsce_network_mode }}'      
+    - option: 'xsce_gateway'
+      value: '{{ xsce_wan_iface }}'  
+    - option: 'xsce_lan'
+      value: '{{ xsce_lan_iface }}'
