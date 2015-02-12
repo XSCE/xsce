@@ -42,6 +42,6 @@
 
 - name: Disable wondershaper service
   service: name=wondershaper
-           enabled=yes
-           state=restarted
+           enabled=no
+           state=stopped
   when: not wondershaper_enabled
