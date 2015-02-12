@@ -8,7 +8,10 @@ $AUTOCONFIG = array(
      2 => 'localhost',    
     ),
   "overwrite.cli.url" => '',
-  "dbtype"        => "sqlite",
-  "dbname"        => "owncloud",
-  "dbtableprefix" => "",  
+  'dbtype' => 'mysql',
+  'dbname' => '{{ owncloud_dbname }}',
+  'dbhost' => '{{ owncloud_dbhost }}',
+  'dbtableprefix' => '',
+  'dbuser' => '{{ owncloud_dbuser }}',
+  'dbpass' => '{{ owncloud_dbpassword }}',
 );

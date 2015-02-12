@@ -39,7 +39,20 @@
         state=directory
   with_items:
     - "{{ owncloud_data_dir }}"
-    
+
+- name: Create a mysql database for owncloud
+  mysql_db: name={{ owncloud_dbname }}
+  when: mysql_enabled and owncloud_enabled
+
+- name: Create a user to access the owncloud database
+  mysql_user: name={{ owncloud_dbuser }} host={{ item }} password={{ owncloud_dbpassword }} priv={{ owncloud_dbname }}.*:ALL,GRANT
+  with_items:
+        - "{{ owncloud_dbhost }}"
+        - 127.0.0.1
+        - ::1
+        - localhost
+  when: mysql_enabled and owncloud_enabled
+      
 - name: Remove httpd conf file in case we are now disabled
   file: path=/etc/httpd/conf.d/owncloud.conf
         state=absent
