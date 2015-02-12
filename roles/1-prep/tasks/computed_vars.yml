@@ -65,12 +65,19 @@
 - name: Set user configured wan fact
   set_fact:
      xsce_wan_iface: "{{ xsce_wan_iface }}"
-  when: 'xsce_wan_iface != "auto" or xsce_wan_iface == "none"'
+  when: 'xsce_wan_iface != "auto" or xsce_wan_iface == "none" or xsce_wan_iface == ""'
 
 - name: Detecting gateway
   shell: "echo True"
   register: has_gateway
+  ignore_errors: True
+  changed_when: false
   when: '"{{ ansible_default_ipv4 }}" != ""'
+
+- name: Found xsce_wan_iface set to none or no detected gateway
+  set_fact:
+     xsce_wan_iface: ""
+  when: 'xsce_wan_iface == "none" or not has_gateway'
 
 - name: Found gateway
   set_fact:
@@ -82,16 +89,12 @@
   when: 'xsce_wan_iface == "auto" and not has_gateway'
 
 # LAN - Order is: <nic> none auto
-- name: Set user configured lan fact
-  set_fact:
-     xsce_lan_iface: "{{ xsce_lan_iface }}"
-  when: 'xsce_lan_iface != "auto" and xsce_lan_iface != "none"'
-
 - name: Discover LAN iface
-  shell: "/sbin/ip link show  | grep -v -e DOWN -e lo -e tun -e {{ ansible_default_ipv4.alias }}| grep mtu | gawk -F: '{print $2}' |  tr -d ' '  | head -n1 "
+  shell: "/sbin/ip link show  | grep -v -e DOWN -e lo -e tun -e {{ xsce_wan_iface }}| grep mtu | gawk -F: '{print $2}' |  tr -d ' '  | head -n1 "
   register: discovered_lan
+  ignore_errors: True
   changed_when: false
-  when: has_gateway|bool
+  when: has_gateway
 
 - name: Set xsce discovered lan fact
   set_fact:
@@ -109,6 +112,13 @@
      xsce_network_mode: "Appliance"
   when: 'xsce_lan_iface == "none" or not discovered_lan'
 
+- name: LAN configured - Gateway mode
+  set_fact:
+     named_enabled: True
+     dhcpd_enabled: True
+     xsce_network_mode: "Gateway"
+  when: 'xsce_lan_iface != "" and xsce_wan_iface != ""'
+
 - name: LAN configured - LanController mode
   set_fact:
      named_enabled: True
@@ -117,14 +127,7 @@
      squid_enabled: False
      wondershaper_enabled: False
      xsce_network_mode: "LanController"
-  when: 'xsce_lan_iface != ""'
-
-- name: LAN configured - Gateway mode
-  set_fact:
-     named_enabled: True
-     dhcpd_enabled: True
-     xsce_network_mode: "Gateway"
-  when: 'xsce_lan_iface != "" and has_gateway|bool'
+  when: 'xsce_lan_iface != "" and xsce_wan_iface == ""'
 
 - name: Add location section to config file
   ini_file: dest='{{ xsce_config_file }}'
