@@ -7,7 +7,7 @@ $AUTOCONFIG = array(
      1 => "{{ xsce_hostname }}",
      2 => 'localhost',    
     ),
-  "overwrite.cli.url" => '',
+  "overwrite.cli.url" => "http://{{ xsce_hostname }}.{{ xsce_domain }}/owncloud",
   'dbtype' => 'mysql',
   'dbname' => '{{ owncloud_dbname }}',
   'dbhost' => '{{ owncloud_dbhost }}',
