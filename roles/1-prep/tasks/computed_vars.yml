@@ -98,7 +98,7 @@
      dhcpd_enabled: False
      wondershaper_enabled: False
      xsce_network_mode: "Appliance"
-  when: 'xsce_lan_iface == "none" or not discovered_lan'
+  when: 'xsce_lan_iface == "none" or not discovered_lan is defined'
 
 - name: LAN configured - LanController mode
   set_fact:
