@@ -17,7 +17,7 @@
 
 - name: Found xsce_wan_iface set to none or no detected gateway
   set_fact:
-  xsce_wan_iface: "none"
+    xsce_wan_iface: "none"
   when: 'xsce_wan_iface == "none" or not ansible_default_ipv4.gateway is defined'
   tags:
     - network-discover
