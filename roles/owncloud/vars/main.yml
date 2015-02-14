@@ -3,3 +3,9 @@ owncloud_enabled: False
 owncloud_path: "/opt/owncloud"
 owncloud_data_dir: /library/owncloud/data
 owncloud_src_file: owncloud-7.0.4.tar.bz2
+
+# we install on mysql with these setting or those from default_vars, etc.
+owncloud_dbname: owncloud
+owncloud_dbhost: localhost
+owncloud_dbuser: owncloud
+owncloud_dbpassword: owncloudmysql
