@@ -73,7 +73,7 @@
 - name: No LAN configured - Appliance mode
   set_fact:
      xsce_lan_iface: "none"
-  when: 'xsce_lan_iface == "none" or not discovered_lan is definded'
+  when: 'xsce_lan_iface == "none" or not discovered_lan us defined'
   tags:
     - network-discover
     - gateway
