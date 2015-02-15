@@ -1,22 +1,43 @@
 - name: Get the kiwix software 
   get_url: url="{{ xsce_download_url }}/{{ kiwix_src_file }}"  dest="{{ downloads_dir }}/{{ kiwix_src_file }}"
 
+- name: Create various directories for zims
+  file: path={{ item }}
+        owner=root
+        group=root
+        mode=0755
+        state=directory
+  with_items:
+    - /library/zims
+    - /library/zims/content
+    - /library/zims/index
+    
+# we get a whole web server for intel but only the kiwix execs for arm
+
 - name: Unarchive it to permanent location
   unarchive: src="{{ downloads_dir }}/{{ kiwix_src_file }}"  
              dest="{{ xsce_base }}"
              owner=root
              group=root
-
-# workaround because unarchive does not set ownership properly
-- name: Set kiwix ownership
-  command: "chown -R root:root {{ xsce_base }}"
+  when: not kiwix_src_bin_only
   
-- name: Create /library/zims home for zim file
-  file: path=/library/zims
+- name: Create directory for kiwix bin
+  file: path="{{ xsce_base }}/kiwix/bin"
         owner=root
         group=root
         mode=0755
         state=directory
+
+- name: Unarchive it to permanent location
+  unarchive: src="{{ downloads_dir }}/{{ kiwix_src_file }}"  
+             dest="{{ xsce_base }}/kiwix/bin"
+             owner=root
+             group=root
+  when: kiwix_src_bin_only
+    
+# workaround because unarchive does not set ownership properly
+- name: Set kiwix ownership
+  command: "chown -R root:root {{ xsce_base }}"
 
 - name: Create kiwix library file
   file: dest='{{ kiwix_library_xml }}'
@@ -71,4 +92,3 @@
            enabled=yes
            state=restarted           
   when: kiwix-serve_enabled
-             
