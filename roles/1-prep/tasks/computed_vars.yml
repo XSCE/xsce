@@ -1,36 +1,4 @@
 # get local vars from scripts in /etc/ansible/facts.d
-
-- name: Create /etc/xsce
-  file: path=/etc/xsce
-        owner=root
-        group=root
-        mode=0755
-        state=directory
-
-# this script can be sourced to get xsce location
-- name: Create xsce.env file
-  template: backup=yes
-            src=xsce.env.j2
-            dest=/etc/xsce/xsce.env
-            owner=root
-            group=root
-            mode=0644
-
-- name: create ansible.d facts directory
-  file: path=/etc/ansible/facts.d
-        owner=root
-        group=root
-        mode=0750
-        state=directory
-
-- name: local facts script
-  template: backup=yes
-            src=local_facts.fact.j2
-            dest=/etc/ansible/facts.d/local_facts.fact
-            owner=root
-            group=root
-            mode=0700
-
 - name: re-read facts
   setup: filter=ansible_local
 
@@ -90,4 +58,74 @@
   set_fact:
     mysql_service: mysqld    
   when: ansible_distribution_release == "based on Fedora 18"
-                  
+
+# Networking
+
+# WAN
+- name: Set user configured wan fact
+  set_fact:
+     xsce_wan_iface: "{{ xsce_wan_iface }}"
+  when: 'xsce_wan_iface != "auto" or xsce_wan_iface != ""'
+
+- name: Found xsce_wan_iface set to none or no detected gateway
+  set_fact:
+     xsce_wan_iface: "none"
+  when: 'xsce_wan_iface == "none" or not ansible_default_ipv4.gateway is defined'
+
+- name: Found gateway
+  set_fact:
+     xsce_wan_iface: "{{ ansible_default_ipv4.alias }}"
+  when: 'xsce_wan_iface == "auto" and ansible_default_ipv4.gateway is defined'
+
+# LAN - Order is: <nic> none auto
+- name: Discover LAN iface
+  shell: "/sbin/ip link show  | grep -v -e DOWN -e lo -e tun -e {{ xsce_wan_iface }}| grep mtu | gawk -F: '{print $2}' |  tr -d ' '  | head -n1 "
+  register: discovered_lan
+  ignore_errors: True
+  changed_when: false
+
+- name: Set xsce discovered lan fact
+  set_fact:
+     xsce_lan_iface: "{{ discovered_lan.stdout }}"
+  when: 'xsce_lan_iface == "auto" and discovered_lan is defined'
+
+- name: No LAN configured - Appliance mode
+  set_fact:
+     xsce_lan_iface: "none"
+     dansguardian_enabled: False
+     squid_enabled: False
+     named_enabled: False
+     dhcpd_enabled: False
+     wondershaper_enabled: False
+     xsce_network_mode: "Appliance"
+  when: 'xsce_lan_iface == "none" or not discovered_lan is defined'
+
+- name: LAN configured - LanController mode
+  set_fact:
+     named_enabled: True
+     dhcpd_enabled: True
+     dansguardian_enabled: False
+     squid_enabled: False
+     wondershaper_enabled: False
+     xsce_network_mode: "LanController"
+  when: 'xsce_lan_iface != "none" and xsce_wan_iface == "none"'
+
+- name: LAN configured - Gateway mode
+  set_fact:
+     named_enabled: True
+     dhcpd_enabled: True
+     xsce_network_mode: "Gateway"
+  when: 'xsce_lan_iface != "none" and xsce_wan_iface != "none"'
+
+- name: Add location section to config file
+  ini_file: dest='{{ xsce_config_file }}'
+            section=network
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: 'xsce_gateway'
+      value: '{{ xsce_wan_iface }}'  
+    - option: 'xsce_lan'
+      value: '{{ xsce_lan_iface }}'
+    - option: 'xsce_network_mode'
+      value: '{{ xsce_network_mode }}'      

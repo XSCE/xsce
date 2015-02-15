@@ -1,22 +1,26 @@
 #!/bin/bash -x
 IPTABLES=/usr/sbin/iptables
-#wan="eth0"
-#lan="eth1"
-#LANIF=`route -n | gawk '/172.18.96/{ print $8 }'`
-#WANIF=`route -n | gawk '/UG/{ print $8 }'`
 LANIF=`cat /etc/sysconfig/xs_lan_device`
 WANIF=`cat /etc/sysconfig/xs_wan_device`
 
 gw_block_https={{ gw_block_https }}
 
+clear_fw() {
+ $IPTABLES -F
+ $IPTABLES -t nat -F
+ $IPTABLES -X
+ exit 0
+}
+
 if [  "x$WANIF" == "x" ]; then
-    exit 1
+    clear_fw
 fi
 if [  "x$LANIF" == "x" ]; then
-    exit 1
+    clear_fw
 fi
-        lan=$LANIF
-        wan=$WANIF
+
+lan=$LANIF
+wan=$WANIF
 echo "Lan is $lan and WAN is $wan"
 #
 # delete all existing rules.

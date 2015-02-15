@@ -44,7 +44,7 @@ lan_ip: 172.18.96.1
 lan_netmask: 255.255.224.0
 
 #Read docs/NETWORKING.rst
-xsce_wan_iface: "{{ ansible_default_ipv4.interface }}"
+xsce_wan_iface: auto
 xsce_lan_iface: auto
 
 # Parameters by Aggregate Roles
@@ -61,12 +61,33 @@ xsce_lan_iface: auto
 
 # 3-BASE
 
+# dhcpd
+dhcpd_install: True
+dhcpd_enabled: True
+
+# named
+named_install: True
+named_enabled: True
+
+# dansguardian
+dansguardian_install: True
+dansguardian_enabled: True
+
+# squid
+squid_install: True
+squid_enabled: True
+
+# wondershaper
+wondershaper_install: True
+wondershaper_enabled: True
+
 #Gateway and Filters
 xsce_gateway_enabled: True
-squid_enabled: True
-dansguardian_enabled: True
+
+# optional part
 gw_squid_whitelist: False
 gw_block_https: False
+
 
 # 4-SERVER-OPTIONS
 

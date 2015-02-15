@@ -1,6 +1,6 @@
 - include: prep.yml
 - include: computed_vars.yml
-           
+- include: prelim.yml           
 # Put conditional includes for platforms here
 - include: xo.yml
   when: xo_model != "none"
