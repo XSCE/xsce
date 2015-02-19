@@ -98,6 +98,7 @@
 - name: Create xs_httpcache flag
   shell: echo 1 > /etc/sysconfig/xs_httpcache_on
          creates=/etc/sysconfig/xs_httpcache_on
+  when: squid_enabled
 
 - name: Enable squid service
   service: name=squid
@@ -110,3 +111,9 @@
            enabled=no
            state=stopped
   when: not squid_enabled
+
+- name: Remove xs_httpcache flag
+  file: path=/etc/sysconfig/xs_httpcache_on
+        state=absent
+  when: not squid_enabled
+
