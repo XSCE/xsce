@@ -1,5 +1,5 @@
 - name: Get the ELGG software
-  get_url: url=http://download.unleashkids.org/xsce/downloads/{{ elgg_xx }}.zip  dest={{ downloads_dir}}/{{ elgg_xx }}.zip
+  get_url: url="{{ xsce_download_url }}/{{ elgg_xx }}.zip"  dest={{ downloads_dir}}/{{ elgg_xx }}.zip
 
 - name: Copy it to permanent location /opt
   unarchive: src={{ downloads_dir}}/{{ elgg_xx }}.zip  dest=/opt/
