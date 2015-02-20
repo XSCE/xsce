@@ -77,7 +77,13 @@
 
 - name: No LAN configured - Appliance mode
   set_fact:
-     xsce_lan_iface: "none"
+    xsce_lan_iface: "none"
+    dansguardian_enabled: False
+    squid_enabled: False
+    named_enabled: False
+    dhcpd_enabled: False
+    wondershaper_enabled: False
+    xsce_network_mode: "Appliance"
   when: 'xsce_lan_iface == "none" or not discovered_lan is defined'
   tags:
     - network-discover
@@ -90,6 +96,36 @@
     - download
     - services
     - squid
+
+- name: LAN configured - LanController mode
+  set_fact:
+    named_enabled: True
+    dhcpd_enabled: True
+    dansguardian_enabled: False
+    squid_enabled: False
+    wondershaper_enabled: False
+    xsce_network_mode: "LanController"
+  when: 'xsce_lan_iface != "none" and xsce_wan_iface == "none"'
+
+- name: LAN configured - Gateway mode
+  set_fact:
+    named_enabled: True
+    dhcpd_enabled: True
+    xsce_network_mode: "Gateway"
+  when: 'xsce_lan_iface != "none" and xsce_wan_iface != "none"'
+
+- name: Add location section to config file
+  ini_file: dest='{{ xsce_config_file }}'
+            section=network
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+  - option: 'xsce_gateway'
+    value: '{{ xsce_wan_iface }}'
+  - option: 'xsce_lan'
+    value: '{{ xsce_lan_iface }}'
+  - option: 'xsce_network_mode'
+    value: '{{ xsce_network_mode }}'
 
 - name: Create xs network flags
   template: backup=yes
