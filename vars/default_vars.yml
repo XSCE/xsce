@@ -44,7 +44,7 @@ lan_ip: 172.18.96.1
 lan_netmask: 255.255.224.0
 
 #Read docs/NETWORKING.rst
-xsce_wan_iface: "{{ ansible_default_ipv4.interface }}"
+xsce_wan_iface: auto
 xsce_lan_iface: auto
 
 # Parameters by Aggregate Roles
