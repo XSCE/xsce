@@ -61,12 +61,33 @@ xsce_lan_iface: auto
 
 # 3-BASE
 
+# dhcpd
+dhcpd_install: True
+dhcpd_enabled: True
+
+# named
+named_install: True
+named_enabled: True
+
+# dansguardian
+dansguardian_install: True
+dansguardian_enabled: True
+
+# squid
+squid_install: True
+squid_enabled: True
+
+# wondershaper
+wondershaper_install: True
+wondershaper_enabled: True
+
 #Gateway and Filters
 xsce_gateway_enabled: True
-squid_enabled: True
-dansguardian_enabled: True
+
+# optional part
 gw_squid_whitelist: False
 gw_block_https: False
+
 
 # 4-SERVER-OPTIONS
 

@@ -50,3 +50,10 @@
   service: name=named
            enabled=yes
            state=restarted
+  when: named_enabled
+
+- name: Disable named service
+  service: name=named
+           enabled=no
+           state=stopped
+  when: not named_enabled
