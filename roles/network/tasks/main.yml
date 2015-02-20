@@ -1,3 +1,8 @@
+- include: named.yml
+  tags:
+    - named
+    - network
+
 # WAN
 - name: Set user configured wan fact
   set_fact:
@@ -154,8 +159,3 @@
            enabled=yes
            state=started
 - debug:  msg="hopefully now NM is restarted"
-
-- include: named.yml
-  tags:
-    - named
-    - network
