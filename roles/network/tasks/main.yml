@@ -75,16 +75,10 @@
     - services
     - squid
 
-- name: No LAN configured - Appliance mode
+- name: No LAN configured via vars
   set_fact:
-    xsce_lan_iface: "none"
-    dansguardian_enabled: False
-    squid_enabled: False
-    named_enabled: False
-    dhcpd_enabled: False
-    wondershaper_enabled: False
-    xsce_network_mode: "Appliance"
-  when: 'xsce_lan_iface == "none" or not discovered_lan is defined'
+    xsce_lan_iface: ""
+  when: xsce_lan_iface == "none"
   tags:
     - network-discover
     - gateway
@@ -97,6 +91,16 @@
     - services
     - squid
 
+- name: No LAN configured - Appliance mode
+  set_fact:
+    dansguardian_enabled: False
+    squid_enabled: False
+    named_enabled: False
+    dhcpd_enabled: False
+    wondershaper_enabled: False
+    xsce_network_mode: "Appliance"
+  when: 'xsce_lan_iface == "" and xsce_wan_iface != ""'
+
 - name: LAN configured - LanController mode
   set_fact:
     named_enabled: True
@@ -105,14 +109,14 @@
     squid_enabled: False
     wondershaper_enabled: False
     xsce_network_mode: "LanController"
-  when: 'xsce_lan_iface != "none" and xsce_wan_iface == "none"'
+  when: 'xsce_lan_iface != "" and xsce_wan_iface == "none"'
 
 - name: LAN configured - Gateway mode
   set_fact:
     named_enabled: True
     dhcpd_enabled: True
     xsce_network_mode: "Gateway"
-  when: 'xsce_lan_iface != "none" and xsce_wan_iface != "none"'
+  when: 'xsce_lan_iface != "" and xsce_wan_iface != "none"'
 
 - name: Add location section to config file
   ini_file: dest='{{ xsce_config_file }}'
