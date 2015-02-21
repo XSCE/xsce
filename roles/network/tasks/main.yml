@@ -1,51 +1,33 @@
 # WAN
-- name: Set user configured wan fact
-  set_fact:
-    xsce_wan_iface: "{{ xsce_wan_iface }}"
-  when: 'xsce_wan_iface != "auto" or xsce_wan_iface != ""'
-  tags:
-    - network-discover
-    - gateway
-    - dhcpd
-    - ajenti
-    - wondershaper
-    - core
-    - xo
-    - download
-    - services
-    - squid
-
-- name: Found xsce_wan_iface set to none or no detected gateway
-  set_fact:
-    xsce_wan_iface: "none"
-  when: 'xsce_wan_iface == "none" or not ansible_default_ipv4.gateway is defined'
-  tags:
-    - network-discover
-    - gateway
-    - dhcpd
-    - ajenti
-    - wondershaper
-    - core
-    - xo
-    - download
-    - services
-    - squid
-
 - name: Found gateway
   set_fact:
-    xsce_wan_iface: "{{ ansible_default_ipv4.alias }}"
+    discovered_wan_iface: "{{ ansible_default_ipv4.alias }}"
   when: 'xsce_wan_iface == "auto" and ansible_default_ipv4.gateway is defined'
-  tags:
-    - network-discover
-    - gateway
-    - dhcpd
-    - ajenti
-    - wondershaper
-    - core
-    - xo
-    - download
-    - services
-    - squid
+
+- name: no detected gateway
+  set_fact:
+    discovered_wan_iface: "none"
+  when: not ansible_default_ipv4.gateway is defined
+
+- name: Set user configured wan fact
+  set_fact:
+    user_wan_iface: "{{ xsce_wan_iface }}"
+    when: 'xsce_wan_iface != ""'
+
+- name: checking xsce_wan_enabled
+  set_fact:
+    user_wan_iface: "none"
+  when: 'not xsce_wan_enabled' 
+ 
+- name: Setting detected gateway
+  set_fact:
+    xsce_wan_iface: "{{ discovered_wan_iface }}"
+  when: xsce_wan_iface == "auto"
+
+- name: setting user WAN fact
+  set_fact:
+    xsce_wan_iface: "{{ user_wan_iface }}"
+  when: 'user_wan_iface != "auto"'
 
 # LAN - Order is: <nic> none auto
 - name: Discover LAN iface
@@ -56,35 +38,80 @@
 
 - name: Set xsce discovered lan fact
   set_fact:
-    xsce_lan_iface: "{{ discovered_lan.stdout }}"
+    discovered_lan_iface: "{{ discovered_lan.stdout }}"
   when: 'xsce_lan_iface == "auto" and discovered_lan is defined'
-  tags:
-    - network-discover
-    - gateway
-    - dhcpd
-    - ajenti
-    - wondershaper
-    - core
-    - xo
-    - download
-    - services
-    - squid
+
+- name: LAN configured via vars
+  set_fact:
+    user_lan_iface: "{{ xsce_lan_iface }}"
+  when: 'xsce_lan_iface != ""'
+
+- name: checking xsce_lan_enabled
+  set_fact:
+    user_lan_iface: "none"
+  when: not xsce_lan_enabled
+
+- name: Setting detected lan
+  set_fact:
+    xsce_lan_iface: "{{ discovered_lan_iface }}"
+  when: 'xsce_lan_iface == "auto"'
+
+- name: setting user LAN fact
+  set_fact:
+    xsce_lan_iface: "{{ user_lan_iface }}"
+  when: 'user_lan_iface != "auto"'
 
 - name: No LAN configured - Appliance mode
   set_fact:
-     xsce_lan_iface: "none"
-  when: 'xsce_lan_iface == "none" or not discovered_lan is defined'
-  tags:
-    - network-discover
-    - gateway
-    - dhcpd
-    - ajenti
-    - wondershaper
-    - core
-    - xo
-    - download
-    - services
-    - squid
+    dansguardian_enabled: False
+    squid_enabled: False
+    named_enabled: False
+    dhcpd_enabled: False
+    wondershaper_enabled: False
+    xsce_network_mode: "Appliance"
+  when: 'xsce_lan_iface == "" and xsce_wan_iface != ""'
+
+- name: LAN configured - LanController mode
+  set_fact:
+    named_enabled: True
+    dhcpd_enabled: True
+    dansguardian_enabled: False
+    squid_enabled: False
+    wondershaper_enabled: False
+    xsce_network_mode: "LanController"
+  when: 'xsce_lan_iface != "" and xsce_wan_iface == "none"'
+
+- name: LAN configured - Gateway mode
+  set_fact:
+    named_enabled: True
+    dhcpd_enabled: True
+    xsce_network_mode: "Gateway"
+  when: 'xsce_lan_iface != "" and xsce_wan_iface != "none"'
+
+- name: Add location section to config file
+  ini_file: dest='{{ xsce_config_file }}'
+            section=network
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+  - option: 'wan_enabled'
+    value: '{{ xsce_wan_enabled }}'
+  - option: 'lan_enabled'
+    value: '{{ xsce_lan_enabled }}'
+  - option: 'detected_gateway'
+    value: '{{ discovered_wan_iface }}'
+  - option: 'detected_lan'
+    value: '{{ discovered_lan_iface }}'
+  - option: 'user_gateway'
+    value: '{{ user_wan_iface }}'
+  - option: 'user_lan'
+    value: '{{ user_lan_iface }}'
+  - option: 'computed_gateway'
+    value: '{{ xsce_wan_iface }}'
+  - option: 'computed_lan'
+    value: '{{ xsce_lan_iface }}'
+  - option: 'xsce_network_mode'
+    value: '{{ xsce_network_mode }}'
 
 - name: Create xs network flags
   template: backup=yes

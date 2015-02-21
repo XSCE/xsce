@@ -47,6 +47,12 @@ lan_netmask: 255.255.224.0
 xsce_wan_iface: auto
 xsce_lan_iface: auto
 
+# will be detected do not change
+discovered_lan_iface:
+discovered_wan_iface:
+user_lan_iface:
+user_wan_iface:
+
 # Parameters by Aggregate Roles
 # Each Role must have the following variables which are either True or False:
 #   <role-name>_install
@@ -82,12 +88,12 @@ wondershaper_install: True
 wondershaper_enabled: True
 
 #Gateway and Filters
-xsce_gateway_enabled: True
+xsce_lan_enabled: True
+xsce_wan_enabled: True
 
 # optional part
 gw_squid_whitelist: False
 gw_block_https: False
-
 
 # 4-SERVER-OPTIONS
 
