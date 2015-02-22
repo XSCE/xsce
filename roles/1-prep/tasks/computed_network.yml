@@ -31,6 +31,10 @@
   set_fact:
     discovered_lan_iface: "none"
 
+- name: Set default for xsce_lan_iface
+  set_fact:
+    xsce_lan_iface: "none"
+
 # Detection only
 - name: Discover LAN iface
   shell: "/sbin/ip link show | grep -v -e DOWN -e lo -e tun -e {{ xsce_wan_iface }}| grep mtu | gawk -F: '{print $2}' | tr -d ' ' | head -n1 "
