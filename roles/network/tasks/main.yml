@@ -52,11 +52,11 @@
     user_lan_iface: "{{ xsce_lan_iface }}"
   when: 'xsce_lan_iface != ""'
 
-# user disabled interface set to ""
+# user disabled interface
 - name: checking xsce_lan_enabled
   set_fact:
-    user_lan_iface: ""
-  when: not xsce_lan_enabled
+    user_lan_iface: "none"
+  when: 'not xsce_lan_enabled'
 
 # default is auto if unchanged in vars/ can be ""
 - name: Setting detected lan
@@ -64,7 +64,7 @@
     xsce_lan_iface: "{{ discovered_lan_iface }}"
   when: 'xsce_lan_iface == "auto"'
 
-# override with user_wan_iface setting if no longer in auto
+# override with user_lan_iface setting if no longer in auto
 - name: setting user LAN fact
   set_fact:
     xsce_lan_iface: "{{ user_lan_iface }}"
@@ -78,7 +78,7 @@
     dhcpd_enabled: False
     wondershaper_enabled: False
     xsce_network_mode: "Appliance"
-  when: 'xsce_lan_iface == "" and xsce_wan_iface != "none"'
+  when: 'xsce_lan_iface == "" or user_lan_iface == "none"' 
 
 - name: LAN configured - LanController mode
   set_fact:
@@ -166,7 +166,7 @@
   template: backup=yes
             src=ifcfg.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_lan_iface}}
-  when: 'xsce_lan_iface != "" '
+  when: 'xsce_lan_iface != "" or xsce_lan_iface != "none"'
 
 # This is a dog's breakfast, but with ansible 1.6.3 service: name=NetworkManager state=restarted doesn't work
 
