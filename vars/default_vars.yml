@@ -44,10 +44,13 @@ lan_ip: 172.18.96.1
 lan_netmask: 255.255.224.0
 
 #Read docs/NETWORKING.rst
+xsce_lan_enabled: True
+xsce_wan_enabled: True
 
-# will be detected do not change
+#intended for developers
 user_lan_iface: auto
 user_wan_iface: auto
+#only change these if you know what you are doing
 
 # Parameters by Aggregate Roles
 # Each Role must have the following variables which are either True or False:
@@ -84,10 +87,6 @@ wondershaper_install: True
 wondershaper_enabled: True
 
 #Gateway and Filters
-xsce_lan_enabled: True
-xsce_wan_enabled: True
-
-# optional part
 gw_squid_whitelist: False
 gw_block_https: False
 

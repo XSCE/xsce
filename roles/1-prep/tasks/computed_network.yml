@@ -42,13 +42,13 @@
   ignore_errors: True
   changed_when: false
 
-# can return "" dispite none as default
+# This returns "" for not found
 - name: Set xsce discovered lan fact
   set_fact:
     discovered_lan_iface: "{{ discovered_lan.stdout }}"
   when: 'discovered_lan is defined'
 
-# default is auto if unchanged in vars/ can be ""
+# use value only if present
 - name: Setting detected lan
   set_fact:
     xsce_lan_iface: "{{ discovered_lan_iface }}"
