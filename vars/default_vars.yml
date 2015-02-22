@@ -44,14 +44,10 @@ lan_ip: 172.18.96.1
 lan_netmask: 255.255.224.0
 
 #Read docs/NETWORKING.rst
-xsce_wan_iface: auto
-xsce_lan_iface: auto
 
 # will be detected do not change
-discovered_lan_iface: none
-discovered_wan_iface: none
-user_lan_iface:
-user_wan_iface:
+user_lan_iface: auto
+user_wan_iface: auto
 
 # Parameters by Aggregate Roles
 # Each Role must have the following variables which are either True or False:

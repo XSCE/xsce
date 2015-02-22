@@ -1,26 +1,24 @@
-# WAN Discover only do we have a gateway?
+# WAN 
+- name: Set default for discovered_wan_iface
+  set_fact:
+    discovered_wan_iface: "none"
+
+# Discover only do we have a gateway?
 - name: Found gateway
   set_fact:
     discovered_wan_iface: "{{ ansible_default_ipv4.alias }}"
-  when: 'xsce_wan_iface == "auto" and ansible_default_ipv4.gateway is defined'
+  when: 'ansible_default_ipv4.gateway is defined'
 
-# picks up auto, none, blah in vars/ default would be auto
-- name: Clone user configured WAN fact from vars/
+# default is none
+- name: Setting detected gateway
   set_fact:
-    user_wan_iface: "{{ xsce_wan_iface }}"
-    when: 'xsce_wan_iface != ""'
+    xsce_wan_iface: "{{ discovered_wan_iface }}"
 
-# user disabled interface
+# user disabled interface defaults to auto
 - name: checking xsce_wan_enabled
   set_fact:
     user_wan_iface: "none"
   when: 'not xsce_wan_enabled' 
-
-# default is auto if unchanged in vars/
-- name: Setting detected gateway
-  set_fact:
-    xsce_wan_iface: "{{ discovered_wan_iface }}"
-  when: xsce_wan_iface == "auto"
 
 # override with user_wan_iface setting if no longer in auto
 - name: setting user WAN fact
@@ -28,7 +26,12 @@
     xsce_wan_iface: "{{ user_wan_iface }}"
   when: 'user_wan_iface != "auto"'
 
-# LAN - Detection only
+# LAN 
+- name: Set default for discovered_lan_iface
+  set_fact:
+    discovered_lan_iface: "none"
+
+# Detection only
 - name: Discover LAN iface
   shell: "/sbin/ip link show | grep -v -e DOWN -e lo -e tun -e {{ xsce_wan_iface }}| grep mtu | gawk -F: '{print $2}' | tr -d ' ' | head -n1 "
   register: discovered_lan
@@ -39,31 +42,19 @@
 - name: Set xsce discovered lan fact
   set_fact:
     discovered_lan_iface: "{{ discovered_lan.stdout }}"
-  when: 'xsce_lan_iface == "auto" and discovered_lan is defined'
-
-# picks up auto, none, blah in vars/ default would be auto
-- name: Clone user configured LAN fact from vars/
-  set_fact:
-    user_lan_iface: "{{ xsce_lan_iface }}"
-  when: 'xsce_lan_iface != ""'
-
-# user disabled interface
-- name: checking xsce_lan_enabled
-  set_fact:
-    user_lan_iface: "none"
-  when: 'not xsce_lan_enabled'
+  when: 'discovered_lan is defined'
 
 # default is auto if unchanged in vars/ can be ""
 - name: Setting detected lan
   set_fact:
     xsce_lan_iface: "{{ discovered_lan_iface }}"
-  when: 'xsce_lan_iface == "auto" and discovered_lan_iface != ""'
+  when: 'discovered_lan_iface != ""'
 
-# discovered_lan is defined but returned "" use none  
-- name: Setting non detected lan
+# user disabled interface default is auto
+- name: checking xsce_lan_enabled
   set_fact:
-    xsce_lan_iface: "none"
-  when: 'xsce_lan_iface == "auto" and discovered_lan_iface == ""'
+    user_lan_iface: "none"
+  when: 'not xsce_lan_enabled'
 
 # override with user_lan_iface setting if no longer in auto
 - name: setting user LAN fact
