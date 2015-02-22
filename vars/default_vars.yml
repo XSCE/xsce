@@ -48,8 +48,8 @@ xsce_wan_iface: auto
 xsce_lan_iface: auto
 
 # will be detected do not change
-discovered_lan_iface:
-discovered_wan_iface:
+discovered_lan_iface: none
+discovered_wan_iface: none
 user_lan_iface:
 user_wan_iface:
 

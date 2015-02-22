@@ -4,11 +4,6 @@
     discovered_wan_iface: "{{ ansible_default_ipv4.alias }}"
   when: 'xsce_wan_iface == "auto" and ansible_default_ipv4.gateway is defined'
 
-- name: no detected gateway
-  set_fact:
-    discovered_wan_iface: "none"
-  when: not ansible_default_ipv4.gateway is defined
-
 # picks up auto, none, blah in vars/ default would be auto
 - name: Clone user configured WAN fact from vars/
   set_fact:
