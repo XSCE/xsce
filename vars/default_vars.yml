@@ -89,6 +89,7 @@ wondershaper_enabled: True
 #Gateway and Filters
 gw_squid_whitelist: False
 gw_block_https: False
+xsce_gateway_enabled: True
 
 # 4-SERVER-OPTIONS
 
