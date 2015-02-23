@@ -42,6 +42,10 @@
             dest=/etc/sysconfig/network-scripts/ifcfg-LAN
   when: 'xsce_lan_iface != "none"'
 
+- name: Clean up old LAN interface name
+  file: state=absent
+        dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_lan_iface}}
+
 # This is a dog's breakfast, but with ansible 1.6.3 service: name=NetworkManager state=restarted doesn't work
 
 - name: restart NetworkManager services
