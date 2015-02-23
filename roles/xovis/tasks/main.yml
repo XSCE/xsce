@@ -8,6 +8,12 @@
     - nodejs
     - npm
 
+- name: Make sure the XO users directory exists
+  file: state=directory
+        dest=/library/users
+        owner=root
+        group=root
+        mode=-755
 
 - name: download the latest xovis repo
   git: repo={{ xovis_repo_url }}
