@@ -1,29 +1,35 @@
 #!/bin/bash -x
 IPTABLES=/usr/sbin/iptables
-#wan="eth0"
-#lan="eth1"
-#LANIF=`route -n | gawk '/172.18.96/{ print $8 }'`
-#WANIF=`route -n | gawk '/UG/{ print $8 }'`
 LANIF=`cat /etc/sysconfig/xs_lan_device`
 WANIF=`cat /etc/sysconfig/xs_wan_device`
 
-gw_block_https={{ gw_block_https }}
+clear_fw() {
+$IPTABLES -F
+$IPTABLES -t nat -F
+$IPTABLES -X
+}
 
 if [  "x$WANIF" == "x" ]; then
-    exit 1
+    clear_fw
+    exit 0
 fi
 if [  "x$LANIF" == "x" ]; then
-    exit 1
+    clear_fw
+    exit 0
 fi
-        lan=$LANIF
-        wan=$WANIF
+
+lan=$LANIF
+wan=$WANIF
+
+# Good thing we replace this file should be treated like squid below
+gw_block_https={{ gw_block_https }}
+
 echo "Lan is $lan and WAN is $wan"
 #
 # delete all existing rules.
 #
-$IPTABLES -F
-$IPTABLES -t nat -F
-$IPTABLES -X
+
+clear_fw
 /sbin/modprobe ip_tables
 /sbin/modprobe iptable_filter
 /sbin/modprobe ip_conntrack
@@ -38,23 +44,24 @@ $IPTABLES -A INPUT -m state --state NEW -i  $lan -j ACCEPT
 # Allow mDNS 
 $IPTABLES -A INPUT -p udp --dport 5353 -d 224.0.0.251 -j ACCEPT
 
-    #We always run as gateway 
-    $IPTABLES -A INPUT -p tcp --dport ssh -m state --state NEW -i $wan -j ACCEPT
+#when run as gateway 
+$IPTABLES -A INPUT -p tcp --dport ssh -m state --state NEW -i $wan -j ACCEPT
 
-    $IPTABLES -A POSTROUTING -t nat -o $wan -j MASQUERADE
-    $IPTABLES -A FORWARD -i $wan -o $lan -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A POSTROUTING -t nat -o $wan -j MASQUERADE
+$IPTABLES -A FORWARD -i $wan -o $lan -m state --state ESTABLISHED,RELATED -j ACCEPT
 
+#Block https traffic except if directed at server
 if [  "$gw_block_https" == "True" ]; then    
-    #Block https traffic except if directed at server
     $IPTABLES -A FORWARD -p tcp ! -d 172.18.96.1 --dport 443 -j DROP
 fi   
 
-    # Allow outgoing connections from the LAN side.
-    $IPTABLES -A FORWARD -i $lan -o $wan -j ACCEPT
+# Allow outgoing connections from the LAN side.
+$IPTABLES -A FORWARD -i $lan -o $wan -j ACCEPT
 
-    # Don't forward from the outside to the inside.
-    $IPTABLES -A FORWARD -i $wan -o $lan -j DROP
-    $IPTABLES -A INPUT -i $wan -j DROP
+# Don't forward from the outside to the inside.
+$IPTABLES -A FORWARD -i $wan -o $lan -j DROP
+$IPTABLES -A INPUT -i $wan -j DROP
+
 if [ -f /etc/sysconfig/xs_httpcache_on ]; then
     $IPTABLES  -t nat  -A PREROUTING -i $lan -p tcp --dport 80 ! -d 172.18.96.1 -j DNAT --to 172.18.96.1:3128
 fi

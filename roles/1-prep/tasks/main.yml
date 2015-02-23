@@ -1,5 +1,6 @@
 - include: prep.yml
 - include: computed_vars.yml
+- include: computed_network.yml
            
 # Put conditional includes for platforms here
 - include: xo.yml
