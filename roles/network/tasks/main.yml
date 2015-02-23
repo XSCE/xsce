@@ -1,3 +1,8 @@
+- include: named.yml
+  tags:
+    - named
+    - network
+
 - name: Create xs network flags
   template: backup=yes
             src={{ item }}.j2
@@ -66,8 +71,3 @@
            enabled=yes
            state=started
 - debug:  msg="hopefully now NM is restarted"
-
-- include: named.yml
-  tags:
-    - named
-    - network
