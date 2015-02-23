@@ -33,6 +33,7 @@
            state=stopped
   when: not dhcpd_enabled
 
+# service is started via NM dispatcher
 - name: Enable dhcpd service
   service: name=dhcpd 
            enabled=yes
