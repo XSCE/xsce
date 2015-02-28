@@ -42,7 +42,7 @@ xsce_hostname: schoolserver
 xsce_domain: lan
 lan_ip: 172.18.96.1
 lan_netmask: 255.255.224.0
-wan_uses_dhcp: True
+wan_uses_ifcfg: True
 
 #Read docs/NETWORKING.rst
 xsce_lan_enabled: True

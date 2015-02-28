@@ -37,6 +37,11 @@
               group=root
               mode=0644
 
+- name: Remove lan interface
+  file: state=absent
+        dest=/etc/sysconfig/network-scripts/ifcfg-LAN
+  when: xsce_lan_iface == "none"
+
 - name: Configure lan interface
   template: src=ifcfg.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-LAN
@@ -46,13 +51,16 @@
   file: state=absent
         dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_lan_iface}}
 
-# If wan is using dhcp we might of created this file but now LAN is a different device intended 
-# as a one time clean up now that LAN is now ifcfg-LAN. Otherwise toggle wan_uses_dhcp to False 
-# to exclude this action when user has pre-existing static ip address at this location.
+- name: check for WAN ifcfg file
+  stat: dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_wan_iface}}
+  register: wan_ifcfg_present
+  
+# Toggle wan_uses_ifcfg to False to enable this action when the user has pre-existing
+# ip addressing at this location and needs to be deleted otherwise leave the file alone.
 - name: Clean up old WAN interface name
   file: state=absent
         dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_wan_iface}}
-  when: wan_uses_dhcp
+  when: 'not wan_uses_ifcfg and wan_ifcfg_present.stat.exists == True'
 
 # This is a dog's breakfast, but with ansible 1.6.3 service: name=NetworkManager state=restarted doesn't work
 
