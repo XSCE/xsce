@@ -55,7 +55,19 @@
   stat: dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_wan_iface}}
   register: wan_ifcfg_present
   
-# Toggle wan_uses_ifcfg to False to enable this action when the user has pre-existing
+- name: Disable user suppied ifcfg file
+  lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_wan_iface}}
+              regexp='^ONBOOT='
+              line=ONBOOT="no"
+  when: xsce_wan_iface == "none" and wan_ifcfg_present.stat.exists == True'
+
+- name: Enable user suppied ifcfg file
+  lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_wan_iface}}
+              regexp='^ONBOOT='
+              line=ONBOOT="yes"
+  when: xsce_wan_iface != "none" and wan_ifcfg_present.stat.exists == True'
+
+# Toggle wan_uses_ifcfg to False to enable this action only when the user has pre-existing
 # ip addressing at this location and needs to be deleted otherwise leave the file alone.
 - name: Clean up old WAN interface name
   file: state=absent
