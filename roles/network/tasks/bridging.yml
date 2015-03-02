@@ -1,7 +1,9 @@
 # Too do handle more than one detected interface
 - name: enslaving LAN device to Bridge
   template: src=ifcfg-slave.j2
-            dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_lan_iface}}
+            dest=/etc/sysconfig/network-scripts/ifcfg-{{discovered_lan_iface}} 
+  when: 'discovered_lan_iface != ""'
+
 
 - name restart network
   service: name=network

@@ -4,6 +4,6 @@ NM_CONTROLLED=no
 BOOTPROTO=none
 BRIDGE=br0
 
-DEVICE={{ xsce_lan_iface }}
-HWADDR={{ hostvars[inventory_hostname]['ansible_' + xsce_lan_iface]['macaddress'] }}
+DEVICE={{ discovered_lan_iface }}
+HWADDR={{ hostvars[inventory_hostname]['ansible_' + discovered_lan_iface]['macaddress'] }}
 
