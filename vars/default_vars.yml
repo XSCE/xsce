@@ -22,6 +22,8 @@ no_network: False  # use cache or error out if cache does not exist
 
 # The platform variable adapts install to specific hardware (raspberry pi=rpi2)
 platform: ""
+hostapd: ""
+wpa_supplicant: ""
 
 # Users and Passwords
 # obtain a password hash with - python -c 'import crypt; print crypt.crypt("<plaintext>", "$6$<salt>")'
