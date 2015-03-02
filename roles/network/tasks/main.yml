@@ -47,10 +47,6 @@
             dest=/etc/sysconfig/network-scripts/ifcfg-LAN
   when: xsce_lan_iface != "none"
 
-- name: Clean up old LAN interface name
-  file: state=absent
-        dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_lan_iface}}
-
 - name: check for WAN ifcfg file
   stat: dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_wan_iface}}
   register: wan_ifcfg_present
@@ -73,6 +69,9 @@
   file: state=absent
         dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_wan_iface}}
   when: 'not wan_uses_ifcfg and wan_ifcfg_present.stat.exists == True'
+
+- include: bridging.yml
+  when: xsce_lan_iface == "bridge"
 
 # This is a dog's breakfast, but with ansible 1.6.3 service: name=NetworkManager state=restarted doesn't work
 
