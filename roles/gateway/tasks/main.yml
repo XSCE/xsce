@@ -48,6 +48,11 @@
     - wondershaper
     - gateway
 
+- include: named.yml
+  tags:
+    - named
+    - network
+
 - name: Run iptables 
   command: /etc/sysconfig/iptables-config
 

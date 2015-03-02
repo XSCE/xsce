@@ -66,8 +66,3 @@
            enabled=yes
            state=started
 - debug:  msg="hopefully now NM is restarted"
-
-- include: named.yml
-  tags:
-    - named
-    - network
