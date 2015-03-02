@@ -48,6 +48,11 @@
     - wondershaper
     - gateway
 
+- include: named.yml
+  tags:
+    - named
+    - network
+
 - name: Run iptables 
   command: /etc/sysconfig/iptables-config
 
@@ -58,3 +63,5 @@
 - name: Create gateway flag
   shell: echo 1 > /etc/sysconfig/olpc-scripts/setup.d/installed/gateway
          creates=/etc/sysconfig/olpc-scripts/setup.d/installed/gateway
+
+- include: network.yml
