@@ -1,0 +1,10 @@
+# Setup specific to the Raspberry Pi
+#
+- name: Load the modules for the RTC
+  template: dest=/etc/modules-load.d/rtc.conf
+            src=rtc.conf
+
+- name: Instantiate a connection to i2c RTC
+  lineinfile: dest=/etc/rc.d/rc.local
+              line="echo ds3231 0x68 > /sys/class/i2c-adapter/i2c-1/new_device"
+              create=yes

@@ -20,6 +20,9 @@ service_filelist: "{{ xsce_config_file }}"
 use_cache: False # force cache use even when online
 no_network: False  # use cache or error out if cache does not exist
 
+# The platform variable adapts install to specific hardware (raspberry pi=rpi2)
+platform: ""
+
 # Users and Passwords
 # obtain a password hash with - python -c 'import crypt; print crypt.crypt("<plaintext>", "$6$<salt>")'
 
