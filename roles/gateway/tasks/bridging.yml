@@ -4,9 +4,6 @@
             dest=/etc/sysconfig/network-scripts/ifcfg-{{discovered_lan_iface}} 
   when: 'discovered_lan_iface != ""'
 
-# For F18 or others
-- name: restart network
-  service: name=network
-           enabled=yes
-           state=restarted
+# F18 or others might want network
+- include: nonNM-bridging.yml  
   when: 'ansible_distribution_version == "18"'

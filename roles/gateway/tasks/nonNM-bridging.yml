@@ -1,0 +1,15 @@
+- name: use network for F18 or others
+  lineinfile: state=present
+              line="NM_CONTROLLED=no"
+              dest=/etc/sysconfig/network-scripts/ifcfg-LAN                     
+
+# Too do handle more than one detected interface
+- name: use network for F18 or others
+  lineinfile: state=present
+              line="NM_CONTROLLED=no"
+              dest=/etc/sysconfig/network-scripts/ifcfg-{{discovered_lan_iface}}
+
+- name: use network for F18 or others
+  service: name=network
+           enabled=yes
+           state=restarted
