@@ -53,6 +53,19 @@
     - wondershaper
     - gateway
 
+- name: Create xs network flags
+  template: backup=yes
+            src={{ item }}.j2
+            dest=/etc/sysconfig/{{ item }}
+            mode=0644
+  with_items:
+    - xs_wan_device
+    - xs_lan_device
+    - xs_domain_name
+  tags:
+    - network-discover
+    - gateway
+
 - name: Run iptables 
   command: /etc/sysconfig/iptables-config
 
