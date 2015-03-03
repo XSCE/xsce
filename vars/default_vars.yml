@@ -50,7 +50,8 @@ xsce_wan_enabled: True
 #intended for developers
 user_lan_iface: auto
 user_wan_iface: auto
-#only change these if you know what you are doing
+detect_slaves: False
+# only change these if you know what you are doing
 
 # Parameters by Aggregate Roles
 # Each Role must have the following variables which are either True or False:
