@@ -41,4 +41,11 @@
   shell: echo 1 > /etc/sysconfig/olpc-scripts/setup.d/installed/gateway
          creates=/etc/sysconfig/olpc-scripts/setup.d/installed/gateway
 
+- name: detect if NM is active if so restart
+  shell: "systemctl is-active NetworkManager"
+  register: NM_active
+  ignore_errors: True
+  changed_when: false
+
 - include: NM.yml
+  when: NM_active == "active"
