@@ -43,12 +43,13 @@
   tags:
     - download
 
-- name: restart NetworkManager services
-  service: name=NetworkManager
-           enabled=yes
-           state=restarted
-  service: name=NetworkManager-dispatcher
-           enabled=yes
-           state=restarted
+# lets restart this only one
+#- name: restart NetworkManager services
+#  service: name=NetworkManager
+#           enabled=yes
+#           state=restarted
+#  service: name=NetworkManager-dispatcher
+#           enabled=yes
+#           state=restarted
 
 

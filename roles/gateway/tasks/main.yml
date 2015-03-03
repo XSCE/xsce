@@ -33,6 +33,11 @@
     - { src: "gateway/iptables.service" , dest: "/etc/systemd/system/iptables.service" }
     - { src: "gateway/xs-gen-iptables" , dest: "/usr/bin/xs-gen-iptables" }
 
+- include: named.yml
+  tags:
+    - named
+    - gateway
+
 - include: dhcpd.yml
   tags:
     - dhcpd
@@ -58,3 +63,5 @@
 - name: Create gateway flag
   shell: echo 1 > /etc/sysconfig/olpc-scripts/setup.d/installed/gateway
          creates=/etc/sysconfig/olpc-scripts/setup.d/installed/gateway
+
+- include: network.yml
