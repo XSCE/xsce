@@ -1,14 +1,3 @@
-- name: Disable firewalld service
-  service: name=firewalld
-           enabled=no
-           state=stopped
-
-- name: Install iptables service package
-  yum: name=iptables-services
-       state=installed
-  tags:
-    - download
-
 - name: Create olpc-scripts directory
   file: path={{ item }}
         owner=root
@@ -18,25 +7,6 @@
   with_items:
     - /etc/sysconfig/olpc-scripts/
     - /etc/sysconfig/olpc-scripts/setup.d/installed/
-
-- name: Install iptables services
-  template: backup=yes
-            src={{ item.src }}
-            dest={{ item.dest }}
-            owner=root
-            group=root
-            mode=0755
-  with_items:
-    - { src: "gateway/iptables-xs.j2" , dest: "/etc/sysconfig/olpc-scripts/iptables-xs" }
-    - { src: "gateway/ip6tables-xs" , dest: "/etc/sysconfig/olpc-scripts/ip6tables-xs" }
-    - { src: "gateway/iptables-config" , dest: "/etc/sysconfig/iptables-config" }
-    - { src: "gateway/iptables.service" , dest: "/etc/systemd/system/iptables.service" }
-    - { src: "gateway/xs-gen-iptables" , dest: "/usr/bin/xs-gen-iptables" }
-
--include: network.yml
-  tags:
-    - network-discover
-    - gateway
 
 - include: dhcpd.yml
   tags:
@@ -58,12 +28,14 @@
     - wondershaper
     - gateway
 
-- name: Run iptables 
-  command: /etc/sysconfig/iptables-config
+- include: network.yml
+  tags:
+    - network-discover
+    - gateway
 
-- name: Enable iptables service 
-  service: name=iptables
-           enabled=yes
+- include: iptables.yml
+  tags:
+    - gateway
 
 - name: Create gateway flag
   shell: echo 1 > /etc/sysconfig/olpc-scripts/setup.d/installed/gateway
