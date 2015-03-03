@@ -38,6 +38,11 @@
     - dhcpd
     - gateway
 
+- include: named.yml
+  tags:
+    - named
+    - gateway
+
 - include: squid.yml
   tags:
     - squid
