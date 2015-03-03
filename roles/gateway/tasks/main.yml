@@ -33,6 +33,11 @@
     - { src: "gateway/iptables.service" , dest: "/etc/systemd/system/iptables.service" }
     - { src: "gateway/xs-gen-iptables" , dest: "/usr/bin/xs-gen-iptables" }
 
+- include: named.yml
+  tags:
+    - named
+    - gateway
+
 - include: dhcpd.yml
   tags:
     - dhcpd
@@ -47,11 +52,6 @@
   tags:
     - wondershaper
     - gateway
-
-- include: named.yml
-  tags:
-    - named
-    - network
 
 - name: Run iptables 
   command: /etc/sysconfig/iptables-config
