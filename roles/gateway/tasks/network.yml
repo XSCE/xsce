@@ -41,5 +41,3 @@
             src=network/ifcfg.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_lan_iface}}
   when: 'xsce_lan_iface != "none"'
-
-- include: NM.yml
