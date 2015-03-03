@@ -33,7 +33,7 @@
 
 - name: Remove lan interface
   file: state=absent
-  dest=/etc/sysconfig/network-scripts/ifcfg-LAN
+        dest=/etc/sysconfig/network-scripts/ifcfg-LAN
   when: xsce_lan_iface == "none"
 
 - name: Configure lan interface
@@ -42,4 +42,4 @@
   when: 'xsce_lan_iface != "none"'
 
 - include: bridging.yml
-  when: xsce_lan_iface == "br0"
+  when: 'xsce_lan_iface == "br0"'

@@ -5,8 +5,8 @@
   when: 'discovered_lan_iface != ""'
 
 # For F18 or others
-- name restart network
+- name: restart network
   service: name=network
            enabled=yes
            state=restarted
-  when: 'ansible_distribution_version == "18"
+  when: 'ansible_distribution_version == "18"'
