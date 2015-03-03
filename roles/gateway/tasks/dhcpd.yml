@@ -33,8 +33,8 @@
            state=stopped
   when: not dhcpd_enabled
 
+# service is restarted with NM dispatcher.d script
 - name: Enable dhcpd service
   service: name=dhcpd 
            enabled=yes
-           state=restarted
   when: dhcpd_enabled
