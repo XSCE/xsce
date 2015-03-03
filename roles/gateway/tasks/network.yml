@@ -40,3 +40,6 @@
   template: src=network/ifcfg.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-LAN
   when: 'xsce_lan_iface != "none"'
+
+- include: bridging.yml
+  when: xsce_lan_iface == "br0"
