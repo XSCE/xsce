@@ -48,4 +48,4 @@
   changed_when: false
 
 - include: NM.yml
-  when: NM_active == "active"
+  when: NM_active.stdout == "active"
