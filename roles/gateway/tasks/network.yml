@@ -14,6 +14,12 @@
             group=root
             mode=0644
 
+- name: Set hostname
+  template: dest=/etc/hostname
+            src=network/hostname.j2
+            owner=root
+            mode=0644
+
 #TODO: Use vars instead of hardcoded values
 - name: Configure /etc/hosts
   lineinfile: dest=/etc/hosts
