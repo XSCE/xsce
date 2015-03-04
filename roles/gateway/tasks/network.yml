@@ -49,4 +49,5 @@
 - name: Supply wan interface file
   template: src=network/ifcfg-WAN.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_wan_iface}}
-  when: 'xsce_wan_iface != "none" and wan_ip != "dhcp"
+  when: 'xsce_wan_iface != "none" and wan_ip != "dhcp"'
+ 
