@@ -8,6 +8,24 @@
     - /etc/sysconfig/olpc-scripts/
     - /etc/sysconfig/olpc-scripts/setup.d/installed/
 
+- include: network.yml
+  tags:
+    - network-discover
+    - gateway
+
+- name: detect if NM is active if so restart
+  shell: "systemctl is-active NetworkManager"
+  register: NM_active
+  ignore_errors: True
+  changed_when: false
+  tags:
+    - gateway
+
+- include: NM.yml
+  when: NM_active.stdout == "active"
+  tags:
+    - gateway
+
 - include: dhcpd.yml
   tags:
     - dhcpd
@@ -28,11 +46,6 @@
     - wondershaper
     - gateway
 
-- include: network.yml
-  tags:
-    - network-discover
-    - gateway
-
 - include: iptables.yml
   tags:
     - gateway
@@ -41,15 +54,3 @@
   shell: echo 1 > /etc/sysconfig/olpc-scripts/setup.d/installed/gateway
          creates=/etc/sysconfig/olpc-scripts/setup.d/installed/gateway
 
-- name: detect if NM is active if so restart
-  shell: "systemctl is-active NetworkManager"
-  register: NM_active
-  ignore_errors: True
-  changed_when: false
-  tags:
-    - gateway
-
-- include: NM.yml
-  when: NM_active.stdout == "active"
-  tags:
-    - gateway
