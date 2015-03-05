@@ -47,6 +47,10 @@ $IPTABLES -A INPUT -p udp --dport 5353 -d 224.0.0.251 -j ACCEPT
 #when run as gateway 
 $IPTABLES -A INPUT -p tcp --dport {{ ssh_port }} -m state --state NEW -i $wan -j ACCEPT
 
+{% if gui_wan == "True" %}
+$IPTABLES -A INPUT -p tcp --dport {{ gui_port }} -m state --state NEW -i $wan -j ACCEPT
+{% endif %}
+
 $IPTABLES -A POSTROUTING -t nat -o $wan -j MASQUERADE
 $IPTABLES -A FORWARD -i $wan -o $lan -m state --state ESTABLISHED,RELATED -j ACCEPT
 
