@@ -1,9 +1,18 @@
 - include: prep.yml
+  tags:
+    - prep
+
 - include: computed_vars.yml
+  tags:
+    - platform
+
 - include: computed_network.yml
+  tags:
+    - platform
            
 # Put conditional includes for platforms here
 - include: xo.yml
   when: xo_model != "none"
   tags:
+    - platform
     - xo
