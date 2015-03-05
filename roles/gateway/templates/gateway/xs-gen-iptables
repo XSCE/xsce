@@ -69,6 +69,11 @@ $IPTABLES -A FORWARD -i $lan -o $wan -j ACCEPT
 $IPTABLES -A FORWARD -i $wan -o $lan -j DROP
 $IPTABLES -A INPUT -i $wan -j DROP
 
+{% if block_DNS == "True" %}
+$IPTABLES -t nat  -A PREROUTING -i $lan -p tcp --dport 53 ! -d {{lan_ip}} -j DNAT --to {{lan_ip}}:53
+$IPTABLES -t nat  -A PREROUTING -i $lan -p udp --dport 53 ! -d {{lan_ip}} -j DNAT --to {{lan_ip}}:53
+{% endif %}
+
 if [ -f /etc/sysconfig/xs_httpcache_on ]; then
     $IPTABLES  -t nat  -A PREROUTING -i $lan -p tcp --dport 80 ! -d 172.18.96.1 -j DNAT --to 172.18.96.1:3128
 fi
