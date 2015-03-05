@@ -19,7 +19,7 @@
   when: 'gui_wan == "True"'
   tags:     avahi
 
-- name set ssh port for avahi
+- name: set ssh port for avahi
   lineinfile: dest=/etc/avahi/services/ssh.service
               regexp='^<port>'
               line='<port>{{ssh_port}}</port>'
