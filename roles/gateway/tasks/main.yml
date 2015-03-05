@@ -46,6 +46,10 @@
   register: NM_active
   ignore_errors: True
   changed_when: false
+  tags:
+    - gateway
 
 - include: NM.yml
   when: NM_active.stdout == "active"
+  tags:
+    - gateway
