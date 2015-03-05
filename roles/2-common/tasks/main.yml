@@ -2,13 +2,25 @@
   when: ansible_selinux["status"] != "disabled"
   tags:
     - download
+    - common
     
 - include: prelim.yml
+  tags:
+    - prep
 
 - include: yum.yml 
   tags:
+    - common
     - download
 
 - include: chrony.yml
+  tags:
+    - common
+
 - include: avahi.yml
+  tags:
+    - common
+
 - include: sysctl.yml
+  tags:
+    - common
