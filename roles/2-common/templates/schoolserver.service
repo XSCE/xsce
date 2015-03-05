@@ -1,17 +1,9 @@
 <?xml version="1.0" standalone='no'?><!--*-nxml-*-->
 <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
 <service-group>
-<name replace-wildcards="yes">School Server Service at %h </name>
-<service>
-<type>_ssh._tcp</type>
-<port>{{ssh_port}}</port>
-</service>
-
-{% if gui_wan == "True" %}
+<name replace-wildcards="yes">MGMT console at %h </name>
 <service>
 <type>_https._tcp</type>
 <port>{{gui_port}}</port>
 </service>
-{% endif %}
-
 </service-group>
