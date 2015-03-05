@@ -51,8 +51,11 @@ $IPTABLES -A INPUT -p tcp --dport {{ ssh_port }} -m state --state NEW -i $wan -j
 $IPTABLES -A INPUT -p tcp --dport {{ gui_port }} -m state --state NEW -i $wan -j ACCEPT
 {% endif %}
 
-$IPTABLES -A POSTROUTING -t nat -o $wan -j MASQUERADE
 $IPTABLES -A FORWARD -i $wan -o $lan -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+{% if xsce_gateway_enabled == "True" %}
+$IPTABLES -A POSTROUTING -t nat -o $wan -j MASQUERADE
+{% endif %}
 
 #Block https traffic except if directed at server
 if [  "$gw_block_https" == "True" ]; then    
