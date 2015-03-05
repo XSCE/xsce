@@ -58,4 +58,4 @@
   when: 'xsce_wan_iface != "none" and wan_ip != "dhcp"'
  
 - include: NM.yml
-  when: 'NM_active.stdout == "active" and wan_ip != "dhcp"
+  when: 'NM_active.stdout == "active" and wan_ip != "dhcp"'
