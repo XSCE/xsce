@@ -1,9 +1,17 @@
 <?xml version="1.0" standalone='no'?><!--*-nxml-*-->
 <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
 <service-group>
-<name replace-wildcards="yes">School Server Idmgr Service at %h </name>
+<name replace-wildcards="yes">School Server Service at %h </name>
 <service>
-<type>_idmgr._tcp</type>
-<port>8080</port>
+<type>_ssh._tcp</type>
+<port>{{ssh_port}}</port>
 </service>
+
+{% if gui_wan == "True" %}
+<service>
+<type>_https._tcp</type>
+<port>{{gui_port}}</port>
+</service>
+{% endif %}
+
 </service-group>
