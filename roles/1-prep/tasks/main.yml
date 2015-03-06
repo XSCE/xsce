@@ -1,9 +1,19 @@
+# yea little inverted but oh well less commits
 - include: prep.yml
+  tags:
+    - platform
+
 - include: computed_vars.yml
+  tags:
+    - prep
+
 - include: computed_network.yml
+  tags:
+    - prep
            
 # Put conditional includes for platforms here
 - include: xo.yml
   when: xo_model != "none"
   tags:
     - xo
+    - platform
