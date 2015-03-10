@@ -1,14 +1,13 @@
 - name: XO Server specific tasks
   command: echo Starting XO.yml
-  
+
 - name: Disable sleep
   command: touch /etc/powerd/flags/inhibit-suspend
            creates=/etc/powerd/flags/inhibit-suspend
 
 - name: Disable sleep on lid closing
-  lineinfile: backup=yes
-              dest=/etc/powerd/powerd.conf
-              regexp='^config_SLEEP_WHEN_LID_CLOSED' 
+  lineinfile: dest=/etc/powerd/powerd.conf
+              regexp='^config_SLEEP_WHEN_LID_CLOSED'
               line='config_SLEEP_WHEN_LID_CLOSED="no"'
               state=present
               backup=yes
@@ -78,7 +77,7 @@
               state=absent
 
 
-- name: Disable /var/log tmpfs 
+- name: Disable /var/log tmpfs
   lineinfile: backup=yes
               dest=/etc/fstab
               regexp='^varlog.*'
@@ -94,11 +93,11 @@
   file: path=/etc/profile.d/zzz_olpc.sh
         state=absent
 
-- name: Reboot system 
-  command: /sbin/reboot 
+- name: Reboot system
+  command: /sbin/reboot
   when: disabled_login.changed
   ignore_errors: yes
   async: 300
   poll: 120
- 
+
 

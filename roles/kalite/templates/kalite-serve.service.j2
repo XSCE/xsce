@@ -6,6 +6,7 @@ After=syslog.target network.target
 Type=forking
 PIDFile={{ kalite_root }}/kalite/runcherrypyserver.pid
 ExecStart=/usr/bin/su {{ kalite_user }} -c '/usr/bin/python {{ kalite_root }}/kalite/manage.py kaserve host=0.0.0.0 daemonize=true production=true pidfile={{ kalite_root }}/kalite/runcherrypyserver.pid'
+TimeoutStartSec=120
 
 [Install]
 WantedBy=multi-user.target
