@@ -37,8 +37,8 @@
 # workaround for fact that auto create does not work on ini_file
 - name: Create xsce config file
   file: dest='{{ xsce_config_file }}'
-        state=touch        
-  
+        state=touch
+
 - name: add version section
   ini_file: dest='{{ xsce_config_file }}'
             backup=yes
@@ -49,10 +49,10 @@
     - option: 'xsce_branch'
       value: '{{ ansible_local["local_facts"]["xsce_branch"] }}'
     - option: 'xsce_commit'
-      value: '{{ ansible_local["local_facts"]["xsce_commit"] }}'      
+      value: '{{ ansible_local["local_facts"]["xsce_commit"] }}'
     - option: 'install_date'
       value: '{{ ansible_date_time["iso8601"] }}'
-      
+
 - name: Add location section to config file
   ini_file: dest='{{ xsce_config_file }}'
             section=location
@@ -60,9 +60,9 @@
             value='{{ item.value }}'
   with_items:
     - option: 'xsce_base'
-      value: '{{ xsce_base }}'      
+      value: '{{ xsce_base }}'
     - option: 'xsce_dir'
-      value: '{{ xsce_dir }}'  
+      value: '{{ xsce_dir }}'
 
 # set top level variables from local facts for convenience
 - set_fact:
@@ -76,18 +76,18 @@
 - name: Turn on mysql if elgg or rachel enabled
   set_fact:
     mysql_enabled: True
-  when: elgg_enabled or rachel_enabled
+  when: elgg_enabled or rachel_enabled or owncloud_enabled
 
 # for various reasons the mysql service can not be enabled on fedora 20,
 # but 'mariadb', which is its real name can
 # on fedora 18 we need to use 'mysqld'
-      
+
 - name: Set mysqld service name to mariadb by default
   set_fact:
     mysql_service: mariadb
-    
+
 - name: Set mysqld service name to mysqld for fedora 18
   set_fact:
-    mysql_service: mysqld    
+    mysql_service: mysqld
   when: ansible_distribution_release == "based on Fedora 18"
-                  
+
