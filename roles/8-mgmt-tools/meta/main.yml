@@ -1,6 +1,6 @@
 dependencies:
 #gnome-python2-libwnck python_xappy   - { role: sugar-stats, tags: ['olpc','sugar-stats','tools'] }
-   - { role: ajenti, tags: ['services','ajenti','tools'] }
+#   - { role: ajenti, tags: ['services','ajenti','tools'] }
    - { role: munin, tags: ['services','munin','tools'] }
    - { role: monit, tags: ['services','monit','tools'] }
    - { role: vnstat, tags: ['services','vnstat','tools'] }
