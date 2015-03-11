@@ -1,0 +1,1 @@
+kernel will not boot without intel_pstate=disable in the kernel command linen
