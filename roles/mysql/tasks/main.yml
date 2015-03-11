@@ -1,9 +1,9 @@
-    - name: Install MySQL
+    - name: Install MySQL -  rpm name is currently in flux
       yum: name={{ item }}
       with_items:
         - MySQL-python
-        - mysql
-        - mysql-server
+        - "{{ mysql-rpm }}"
+        - "{{ mysql-rpm }}-server"
         - php-mysql
         - php-gd
         - php-imap
