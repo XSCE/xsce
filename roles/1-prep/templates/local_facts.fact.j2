@@ -1,0 +1,31 @@
+#!/bin/sh
+. /etc/xsce/xsce.env
+cd $XSCE_DIR
+
+# while we're here untrack local vars
+git update-index --assume-unchanged vars/local_vars.yml
+
+# get current version
+BRANCH=`git rev-parse --abbrev-ref HEAD`
+COMMIT=`git rev-parse --verify HEAD`
+
+if [ -d /usr/lib64/php ]
+then
+  PHPLIB_DIR=/usr/lib64/php
+else
+  PHPLIB_DIR=/usr/lib/php
+fi
+
+if [ -f /proc/device-tree/mfg-data/MN ]
+then
+  XO_VERSION=`cat /proc/device-tree/mfg-data/MN`
+else
+  XO_VERSION="none"
+fi
+
+cat <<EOF
+{"phplib_dir" : "$PHPLIB_DIR",
+"xsce_branch" : "$BRANCH",
+"xsce_commit" : "$COMMIT",
+"xo_model"    : "$XO_VERSION"}
+EOF

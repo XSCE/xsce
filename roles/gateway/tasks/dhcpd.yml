@@ -27,7 +27,14 @@
         mode=0644
         state=file
 
+- name: Disable dhcpd service
+  service: name=dhcpd 
+           enabled=no
+           state=stopped
+  when: not dhcpd_enabled
+
 - name: Enable dhcpd service
   service: name=dhcpd 
            enabled=yes
            state=restarted
+  when: dhcpd_enabled

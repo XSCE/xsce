@@ -10,28 +10,25 @@
 </HEAD>
 <BODY>
 <div id="wrapper">	
-<h1>स्वागतम् Welcome to the School Server</h1>
+<h1>स्कूल सर्वर में आपका स्वागत है। </h1>
 <?php require 'incl/banner.html'; ?>
 
 <div id="main"> 
-<p>
-		
-यह पृष्ठ हिंदी में होना चाहिए
+	
+<br><h2>आप यहाँ नीचे दिए गए कार्यों को कर सकते हैं:</h2>
 
-<p>	
-<br><h2>Interesting Things You Can Do Here:</h2>
-
-<?php service_link("pathagar", "Read Books on पाठागार", "Ipsum "); ?>
+<?php service_link("pathagar", "पाठागर पर किताबें पढ़ें", "पाठागर एक सर्वर है जिसमे आप बिना इंटरनेट से डाउनलोड करे किताबें पढ़ सक्ते हैं। "); ?>
 <?php // iiab_link("Internet In A Box", 
 //                "Internet-in-a-Box is a copy of some of the most important material on the internet, such as the Wikipedia, stored locally where you can reach it easily.",
 //                "Searching for Internet In A Box"); 
 ?>
-<?php service_link("iiab", "Internet In A Box", "Internet-in-a-Box is a copy of some of the most important material on the internet, such as the Wikipedia, stored locally where you can reach it easily."); ?>
-<?php service_link("moodle","मूडल्","लोरेम इप्सुम dolor sit amet, consectetur dipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non "); ?>
-<?php service_link("upload", "Upload", "Lorem Ipsum"); ?>
-<?php service_link("activity-server", "Download an Activity", "Lorem Ipsum"); ?>
+//<?php hard_link("/content", "Access Other Content", "Put additional content in /library/content and any subdirectories and link to it with this function, such as syans in Haiti."); ?>
+<?php service_link("iiab", "इंटरनेट इन अ बॉक्स", "इंटरनेट-इन-अ-बॉक्स में आप इंटरनेट पे उपलब्ध विभिन्न प्रकार कि महत्वपूर्ण चीज़ें जैसे विकिपीडिया, नक्शे, इत्यादि पाएंगे। "); ?>
+<?php service_link("moodle","मूडल्",""); ?>
+<?php service_link("upload", "अपलोड", "एक्टिविटीज़ अपलोड करें"); ?>
+<?php service_link("activity-server", "ऐक्टिविटी सर्वर", "आप यहाँ से अपने कंप्यूटर में नयी एक्टिविटीज़ डाउनलोड कर सकते हैं। "); ?>
 
-<BR> Enjoy Exploring!
+<BR> खोज का आनंद लें!
 </div><!-- #main -->
 </div><!-- #wrapper -->
 </BODY>

@@ -42,27 +42,27 @@
             owner=root
             group=root
   when:
-            openvpn_enable == true
+            openvpn_enabled
 
 - name: make openvpn connection automatic
   lineinfile: dest=/etc/crontab
             line="25 *  *  *  * root (/usr/bin/xs-vpn test) > /dev/null"
   when:
-            openvpn_enable == true
+            openvpn_enabled
 
 - name: make openvpn connection manual
   lineinfile: dest=/etc/crontab
             regexp=".*/usr/bin/xs-vpn.*"
             state=absent
   when:
-            openvpn_enable == false
+            not openvpn_enabled
 
 - name: start the openvpn tunnel at boot time
   lineinfile:
             dest=/etc/rc.d/rc.local
             line='/usr/bin/xs-vpn test > /dev/null'
   when:
-            openvpn_enable == true
+            openvpn_enabled
 
 - name: stop starting the openvpn tunnel at boot time
   lineinfile:
@@ -70,4 +70,4 @@
             regexp=".*/usr/bin/xs-vpn.*"
             state=absent
   when:
-            openvpn_enable == false
+            not openvpn_enabled

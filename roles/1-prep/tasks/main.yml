@@ -1,8 +1,10 @@
 - include: prep.yml
-
+- include: computed_vars.yml
+- include: computed_network.yml
+           
 # Put conditional includes for platforms here
 - include: xo.yml
-  when: ansible_distribution_release == "based on Fedora 18"
+  when: xo_model != "none"
   tags:
     - xo
 

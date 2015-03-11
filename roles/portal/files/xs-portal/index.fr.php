@@ -23,6 +23,7 @@
 //                "Internet-in-a-Box contient une partie des plus importantes information disponibles sur Internet, comme Wikipedia.  Ces informations sont stockées localement pour que tu puisses les lire facilement.",
 //                "Recherche de Internet-in-a-Box"); 
 ?>
+<?php service_link("rachel", "RACHEL", "contient une partie des plus importantes information disponibles sur Internet en anglais, comme Wikipedia.  Ces informations sont stockées localement pour que tu puisses les lire facilement."); ?>
 <?php service_link("iiab", "Internet-in-a-Box", "Internet-in-a-Box contient une partie des plus importantes information disponibles sur Internet, comme Wikipedia.  Ces informations sont stockées localement pour que tu puisses les lire facilement."); ?>
 <?php service_link("moodle", "Accueil Moodle", "Moodle est une collection de leçons et de contenus scolaires organisés pour t’aider à apprendre des choses fascinantes."); ?>
 <?php service_link("upload", "Télécharge Fichiers", "A partir de ce lien, tu peux télécharger une variété de fichiers, des images, des activité."); ?>

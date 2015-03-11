@@ -1,0 +1,2 @@
+mysql_install: True
+mysql_enabled: False

@@ -19,13 +19,6 @@
         mode=0755
         state=directory
 
-- name: create ansible.d facts directory
-  file: path=/etc/ansible/facts.d
-        owner=root
-        group=root
-        mode=0750
-        state=directory
-
 - name: copy wshaper config script
   template: backup=yes
             src=wondershaper/wondershaper.conf
@@ -41,7 +34,14 @@
         group=root
         state=link
 
-- name: enable wondershaper service
+- name: Enable wondershaper service
   service: name=wondershaper
            enabled=yes
            state=restarted
+  when: wondershaper_enabled
+
+- name: Disable wondershaper service
+  service: name=wondershaper
+           enabled=no
+           state=stopped
+  when: not wondershaper_enabled

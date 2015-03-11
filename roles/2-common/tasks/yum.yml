@@ -25,6 +25,9 @@
    - xml-common
    - make
    - yum-utils
+   - tar
+   - unzip
+   - bzip2
   tags:
     - download
 
@@ -32,8 +35,10 @@
   yum: name={{ item }}
        state=latest
   with_items:
+   - bash
    - iptables
    - NetworkManager
+   - vim-minimal # ejabberd erlang does not update this properly
   tags:
     - download
 

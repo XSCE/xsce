@@ -27,26 +27,23 @@
   service: name=smb state=started enabled=yes
   tags: 
     - samba
-  when :
-    samba_enabled is defined and samba_enabled == 'true'
+  when : samba_enabled
 
 - name: netbios name server is running and set to start on boot.
   service: name=nmb state=started enabled=yes
   tags: 
     - samba
-  when :
-    samba_enabled is defined and samba_enabled == 'true'
+  when : samba_enabled
 
 - name: Disable Samba if that is wanted
   service: name=smb state=stopped enabled=no
   tags: 
     - samba
-  when :
-    samba_enabled is defined and samba_enabled == 'false'
+  when : not samba_enabled
 
 - name: Disable Samba name server if that is wanted
   service: name=nmb state=stopped enabled=no
   tags: 
     - samba
-  when :
-    samba_enabled is defined and samba_enabled == 'false'
+  when : not samba_enabled
+

@@ -34,19 +34,16 @@
     - { src: "gateway/xs-gen-iptables" , dest: "/usr/bin/xs-gen-iptables" }
 
 - include: dhcpd.yml
-  when: 'xsce_lan_iface != ""' 
   tags:
     - dhcpd
     - gateway
 
 - include: squid.yml
-  when: 'xsce_lan_iface != ""'
   tags:
     - squid
     - gateway
 
 - include: wondershaper.yml
-  when: 'xsce_lan_iface != ""'
   tags:
     - wondershaper
     - gateway

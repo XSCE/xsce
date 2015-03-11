@@ -1,0 +1,12 @@
+#!/usr/bin/expect
+
+set timeout 90
+spawn /tmp/kalite_install.sh
+
+expect "to continue" {send "\r"}
+expect "Username" {send "{{ kalite_user }}\r"}
+expect "Password:" {send "{{ kalite_password }}\r"}
+expect "Password (again):" {send "{{ kalite_password }}\r"}
+expect "Please enter a name for this server" {send "{{ kalite_server_name }}\r"}
+expect "Please enter a one-line description" {send "\r"}
+expect "CONGRATULATIONS!" {exit}

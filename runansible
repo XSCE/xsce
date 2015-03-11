@@ -1,43 +1,49 @@
 #!/bin/bash
 
-if [ -f xsce.yml ]
+# if not the first, run repo location is here
+
+if [ -f /etc/xsce/xsce.env ]
 then
- PLAYBOOK="xsce.yml"
- INVENTORY="ansible_hosts"
- CWD=`pwd`
- echo "Running local playbooks! "
-else
- if [ -f /var/local/xsce/xsce.yml ]
- then
- PLAYBOOK="/var/local/xsce/xsce.yml"
- INVENTORY="/var/local/xsce/ansible_hosts"
- CWD="/var/local/xsce"
- echo "Running rpm provided playbooks ! "
- fi
+  . /etc/xsce/xsce.env
+  cd $XSCE_DIR
 fi
 
-#Domain change
+if [ ! -f xsce.yml ]
+then
+ echo "XSCE Playbook not found."
+ echo "Please run this command from the top level of the git repo."
+ echo "Exiting."
+ exit
+fi
+
+PLAYBOOK="xsce.yml"
+INVENTORY="ansible_hosts"
+CWD=`pwd`
+echo "Running local playbooks! "
+
+XSDOMAIN=""
+
+# Pass in Existing Domain
 if [ -f /etc/sysconfig/xs_domain_name ] 
 then
  XSDOMAIN=`cat /etc/sysconfig/xs_domain_name`
- ARGS="--extra-vars \"xsce_domain=$XSDOMAIN\""
 fi
 
+# Or accept Domain on command line
 if [ x"$1" != x ]
 then
  XSDOMAIN=$1
- ARGS="--extra-vars \"xsce_domain=$XSDOMAIN\""
 fi
 
-
-if [ "$PLAYBOOK" == "" ]
+# Pass in git location
+if [ x"$XSDOMAIN" != x ]
 then
- echo "rpm is not installed, and local playbook wasn't found!"
- exit
+ ARGS="--extra-vars '{\"xsce_domain\":\"$XSDOMAIN\"}'"
+else
+ ARGS="" 
 fi
 
 export ANSIBLE_LOG_PATH="xsce-install.log"
 ansible -m setup -i $INVENTORY localhost --connection=local >> /dev/null
-bash $CWD/roles/1-prep/library/xsce_facts >> $ANSIBLE_LOG_PATH
 
 ansible-playbook -i $INVENTORY $PLAYBOOK ${ARGS} --connection=local 
