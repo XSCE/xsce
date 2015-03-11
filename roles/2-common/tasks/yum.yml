@@ -11,6 +11,7 @@
    - createrepo
    - acpid
    - mlocate
+#   - mtd-utils
    - rsync
    - htop
    - etckeeper
@@ -22,7 +23,6 @@
    - syslog
    - logrotate
    - xml-common
-   - etckeeper
    - make
    - yum-utils
    - tar

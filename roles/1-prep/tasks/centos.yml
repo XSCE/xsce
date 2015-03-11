@@ -1,0 +1,8 @@
+- name: Centos Server specific tasks
+  command: echo Starting centos.yml
+
+- name: install repo for CentOS
+  template: src={{ item }} dest=/etc/yum.repos.d/epel-repo owner=root group=root mode=0644
+  with_items:
+  - epel.repo
+  - epel-testing.repo 

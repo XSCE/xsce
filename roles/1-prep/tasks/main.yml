@@ -7,3 +7,8 @@
   when: xo_model != "none"
   tags:
     - xo
+
+- include: centos.yml
+  when: ansible_distribution == "CentOS"
+  tags:
+    - centos
