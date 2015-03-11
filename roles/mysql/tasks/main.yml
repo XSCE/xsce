@@ -2,8 +2,8 @@
       yum: name={{ item }}
       with_items:
         - MySQL-python
-        - "{{ mysql-rpm }}"
-        - "{{ mysql-rpm }}-server"
+        - "{{ mysql_rpm }}"
+        - "{{ mysql_rpm }}-server"
         - php-mysql
         - php-gd
         - php-imap
