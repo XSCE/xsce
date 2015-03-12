@@ -65,6 +65,12 @@
             dest=/etc/sysconfig/network-scripts/ifcfg-LAN
   when: 'xsce_lan_iface != "none"'
 
+# Too do handle more than one detected interface
+- name: enslaving LAN device to Bridge
+  template: src=network/ifcfg-slave.j2
+  dest=/etc/sysconfig/network-scripts/ifcfg-{{discovered_lan_iface}}
+  when: 'discovered_lan_iface != "" and detect_slaves'
+
 # supply an ifcfg if no gateway detected but wan_ip is set
 # set user_wan_iface: <device> and use wan_* for static info
 - name: Supply wan interface file
