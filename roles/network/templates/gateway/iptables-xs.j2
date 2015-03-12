@@ -18,6 +18,11 @@ COMMIT
 # Allow ssh access on all interfaces
 -A INPUT -m state --state NEW -m tcp -p tcp --dport {{ssh_port}} -j ACCEPT
 
+# Allow gui access on all interfaces
+{% if gui_wan == "True" %}
+-A INPUT -m state --state NEW -m tcp -p tcp --dport {{gui_port}} -j ACCEPT
+{% endif %}
+
 # Allow all LAN services
 -A INPUT ! -i {{xsce_wan_iface}} -m state --state NEW -j ACCEPT
 
