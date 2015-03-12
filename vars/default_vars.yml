@@ -80,6 +80,7 @@ dhcpd_enabled: True
 # named
 named_install: True
 named_enabled: True
+block_DNS: False
 
 # dansguardian
 dansguardian_install: True

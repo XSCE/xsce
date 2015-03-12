@@ -5,6 +5,10 @@
 {% if squid_enabled == "True" %}
 -t nat  -A PREROUTING -i $lan -p tcp --dport 80 ! -d {{lan_ip}} -j DNAT --to {{lan_ip}}:3128
 {% endif %}
+{% if block_DNS == "True" %}
+-t nat -A PREROUTING -i $lan -p tcp --dport 53 ! -d {{lan_ip}} -j DNAT --to {{lan_ip}}:53
+-t nat -A PREROUTING -i $lan -p udp --dport 53 ! -d {{lan_ip}} -j DNAT --to {{lan_ip}}:53
+{% endif %}
 {% if xsce_gateway_enabled == "True" %}
 -A POSTROUTING -o {{xsce_wan_iface}} -j MASQUERADE
 {% endif %}
