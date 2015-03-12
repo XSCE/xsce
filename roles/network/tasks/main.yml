@@ -47,11 +47,15 @@
               group=root
               mode=0644
 
+- name: Remove lan interface
+  file: state=absent
+  dest=/etc/sysconfig/network-scripts/ifcfg-LAN
+  when: xsce_lan_iface == "none"
 
 - name: Configure lan interface
   template: backup=yes
             src=network/ifcfg.j2
-            dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_lan_iface}}
+            dest=/etc/sysconfig/network-scripts/ifcfg-LAN
   when: 'xsce_lan_iface != "none"'
 
 # supply an ifcfg if no gateway detected but wan_ip is set
