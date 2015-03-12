@@ -8,6 +8,13 @@
     - /etc/sysconfig/olpc-scripts/
     - /etc/sysconfig/olpc-scripts/setup.d/installed/
 
+- name: Set hostname
+  template: backup=yes
+            dest=/etc/hostname
+            src=network/hostname.j2
+            owner=root
+            mode=0644
+
 - name: Create xs network flags
   template: backup=yes
             src=network/{{ item }}.j2
