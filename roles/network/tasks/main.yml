@@ -1,3 +1,13 @@
+- name: Create olpc-scripts directory
+  file: path={{ item }}
+        owner=root
+        group=root
+        mode=0755
+        state=directory
+  with_items:
+    - /etc/sysconfig/olpc-scripts/
+    - /etc/sysconfig/olpc-scripts/setup.d/installed/
+
 - name: Create xs network flags
   template: backup=yes
             src=network/{{ item }}.j2
@@ -71,3 +81,28 @@
   tags:
     - named
     - network
+
+- include: dhcpd.yml
+  tags:
+    - dhcpd
+    - network
+
+- include: squid.yml
+  tags:
+    - squid
+    - network
+
+- include: wondershaper.yml
+  tags:
+    - wondershaper
+    - network
+
+- include: iptables.yml
+  tags:
+    - iptables
+    - network
+
+- name: Create gateway flag
+  shell: echo 1 > /etc/sysconfig/olpc-scripts/setup.d/installed/gateway
+         creates=/etc/sysconfig/olpc-scripts/setup.d/installed/gateway
+
