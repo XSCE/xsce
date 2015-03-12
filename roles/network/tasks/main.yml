@@ -1,6 +1,6 @@
 - name: Create xs network flags
   template: backup=yes
-            src={{ item }}.j2
+            src=network/{{ item }}.j2
             dest=/etc/sysconfig/{{ item }}
             mode=0644
   with_items:
@@ -12,7 +12,7 @@
 
 - name: Configure /etc/sysconfig/network
   template: backup=yes
-            src=sysconfig.network.j2
+            src=network/sysconfig.network.j2
             dest=/etc/sysconfig/network
             owner=root
             group=root
@@ -40,7 +40,7 @@
 
 - name: Configure lan interface
   template: backup=yes
-            src=ifcfg.j2
+            src=network/ifcfg.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_lan_iface}}
   when: 'xsce_lan_iface != "none"'
 
