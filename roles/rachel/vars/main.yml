@@ -1,7 +1,7 @@
 rachel_url: /rachel
 rachel_doc_root: /var/www/html{{ rachel_url }}
 rachel_content_path: /library/rachel/bin/www/
-rachel_mysqldb_path: /library/rachel/bin/mysql/data/sphider
+rachel_mysqldb_path: /library/rachel/bin/bin/database/mysql-5.6.20/data/sphider_plus/
 
 rachel_install: True
 rachel_enabled: False
