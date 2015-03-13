@@ -1,0 +1,43 @@
+- name: Create xs network flags
+  template: backup=yes
+            src=network/{{ item }}.j2
+            dest=/etc/sysconfig/{{ item }}
+            mode=0644
+  with_items:
+    - xs_wan_device
+    - xs_lan_device
+    - xs_domain_name
+
+- name: Configure /etc/sysconfig/network
+  template: backup=yes
+            src=network/sysconfig.network.j2
+            dest=/etc/sysconfig/network
+            owner=root
+            group=root
+            mode=0644
+
+#TODO: Use vars instead of hardcoded values
+- name: Configure /etc/hosts
+  lineinfile: backup=yes
+              dest=/etc/hosts
+              regexp='^172\.18\.96\.1'
+              line='172.18.96.1            {{ xsce_hostname }}.{{ xsce_domain }}      {{ xsce_hostname }}'
+              owner=root
+              group=root
+              mode=0644
+
+- name: Configure /etc/hosts
+  lineinfile: backup=yes
+              dest=/etc/hosts
+              regexp='^127\.0\.0\.1'
+              line='127.0.0.1            localhost.localdomain   localhost   {{ xsce_hostname }}'
+              owner=root
+              group=root
+              mode=0644
+
+
+- name: Configure lan interface
+  template: backup=yes
+            src=network/ifcfg.j2
+            dest=/etc/sysconfig/network-scripts/ifcfg-{{xsce_lan_iface}}
+  when: 'xsce_lan_iface != "none"'
