@@ -31,6 +31,10 @@
             group=root
             mode=0700
 
+- name:	Check git repo location
+  synchronize: src='{{ ansible_env.PWD }}' dest='{{ xsce_base }}'
+  when: '{{ ansible_env.PWD }}' ' != '{{ xsce_dir }}' and '{{ ansible_env.PWD }}' != 'cmdsrv_path'
+
 - name: re-read facts
   setup: filter=ansible_local
 
