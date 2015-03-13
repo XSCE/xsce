@@ -9,7 +9,6 @@
 
   roles:
       - { role: 1-prep, tags: ['prep','base'] }
-      - { role: gateway, tags: ['gateway','base'] }
       - { role: network, tags: ['network','base'] }
       - { role: 4-server-options, tags: ['options'] }
       - { role: 5-xo-services, tags: ['xo-services'] }
