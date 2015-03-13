@@ -46,6 +46,9 @@ lan_netmask: 255.255.224.0
 #Read docs/NETWORKING.rst
 xsce_lan_enabled: True
 xsce_wan_enabled: True
+ssh_port: 22
+gui_wan: True
+gui_port: 443
 
 #intended for developers
 user_lan_iface: auto
@@ -73,6 +76,7 @@ dhcpd_enabled: True
 # named
 named_install: True
 named_enabled: True
+block_DNS: False
 
 # dansguardian
 dansguardian_install: True

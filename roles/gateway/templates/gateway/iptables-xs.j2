@@ -5,7 +5,13 @@
 {% if squid_enabled == "True" %}
 -t nat  -A PREROUTING -i $lan -p tcp --dport 80 ! -d {{lan_ip}} -j DNAT --to {{lan_ip}}:3128
 {% endif %}
+{% if block_DNS == "True" %}
+-t nat  -A PREROUTING -i $lan -p tcp --dport 53 ! -d {{lan_ip}} -j DNAT --to {{lan_ip}}:53
+-t nat  -A PREROUTING -i $lan -p udp --dport 53 ! -d {{lan_ip}} -j DNAT --to {{lan_ip}}:53
+{% endif %}
+{% if xsce_gateway_enabled == "True" %}
 -A POSTROUTING -o {{xsce_wan_iface}} -j MASQUERADE
+{% endif %}
 COMMIT
 *filter
 :INPUT ACCEPT [0:0]
@@ -16,7 +22,12 @@ COMMIT
 -A INPUT -i lo -j ACCEPT
 
 # Allow ssh access on all interfaces
--A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport {{ ssh_port }} -j ACCEPT
+
+# Allow gui access on all interfaces
+{% if gui_wan == "True" %}
+-A INPUT -m state --state NEW -m tcp -p tcp --dport {{ gui_port }} -j ACCEPT
+{% endif %}
 
 # Allow all LAN services
 -A INPUT ! -i {{xsce_wan_iface}} -m state --state NEW -j ACCEPT

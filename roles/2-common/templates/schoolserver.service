@@ -1,9 +1,9 @@
 <?xml version="1.0" standalone='no'?><!--*-nxml-*-->
 <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
 <service-group>
-<name replace-wildcards="yes">School Server Idmgr Service at %h </name>
+<name replace-wildcards="yes">MGMT console at %h </name>
 <service>
-<type>_idmgr._tcp</type>
-<port>8080</port>
+<type>_https._tcp</type>
+<port>{{gui_port}}</port>
 </service>
 </service-group>

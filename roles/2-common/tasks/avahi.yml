@@ -16,8 +16,16 @@
             owner=avahi
             group=avahi
             mode=640
+  when: 'gui_wan == "True"'
   tags:     avahi
-           
+
+- name: set ssh port for avahi
+  lineinfile: dest=/etc/avahi/services/ssh.service
+              regexp='^<port>'
+              line='<port>{{ssh_port}}</port>'
+              state=present
+  tags:     avahi
+
 - name: Enable avahi service
   service: name=avahi-daemon
            enabled=yes

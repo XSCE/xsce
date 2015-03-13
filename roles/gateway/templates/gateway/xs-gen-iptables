@@ -21,8 +21,10 @@ fi
 lan=$LANIF
 wan=$WANIF
 
-# Good thing we replace this file should be treated like squid below
 gw_block_https={{ gw_block_https }}
+ssh_port={{ ssh_port }}
+gui_wan={{ gui_wan }}
+gui_port={{ gui_port }}
 
 echo "Lan is $lan and WAN is $wan"
 #
@@ -42,13 +44,20 @@ $IPTABLES -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 $IPTABLES -A INPUT -m state --state NEW -i  $lan -j ACCEPT
 
 # Allow mDNS 
-$IPTABLES -A INPUT -p udp --dport 5353 -d 224.0.0.251 -j ACCEPT
+$IPTABLES -A INPUT -p udp --dport 5353 -j ACCEPT
 
 #when run as gateway 
-$IPTABLES -A INPUT -p tcp --dport ssh -m state --state NEW -i $wan -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport $ssh_port -m state --state NEW -i $wan -j ACCEPT
 
-$IPTABLES -A POSTROUTING -t nat -o $wan -j MASQUERADE
+if [ "$gui_wan" == "True" ]; then
+    $IPTABLES -A INPUT -p tcp --dport $gui_port -m state --state NEW -i $wan -j ACCEPT
+fi
+
 $IPTABLES -A FORWARD -i $wan -o $lan -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+if [ "$xsce_gateway_enabled" == "True" ]; then
+    $IPTABLES -A POSTROUTING -t nat -o $wan -j MASQUERADE
+fi
 
 #Block https traffic except if directed at server
 if [  "$gw_block_https" == "True" ]; then    
@@ -61,6 +70,11 @@ $IPTABLES -A FORWARD -i $lan -o $wan -j ACCEPT
 # Don't forward from the outside to the inside.
 $IPTABLES -A FORWARD -i $wan -o $lan -j DROP
 $IPTABLES -A INPUT -i $wan -j DROP
+
+if [ "$block_DNS" == "True" ];then
+    $IPTABLES -t nat  -A PREROUTING -i $lan -p tcp --dport 53 ! -d {{lan_ip}} -j DNAT --to {{lan_ip}}:53
+    $IPTABLES -t nat  -A PREROUTING -i $lan -p udp --dport 53 ! -d {{lan_ip}} -j DNAT --to {{lan_ip}}:53
+fi
 
 if [ -f /etc/sysconfig/xs_httpcache_on ]; then
     $IPTABLES  -t nat  -A PREROUTING -i $lan -p tcp --dport 80 ! -d 172.18.96.1 -j DNAT --to 172.18.96.1:3128
