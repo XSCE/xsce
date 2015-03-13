@@ -1,0 +1,9 @@
+# Too do handle more than one detected interface
+- name: enslaving LAN device to Bridge
+  template: src=network/ifcfg-slave.j2
+            dest=/etc/sysconfig/network-scripts/ifcfg-{{discovered_lan_iface}} 
+  when: 'discovered_lan_iface != "" and detect_slaves' 
+
+# F18 or others might want network
+- include: nonNM-bridging.yml  
+  when: 'ansible_distribution_version == "18"'
