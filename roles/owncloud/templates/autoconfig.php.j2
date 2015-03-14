@@ -4,6 +4,8 @@ $AUTOCONFIG = array(
   'trusted_domains' =>
     array (
      0 => '{{ xsce_hostname }}.{{ xsce_domain }}',
+     1 => "{{ xsce_hostname }}",
+     2 => 'localhost',
     ),
   'overwrite.cli.url' => 'http://{{ xsce_hostname }}.{{ xsce_domain }}/owncloud',
   'dbtype' => 'mysql',

@@ -22,22 +22,14 @@
 
 # This is very version dependent
 
-- name: Remove Trusted Domains - start array
-  lineinfile: regexp='^[^=]*array \('
-              state=absent
-              dest="{{ owncloud_path }}/config/config.php"
+- name: Remove Trusted Domains - comment before
+  lineinfile: dest="{{ owncloud_path }}/config/config.php"
+              insertbefore='trusted_domains'
+              line='/*'
+              state=present
 
-- name: Remove Trusted Domains - element 0
-  lineinfile: regexp='0 =>'
-              state=absent
-              dest="{{ owncloud_path }}/config/config.php"
-
-- name: Remove Trusted Domains - end array
-  lineinfile: regexp='\),'
-              state=absent
-              dest="{{ owncloud_path }}/config/config.php"
-
-- name: Remove Trusted Domains - name
-  lineinfile: regexp='trusted_domains'
-              state=absent
-              dest="{{ owncloud_path }}/config/config.php"
+- name: Remove Trusted Domains - comment after
+  lineinfile: dest="{{ owncloud_path }}/config/config.php"
+              insertafter='\),'
+              line='*/'
+              state=present
