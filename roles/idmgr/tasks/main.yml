@@ -34,8 +34,8 @@
           creates=/etc/xinetd.d/xs-rsyncd
 
 - name: Copy idmgr init script 
-  command: /bin/cp /etc/init.d/idmgr /usr/libexec/idmgr.init
-          creates=/usr/libexec/idmgr.init
+  command: /bin/cp /etc/init.d/idmgr /usr/libexec/xs-idmgr.init
+          creates=/usr/libexec/xs-idmgr.init
 
 - name: Enable idmgr service
   service: name={{ item }}

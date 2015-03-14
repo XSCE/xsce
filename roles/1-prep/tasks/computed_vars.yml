@@ -91,3 +91,7 @@
     mysql_service: mysqld
   when: ansible_distribution_release == "based on Fedora 18"
 
+- name: Set mysqld rpm name to mariadb by default
+  set_fact:
+    mysql_rpm: mariadb
+

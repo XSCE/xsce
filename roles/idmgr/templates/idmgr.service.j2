@@ -5,8 +5,8 @@ After=syslog.target network.target
 [Service]
 Type=forking
 PIDFile=/var/run/idmgr.pid
-ExecStart=/usr/libexec/idmgr.init  start 
-ExecStop=/usr/libexec/idmgr.init stop
+ExecStart=/usr/libexec/xs-idmgr.init  start 
+ExecStop=/usr/libexec/xs-idmgr.init stop
 
 [Install]
 WantedBy=multi-user.target

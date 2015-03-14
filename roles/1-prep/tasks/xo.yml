@@ -33,6 +33,7 @@
    - man
    - man-db
    - man-pages
+   - mtd-utils
 
 - name: Configure networkmanager plugin
   ini_file: dest=/etc/NetworkManager/NetworkManager.conf
