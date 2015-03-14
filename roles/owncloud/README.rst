@@ -27,9 +27,11 @@ We install on mysql with these setting or those from default_vars, etc.
 Access and Installation Wizard
 ------------------------------
 
+The ansible installation includes the Owncloud Wizard.
+
 After the ansible installation completes, you can access Owncloud at http://schoolserve/owncloud.
 
-On first access you will be presented with a form to fill in the admin user name and password to 
+On first access you will be presented with a form to fill in the admin user name and password to
 complete the install.  After that completes you will see the file sharing space and be able to
 add additional users.
 
