@@ -12,6 +12,9 @@
             group=root
             mode=0644
 
+- name: Restart apache, so it picks up the new aliases
+  service: name=httpd state=restarted
+
 - name: Run owncloud initial install wizard
   shell: curl http://{{ xsce_hostname }}{{ owncloud_url }}/index.php
 
