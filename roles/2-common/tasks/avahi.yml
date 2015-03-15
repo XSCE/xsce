@@ -17,12 +17,24 @@
             group=avahi
             mode=640
   when: 'gui_wan == "True"'
+  
+- name: Find a clean copy of ssh.service
+  shell: "ls /usr/share/doc/ | grep avahi"
+  register: avahi_ver
+  ignore_errors: True
+  changed_when: false
+
+- name: Grab a clean copy of ssh.service
+  copy: src='/usr/share/doc/{{avahi_ver.stdout}}/ssh.service'
+        dest='/etc/avahi/services/'
+  when: 'avahi_ver.stdout != ""'
 
 - name: set ssh port for avahi
   lineinfile: dest=/etc/avahi/services/ssh.service
               regexp='^<port>'
               line='<port>{{ssh_port}}</port>'
               state=present
+  when: 'avahi_ver.stdout != ""'
 
 - name: Enable avahi service
   service: name=avahi-daemon
