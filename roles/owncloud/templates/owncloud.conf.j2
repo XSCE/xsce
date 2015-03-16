@@ -5,7 +5,7 @@ Alias {{ owncloud_url }} {{ owncloud_path }}
 
     <IfModule mod_authz_core.c>
     # Apache 2.4
-    Require ip 127.0.0.1 172.18.96.1/19 {{ owncloud_required_ip }}
+    Require ip 127.0.0.1 {{lan_ip}}/{{lan_netmask}} {{ owncloud_required_ip }}
     </IfModule>
     <IfModule !mod_authz_core.c>
     # Apache 2.2
