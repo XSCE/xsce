@@ -7,3 +7,5 @@
   when: xo_model != "none"
   tags:
     - xo
+
+- include: selinux.yml
