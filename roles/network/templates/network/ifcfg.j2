@@ -7,8 +7,12 @@ TYPE=Bridge
 DEVICE={{ xsce_lan_iface }}
 TYPE=Ethernet
 HWADDR={{ hostvars[inventory_hostname]['ansible_' + xsce_lan_iface]['macaddress'] }}
-NM_CONTROLLED=yes
 
+{% endif %}
+{% if xsce_lan_iface == "wlan0" or xsce_lan_iface == "br0"  %}
+NM_CONTROLLED=no
+{% else %}
+NM_CONTROLLED=yes
 {% endif %}
 BOOTPROTO=none
 ONBOOT=yes
