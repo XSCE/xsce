@@ -11,3 +11,10 @@
             src=xsce-testing.repo
             owner=root
             mode=0666
+
+- name: Keep yum cache
+  ini_file: dest=/etc/yum.conf
+            section=main
+            option=keepcache
+            value=1
+
