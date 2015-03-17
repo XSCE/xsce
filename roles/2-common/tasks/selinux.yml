@@ -3,5 +3,5 @@
   register: selinux_disabled
 
 - name: Disable selinux for this session (if needed)
-  command: setenforce permissive
+  command: setenforce Permissive
   when: selinux_disabled.changed
