@@ -66,6 +66,11 @@
   when: 'xsce_lan_iface != "none"'
 
 # Too do handle more than one detected interface
+- name: Remove detected lan interface - maybe slave
+  file: state=absent
+        dest=/etc/sysconfig/network-scripts/ifcfg-{{discovered_lan_iface}}
+  when: xsce_lan_iface == "none"
+
 - name: enslaving LAN device to Bridge
   template: src=network/ifcfg-slave.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-{{discovered_lan_iface}}
