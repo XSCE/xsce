@@ -34,6 +34,16 @@
 - name: re-read facts
   setup: filter=ansible_local
 
+- name: inialize rpi_model
+  set_fact: 
+     rpi_model: "none"
+
+- name: discover if this is a rpi2 -- has a bcm2709 processor
+  set_fact: 
+     rpi_model: "rpi2"
+  when:  ansible_cmdline["bcm2709.serial"]  is defined
+  ignore_errors: true
+
 # workaround for fact that auto create does not work on ini_file
 - name: Create xsce config file
   file: dest='{{ xsce_config_file }}'

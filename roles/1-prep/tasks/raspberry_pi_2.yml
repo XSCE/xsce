@@ -1,5 +1,10 @@
 # Setup specific to the Raspberry Pi
 #
+- name: Set default facts for rpi device detection
+  set_fact:
+    wifi_id: none
+    rtc_chip: none
+
 - name: Load the modules for the RTC
   template: dest=/etc/modules-load.d/rtc.conf
             src=rtc.conf
@@ -10,20 +15,68 @@
   with_items:
         - i2c-tools
         - bridge-utils
+        - usbutils
+
+- name: sense the usb wifi if it exists
+  shell: "lsusb | grep 0bda:8179 | wc |gawk '{print $1}'"
+  register: usb_response
+  ignore_errors: true
+
+- name: Use compiled hostapd, and wpa_supplicant if tplink WM725M
+  set_fact:
+     wifi_id: tplink_WM725M
+  when:  usb_response.stdout|int > 0
 
 - name: Install the standard hostapd if possible
-  yum:  name=hostapd
+  yum:  name={{ item }}
         state=present
-  when: hostapd ==  ""
+  when: wifi_id  ==  "none"
+  with_items:
+       - hostapd_8188
+       - wpa_supplicant_8188
+ 
+- name: Download substitute software
+  shell: wget {{ xsce_download_url }}/{{ item }} {{ downloads_dir }}
+  when: wifi_id  ==  "tplink_WM725M" and not {{ use_cache }} and not {{ no_network }}
+
+- name: Put the substitute files in place
+  copy: src={{ downloads_dir }}/hostapd_8188
+        dest=/usr/sbin/hostapd
+        backup=yes
+        mode=0775
+        owner=root
+        group=root
+  when: wifi_id  ==  "tplink_WM725M"
+
+- name: Put the substitute wpa_supplicant in place
+  copy: src={{ downloads_dir }}/wpa_supplicant_8188
+        dest=/usr/sbin/wpa_supplicant
+        backup=yes
+        mode=0775
+        owner=root
+        group=root
+  when: wifi_id  ==  "tplink_WM725M"
+
+- name: Detect an i2c rtc if it exists
+  shell: "i2cdetect | grep -e 68 -e UU | wc | gawk '{print $1}'"
+  register: rtc_response
+  ignore_errors: yes
+
+- name: Record whether rtc hardware was detected
+  set_fact:
+     wifi_id: rtc_id = "DS3231"
+  when:  rtc_response.stdout|int > 0
+
 
 - name: Instantiate a connection to i2c RTC
   lineinfile: dest=/etc/rc.d/rc.local
               line="echo ds3231 0x68 > /sys/class/i2c-adapter/i2c-1/new_device"
               create=yes
+  when: rtc_id == "DS3231" 
 
 - name: in rc.local start the network again
   lineinfile: dest=/etc/rc.d/rc.local
-              line='systemctl restart network.service'
+              line='systemctl restart NetworkManager.service'
 
 - name: in rc.local attach dhcpd to new device
   lineinfile: dest=/etc/rc.d/rc.local
@@ -37,18 +90,3 @@
   lineinfile: dest=/etc/rc.d/rc.local
               line='brctl addif br0 wlan0'
 
-- name: download hostapd and wpa-supplicant
-  get_url: url="{{ xsce_download_url }}/{{ hostapd }}" dest={{ downloads_dir }}/{{ hostapd }}
-  when: hostapd != ""
-
-- name: download  wpa-supplicant
-  get_url: url="{{ xsce_download_url }}/{{ wpa_supplicant }}" dest={{ downloads_dir }}/{{ wpa_supplicant }}
-  when: wpa_supplicant != ""
-
-- name: put the downloaded wifi Access Point files on PATH
-  copy: src={{ downloads_dir }}/{{ hostapd }} dest=/usr/local/sbin/{{ hostapd }}
-  when: hostapd != ""
-
-- name: put the downloaded wifi Access Point authentication files on PATH
-  copy: src={{ downloads_dir }}/{{ wpa_supplicant }} dest=/usr/local/sbin/{{ wpa_supplicant }}
-  when: wpa_supplicant !=  ""

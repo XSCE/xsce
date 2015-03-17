@@ -17,6 +17,6 @@
   when: ansible_selinux["status"] != "disabled"
 
 - include: raspberry_pi_2.yml
-  when: platform == "rpi2"
+  when: rpi_model != "none"
   tags:
     - rpi2

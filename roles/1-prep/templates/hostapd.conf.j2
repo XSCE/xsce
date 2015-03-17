@@ -1,0 +1,16 @@
+
+# Basic configuration
+
+interface={{ xsce_lan_device }}
+ssid=rpi2
+channel=1
+{%if {{ xsce_lan_device }} == "br0" %}
+bridge=br0
+{% endif %}
+
+# Hardware configuration
+driver=nl80211
+ieee80211n=1
+hw_mode=g
+device_name=8188eu
+manufacturer=TpLink WN725N
