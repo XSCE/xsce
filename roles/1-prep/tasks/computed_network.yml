@@ -43,12 +43,16 @@
   changed_when: false
 
 - name: Count LAN ifaces
-  shell: "/sbin/ip link show | grep -v  -e lo -e tun -e {{ xsce_wan_iface }}| grep mtu | wc | gawk '{print $1}'"
-  register: num_lan_interfaces
+  shell: "/sbin/ip link show | grep -v  -e lo -e br0: -e tun -e {{ xsce_wan_iface }}| grep mtu | wc | gawk '{print $1}'"
+  register: num_lan_interfaces_result
   ignore_errors: True
   changed_when: false
-
 # This returns "" for not found
+
+- name: Convert the returned number of lan interfaces into an integer
+  set_fact: 
+      num_lan_interfaces: '{{ num_lan_interfaces_result.stdout | int }}'
+
 - name: Set xsce discovered lan fact
   set_fact:
     discovered_lan_iface: "{{ discovered_lan.stdout }}"
@@ -64,7 +68,13 @@
 - name: Create bridged LAN if multiple interfaces
   set_fact:
     xsce_lan_iface: "br0"
-  when: num_lan_interfaces is defined and num_lan_interfaces.stdout|int > 1
+  when:  num_lan_interfaces > "1"
+
+# If the bridge existed and there is now only one LAN interface, make br0 absent
+- name: delete bridge if only one LAN device exists
+  file: state=absent
+        dest=/etc/sysconfig/network-scripts/ifcfg-LAN
+  when:  num_lan_interfaces == "1"
 
 # user disabled interface default is auto
 - name: checking xsce_lan_enabled
@@ -129,3 +139,4 @@
     value: '{{ xsce_lan_iface }}'
   - option: 'xsce_network_mode'
     value: '{{ xsce_network_mode }}'
+

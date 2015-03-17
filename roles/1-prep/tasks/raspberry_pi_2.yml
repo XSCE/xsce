@@ -36,8 +36,11 @@
        - wpa_supplicant_8188
  
 - name: Download substitute software
-  shell: wget {{ xsce_download_url }}/{{ item }} {{ downloads_dir }}
+  get_url: url="{{ xsce_download_url }}/{{ item }}"  dest={{ downloads_dir}}/{{ item }}
   when: wifi_id  ==  "tplink_WM725M" and not {{ use_cache }} and not {{ no_network }}
+  with_items:
+     - hostapd_8188
+     - wpa_supplicant_8188
 
 - name: Put the substitute files in place
   copy: src={{ downloads_dir }}/hostapd_8188
