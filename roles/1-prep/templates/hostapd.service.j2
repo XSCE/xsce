@@ -1,0 +1,12 @@
+[Unit]
+Description=Hostapd IEEE 802.11 AP, IEEE 802.1X/WPA/WPA2/EAP/RADIUS Authenticator
+After=sys-subsystem-net-devices-{{ xsce_lan_iface }}.device
+BindsTo=sys-subsystem-net-devices-{{ xsce_lan_iface }}.device
+
+[Service]
+Type=forking
+PIDFile=/run/hostapd.pid
+ExecStart=/usr/bin/hostapd /etc/hostapd/hostapd.conf -P /run/hostapd.pid -B
+
+[Install]
+WantedBy=multi-user.targets
