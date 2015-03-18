@@ -1,9 +1,3 @@
-- name: Keep yum cache
-  ini_file: dest=/etc/yum.conf
-            section=main
-            option=keepcache
-            value=1
-
 - name: Install common packages
   yum: name={{ item }}
        state=present
@@ -42,13 +36,4 @@
    - vim-minimal # ejabberd erlang does not update this properly
   tags:
     - download
-
-- name: restart NetworkManager services
-  service: name=NetworkManager
-           enabled=yes
-           state=restarted
-  service: name=NetworkManager-dispatcher
-           enabled=yes
-           state=restarted
-
 

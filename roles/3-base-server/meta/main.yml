@@ -1,6 +1,4 @@
 dependencies:
-   - { role: network, tags: ['base','network'] }
-   - { role: gateway, tags: ['base','gateway'] }
    - { role: httpd, tags: ['services','httpd','base'] }
    - { role: postgresql, tags: ['services','postgresql','base'] }
    - { role: authserver,  tags: ['services','authserver','base'] }   

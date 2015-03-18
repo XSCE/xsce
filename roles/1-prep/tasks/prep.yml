@@ -1,10 +1,3 @@
-- name: Set hostname
-  template: backup=yes
-            dest=/etc/hostname
-            src=hostname.j2
-            owner=root
-            mode=0644
-
 - name: Install xsce-extra repos
   template: backup=yes
             dest=/etc/yum.repos.d/xsce-extra.repo
@@ -18,3 +11,10 @@
             src=xsce-testing.repo
             owner=root
             mode=0666
+
+- name: Keep yum cache
+  ini_file: dest=/etc/yum.conf
+            section=main
+            option=keepcache
+            value=1
+
