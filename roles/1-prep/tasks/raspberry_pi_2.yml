@@ -92,10 +92,19 @@
             group=root
             mode=0644
 
+- name: ask systemd to reread the unit file, changing roles?
+  shell: systemctl daemon-reload
+
 - name: Enable the Access Point Hostapd program
   service: enabled=yes
            state=started
            name=hostapd.service
+  when: xsce_network_mode != Appliance
+
+- name: Disable the Access Point Hostapd program
+  service: enabled=no
+           name=hostapd.service
+  when: xsce_network_mode == Appliance
 
 - name: in rc.local attach new device to bridge
   lineinfile: dest=/etc/rc.d/rc.local
