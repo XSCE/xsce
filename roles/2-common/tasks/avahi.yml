@@ -10,8 +10,7 @@
     - download
 
 - name: Install avahi announce config files
-  template: backup=yes
-            src=schoolserver.service
+  template: src=schoolserver.service
             dest=/etc/avahi/services/schoolserver.service
             owner=avahi
             group=avahi
