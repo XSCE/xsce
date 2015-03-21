@@ -54,20 +54,25 @@
               group=root
               mode=0644
 
-- name: Remove lan interface
-  file: state=absent
-        dest=/etc/sysconfig/network-scripts/ifcfg-LAN
-  when: xsce_lan_iface == "none"
+- name: Get a list of ifcfg files to delete
+  shell: "ls -1 /etc/sysconfig/network-scripts/ifcfg-* | grep -v -e ifcfg-lo "
+  register: ifcfg_files
+  ignore_errors: True
+  changed_when: False
 
+- debug: var=ifcfg_files
+- pause:
+
+- name: Now get them out of the way
+  shell: "rm -f {{ item }} "
+  with_items:
+    - ifcfg_files.stdout_lines
+ 
 - name: Configure lan interface
   template: backup=yes
             src=network/ifcfg.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-LAN
   when: xsce_lan_iface != "none"
-
-- debug: var=lan_list_result
-
-- pause:
 
 - name: enslaving LAN device to Bridge
   template: src=network/ifcfg-slave.j2

@@ -78,7 +78,7 @@
             owner=root
             group=root
             mode=0644
-  when: xsce_lan_iface == "br0"
+  when: wireless_lan_present
 
 - name: ask systemd to reread the unit file, changing roles?
   shell: systemctl daemon-reload
@@ -86,7 +86,7 @@
 - name: Enable the Access Point Hostapd program
   service: enabled=yes
            name=hostapd.service
-  when: xsce_network_mode != "Appliance" and wlan_present
+  when: xsce_network_mode != "Appliance" and wireless_lan_present
 
 - name: Disable the Access Point Hostapd program
   service: enabled=no
@@ -94,6 +94,3 @@
   when: xsce_network_mode == "Appliance"
 
 
-- debug: var=num_lan_interfaces_result
-
-- pause:

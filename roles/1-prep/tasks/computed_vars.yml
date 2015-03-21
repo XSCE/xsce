@@ -38,9 +38,6 @@
 - name: Create xsce config file
   file: dest='{{ xsce_config_file }}'
         state=touch
-- debug:
-    var: num_lan_interfaces
-
 
 - name: add version section
   ini_file: dest='{{ xsce_config_file }}'

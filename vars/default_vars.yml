@@ -49,8 +49,19 @@ lan_ip: 172.18.96.1
 lan_netmask: 255.255.224.0
 
 #Read docs/NETWORKING.rst
-xsce_lan_enabled: True  
-xsce_wan_enabled: False
+#
+# appliance mode
+#xsce_lan_enabled: False  
+#xsce_wan_enabled: True
+#
+# Lan controller mode
+#xsce_lan_enabled: True  
+#xsce_wan_enabled: False
+#
+# Gateway  
+xsce_lan_enabled: True
+xsce_wan_enabled: True
+
 ssh_port: 22
 gui_wan: True
 gui_port: 443

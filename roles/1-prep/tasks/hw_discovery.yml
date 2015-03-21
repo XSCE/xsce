@@ -1,7 +1,7 @@
 
 - name: Set default for discovered hardware
   set_fact:
-    wlan_present: False
+    wireless_lan_present: False
     driver_name: nl80211
     wifi_id: none
     rpi_model: none
@@ -49,6 +49,4 @@
      driver_name: rtl871xdrv
   when:  usb_response.stdout|int > 0
 
-- debug: var=driver_name
-- pause:
 
