@@ -2,6 +2,8 @@
 - name: Set default for discovered_wan_iface
   set_fact:
     discovered_wan_iface: "none"
+    wlan_present: False
+    wifi_id: none
 
 # Discover only do we have a gateway?
 - name: Found gateway
@@ -49,8 +51,24 @@
   changed_when: false
 # This returns "" for not found
 
+- name: Check whether any of the LAN interfaces are wifi
+  shell: "/sbin/ip link show | grep -v  -e lo -e br0: -e tun -e {{ xsce_wan_iface }}| grep mtu | grep wlan | gawk '{print $1}'"
+  register: num_wlan_interfaces_result
+  ignore_errors: True
+  changed_when: false
+
+- name: set fact if wifi adapter is present
+  set_fact:
+      wlan_present: True
+  when: num_wlan_interfaces_result.stdout  > "0" and xo_model == "none" or num_wlan_interfaces_result.stdout  > "1"
+
+- name: Not sure about scope of returned results, create fact for num interfaces
+  set_fact: 
+      num_lan_interfaces: num_lan_interfaces_result|int
+# facts are apparently all stored as text
+
 - name: Create list of  LAN ifaces
-  shell: "/sbin/ip link show | grep -v  -e lo -e br0: -e tun -e {{ xsce_wan_iface }}| grep mtu 
+  shell: "/sbin/ip link show | grep -v  -e lo -e br0: -e tun -e {{ xsce_wan_iface }}| grep mtu | gawk -F: '{print $2}' "
   register: lan_list_result
   ignore_errors: True
   changed_when: false

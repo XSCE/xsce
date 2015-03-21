@@ -2,37 +2,40 @@
 #
 - name: Set default facts for rpi device detection
   set_fact:
-    wifi_id: none
     rtc_id: none
-    driver_name: nl80211
 
 - name: Load the modules for the RTC
   template: dest=/etc/modules-load.d/rtc.conf
             src=rtc.conf
 
-- name: Install packages needed by rpi2
-  yum:  name={{ item }}
-        state=present
-  with_items:
-        - i2c-tools
-        - bridge-utils
-        - usbutils
 
-- name: Check of the identifier for tplink725 is present
-  shell: "lsusb | grep 0bda:8179 | wc |gawk '{print $1}'"
-  register: usb_response
-  ignore_errors: true
+- name: Instantiate a connection to i2c RTC
+  lineinfile: dest=/etc/rc.d/rc.local
+              line="echo ds3231 0x68 > /sys/class/i2c-adapter/i2c-1/new_device"
+              create=yes
+  when:  rtc_id  == "DS3231" 
 
-- name: Use compiled hostapd, and wpa_supplicant if tplink WM725M
-  set_fact:
-     wifi_id: tplink_WM725M
-     driver_name: rtl871xdrv
-  when:  usb_response.stdout|int > 0
+- name: Delete instantiation if rtc is removed
+  lineinfile: dest=/etc/rc.d/rc.local
+              line="echo ds3231 0x68 > /sys/class/i2c-adapter/i2c-1/new_device"
+              state=absent
+  when:  rtc_id  != "DS3231" 
+
+- name: in rc.local attach new device to bridge
+  lineinfile: dest=/etc/rc.d/rc.local
+              line='brctl addif br0 wlan0'
+  when: xsce_lan_iface == "br0"
+
+- name: in rc.local remove item related to non existent bridge`
+  lineinfile: dest=/etc/rc.d/rc.local
+              line='brctl addif br0 wlan0'
+              state=absent
+  when: xsce_lan_iface != "br0"
 
 - name: Install the standard hostapd if possible
   yum:  name={{ item }}
         state=present
-  when: wifi_id  ==  "none"
+  when: wifi_id  ==  "none" and not {{ use_cache }} and not {{ no_network }}
   with_items:
        - hostapd
        - wpa_supplicant
@@ -62,29 +65,6 @@
         group=root
   when: wifi_id  ==  "tplink_WM725M"
 
-- name: Detect an i2c rtc if it exists
-  shell: "i2cdetect | grep -e 68 -e UU | wc | gawk '{print $1}'"
-  register: rtc_response
-  ignore_errors: yes
-
-- name: Record whether rtc hardware was detected
-  set_fact:
-     wifi_id: rtc_id = "DS3231"
-  when:  rtc_response.stdout|int > 0
-
-
-- name: Instantiate a connection to i2c RTC
-  lineinfile: dest=/etc/rc.d/rc.local
-              line="echo ds3231 0x68 > /sys/class/i2c-adapter/i2c-1/new_device"
-              create=yes
-  when:  rtc_id  == "DS3231" 
-
-- name: Delete instantiation if rtc is removed
-  lineinfile: dest=/etc/rc.d/rc.local
-              line="echo ds3231 0x68 > /sys/class/i2c-adapter/i2c-1/new_device"
-              state=absent
-  when:  rtc_id  != "DS3231" 
-
 - name: Use a systemd unit file to start hostapd
   template: src=hostapd.service.j2
             dest=/etc/systemd/system/hostapd.service
@@ -92,26 +72,28 @@
             group=root
             mode=0644
 
+- name: Create a config file for hostapd
+  template: src=hostapd.conf.j2
+            dest=/etc/hostapd/hostapd.conf
+            owner=root
+            group=root
+            mode=0644
+  when: xsce_lan_iface == "br0"
+
 - name: ask systemd to reread the unit file, changing roles?
   shell: systemctl daemon-reload
 
 - name: Enable the Access Point Hostapd program
   service: enabled=yes
            name=hostapd.service
-  when: xsce_network_mode != "Appliance"
+  when: xsce_network_mode != "Appliance" and wlan_present
 
 - name: Disable the Access Point Hostapd program
   service: enabled=no
            name=hostapd.service
   when: xsce_network_mode == "Appliance"
 
-- name: in rc.local attach new device to bridge
-  lineinfile: dest=/etc/rc.d/rc.local
-              line='brctl addif br0 wlan0'
-  when: xsce_lan_iface == "br0"
 
-- name: in rc.local remove item related to non existent bridge`
-  lineinfile: dest=/etc/rc.d/rc.local
-              line='brctl addif br0 wlan0'
-              state=absent
-  when: xsce_lan_iface != "br0"
+- debug: var=num_lan_interfaces_result
+
+- pause:

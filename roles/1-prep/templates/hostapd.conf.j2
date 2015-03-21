@@ -1,10 +1,10 @@
 
 # Basic configuration
 
-interface={{ xsce_lan_device }}
+interface={{ xsce_lan_iface }}
 ssid=rpi2
 channel=1
-{%if xsce_lan_device  == "br0" %}
+{%if xsce_lan_iface  == "br0" %}
 bridge=br0
 {% endif %}
 
