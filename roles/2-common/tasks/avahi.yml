@@ -30,9 +30,10 @@
 
 - name: set ssh port for avahi
   lineinfile: dest=/etc/avahi/services/ssh.service
-              regexp='    ^<port>'
+              regexp='<port>$'
               line='    <port>{{ssh_port}}</port>'
               state=present
+              backrefs=yes
   when: 'avahi_ver.stdout != ""'
 
 - name: Enable avahi service
