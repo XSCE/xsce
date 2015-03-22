@@ -57,10 +57,10 @@
       lineinfile: line="date.timezone = {{ local_tz }}" dest=/etc/php.ini
 
     - name: Get the phpmyadmin software
-      get_url: url=http://download.unleashkids.org/xsce/downloads/phpMyAdmin-4.2.7.1-all-languages.zip  dest={{ downloads_dir}}/phpMyAdmin.zip
+      get_url: url="{{ xsce_download_url }}/{{ phpMyAdmin }}"  dest="{{ downloads_dir }}/phpMyAdmin.zip"
 
     - name: Copy it to permanent location /opt
-      unarchive: src={{ downloads_dir}}/phpMyAdmin.zip  dest=/opt/
+      unarchive: src={{ downloads_dir }}/phpMyAdmin.zip  dest=/opt/
 
     - name: Create a symbolic link to the folder of the current version phpmyadmin
       file: path=/opt/phpmyadmin src=phpMyAdmin-4.2.7.1-all-languages state=link
