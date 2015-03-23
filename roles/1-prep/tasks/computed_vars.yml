@@ -91,3 +91,14 @@
     mysql_service: mysqld
   when: ansible_distribution_release == "based on Fedora 18"
 
+- name: Set kiwix source file name x86_64
+  set_fact:
+     kiwix_src_file: kiwix-0.9-linux-x86_64.tar.bz2
+     kiwix_src_bin_only: False
+  when: ansible_machine == "x86_64"
+
+- name: Set kiwix source file name armv7l
+  set_fact:
+     kiwix_src_file: kiwix-server-0.9-linux-armv5tejl.tar.bz2
+     kiwix_src_bin_only: True
+  when: ansible_machine == "armv7l"
