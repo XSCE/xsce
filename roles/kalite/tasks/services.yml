@@ -1,0 +1,23 @@
+- name: Disable kalite server
+  service: name=kalite-serve 
+           enabled=no
+           state=stopped           
+  when: not kalite_enabled
+  
+- name: Enable kalite server
+  service: name=kalite-serve 
+           enabled=yes
+           state=started           
+  when: kalite_enabled  
+
+- name: Disable kalite cron server
+  service: name=kalite-cron 
+           enabled=no
+           state=stopped           
+  when: not kalite_cron_enabled
+
+- name: Enable kalite cron server
+  service: name=kalite-cron 
+           enabled=yes
+           state=started           
+  when: kalite_cron_enabled
