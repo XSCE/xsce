@@ -55,11 +55,11 @@
   ignore_errors: True
   changed_when: false
 
-# Select an adapter that is not WAN
+# Select an adapter that is not WAN and not wireless
 - name: Set xsce discovered lan fact
   set_fact:
     discovered_lan_iface: "{{ item }}"
-  when: item != xsce_wireless_lan_iface
+  when: item != discovered_wireless_iface
   with_items:
       - "{{ lan_list_result.stdout_lines }}"
 
