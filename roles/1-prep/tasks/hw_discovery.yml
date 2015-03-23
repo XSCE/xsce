@@ -6,6 +6,7 @@
     wifi_id: none
     rpi_model: none
     xo_model: none
+    rtc_id: none
 
 - name: Install packages needed to do HW detection
   yum:  name={{ item }}
@@ -29,13 +30,15 @@
 
 ##  DISCOVER ADAPTERS   ######
 - name: Detect an i2c rtc if it exists
-  shell: "i2cdetect | grep -e 68 -e UU | wc | gawk '{print $1}'"
+  shell: "i2cdetect -y 1 | grep -e 68 -e UU | wc | gawk '{print $1}'"
   register: rtc_response
   ignore_errors: yes
 
+- debug: var=rtc_response
+
 - name: Record whether rtc hardware was detected
   set_fact:
-     wifi_id: rtc_id = "DS3231"
+     rtc_id: "DS3231"
   when:  rtc_response.stdout > "0"
 
 - name: Check of the identifier for tplink725 is present

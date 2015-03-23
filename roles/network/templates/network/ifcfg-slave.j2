@@ -2,6 +2,7 @@
 TYPE=Ethernet
 BOOTPROTO=none
 BRIDGE=br0
+ONBOOT=yes
 
 # needs work but it's a start
 HWADDR={{ hostvars[inventory_hostname]['ansible_' + item|trim]['macaddress'] }}

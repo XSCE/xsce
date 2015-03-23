@@ -74,7 +74,6 @@ wan_gateway:
 wan_nameserver:
 user_wan_iface: auto
 user_wireless_lan_iface: auto
-xsce_wireless_lan_iface: none
 detect_slaves: False
 #only change these if you know what you are doing
 

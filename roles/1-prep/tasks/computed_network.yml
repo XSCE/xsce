@@ -24,7 +24,7 @@
 - name: setting user WAN fact
   set_fact:
     xsce_wan_iface: "{{ user_wan_iface }}"
-  when: 'user_wan_iface != "auto"'
+  when: user_wan_iface != "auto"
 
 - name: Grab the first adapter available (often eth0)
   shell: "/sbin/ip link show | grep -v -e DOWN -e lo -e tun -e br0 | grep mtu | gawk -F: '{print $2}' | tr -d ' ' | head -n1 "
@@ -33,7 +33,7 @@
   changed_when: false
 
 # Coming out of lan controller mode, ifcfg files are set to disable dhclient
-#   so pick the first adapter, if user has not set wan
+#   so pick the first adapter, if no gateway detected and user has not set wan
 - name: If wan is enabled, and still no detection, pick one\
   set_fact:
     xsce_wan_iface: "{{ first_discovered_result.stdout }}"
@@ -55,7 +55,7 @@
   changed_when: false
 
 - name: Look for any wireless interfaces -- pick first one if more than one exists
-  shell: "cat /proc/net/wireless | gawk -F: '{print $1}' | head -n1"
+  shell: "cat /proc/net/wireless | grep -v -e Inter -e face | gawk -F: '{print $1}' | head -n1"
   register: wireless_list
   ignore_errors: True
   changed_when: False
@@ -69,7 +69,7 @@
 - name: Override discovered wireless when user specifies
   set_fact:
      discovered_wireless_iface: "{{ user_wireless_lan_iface }}"
-  when: user_wireless_lan_iface != "none"
+  when: user_wireless_lan_iface != "auto"
 
 - name: Count LAN ifaces
   shell: "/sbin/ip link show | grep -v  -e lo -e br0: -e tun -e {{ xsce_wan_iface }} | grep mtu | wc | gawk '{print $1}'"
@@ -77,15 +77,12 @@
   ignore_errors: True
   changed_when: false
 
+# facts are apparently all stored as text, so do text comparisons from here on
 - name: create a simple variable from a compound one
   set_fact: 
       num_lan_interfaces: "{{ num_lan_interfaces_result.stdout|int }}"
-# facts are apparently all stored as text, so do text comparisons from here on
 
-- debug: var=wlan_iface_result
-- debug: var=discovered_lan
-
-- name: Set the variable for wireless_iface if wlan is present
+- name: Set the variable for wireless_iface if present
   set_fact: 
        xsce_wireless_lan_iface: "{{ discovered_wireless_iface }}"
   when: discovered_wireless_iface != "none"
@@ -96,6 +93,11 @@
   when: item != xsce_wireless_lan_iface
   with_items:
       - "{{ lan_list_result.stdout_lines }}"
+
+- debug: var='{{ xsce_wireless_lan_iface }}'
+- debug: var='{{ discovered_lan_iface }}'
+
+- pause:
 
 # use value only if present
 - name: Setting detected lan
