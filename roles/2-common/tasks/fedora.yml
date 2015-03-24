@@ -1,7 +1,6 @@
-- name: Install common packages
+- name: Install Fedora specifc packages
   yum: name={{ item }}
        state=present
   with_items:
    - mtd-utils
-   - etckeeper
 
