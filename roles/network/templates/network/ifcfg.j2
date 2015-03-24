@@ -13,6 +13,10 @@ BOOTPROTO=none
 ONBOOT=yes
 IPADDR={{ lan_ip }}
 NETMASK={{ lan_netmask }}
+{% if xsce_wireless_iface != "none" %}
+NM_CONTROLLED=no
+{% else %}
 NM_CONTROLLED=yes
+{% endif %}
 DNS1=127.0.0.1
 DOMAIN={{ xsce_domain }}
