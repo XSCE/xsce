@@ -32,13 +32,6 @@
      discovered_wireless_iface: "{{ wireless_list.stdout }}"
   when: wireless_list.stdout != "" and wireless_list.stdout != xsce_wan_iface
 
-# I think I'll eliminate user_wireless)lan_interfave
-# otherwise if there is a wireless adapter, it becomes a LAN candidate
-- name: Override discovered wireless when user specifies
-  set_fact:
-     discovered_wireless_iface: "{{ user_wireless_lan_iface|trim }}"
-  when: user_wireless_lan_iface != "auto"
-
 # override with user_wan_iface setting if no longer in auto
 - name: setting user WAN fact
   set_fact:

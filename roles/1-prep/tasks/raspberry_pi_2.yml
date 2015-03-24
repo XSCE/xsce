@@ -12,7 +12,7 @@
 
 - name: Instantiate a connection to i2c RTC
   lineinfile: dest=/etc/rc.d/rc.local
-              line="echo ds3231 0x68 > /sys/class/i2c-adapter/i2c-1/new_device"
+              line="echo ds1307 0x68 > /sys/class/i2c-adapter/i2c-1/new_device"
               create=yes
   when:  rtc_id  == "DS3231" 
 
@@ -79,7 +79,7 @@
             owner=root
             group=root
             mode=0644
-  when: wireless_lan_present
+  when: xsce_wireless_lan_iface != "none"
 
 - name: ask systemd to reread the unit file, changing roles?
   shell: systemctl daemon-reload
