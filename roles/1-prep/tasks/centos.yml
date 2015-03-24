@@ -16,4 +16,5 @@
   set_fact: 
     sugar-stats_install: False
     sugar-stats_enabled: False
-    
+    ajenti_install: False
+    ajenti_enabled: False
