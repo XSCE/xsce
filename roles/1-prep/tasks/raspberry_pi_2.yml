@@ -9,7 +9,7 @@
             src=rtc.conf
 
 - name: Put a bash script to bring up rpi network with hostapd AP
-  template: src=up_rpi.j2
+  template: src=up-rpi.j2
             dest=/usr/sbin/up-rpi
   when: xsce_network_mode != "Appliance" and xsce_wireless_lan_iface != "none"
 
