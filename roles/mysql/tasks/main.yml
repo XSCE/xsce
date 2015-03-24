@@ -3,7 +3,6 @@
       with_items:
         - MySQL-python
         - mysql
-        - mysql-server
         - php-mysql
         - php-gd
         - php-imap
@@ -12,13 +11,24 @@
         - php-pear
         - php-xml
         - php-xmlrpc
+  tags:
+    - download
+
+- include: centos.yml
+  when: ansible_distribution == "CentOS"
+  tags:
+    - download
+
+- include: fedora.yml
+  when: ansible_distribution == "Fedora"
+  tags:
+    - download
 
 # Name of mysql service varies by OS so softcoded in 1-prep
 
     - name: Start the MySQL service
       service: name={{ mysql_service }}
                state=started
-               enabled=yes
 
 # 'localhost' needs to be the last item for idempotency, see
 # http://ansible.cc/docs/modules.html#mysql-user
