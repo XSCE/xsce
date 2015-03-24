@@ -1,9 +1,13 @@
 - name: Centos Server specific tasks
   command: echo Starting centos.yml
 
-- name: install repo for CentOS
+- name: install epel-release for CentOS
+  yum: name={{ item }}
+       state=present
+  with_items:
+   - epel-release
+
+- name: install XECE repo for CentOS
   template: src={{ item }} dest=/etc/yum.repos.d/ owner=root group=root mode=0644
   with_items:
-  - epel.repo
-  - epel-testing.repo 
   - xsce-centos.repo
