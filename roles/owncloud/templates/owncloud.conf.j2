@@ -1,11 +1,11 @@
-Alias /owncloud {{ owncloud_path }}
+Alias {{ owncloud_url }} {{ owncloud_path }}
 
 <Directory {{ owncloud_path }}/>
     Options -Indexes
 
     <IfModule mod_authz_core.c>
     # Apache 2.4
-    Require ip 172.18.96.1/19 {{ ansible_default_ipv4.network }}/{{ ansible_default_ipv4.netmask }}
+    Require ip 127.0.0.1 {{lan_ip}}/{{lan_netmask}} {{ owncloud_required_ip }}
     </IfModule>
     <IfModule !mod_authz_core.c>
     # Apache 2.2

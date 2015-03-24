@@ -11,11 +11,11 @@
 
 # but we use the tar file to get the latest version; really only benefits the xo4 on fedora 18
 
-- name: Get the owncloud software 
+- name: Get the owncloud software
   get_url: url="{{ xsce_download_url }}"/{{ owncloud_src_file }}  dest={{ downloads_dir}}/{{ owncloud_src_file }}
 
 - name: Copy it to permanent location /opt
-  unarchive: src={{ downloads_dir}}/{{ owncloud_src_file}}  dest=/opt/ 
+  unarchive: src={{ downloads_dir}}/{{ owncloud_src_file}}  dest=/opt/
 
 - name: Add autoconfig file
   template: src=autoconfig.php.j2
@@ -23,14 +23,14 @@
             owner=apache
             group=apache
             mode=0640
-            
+
 - name: Make apache owner
   file: path={{ owncloud_path }}
         owner=apache
         group=apache
         recurse=yes
         state=directory
-        
+
 - name: Create data directory library
   file: path={{ item }}
         mode=0750
@@ -52,15 +52,20 @@
         - ::1
         - localhost
   when: mysql_enabled and owncloud_enabled
-      
-- name: Remove httpd conf file in case we are now disabled
+
+- name: Remove httpd conf file if we are disabled
   file: path=/etc/httpd/conf.d/owncloud.conf
         state=absent
+  when: not owncloud_enabled
+
+- name: Restart apache, so it picks up the new aliases
+  service: name=httpd state=restarted
+  when: not owncloud_enabled
 
 # Enable owncloud by copying template to httpd config
- 
+
 - include: owncloud_enabled.yml
-  when: owncloud_enabled        
+  when: owncloud_enabled
 
 - name: Add owncloud to service list
   ini_file: dest='{{ service_filelist }}'
@@ -71,13 +76,10 @@
     - option: name
       value: owncloud
     - option: description
-      value: '"OwnCloud is a local server-based facility for sharing files, photos, contacts, calendars, etc."'      
+      value: '"OwnCloud is a local server-based facility for sharing files, photos, contacts, calendars, etc."'
     - option: path
       value: "{{ owncloud_path }}"
     - option: source
-      value: "{{ owncloud_src_file }}"  
+      value: "{{ owncloud_src_file }}"
     - option: enabled
-      value: "{{ owncloud_enabled }}"  
-
-- name: Restart apache, so it picks up the new aliases
-  service: name=httpd state=restarted  
+      value: "{{ owncloud_enabled }}"

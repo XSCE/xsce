@@ -12,3 +12,6 @@
   when: ansible_distribution == "CentOS"
   tags:
     - centos
+
+- include: selinux.yml
+  when: ansible_selinux["status"] != "disabled"

@@ -1,37 +1,28 @@
 - name: Create link to rachel from doc root
   file: src={{ rachel_content_path }}
-        dest={{ rachel_doc_root }}       
+        dest={{ rachel_doc_root }}
         owner=root
         group=admin
-        state=link 
+        state=link
 
 - name: Create link to rachel mysql db from mysql data dir
   file: src={{ rachel_mysqldb_path }}
-        dest=/var/lib/mysql/sphider       
+        dest=/var/lib/mysql/sphider_plus
         owner=root
         group=admin
-        state=link         
+        state=link
+
+- name: Set mysql password
+  lineinfile: regexp=mysql_password1
+              line="$mysql_password1 = '{{ mysql_root_password }}';"
+              state=present
+              dest={{ rachel_content_path }}/rsphider/settings/database.php
 
 - name: Restart mysqld service
   service: name={{ mysql_service }}
            state=restarted
 
-# To Do - softcode mysql password
 
-# fix up rachel files to use our location
-- name: Add rachel_url to url in header template
-  template: src=header.html
-            dest={{ rachel_content_path }}/sphider/templates/standard/header.html
-            owner=apache
-            group=apache
-            mode=0644
-            
-- name: Add rachel_url to url in footer template
-  template: src=footer.html
-            dest={{ rachel_content_path }}/sphider/templates/standard/footer.html
-            owner=apache
-            group=apache
-            mode=0644
 
 - name: Restart httpd service
   service: name=httpd
@@ -49,4 +40,3 @@
       value: '"RACHEL is a curation of important resources available on the web"'
     - option: path
       value: /rachel
-                                                                

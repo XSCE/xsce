@@ -25,7 +25,7 @@ no_network: False  # use cache or error out if cache does not exist
 
 xsce_admin_user: xsce-admin
 xsce_admin_passw_hash: $6$xsce51$D.IrrEeLBYIuJkGDmi27pZUGOwPFp98qpl3hxMwWV4hXigFGmdSvy3s/j7tn6OnyTTLmlV7SsN0lCUAFzxSop.
- 
+
 # password is 12admin
 dummy: $6$xsce51$JhKBX/nwYLG0DDMTPN6radpgd//P881O/JX0GKFn32XUrR/D0VqnVFdvMdI.XW.eGaQY2VBCraLq6qiH0fbkD0
 
@@ -55,6 +55,7 @@ user_lan_iface: auto
 wan_ip: dhcp
 wan_netmask:
 wan_gateway:
+wan_nameserver:
 user_wan_iface: auto
 detect_slaves: False
 #only change these if you know what you are doing
@@ -92,7 +93,7 @@ squid_enabled: True
 
 # wondershaper
 wondershaper_install: True
-wondershaper_enabled: True
+wondershaper_enabled: False
 
 #Gateway and Filters
 gw_squid_whitelist: False
@@ -162,8 +163,6 @@ rachel_enabled: False
 rachel_content_found: False
 rachel_url: /rachel
 rachel_doc_root: /var/www/html{{ rachel_url }}
-rachel_content_path: /library/rachel/bin/www/
-rachel_mysqldb_path: /library/rachel/bin/mysql/data/sphider
 
 # Kiwix-Serve
 kiwix_install: True
@@ -197,13 +196,13 @@ munin_enabled: False
 # monit
 monit_install: True
 monit_enabled: False
-watchdog: 
+watchdog:
   - sshd
   - idmgr
-  - ejabberd 
+  - ejabberd
   - httpd
   - postgresql
-  - squid 
+  - squid
 
 # vnstat
 vnstat_install: True
