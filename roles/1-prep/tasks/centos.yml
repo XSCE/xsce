@@ -1,13 +1,19 @@
 - name: Centos Server specific tasks
   command: echo Starting centos.yml
 
-- name: install epel-release for CentOS
+- name: Install epel-release for CentOS
   yum: name={{ item }}
        state=present
   with_items:
    - epel-release
 
-- name: install XECE repo for CentOS
+- name: Install XECE repo for CentOS
   template: src={{ item }} dest=/etc/yum.repos.d/ owner=root group=root mode=0644
   with_items:
-  - xsce-centos.repo
+   - xsce-centos.repo
+
+- name: Disable some install routines
+  set_fact: 
+    sugar-stats-install: False
+    sugar-stats-enabled: False
+    
