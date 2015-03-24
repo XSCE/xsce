@@ -1,0 +1,7 @@
+- name: Install common packages
+  yum: name={{ item }}
+       state=present
+  with_items:
+   - mtd-utils
+   - etckeeper
+
