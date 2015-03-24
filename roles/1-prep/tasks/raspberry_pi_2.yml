@@ -10,12 +10,16 @@
 
 - name: Put a bash script to bring up rpi network with hostapd AP
   template: src=up-rpi.j2
-            dest=/usr/sbin/up-rpi
+            dest=/usr/local/sbin/up-rpi
+            mode=0755
+            owner=root
+            group=root
   when: xsce_network_mode != "Appliance" and xsce_wireless_lan_iface != "none"
+
 
 - name: Add a line in rc.local to execute up-rpi network script
   lineinfile: backup=yes
-              line="/usr/sbin/up-rpi"
+              line="/usr/local/sbin/up-rpi"
               dest=/etc/rc.d/rc.local
   when: xsce_network_mode != "Appliance" and xsce_wireless_lan_iface != "none"
 
