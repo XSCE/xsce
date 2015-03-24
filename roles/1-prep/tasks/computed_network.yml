@@ -36,7 +36,7 @@
 # otherwise if there is a wireless adapter, it becomes a LAN candidate
 - name: Override discovered wireless when user specifies
   set_fact:
-     discovered_wireless_iface: "{{ user_wireless_lan_iface }}"
+     discovered_wireless_iface: "{{ user_wireless_lan_iface|trim }}"
   when: user_wireless_lan_iface != "auto"
 
 # override with user_wan_iface setting if no longer in auto
@@ -46,9 +46,6 @@
   when: user_wan_iface != "auto"
 
 # LAN - pick non WAN's
-- name: Set default for discovering lan_iface
-  set_fact:
-
 - name: Create list of  LAN (non wan) ifaces
   shell: "/sbin/ip link show | grep -v  -e lo -e br0: -e tun -e {{ xsce_wan_iface }}| grep mtu | gawk -F: '{print $2}' "
   register: lan_list_result
@@ -58,10 +55,14 @@
 # Select an adapter that is not WAN and not wireless
 - name: Set xsce discovered lan fact
   set_fact:
-    discovered_lan_iface: "{{ item }}"
+    discovered_lan_iface: "{{ item|trim }}"
   when: item != discovered_wireless_iface
   with_items:
       - "{{ lan_list_result.stdout_lines }}"
+
+- debug: var=lan_list_result
+- debug: var=discovered_lan_iface
+- debug: var=discovered_wireless_iface
 
 - name: Count LAN ifaces
   shell: "/sbin/ip link show | grep -v  -e lo -e br0: -e tun -e {{ xsce_wan_iface }} | grep mtu | wc | gawk '{print $1}'"
@@ -78,6 +79,11 @@
   set_fact: 
        xsce_wireless_lan_iface: "{{ discovered_wireless_iface }}"
   when: discovered_wireless_iface != "none"
+
+- name: if only one lan interface, combine wireless and lan
+  set_fact:
+    discovered_lan_iface: "{{ xsce_wireless_lan_iface|trim }}"
+    when: discovered_lan_iface == "none" and num_lan_interfaces == "1"
 
 - debug: var='{{ xsce_wireless_lan_iface }}'
 - debug: var='{{ discovered_lan_iface }}'
