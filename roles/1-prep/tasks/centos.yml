@@ -14,6 +14,6 @@
 
 - name: Disable some install routines
   set_fact: 
-    sugar-stats-install: False
-    sugar-stats-enabled: False
+    sugar-stats_install: False
+    sugar-stats_enabled: False
     
