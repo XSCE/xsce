@@ -18,6 +18,7 @@
   - cifs-utils
   tags:
     - samba
+    - download
 
 - name: put our smb.conf in place
   template: src=smb.conf.j2 dest=/etc/samba/smb.conf

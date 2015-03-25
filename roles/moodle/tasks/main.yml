@@ -5,6 +5,8 @@
   with_items:
     - moodle-xs
     - python-psycopg2
+  tags:
+    - download
 
 - name: Remove stock moodle conf
   file: path='/etc/httpd/conf.d/moodle.conf'
