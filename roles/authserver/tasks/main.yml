@@ -9,7 +9,7 @@
           extra_args="--download-cache {{ pip_packages_dir }}"
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
-    - download
+    - download2
 
 - name: install xs-authserver from pypi
   pip: name=xs-authserver
