@@ -4,6 +4,11 @@
   tags:
     - download
 
+- include: fedora.yml
+  when: ansible_distribution == "Fedora"
+  tags:
+    - download
+
 - include: chrony.yml
 - include: avahi.yml
 - include: sysctl.yml

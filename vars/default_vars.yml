@@ -130,7 +130,7 @@ elgg_enabled: False
 
 # note: when you enable elgg, you must also enable mysql, on which it depends
 mysql_install: True
-mysql_enabled: False
+mysql_enabled: True
 
 # password is fixmysql
 # mysql_root_password: $6$xsce51$3ICIW0CLWxxMW2a3yrHZ38ukZItD5tcadL4rWcE9D.qIGStxhh8rRsaSxoj3b.MYxI/VRDNjpzSYK/V6zkWFI0
