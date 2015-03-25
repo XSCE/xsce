@@ -1,6 +1,8 @@
 - name: Install python-pip package
   yum: name=python-pip
        state=installed
+  tags:
+    - download
 
 - name: Install required libraries
   yum: name={{ item.pkg }}
@@ -12,13 +14,15 @@
     - pkg: pyOpenSSL
     - pkg: python-daemon
     - pkg: gcc
+  tags:
+    - download
 
 - name: download ajenti from our repo 
   pip: name="{{ xsce_download_url }}"/ajenti-0.99.34-patched5.tar.gz
           extra_args="--download-cache={{ pip_packages_dir }}" 
-  tags:
-    - download
   when: not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download2
 
 - name: install ajenti from local download directory
   pip: name=ajenti
@@ -31,6 +35,8 @@
   pip: name=python-catcher version=0.1.3
           extra_args="--download-cache {{ pip_packages_dir }}"
   when: not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download2
 
 - name: install python-catcher from local download directory
   pip: name=python-catcher
@@ -58,4 +64,3 @@
            enabled=yes
            state=restarted
   when: ajenti_enabled
-  
