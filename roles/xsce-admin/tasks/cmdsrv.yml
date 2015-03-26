@@ -19,12 +19,15 @@
   
 #       extra_args="--zmq=bundled"
 
+- name: Download php binding for zeromq
+  shell: yes '' | pecl download zmq-beta
+  when: not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download2
+  
 - name: Install php binding for zeromq
-  shell: yes '' | pecl install zmq-beta
+  shell: yes '' | pecl install -O zmq-beta
          creates="{{ phplib_dir }}/modules/zmq.so"
-  
-  
-# pecl install zmq-beta (prompts)
         
 - name: Create admin-console directory
   file: path={{ item }}
