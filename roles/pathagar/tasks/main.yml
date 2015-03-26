@@ -8,6 +8,7 @@
     - python-virtualenv
     - python-pip
     - python-psycopg2
+    - mod_wsgi
   tags:
     - download
 
@@ -40,7 +41,7 @@
   with_items:
     - Django==1.4.5
     - django-tagging==0.3.1
-    - django-sendfile==0.3.0
+    - django-sendfile==0.3.6
     - django-taggit==0.10
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
@@ -54,7 +55,7 @@
   with_items:
     - Django==1.4.5
     - django-tagging==0.3.1
-    - django-sendfile==0.3.0
+    - django-sendfile==0.3.6
     - django-taggit==0.10
 
 - name: Create pathagar postgresql user
