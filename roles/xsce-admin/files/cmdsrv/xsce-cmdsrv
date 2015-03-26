@@ -13,17 +13,20 @@
 
 """
 
-import os, sys, syslog
+import os, sys, syslog, signal
 import pwd, grp
 import time
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import threading, subprocess
 import shlex
 import zmq
 import sqlite3
 import json
+import xml.etree.ElementTree as ET
 import yaml
 import re
+import urllib2
+import string
 
 # Config Files
 xsce_config_file = "/etc/xsce/xsce.env"
@@ -45,13 +48,27 @@ xsce_cmdsrv_dbname = xsce_cmdsrv_path + "/xsce_cmdsrv.db"
 
 # Constants - ToDo add to xsce_cmdsrv_config_file
 squid_whitelist = "/etc/squid/sites.whitelist.txt"
+# for kiwix zims
+zim_url_map = "/etc/xsce/zim_urls.json"
+zim_downloads_dir = "/library/downloads/zims/"
+zim_download_prefix = "kiwix-0.9+"
+zim_working_dir = "/library/working/zims/"
+zim_dir = "/library/zims/"
+zim_content_dir = "/library/zims/content/"
+zim_index_dir = "/library/zims/index/"
 
 # Global Variables
 last_command_rowid = 0
 last_job_rowid = 0
 
+active_commands = {}
+zims_wip = {}
 jobs_requested = {}
+jobs_to_restart = {}
+jobs_to_cancel = {}
+prereq_jobs = {}
 jobs_running = {}
+running_job_count = 0
 
 ansible_running_flag = False
 
@@ -63,6 +80,7 @@ local_vars = {}
 effective_vars = {}
 ansible_facts = {}
 ansible_tags = {}
+zim_urls = {}
 
 # vars set by admin-console
 config_vars = {}
@@ -155,14 +173,23 @@ def main():
 def job_minder_thread(client_url, worker_control_url, context=None):
     """Job Monitoring Worker Routine"""
 
-    global jobs_requested
-    global jobs_running
+    global jobs_requested # queue from command processor
+    global jobs_to_restart # queue from incomplete jobs in init
+    global jobs_to_cancel # queue of scheduled or running jobs to be cancellled from cancel command
+    global prereq_jobs # status of predecessor job = depend_on_job_id; used to cascade job steps; we do not support multiple descendents
+    global jobs_running # queue of jobs running, started from jobs requested
     global ansible_running_flag
+    global running_job_count
 
     print "in job_minder_thread"
 
-    jobs_requested_done = {}
-    jobs_to_close = {}
+    # working lists
+    jobs_requested_list = [] # just the job_id from jobs_requested
+    jobs_requested_done = [] # list of processed job_id from jobs_requested
+    prereq_jobs_to_clear = [] # prerequisite jobs whose descendent has been processed
+    jobs_to_close = [] # list of running jobs that have completed or been cancelled
+    prereq_info = {}
+    lock = threading.Lock()
 
     # control signals from main thread
     context = context or zmq.Context.instance()
@@ -177,92 +204,151 @@ def job_minder_thread(client_url, worker_control_url, context=None):
     poll = zmq.Poller()
     poll.register(control_socket, zmq.POLLIN)
 
+    # Restart any incomplete jobs found during init
+    for job_id in jobs_to_restart:
+        job_info = jobs_to_restart[job_id]
+        if job_info['has_dependent'] == "Y":
+            prereq_info ['status'] = 'STARTED' # for both 'STARTED' and 'RESTARTED'
+            prereq_jobs[job_id] = prereq_info
+        job_info = start_job(job_id, job_info, status='RESTARTED')
+        jobs_running[job_id] = job_info
+
+    jobs_to_restart = {}
+
     thread_run = True
 
+    # Main loop of XSCE-CMDSRV
+
     while thread_run == True:
-        # start any requested jobs
-        for key in jobs_requested:
-            job_id = key
-            job_info = jobs_requested[key]
+        lock.acquire() # will block if lock is already held
+        try:
+            jobs_requested_list = jobs_requested.keys() # create copy of keys so we can update global dictionary in loop
+        finally:
+            lock.release() # release lock, no matter what
+
+        # Go through each job in requested queue and conditionally start or cancel
+        # These are marked Scheduled
+
+        jobs_requested_done = [] # list of processed job_ids from jobs_requested to be cleared later
+        jobs_requested_list.sort()
+
+        for job_id in jobs_requested_list:
+            job_info = jobs_requested[job_id]
+
+            #print "starting cancel of requested"
+
+            # Remove cancelled jobs
+            if job_id in jobs_to_cancel:
+                job_info = cancel_req_job(job_id, job_info)
+                jobs_requested[job_id] = job_info
+                jobs_requested_done.append(job_id)
+
+                # we will pop from jobs_to_cancel later when clearing jobs_requested
+                continue
 
             # don't create ansible job if one is running
             if job_info['cmd'] == "RUN-ANSIBLE" and ansible_running_flag == True:
                 continue
-            # tried to change buffer size to get line by line output, but no luck
-            job_info['output_file'] = '/tmp/job-' + str(key)
-            #job_info['file'] = open(job_info['output_file'], 'w', buffering=1)
-            job_info['file'] = open(job_info['output_file'], 'w')
-            #job_info['cmd'] = jobs_requested[key]
-            args = shlex.split(job_info['job_command'])
-            job_info['subproc'] = subprocess.Popen(args, stdout=job_info['file'], stderr=subprocess.STDOUT)
-            #job_info['subproc'] = subprocess.Popen(args, bufsize=1, stdout=job_info['file'], stderr=subprocess.STDOUT)
-            job_info['job_pid'] = job_info['subproc'].pid
-            job_info['status'] = 'STARTED'
-            job_info['status_datetime'] = str(datetime.now())
-            job_info['job_output'] = ""
 
-            if job_info['cmd'] == "RUN-ANSIBLE":
-                ansible_running_flag = True
-            log(syslog.LOG_NOTICE, "Starting Job: %s, pid: %s" % (job_info['cmd'], job_info['job_pid']))
+            # don't start job if at max allowed
+            if running_job_count >= cmdsrv_max_concurrent_jobs:
+                continue
 
-            # update jobs table
-            upd_job_started(job_id, job_info['job_pid'])
-            jobs_running[key] = job_info
-            jobs_requested_done[key] = True
+            #print "starting prereq check"
+            # don't start job if it depends on another job that is not finished
+            depend_on_job_id = job_info['depend_on_job_id']
 
-        print 'starting clear'
-        # clear started jobs from requested queue
-        for key in jobs_requested_done:
-            jobs_requested.pop(key, None)
-        jobs_pending_done = {}
+            if depend_on_job_id in prereq_jobs:
+                prereq_status = prereq_jobs[depend_on_job_id]['status']
 
-        print 'starting poll'
-        # poll jobs_running for completed jobs
-        for key in jobs_running:
-            job_id = key
-            jobs_running[key]['subproc'].poll()
-            returncode = jobs_running[key]['subproc'].returncode
-            if returncode == None:
-                print str(key) + ' still running.'
-            else:
-                print str(key) + ' terminated.'
-                jobs_running[key]['file'].close()
-
-                # load output from tmp file
-                output_file = jobs_running[key]['output_file']
-                file = open(output_file, 'r')
-                job_output = file.read()
-                jobs_running[key]['job_output'] = job_output
-                file.close()
-
-                job_info['status_datetime'] = str(datetime.now())
-                if returncode == 0:
-                    jobs_running[key]['status'] = 'SUCCEEDED'
+                if prereq_status == 'SCHEDULED' or prereq_status == 'STARTED':
+                    continue # successor step can't start yet
                 else:
-                    jobs_running[key]['status'] = 'FAILED'
+                    if prereq_status == 'SUCCEEDED':
+                        job_info = start_job(job_id, job_info) # Create running job
+                        jobs_running[job_id] = job_info
+                        if job_id in prereq_jobs:
+                            prereq_jobs[job_id]['status'] = 'STARTED'
+                        jobs_requested_done.append(job_id)
+                        prereq_jobs_to_clear.append(depend_on_job_id) # mark for deletion
+                    else: # predecessor failed or was cancelled
+                        job_info = cancel_req_job(job_id, job_info)
+                        jobs_requested_done.append(job_id)
+                        prereq_jobs_to_clear.append(depend_on_job_id) # mark for deletion
 
-                log(syslog.LOG_NOTICE, "Job: %s, pid: %s, status:%s" % (job_info['cmd'], job_info['job_pid'], jobs_running[key]['status']))
+            else: # not a multi-step job or first step of multi
+                job_info = start_job(job_id, job_info) # Create running job
+                jobs_running[job_id] = job_info
+                jobs_requested_done.append(job_id)
 
-                # send status to main
-                #resp_socket.send('JOB-STATUS {' + str(key) + ':"Finished"}')
-                #resp_socket.recv() # get reply
+        #print 'starting clear'
 
-                # update jobs table and remove tmp output file
-                upd_job_finished(job_id, job_output, jobs_running[key]['status'])
-                os.remove(output_file)
+        # Clear started or cancelled jobs from requested queue and prereq dict
+        for job_id in jobs_requested_done:
+            jobs_requested.pop(job_id, None)
+            if job_id in jobs_to_cancel:
+                jobs_to_cancel.pop(job_id, None)
+        jobs_requested_done = []
 
-                if job_info['cmd'] == "RUN-ANSIBLE":
-                    ansible_running_flag = False
+        # clear prerequisites for started or failed jobs from prereq_jobs
+        for depend_on_job_id in prereq_jobs_to_clear:
+            prereq_jobs.pop (depend_on_job_id, None)
+        prereq_jobs_to_clear = []
+
+        #print 'starting poll'
+        # poll jobs_running for completed jobs
+        for job_id in jobs_running:
+
+            jobs_running[job_id]['subproc'].poll()
+            returncode = jobs_running[job_id]['subproc'].returncode
+
+            if returncode == None:
+                print str(job_id) + ' still running.'
+
+                # Cancel job if requested
+                if job_id in jobs_to_cancel:
+                    print str(job_id) + ' cancelled.'
+                    p = jobs_running[job_id]['subproc']
+                    p.send_signal(signal.SIGINT)
+                    t = 0
+                    while t < 5:
+                        rc = p.poll()
+                        if rc != None:
+                            break
+                        time.sleep(1)
+                        t += 1
+                    if rc == None:
+                        p.kill()
+                    job_info = end_job(job_id, job_info, 'CANCELLED')
+                    jobs_to_close.append(job_id)
+                    upd_job_cancelled(job_id)
+            else:
+                print str(job_id) + ' terminated.'
+
+                # job_info['status_datetime'] = str(datetime.now()) ?
+                if returncode == 0:
+                    status = 'SUCCEEDED'
+                else:
+                    status = 'FAILED'
+
+                job_info = end_job(job_id, job_info, status)
 
                 # flag job for removal
-                jobs_to_close[key] = True
+                jobs_to_close.append(job_id)
 
-        print 'starting close jobs'
+        #print 'starting close jobs'
         # now remove closed jobs from running list
         for key in jobs_to_close:
+            if jobs_running[key]['has_dependent'] == "N": # delete from command list if last step of command
+                active_commands.pop(jobs_running[key]['cmd_rowid'], None)
+                if jobs_running[key]['cmd'] == "INST-ZIMS":
+                    zims_wip.pop(jobs_running[key]['cmd_args']['zim_id'], None)
             jobs_running.pop(key, None)
+            if key in jobs_to_cancel:
+                jobs_to_cancel.pop(key, None)
+        jobs_to_close = []
 
-        print 'starting socket poll'
+        #print 'starting socket poll'
         sockets = dict(poll.poll(1000))
         if control_socket in sockets:
             ctl_msg = control_socket.recv()
@@ -272,15 +358,114 @@ def job_minder_thread(client_url, worker_control_url, context=None):
                 log(syslog.LOG_NOTICE, 'Stopping XSCE Command Server Monitor Thread')
                 thread_run = False
 
-        print 'starting sleep'
+        #print 'starting sleep'
         time.sleep(cmdsrv_job_poll_sleep_interval)
-        print 'ready to loop'
+        #print 'ready to loop'
 
     # Clean up if thread is stopped
     resp_socket.close()
     control_socket.close()
     #context.term()
     #sys.exit()
+
+def start_job(job_id, job_info, status='STARTED'):
+    global running_job_count
+    global ansible_running_flag
+    global prereq_jobs
+
+    job_info['output_file'] = '/tmp/job-' + str(job_id)
+    job_info['file'] = open(job_info['output_file'], 'w')
+    args = shlex.split(job_info['job_command'])
+    job_info['subproc'] = subprocess.Popen(args, stdout=job_info['file'], stderr=subprocess.STDOUT)
+    job_info['job_pid'] = job_info['subproc'].pid
+    job_info['status'] = status
+    job_info['status_datetime'] = str(datetime.now())
+    job_info['job_output'] = ""
+
+    if job_id in prereq_jobs:
+        prereq_jobs[job_id]['status'] = 'STARTED'
+
+    if job_info['cmd'] == "RUN-ANSIBLE":
+        ansible_running_flag = True
+
+    if status == 'STARTED':
+        log_msg = "Starting"
+    else:
+        log_msg = "Restarting"
+
+    log(syslog.LOG_NOTICE, "%s Job: %s, job_id: %s, pid: %s" % (log_msg, job_info['cmd'], job_id, job_info['job_pid']))
+
+    # update jobs table
+    upd_job_started(job_id, job_info['job_pid'], status)
+    running_job_count += 1
+
+    return (job_info)
+
+def end_job(job_id, job_info, status):
+
+    global prereq_jobs
+    global jobs_running
+    global ansible_running_flag
+    global running_job_count
+
+    jobs_running[job_id]['file'].close()
+
+    # load output from tmp file
+    output_file = jobs_running[job_id]['output_file']
+    file = open(output_file, 'r')
+    job_output = file.read()
+    # remove non-printing chars
+    job_output = filter(lambda x: x in string.printable, job_output)
+    jobs_running[job_id]['job_output'] = job_output
+    file.close()
+
+    # job_info['status_datetime'] = str(datetime.now()) ?
+    jobs_running[job_id]['status'] = status
+
+    if job_id in prereq_jobs:
+        prereq_jobs[job_id]['status'] = status
+
+    log(syslog.LOG_NOTICE, "Job: %s, job_id: %s, pid: %s, status:%s" % (jobs_running[job_id]['cmd'], job_id, jobs_running[job_id]['job_pid'], status))
+
+    # update jobs table and remove tmp output file
+    upd_job_finished(job_id, job_output, status)
+    os.remove(output_file)
+
+    if job_info['cmd'] == "RUN-ANSIBLE":
+        ansible_running_flag = False
+
+    running_job_count -= 1
+    if running_job_count < 0:
+        running_job_count = 0
+
+    return (job_info)
+
+def cancel_req_job(job_id, job_info):
+    global active_commands
+
+    job_info['output_file'] = None
+    job_info['file'] = None
+    job_info['subproc'] = None
+    #job_info['job_pid'] = None
+    job_info['status'] = 'CANCELLED'
+    job_info['status_datetime'] = str(datetime.now())
+    #job_info['job_output'] = ""
+
+    if job_id in prereq_jobs:
+        prereq_jobs[job_id]['status'] = job_info['status']
+
+    log(syslog.LOG_NOTICE, "Cancelling Job: %s, job_id: %s" % (job_info['cmd'], job_id))
+
+    # update jobs table
+    upd_job_cancelled(job_id)
+
+    # Remove Active Command and Zim WIP
+    if job_info['has_dependent'] == "N": # delete from command list if last step of command
+        active_commands.pop(job_info['cmd_rowid'], None)
+        if jobs_info['cmd'] == "INST-ZIMS":
+            zims_wip.pop(jobs_info['cmd_args']['zim_id'], None)
+
+    return (job_info)
 
 def cmd_proc_thread(worker_data_url, worker_control_url, context=None):
     """Command Processing Worker Routine"""
@@ -308,6 +493,7 @@ def cmd_proc_thread(worker_data_url, worker_control_url, context=None):
             ident, cmd_msg = data_socket.recv_multipart()
             tprint('sending message server received from client to worker %s id %s' % (cmd_msg, ident))
             cmd_resp = cmd_handler(cmd_msg)
+            print cmd_resp
             data_socket.send_multipart([ident, cmd_resp])
         if control_socket in sockets:
             ctl_msg = control_socket.recv()
@@ -341,10 +527,23 @@ def cmd_handler(cmd_msg):
         "GET-STORAGE-INFO": get_storage_info,
         "RUN-ANSIBLE": run_ansible,
         "GET-JOB-STAT": get_last_jobs_stat,
+        "CANCEL-JOB": cancel_job,
         "GET-WHLIST": get_white_list,
         "SET-WHLIST": set_white_list,
+        "GET-INET-SPEED": get_inet_speed,
+        "GET-INET-SPEED2": get_inet_speed2,
+        "GET-ZIM-LIB": get_zim_lib,
+        "GET-ZIM-STAT": get_zim_stat,
+        "INST-ZIMS": install_zims,
         "REBOOT": reboot_server
         }
+
+    # Check for Duplicate Command
+    dup_cmd = next((job_id for job_id, active_cmd_msg in active_commands.items() if active_cmd_msg == cmd_msg), None)
+    if dup_cmd != None:
+        strip_cmd_msg = cmd_msg.replace('\"','')
+        resp = resp = '{"Error": "' + strip_cmd_msg + ' duplicates an Active Command"}'
+        return (resp)
 
     # store the command in database
     cmd_rowid = insert_command(cmd_msg)
@@ -366,17 +565,26 @@ def cmd_handler(cmd_msg):
         cmd_args = {}
 
     cmd_info['cmd_rowid'] = cmd_rowid
+    cmd_info['cmd_msg'] = cmd_msg
     cmd_info['cmd'] = cmd
     cmd_info['cmd_args'] = cmd_args
+    print cmd_info
 
     # commands that run scripts should check for malicious characters in cmd_args and return error if found
     # bad_command = validate_command(cmd_args)
 
-    try:
-        resp = avail_cmds[cmd](cmd_info)
-    except KeyError, e:
-        # print e
-        resp = '{"Error": "Unknown Command"}'
+    # uncomment for testing
+    resp = avail_cmds[cmd](cmd_info)
+
+    # uncomment for production
+    #if cmd in avail_cmds:
+    #    try:
+    #        resp = avail_cmds[cmd](cmd_info)
+    #    except:'
+    #        resp = '{"Error": "Unexpected error in Command ' + cmd + '"}'
+    #else:
+    #    resp = '{"Error": "Unknown Command"}'
+
     return (resp)
 
 #
@@ -511,6 +719,16 @@ def get_disk_info():
         system_disks[dev] = disk_info
     return (system_disks)
 
+def get_inet_speed(cmd_info):
+    outp = subprocess.check_output(["scripts/get_inet_speed"])
+    json_outp = json_array("internet_speed", outp)
+    return (json_outp)
+
+def get_inet_speed2(cmd_info):
+    outp = subprocess.check_output(["/usr/bin/speedtest-cli","--simple"])
+    json_outp = json_array("internet_speed", outp)
+    return (json_outp)
+
 def get_white_list(cmd_info):
     whlist = []
     try:
@@ -538,6 +756,33 @@ def set_white_list(cmd_info):
         stream.close()
     return (resp)
 
+def get_zim_lib(cmd_info):
+    outp = subprocess.check_output(["scripts/get_kiwix_lib"])
+    if outp == "SUCCESS":
+        stream = open (zim_url_map,"r")
+        zim_urls = json.load(stream)
+        stream.close()
+        resp = cmd_success("GET-ZIM-LIB")
+        return (resp)
+    else:
+        return ('{"Error": "' + outp + '."}')
+
+def get_zim_stat(cmd_info):
+    all_zims = {}
+    for zim_id in zims_wip:
+        all_zims[zim_id] = "WIP"
+
+    lib_xml_file = zim_dir + "library.xml"
+    tree = ET.parse(lib_xml_file)
+    root = tree.getroot()
+
+    for child in root:
+        attributes = child.attrib
+        all_zims[attributes['id']] = "INSTALLED"
+
+    resp = json.dumps(all_zims)
+    return (resp)
+
 def get_config_vars(cmd_info):
     read_config_vars()
     resp = json.dumps(config_vars)
@@ -556,7 +801,7 @@ def set_config_vars(cmd_info):
     resp = cmd_success(cmd_info['cmd'])
     return (resp)
 
-def run_ansible(cmd_info):
+def run_ansible(cmd_info): # create multiple jobs to run in succession
 
     global ansible_running_flag
     global jobs_requested
@@ -576,13 +821,79 @@ def run_ansible(cmd_info):
     resp = request_job(cmd_info, job_command)
     return resp
 
+def install_zims(cmd_info):
+
+    global ansible_running_flag
+    global jobs_requested
+    global zim_urls
+
+    if 'cmd_args' in cmd_info:
+        zimId = cmd_info['cmd_args']['zim_id']
+        if zimId in zim_urls:
+            zimFileRef = zim_urls[zimId]['file_ref']
+        else:
+            resp = cmd_error(cmd='INST-ZIMS', msg='Zim ID not found in Command')
+            return resp
+
+        downloadSrcFile = zim_urls[zimId]['download_url']
+        try:
+            rc = urllib2.urlopen(downloadSrcFile)
+            rc.close()
+        except (urllib2.URLError) as exc:
+            errmsg = str("Zim File " + zimFileRef + " not found in Cmd")
+            resp = cmd_error(cmd='INST-ZIMS', msg=errmsg)
+            return resp
+
+        targetDir = zim_working_dir + zimFileRef
+        if not os.path.exists(targetDir):
+            try:
+                os.makedirs(targetDir)
+            except OSError:
+                resp = cmd_error(cmd='INST-ZIMS', msg='Error creating directory in Command')
+                return resp
+    else:
+        return cmd_malformed(cmd_info['cmd'])
+
+    # at this point we can create all the jobs
+
+    downloadSrcFile = zim_urls[zimId]['download_url']
+    downloadFile = zim_downloads_dir + zim_download_prefix + zimFileRef + ".zip"
+
+    # download zip file
+    job_command = "/usr/bin/wget -c --progress=dot:giga " + downloadSrcFile + " -O " + downloadFile
+    job_id = request_one_job(cmd_info, job_command, 1, -1, "Y")
+    print job_command
+
+    # unzip
+    job_command = "/usr/bin/unzip -uo " + downloadFile + " -d " + targetDir
+    job_id = request_one_job(cmd_info, job_command, 2, job_id, "Y")
+    print job_command
+
+    # move to location and clean up
+    job_command = "/opt/schoolserver/xsce_cmdsrv/scripts/zim_install_step3.sh " + zimFileRef
+    print job_command
+    resp = request_job(cmd_info=cmd_info, job_command=job_command, cmd_step_no=3, depend_on_job_id=job_id, has_dependent="N")
+    #resp = cmd_error(cmd='INST-ZIMS', msg='Just testing')
+    return resp
+
 def reboot_server(cmd_info):
     resp = cmd_success(cmd_info['cmd'])
     rc = subprocess.call(["/usr/sbin/reboot"])
     return (resp)
 
-def request_job(cmd_info, job_command, cmd_step_no=1):
+def request_job(cmd_info, job_command, cmd_step_no=1, depend_on_job_id=-1, has_dependent="N"):
     global jobs_requested
+
+    active_commands[cmd_info['cmd_rowid']] = cmd_info['cmd_msg']
+    job_id = request_one_job(cmd_info, job_command, cmd_step_no, depend_on_job_id, has_dependent)
+
+    return ('{"Success": "Job  ' + str(job_id) + ' Scheduled."}')
+
+def request_one_job(cmd_info, job_command, cmd_step_no, depend_on_job_id, has_dependent):
+    global jobs_requested
+    global prereq_jobs
+
+    prereq_info = {}
     job_id = get_job_id()
 
     job_info = {}
@@ -591,14 +902,44 @@ def request_job(cmd_info, job_command, cmd_step_no=1):
     job_info['cmd_args'] = cmd_info['cmd_args']
 
     job_info['cmd_step_no'] = cmd_step_no
+    job_info['depend_on_job_id'] = depend_on_job_id
+    job_info['has_dependent'] = has_dependent
     job_info['job_command'] = job_command
     job_info['status'] = 'SCHEDULED'
     job_info['status_datetime'] = str(datetime.now())
 
     jobs_requested[job_id] = job_info
-    insert_job(job_id, cmd_info['cmd_rowid'], job_command, cmd_step_no)
+    insert_job(job_id, cmd_info['cmd_rowid'], job_command, cmd_step_no, depend_on_job_id, has_dependent)
 
-    return ('{"Success": "Job  ' + str(job_id) + ' Scheduled."}')
+    if has_dependent == "Y":
+        prereq_info ['status'] = job_info['status']
+        prereq_jobs[job_id] = prereq_info
+    else:
+        if cmd_info['cmd'] == "INST-ZIMS":
+            zims_wip[cmd_info['cmd_args']['zim_id']] = True
+
+    return job_id
+
+def cancel_job(cmd_info):
+    global jobs_to_cancel
+    global jobs_requested
+
+    try:
+        job_id = int(cmd_info['cmd_args']['job_id'])
+    except ValueError:
+        return cmd_malformed(cmd_info['cmd'])
+
+    print "req", jobs_requested
+    print "run", jobs_running
+
+    if job_id in jobs_requested:
+        jobs_to_cancel[job_id] = True
+        return ('{"Success": "Scheduled Job  ' + str(job_id) + ' Cancelled."}')
+    elif job_id in jobs_running :
+        jobs_to_cancel[job_id] = True
+        return ('{"Success": "Running Job  ' + str(job_id) + ' Cancelled."}')
+    else:
+        return ('{"Error": "Job  ' + str(job_id) + ' Not Found."}')
 
 def get_last_jobs_stat(cmd_info):
     conn = sqlite3.connect(xsce_cmdsrv_dbname)
@@ -680,8 +1021,8 @@ def get_cmd_info_key(cmd_info, key):
 def cmd_success(cmd):
    return ('{"Success": "Command ' + cmd + '."}')
 
-def cmd_error(cmd=None):
-    return ('{"Error": "Internal Server Error processing Command ' + cmd + '."}')
+def cmd_error(cmd="", msg="Internal Server Error processing Command"):
+    return ('{"Error": "' + msg + ' ' + cmd + '."}')
 
 def cmd_malformed(cmd=None):
     return ('{"Error": "Malformed Command ' + cmd + '."}')
@@ -715,13 +1056,16 @@ def insert_command(cmd_msg):
 
     return (cmd_id)
 
-def insert_job(job_id, cmd_rowid, job_command, cmd_step_no=1, job_pid=0, job_output="", job_status="SCHEDULED"):
+def insert_job(job_id, cmd_rowid, job_command, cmd_step_no, depend_on_job_id, has_dependent):
     #print "in insert job"
     now = datetime.now()
+    job_pid=0
+    job_output=""
+    job_status="SCHEDULED"
 
     conn = sqlite3.connect(xsce_cmdsrv_dbname)
-    conn.execute ("INSERT INTO jobs (rowid, cmd_rowid, cmd_step_no, job_command, job_pid, job_output, job_status, create_datetime, last_update_datetime) VALUES (?,?,?,?,?,?,?,?,?)",
-                  (job_id, cmd_rowid, cmd_step_no, job_command, job_pid, job_output, job_status, now, now))
+    conn.execute ("INSERT INTO jobs (rowid, cmd_rowid, cmd_step_no, depend_on_job_id, has_dependent, job_command, job_pid, job_output, job_status, create_datetime, last_update_datetime) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+                  (job_id, cmd_rowid, cmd_step_no, depend_on_job_id, has_dependent, job_command, job_pid, job_output, job_status, now, now))
 
     conn.commit()
     conn.close()
@@ -742,6 +1086,16 @@ def upd_job_finished(job_id, job_output, job_status="FINISHED"):
 
     conn = sqlite3.connect(xsce_cmdsrv_dbname)
     conn.execute ("UPDATE jobs SET job_status = ?, job_output = ?, last_update_datetime = ? WHERE rowid = ?", (job_status, job_output, now, job_id))
+
+    conn.commit()
+    conn.close()
+
+def upd_job_cancelled(job_id, job_status="CANCELLED"):
+
+    now = datetime.now()
+
+    conn = sqlite3.connect(xsce_cmdsrv_dbname)
+    conn.execute ("UPDATE jobs SET job_status = ?, last_update_datetime = ? WHERE rowid = ?", (job_status, now, job_id))
 
     conn.commit()
     conn.close()
@@ -771,6 +1125,10 @@ def init():
     # Get ansible facts and tags for localhost
     get_ansible_facts()
     get_ansible_tags()
+    get_zim_url_map()
+
+    # Compute variables derived from all of the above
+    compute_vars()
 
     # See if queue.db exists and create if not
     # Opening a connection creates if not exist
@@ -778,7 +1136,7 @@ def init():
         conn = sqlite3.connect(xsce_cmdsrv_dbname)
         conn.execute ("CREATE TABLE commands (cmd_msg text, create_datetime text)")
         conn.commit()
-        conn.execute ("CREATE TABLE jobs (cmd_rowid integer, cmd_step_no integer, job_command text, job_pid integer, job_output blob, job_status text, create_datetime text, last_update_datetime text)")
+        conn.execute ("CREATE TABLE jobs (cmd_rowid integer, cmd_step_no integer, depend_on_job_id integer, has_dependent text, job_command text, job_pid integer, job_output text, job_status text, create_datetime text, last_update_datetime text)")
         conn.commit()
         conn.close()
     else:
@@ -795,6 +1153,8 @@ def init():
 
         cur.close()
         conn.close()
+
+        get_incomplete_jobs()
 
 def read_config_vars():
     global config_vars
@@ -886,6 +1246,112 @@ def get_ansible_tags():
     ans_tags_str = split[1].split('\n')[0]
     ansible_tags['ansible_tags'] = ans_tags_str
 
+def get_zim_url_map():
+    global zim_urls
+
+    stream = open (zim_url_map,"r")
+    zim_urls = json.load(stream)
+    stream.close()
+
+def get_incomplete_jobs():
+    global jobs_requested
+    global jobs_to_restart
+
+    jobs_to_cancel = {}
+    prereq_info = {}
+
+    # calculate boot time so we can tell if pid is ours
+    with open('/proc/uptime', 'r') as f:
+        uptime_str = f.readline()
+    now = datetime.now()
+    seconds_since_boot = float(uptime_str.split()[0])
+
+    boot_delta = timedelta(seconds=seconds_since_boot)
+    boot_time = now - boot_delta
+
+    # get jobs from database that didn't finish, group by command in desc order so we only done the last one
+    conn = sqlite3.connect(xsce_cmdsrv_dbname)
+    sql = "SELECT jobs.rowid, cmd_rowid, cmd_step_no, depend_on_job_id, has_dependent, job_command, job_pid, job_output, job_status, jobs.create_datetime, cmd_msg from commands, jobs "
+    sql += "WHERE commands.rowid = jobs.cmd_rowid and job_status IN ('STARTED', 'RESTARTED', 'SCHEDULED') ORDER BY job_command, jobs.rowid DESC"
+    cur = conn.execute(sql)
+
+    last_command = ""
+
+    for row in cur.fetchall():
+        job_id, cmd_rowid, cmd_step_no, depend_on_job_id, has_dependent, job_command, job_pid, job_output, job_status, create_datetime, cmd_msg = row
+
+        job_created_time = datetime.strptime(create_datetime, "%Y-%m-%d %H:%M:%S.%f") # create_datetime to datetime type
+
+        # Kill any jobs hanging around. In future we might try to monitor them since we have the job_output.
+        # But make sure they are since last reboot or might not be ours
+        if job_created_time > boot_time:
+            if job_pid > 0:
+                try:
+                    print "Removing pid %s if still running" % job_pid
+                    os.kill(job_pid, signal.SIGKILL)
+                except OSError:
+                    pass
+            # rm job_output file
+            try:
+                output_file = '/tmp/job-' + str(job_id)
+                os.remove(output_file)
+            except OSError:
+                pass
+
+        job_info = {}
+        parse = cmd_msg.split(' ')
+        job_info['cmd'] = parse[0]
+        job_info['cmd_args'] = json.loads(parse[1])
+        job_info['cmd_rowid'] = cmd_rowid
+        job_info['job_command'] = job_command
+        job_info['cmd_step_no'] = cmd_step_no
+        job_info['depend_on_job_id'] = depend_on_job_id
+        job_info['has_dependent'] = has_dependent
+        job_info['job_command'] = job_command
+        job_info['status'] = job_status
+        job_info['create_datetime'] = create_datetime
+        job_info['status_datetime'] = str(datetime.now())
+
+        # only restart if we haven't already seen this command
+        # we assume that we can always use the highest numbered job for a given command
+        if job_command != last_command:
+            if job_status == 'SCHEDULED':
+                jobs_requested[job_id] = job_info
+                if has_dependent == "Y":
+                    prereq_info ['status'] = 'SCHEDULED'
+                    prereq_jobs[job_id] = prereq_info
+            else:
+                jobs_to_restart[job_id] = job_info
+            # Add to active_commands
+            active_commands[cmd_rowid] = cmd_msg
+            if job_info['cmd'] == "INST-ZIMS":
+                zims_wip[job_info['cmd_args']['zim_id']] = True
+
+        else: # cancel duplicate
+            jobs_to_cancel[job_id] = job_info
+
+        last_command = job_command
+    cur.close()
+    conn.close()
+
+    for job_id in jobs_to_cancel:
+        upd_job_cancelled(job_id)
+        if jobs_to_cancel[job_id]['has_dependent'] == "Y":
+            prereq_info ['status'] = 'CANCELLED'
+            prereq_jobs[job_id] = prereq_info
+
+    # fix up prereq_jobs with status of completed prereq jobs, not selected in the previous query
+    conn = sqlite3.connect(xsce_cmdsrv_dbname)
+    sql = "SELECT rowid, job_status from jobs WHERE rowid IN (SELECT depend_on_job_id FROM jobs where job_status IN ('STARTED', 'RESTARTED', 'SCHEDULED'))"
+    cur = conn.execute(sql)
+    for row in cur.fetchall():
+        job_id, job_status = row
+        if not job_id in prereq_jobs:
+            prereq_info ['status'] = job_status
+            prereq_jobs[job_id] = prereq_info
+    cur.close()
+    conn.close()
+
 def app_config():
 
     global xsce_cmdsrv_path
@@ -897,7 +1363,8 @@ def app_config():
     # Read variables from xsce-cmdsrv config file
     read_xsce_cmdsrv_conf_file()
 
-    # Compute Derived Variables
+    # Compute app variables from variables in these files
+
     xsce_cmdsrv_path = xsce_base_path + "/xsce_cmdsrv"
     xsce_cmdsrv_pid_file = "/var/run/xsce-cmdsrv.pid"
     xsce_cmdsrv_dbname = xsce_cmdsrv_path + "/xsce_cmdsrv.db"
@@ -906,6 +1373,9 @@ def read_xsce_cmdsrv_conf_file():
     global cmdsrv_no_workers
     global cmdsrv_job_poll_sleep_interval
     global cmdsrv_max_concurrent_jobs
+    global zim_url_map
+    global zim_downloads_dir
+    global zim_download_prefix
 
     stream = open (xsce_cmdsrv_config_file,"r")
     inp = json.load(stream)
@@ -916,6 +1386,10 @@ def read_xsce_cmdsrv_conf_file():
     cmdsrv_job_poll_sleep_interval = conf['cmdsrv_job_poll_sleep_interval']
     cmdsrv_max_concurrent_jobs = conf['cmdsrv_max_concurrent_jobs']
     xsce_cmdsrv_pid_file = conf['xsce_cmdsrv_pid_file']
+    zim_url_map = conf['zim_url_map']
+    zim_downloads_dir = conf['zim_downloads_dir']
+    zim_download_prefix = conf['zim_download_prefix']
+
 
 # These two were taken from the OLPC idmgr application
 
@@ -954,6 +1428,15 @@ def read_xsce_conf_file():
     else:
         xsce_base_path = load_config['XSCE_BASE_PATH']
         xsce_git_path = load_config['XSCE_DIR']
+
+def compute_vars():
+    global zim_dir
+    global zim_content_dir
+    global zim_index_dir
+
+    zim_dir = effective_vars['xsce_zim_path']
+    zim_content_dir = zim_dir + "/content/"
+    zim_index_dir = zim_dir + "/index/"
 
 def createDaemon(pidfilename):
     """Detach a process from the controlling terminal and run it in the
