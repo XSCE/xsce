@@ -1,2 +1,6 @@
 - include: kiwix_install.yml
   when: kiwix_src_file is defined
+
+- debug:  msg="WARNING kiwix source is not defined for your platform"
+  when: not kiwix_src_file
+
