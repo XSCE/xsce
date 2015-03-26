@@ -1,6 +1,7 @@
 - include: prelim.yml
 
 - include: yum.yml 
+  when: not no_network
   tags:
     - download
 
