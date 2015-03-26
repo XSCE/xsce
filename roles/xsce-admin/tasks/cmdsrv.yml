@@ -28,7 +28,7 @@
        extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
 
 - name: Set the pear download_dir
-  shell: pear config-set download_dir {{ downloads_dir }}
+  shell: "pear config-set download_dir {{ downloads_dir }}"
   tags:
     - download2
 
@@ -39,7 +39,7 @@
     - download2
   
 - name: Install php binding for zeromq
-  shell: yes '' | pecl install -O zmq-beta
+  shell: yes '' | pecl install {{ downloads_dir }}/zmq*tgz
          creates="{{ phplib_dir }}/modules/zmq.so"
         
 - name: Create admin-console directory
