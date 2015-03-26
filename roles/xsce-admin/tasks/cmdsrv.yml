@@ -19,6 +19,9 @@
   
 #       extra_args="--zmq=bundled"
 
+- name: Set the pear download_dir
+  shell: pear config-set download_dir {{ downloads_dir }}
+
 - name: Download php binding for zeromq
   shell: yes '' | pecl download zmq-beta
   when: not {{ use_cache }} and not {{ no_network }}
