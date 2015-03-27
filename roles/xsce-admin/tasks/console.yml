@@ -5,6 +5,8 @@
     - mod_ssl
     - mod_authnz_external
     - pwauth
+  tags:
+    - download
     
 - name: Create admin-console directory tree
   file: path={{ item }}
