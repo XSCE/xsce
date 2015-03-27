@@ -27,12 +27,20 @@
   pip: name=pyzmq 
        extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
 
+- name: Set the pear download_dir
+  shell: "pear config-set download_dir {{ xsce_dir }}"
+  tags:
+    - download2
+
+- name: Download php binding for zeromq
+  shell: yes '' | pecl download zmq-beta
+  when: not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download2
+  
 - name: Install php binding for zeromq
-  shell: yes '' | pecl install zmq-beta
+  shell: yes '' | pecl install zmq*tgz
          creates="{{ phplib_dir }}/modules/zmq.so"
-  
-  
-# pecl install zmq-beta (prompts)
         
 - name: Create admin-console directory
   file: path={{ item }}
