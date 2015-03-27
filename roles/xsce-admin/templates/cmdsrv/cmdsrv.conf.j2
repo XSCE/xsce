@@ -1,10 +1,12 @@
 {
     "_comments": "xsce-cmdsrv.conf - runtime parameters for the XSCE Command Server",
     "xsce-cmdsrv_conf": {
-        "cmdsrv_no_workers" : 5,       
+        "cmdsrv_no_workers" : 5,
         "cmdsrv_job_poll_sleep_interval" : 1,
         "cmdsrv_max_concurrent_jobs" : 7,
-        "xsce_cmdsrv_pid_file" : "/var/run/xsce-cmdsrv.pid"        
+        "xsce_cmdsrv_pid_file" : "/var/run/xsce-cmdsrv.pid",
+        "zim_url_map" : "/etc/xsce/zim_urls.json",
+        "zim_downloads_dir" : "/library/downloads/zims/",
+        "zim_download_prefix" : "kiwix-0.9+"
         }
 }
-        
