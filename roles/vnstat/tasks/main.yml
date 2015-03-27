@@ -4,6 +4,8 @@
        state=installed
   with_items:
     - vnstat
+  tags:
+    - download
 
 - name: put the config file in place
   template: src=vnstat.conf.j2 
