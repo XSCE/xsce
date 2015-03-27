@@ -9,22 +9,38 @@
     - python-devel
     - python-pip
     - zeromq3-devel
-
+  tags:
+    - download
+        
 #        - zeromq3
 
 #	pip install pyzmq  - didn't use the installed zmq rpm and the target zmq 4, not 3, for which there is no rpm.
 
+- name: Download zeromq and python binding
+  pip: name=pyzmq 
+       extra_args="--download-cache {{ pip_packages_dir }}"
+  when: not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download2
+
 - name: Install zeromq and python binding
-  pip: name=pyzmq
+  pip: name=pyzmq 
+       extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
 
-#       extra_args="--zmq=bundled"
+- name: Set the pear download_dir
+  shell: "pear config-set download_dir {{ xsce_dir }}"
+  tags:
+    - download2
 
+- name: Download php binding for zeromq
+  shell: yes '' | pecl download zmq-beta
+  when: not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download2
+  
 - name: Install php binding for zeromq
-  shell: yes '' | pecl install zmq-beta
+  shell: yes '' | pecl install zmq*tgz
          creates="{{ phplib_dir }}/modules/zmq.so"
-
-
-# pecl install zmq-beta (prompts)
 
 - name: Create admin-console directory
   file: path={{ item }}
