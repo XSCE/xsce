@@ -1,3 +1,8 @@
+- include: fl.yml
+  tags:
+    - download
+    - download2
+
 - include: prep.yml
            
 # Put conditional includes for platforms here

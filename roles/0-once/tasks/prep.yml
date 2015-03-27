@@ -18,3 +18,9 @@
             option=keepcache
             value=1
 
+- name: Create /library
+  file: path=/library
+        owner=root
+        group=root
+        mode=0755
+        state=directory
