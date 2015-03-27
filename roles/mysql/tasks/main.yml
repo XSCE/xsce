@@ -67,6 +67,9 @@
 
     - name: Get the phpmyadmin software
       get_url: url=http://download.unleashkids.org/xsce/downloads/phpMyAdmin-4.2.7.1-all-languages.zip  dest={{ downloads_dir}}/phpMyAdmin.zip
+      when: not {{ use_cache }} and not {{ no_network }}
+      tags:
+        - download2
 
     - name: Copy it to permanent location /opt
       unarchive: src={{ downloads_dir}}/phpMyAdmin.zip  dest=/opt/

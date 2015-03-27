@@ -31,9 +31,9 @@
        dest={{ pathagar_src }}
        update=yes
        version=xsce-devel
-  tags:
-    - download
   when: not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download2
       
 - name: download pathagar requirements in a virtualenv
   pip: name={{ item }}
@@ -44,6 +44,8 @@
     - django-sendfile==0.3.6
     - django-taggit==0.10
   when: not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download2
 
 - name: Install pathagar requirements in a virtualenv
   pip: name={{ item }}
@@ -55,8 +57,6 @@
     - django-tagging==0.3.1
     - django-sendfile==0.3.6
     - django-taggit==0.10
-  tags:
-    - download
 
 - name: Create pathagar postgresql user
   postgresql_user: name={{ pathagar_db_user }}

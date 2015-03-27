@@ -19,6 +19,8 @@
 - name: download latest setuptools
   shell: pip install --download-cache={{ pip_packages_dir }} ez_setup
   when: not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download2
  
 - name: install setuptools  from local download directory
   pip: name=ez_setup
@@ -36,6 +38,8 @@
        extra_args="--download-cache={{ pip_packages_dir }}"
        state=latest       
   when: not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download2
 
 - name: install Markupsafe  from local download directory
   pip: name=MarkupSafe
@@ -46,6 +50,8 @@
        extra_args="--download-cache={{ pip_packages_dir }}"
        state=latest   
   when: not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download2
 
 - name: install pytz  from local download directory
   pip: name=pytz
@@ -56,6 +62,8 @@
        state=latest
        extra_args="-b /piptmp --download-cache={{ pip_packages_dir }}"
   when: not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download2
 
 - name: install IIAB  from local download directory
   pip: name=Internet-in-a-Box
