@@ -5,6 +5,8 @@
         state=present
   with_items:
         - openvpn
+  tags:
+    - download
 
 - name: Create the directory for keys
   file: dest=/etc/openvpn/keys

@@ -1,5 +1,8 @@
 - name: Get the ELGG software
   get_url: url="{{ xsce_download_url }}/{{ elgg_xx }}.zip"  dest={{ downloads_dir}}/{{ elgg_xx }}.zip
+  when: not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download2
 
 - name: Copy it to permanent location /opt
   unarchive: src={{ downloads_dir}}/{{ elgg_xx }}.zip  dest=/opt/

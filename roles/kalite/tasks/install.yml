@@ -4,11 +4,15 @@
   with_items:
     - python-psutil
     - expect
+  tags:
+    - download
 
 - name: Download the latest kalite repo
   git: repo={{ kalite_repo_url }}
        dest={{ downloads_dir }}/ka-lite
        depth=1
+  tags:
+    - download2
 
 - name: Create xsce-kalite user and password
   user: name={{ kalite_user }}  
@@ -79,4 +83,3 @@
            enabled=yes
            state=restarted           
   when: kalite_cron_enabled
-    
