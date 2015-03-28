@@ -1,6 +1,6 @@
 - name: Install custom profile file
   template: dest=/etc/profile.d/zzz_xsce.sh
-            src=zzz_xsce.sh
+            src=prelim/zzz_xsce.sh
             owner=root
             mode=0644
             backup=yes
