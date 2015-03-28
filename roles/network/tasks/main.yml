@@ -88,21 +88,25 @@
   when: 'xsce_wan_iface != "none" and wan_ip != "dhcp"'
 
 - include: named.yml
+  when: not xsce_prepped
   tags:
     - named
     - network
 
 - include: dhcpd.yml
+  when: not xsce_prepped
   tags:
     - dhcpd
     - network
 
 - include: squid.yml
+  when: not xsce_prepped
   tags:
     - squid
     - network
 
 - include: wondershaper.yml
+  when: not xsce_prepped
   tags:
     - wondershaper
     - network
