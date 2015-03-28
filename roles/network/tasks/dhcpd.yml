@@ -26,15 +26,3 @@
         group=dhcpd
         mode=0644
         state=file
-
-- name: Disable dhcpd service
-  service: name=dhcpd 
-           enabled=no
-           state=stopped
-  when: not dhcpd_enabled
-
-# service is restarted with NM dispatcher.d script
-- name: Enable dhcpd service
-  service: name=dhcpd 
-           enabled=yes
-  when: dhcpd_enabled
