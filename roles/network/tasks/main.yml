@@ -126,3 +126,7 @@
   tags:
     - network
   
+- include: services.yml
+  tags:
+    - network
+

@@ -33,15 +33,3 @@
         owner=root
         group=root
         state=link
-
-- name: Enable wondershaper service
-  service: name=wondershaper
-           enabled=yes
-           state=restarted
-  when: wondershaper_enabled
-
-- name: Disable wondershaper service
-  service: name=wondershaper
-           enabled=no
-           state=stopped
-  when: not wondershaper_enabled
