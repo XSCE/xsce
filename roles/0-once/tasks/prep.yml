@@ -12,12 +12,6 @@
             owner=root
             mode=0666
 
-- name: Keep yum cache
-  ini_file: dest=/etc/yum.conf
-            section=main
-            option=keepcache
-            value=1
-
 - name: Create /etc/xsce
   file: path=/etc/xsce
         owner=root
