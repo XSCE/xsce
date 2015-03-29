@@ -76,3 +76,8 @@
         group=root
         mode=0755
         state=directory
+
+- name: Set xsce_prepped to False on first run
+  set_fact:
+    xsce_prepped: False
+
