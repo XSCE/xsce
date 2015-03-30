@@ -12,7 +12,7 @@
 
 ### add the test to set xsce_prepped to true
 - name: testing for xsce_prepped
-- set_fact:
+  set_fact:
      xsce_prepped: False 
 
 - name: add version section
