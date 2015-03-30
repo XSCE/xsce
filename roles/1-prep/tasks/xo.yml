@@ -83,6 +83,12 @@
               regexp='^varlog.*'
               state=absent
 
+- name: Enlarge the /tmp directory so that url_get does not error out
+  lineinfile: backup=yes
+              dest=/etc/fstab
+              regexp='^/tmp*'
+              line='/tmp            /tmp            tmpfs         rw,size=100m 0 0'
+
 - name: Disable graphical login
   file: path=/etc/systemd/system/default.target
         src=/lib/systemd/system/multi-user.target
