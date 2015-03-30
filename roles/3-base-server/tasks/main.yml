@@ -9,6 +9,10 @@
   service: name=xs-authserver
            state=restarted
              
+- name: Restart xsce-cmdsrv service
+  service: name=xsce-cmdsrv
+           state=restarted
+
 - name: Restart httpd
   service: name=httpd
            state=restarted
