@@ -4,3 +4,9 @@
 - name: Enable postgresql service
   service: name=postgresql-xs
            state=restarted
+
+- name: Enable xs-authserver service
+  service: name=xs-authserver
+           state=restarted
+             
+
