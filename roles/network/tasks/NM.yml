@@ -7,6 +7,7 @@
 - service: name=NetworkManager-dispatcher
            enabled=yes
            state=stopped
+  when: ansible_distribution_release == "based on Fedora 18"
 - wait_for: path=/etc/passwd
             delay=4
             timeout=5
@@ -19,4 +20,5 @@
 - service: name=NetworkManager-dispatcher
            enabled=yes
            state=started
+  when: ansible_distribution_release == "based on Fedora 18"
 - debug:  msg="hopefully now NM is restarted"
