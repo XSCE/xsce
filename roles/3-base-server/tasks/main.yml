@@ -1,12 +1,17 @@
 - name: Base Server Installed
   command: echo Base Server Installed
 
-- name: Enable postgresql service
+- name: Restart postgresql service
   service: name=postgresql-xs
            state=restarted
 
-- name: Enable xs-authserver service
+- name: Restart xs-authserver service
   service: name=xs-authserver
            state=restarted
              
+- name: Restart httpd
+  service: name=httpd
+           state=restarted
+
+
 
