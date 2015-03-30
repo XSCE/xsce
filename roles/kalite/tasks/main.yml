@@ -1,8 +1,25 @@
+- name: Install dependent packages
+  yum: name={{ item }}
+       state=installed
+  with_items:
+    - python-psutil
+    - expect
+  tags:
+    - download
+
+- name: Download the latest kalite repo
+  git: repo={{ kalite_repo_url }}
+       dest={{ downloads_dir }}/ka-lite
+       depth=1
+  when: not {{ use_cache }}
+  tags:
+    - download2
+
 - name: See if kalite is installed
   stat: path="{{ kalite_root }}/kalite/database/data.sqlite"
   register: kalite_installed
-  
+
 - include: install.yml
-  when: kalite_installed.stat.exists  != true
-  
-- include: enable.yml  
+  when: not kalite_installed.stat.exists == True
+
+- include: enable.yml
