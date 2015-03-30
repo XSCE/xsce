@@ -1,3 +1,6 @@
 - name: Base Server Installed
   command: echo Base Server Installed
 
+- name: Enable postgresql service
+  service: name=postgresql-xs
+           state=restarted
