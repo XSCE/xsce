@@ -76,7 +76,7 @@ detect_slaves: False
 
 # dhcpd
 dhcpd_install: True
-dhcpd_enabled: True
+dhcpd_enabled: False
 
 # named
 named_install: True
