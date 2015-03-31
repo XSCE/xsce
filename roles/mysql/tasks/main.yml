@@ -28,6 +28,7 @@
     - name: Start the MySQL service
       service: name={{ mysql_service }}
                state=started
+               state=enabled
 
 # 'localhost' needs to be the last item for idempotency, see
 # http://ansible.cc/docs/modules.html#mysql-user
