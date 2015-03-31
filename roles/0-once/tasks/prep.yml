@@ -41,6 +41,14 @@
             group=root
             mode=0700
 
+- name: re-read facts
+  setup: filter=ansible_local
+
+- name: Set xsce_prepped to False on first run, set XO model
+  set_fact:
+    xsce_prepped: False
+    xo_model: '{{ ansible_local["local_facts"]["xo_model"] }}'
+
 # workaround for fact that auto create does not work on ini_file
 - name: Create xsce config file
   file: dest='{{ xsce_config_file }}'
@@ -69,6 +77,8 @@
       value: '{{ ansible_local["local_facts"]["xsce_commit"] }}'
     - option: 'install_date'
       value: '{{ ansible_date_time["iso8601"] }}'
+    - option: 'install_xo'
+      value: '{{ xo_model }}'
 
 - name: Create /library
   file: path=/library
@@ -76,8 +86,3 @@
         group=root
         mode=0755
         state=directory
-
-- name: Set xsce_prepped to False on first run
-  set_fact:
-    xsce_prepped: False
-

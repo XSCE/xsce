@@ -7,9 +7,6 @@
 - set_fact:
      phplib_dir: '{{ ansible_local["local_facts"]["phplib_dir"] }}'
 
-- set_fact:
-     xo_model: '{{ ansible_local["local_facts"]["xo_model"] }}'
-
 ### add the test to set xsce_prepped to true
 - name: testing for xsce_prepped
   set_fact:
@@ -29,8 +26,6 @@
       value: '{{ ansible_date_time["iso8601"] }}'
     - option: 'runtime_php'
       value: '{{ phplib_dir }}'
-    - option: 'runtime_xo'
-      value: '{{ xo_model }}'
     - option: 'runtime_prepped'
       value: '{{ xsce_prepped }}'
 
