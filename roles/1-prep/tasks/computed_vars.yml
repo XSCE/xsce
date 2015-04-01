@@ -6,11 +6,14 @@
 # set top level variables from local facts for convenience
 - set_fact:
      phplib_dir: '{{ ansible_local["local_facts"]["phplib_dir"] }}'
+     xsce_preload: '{{ ansible_local["local_facts"]["xsce_preload"] }}'
 
-### add the test to set xsce_prepped to true
 - name: testing for xsce_prepped
   set_fact:
-     xsce_prepped: False 
+     xsce_prepped: True
+     use_cache: True
+     no_network: True
+  when: xsce_preload == True
 
 - name: add version section
   ini_file: dest='{{ xsce_config_file }}'
@@ -26,8 +29,8 @@
       value: '{{ ansible_date_time["iso8601"] }}'
     - option: 'runtime_php'
       value: '{{ phplib_dir }}'
-    - option: 'runtime_prepped'
-      value: '{{ xsce_prepped }}'
+    - option: 'runtime_preload'
+      value: '{{ xsce_preload }}'
 
 # Put all computed vars here so derive properly from any prior var file
 
