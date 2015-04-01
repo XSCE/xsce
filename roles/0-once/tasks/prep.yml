@@ -44,9 +44,8 @@
 - name: re-read facts
   setup: filter=ansible_local
 
-- name: Set xsce_prepped to False on first run, set XO model
+- name: Set XO model
   set_fact:
-    xsce_prepped: False
     xo_model: '{{ ansible_local["local_facts"]["xo_model"] }}'
 
 # workaround for fact that auto create does not work on ini_file

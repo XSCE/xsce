@@ -1,5 +1,4 @@
 ---
 # The values here are default local variables.
-xsce_prepped: False
 wondershaper_dspeed: "4096"
 wondershaper_upspeed: "1024"
