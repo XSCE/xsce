@@ -11,7 +11,7 @@
 - name: Defaulting xsce_prepped
   set_fact:
      xsce_prepped: False
-  tags
+  tags:
     - download
     - download2
 
