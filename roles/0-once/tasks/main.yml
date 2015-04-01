@@ -8,7 +8,7 @@
     - download
 
 - include: xsce_ini.yml
-  when: xsce_preload == False
+  when: xsce_preload == "False"
   tags:
     - download
 
