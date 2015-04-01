@@ -44,44 +44,7 @@
 - name: re-read facts
   setup: filter=ansible_local
 
-- name: Set XO model
+- name: Set XO model and preload
   set_fact:
     xo_model: '{{ ansible_local["local_facts"]["xo_model"] }}'
-
-# workaround for fact that auto create does not work on ini_file
-- name: Create xsce config file
-  file: dest='{{ xsce_config_file }}'
-        state=touch
-
-- name: Add location section to config file
-  ini_file: dest='{{ xsce_config_file }}'
-            section=location
-            option='{{ item.option }}'
-            value='{{ item.value }}'
-  with_items:
-    - option: 'xsce_base'
-      value: '{{ xsce_base }}'
-    - option: 'xsce_dir'
-      value: '{{ xsce_dir }}'
-
-- name: add version section
-  ini_file: dest='{{ xsce_config_file }}'
-            section=version
-            option='{{ item.option }}'
-            value='{{ item.value }}'
-  with_items:
-    - option: 'xsce_branch'
-      value: '{{ ansible_local["local_facts"]["xsce_branch"] }}'
-    - option: 'xsce_commit'
-      value: '{{ ansible_local["local_facts"]["xsce_commit"] }}'
-    - option: 'install_date'
-      value: '{{ ansible_date_time["iso8601"] }}'
-    - option: 'install_xo'
-      value: '{{ xo_model }}'
-
-- name: Create /library
-  file: path=/library
-        owner=root
-        group=root
-        mode=0755
-        state=directory
+    xsce_preload: '{{ ansible_local["local_facts"]["xsce_preload"] }}'

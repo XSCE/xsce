@@ -7,6 +7,11 @@
   tags:
     - download
 
+- include: xsce_ini.yml
+  when: xsce_preload == False
+  tags:
+    - download
+
 - name: Keep yum cache
   ini_file: dest=/etc/yum.conf
             section=main
