@@ -1,5 +1,12 @@
 #!/bin/sh
 . /etc/xsce/xsce.env
+
+# enable this install config to be tracked
+if [ ! -f /etc/xsce/uuid ]; then
+  uuidgen > /etc/xsce/uuid
+fi
+UUID=`cat /etc/xsce/uuid`
+
 cd $XSCE_DIR
 
 # while we're here untrack local vars
@@ -27,5 +34,6 @@ cat <<EOF
 {"phplib_dir" : "$PHPLIB_DIR",
 "xsce_branch" : "$BRANCH",
 "xsce_commit" : "$COMMIT",
+"xsce_uuid"   " "$UUID",
 "xo_model"    : "$XO_VERSION"}
 EOF
