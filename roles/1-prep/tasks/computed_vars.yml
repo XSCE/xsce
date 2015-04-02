@@ -17,7 +17,6 @@
 
 - name: Testing for xsce_preload
   set_fact:
-     xsce_prepped: True
      use_cache: True
      no_network: True
   when: xsce_preload == "True"
