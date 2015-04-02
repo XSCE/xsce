@@ -20,7 +20,7 @@
      xsce_prepped: True
      use_cache: True
      no_network: True
-  when: xsce_preload == True
+  when: xsce_preload == "True"
 
 - name: add version section
   ini_file: dest='{{ xsce_config_file }}'
