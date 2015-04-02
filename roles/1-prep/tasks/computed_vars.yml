@@ -42,8 +42,16 @@
 
 - name: Turn on mysql if elgg or rachel enabled
   set_fact:
+    mysql_install: True
     mysql_enabled: True
   when: elgg_enabled or rachel_enabled or owncloud_enabled
+
+# There might be other db's
+- name: Turn on postgresql if moodle or pathagar enabled
+  set_fact:
+    postgresql_install: True
+    postgresql_enabled: True
+  when: moodle_enabled or pathagar_enabled
 
 # for various reasons the mysql service can not be enabled on fedora 20,
 # but 'mariadb', which is its real name can
