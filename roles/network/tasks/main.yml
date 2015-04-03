@@ -129,6 +129,6 @@
     - network
 
 - include: NM.yml
+  when: not installing  
   tags:
     - network
-  
