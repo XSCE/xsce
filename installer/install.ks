@@ -56,6 +56,28 @@ EOF
 # Turns off the auto config
 touch /.xsce-prepped
 
-cd /opt/schoolserver/xsce/
-git reset --hard 
-%end
+##### testing only #####
+cat > /opt/schoolserver/xsce/vars/local_vars.yml << EOF
+moodle_enabled: True
+iiab_enabled: True
+pathagar_enabled: True
+squid_enabled: True
+rachel_enabled: True
+monit_enabled: True
+dansguardian_enabled: True
+ejabberd_enabled: True
+owncloud_enabled: True
+munin_enabled: True
+elgg_enabled: True
+xovis_enabled: True
+sugar-stats_enabled: True
+samba_enabled: True
+vnstat_enabled: True
+xo-services_enabled: True
+ajenti_enabled: True
+EOF
+
+# Wipe the install info.
+#cd /opt/schoolserver/xsce/
+#git reset --hard > /dev/null
+#%end
