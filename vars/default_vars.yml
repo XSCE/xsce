@@ -76,7 +76,7 @@ detect_slaves: False
 
 # dhcpd
 dhcpd_install: True
-dhcpd_enabled: True
+dhcpd_enabled: False
 
 # named
 named_install: True
@@ -94,6 +94,10 @@ squid_enabled: True
 # wondershaper
 wondershaper_install: True
 wondershaper_enabled: False
+
+# postgresql
+postgresql_install: False
+postgresql_enabled: False
 
 #Gateway and Filters
 gw_squid_whitelist: False
@@ -123,19 +127,16 @@ activity-server_install: True
 xo-services_enabled: True
 
 # 6-GENERIC-APPS
-
-# ELGG
-elgg_install: True
-elgg_enabled: False
-
-# note: when you enable elgg, you must also enable mysql, on which it depends
-mysql_install: True
-mysql_enabled: True
-
+# mysql 
+mysql_install: False
+mysql_enabled: False
 # password is fixmysql
 # mysql_root_password: $6$xsce51$3ICIW0CLWxxMW2a3yrHZ38ukZItD5tcadL4rWcE9D.qIGStxhh8rRsaSxoj3b.MYxI/VRDNjpzSYK/V6zkWFI0
 mysql_root_password: fixmysql
 
+# ELGG
+elgg_install: True
+elgg_enabled: False
 # elgg_mysql_password: $6$xsce51$jeTwnATcbaa92xo0QBTgjLBU.5aVDDrbKeNyyC99R/TAWz6pvfzj.L7lfnOVVjD78nxqT.gkNn6XZmuRV0W3o1
 elgg_mysql_password: elgg4kids
 
