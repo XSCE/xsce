@@ -28,15 +28,15 @@
 
 - name: A bridge that is up cannot be deleted
   shell: "ifconfig br0 down"
-  when: bridge_result != ""
+  when: bridge_result.stdout != ""
 
 - name: And delete it
   shell: "brctl delbr br0"
-  when: bridge_result != ""
+  when: bridge_result.stdout != ""
 
 - name: Start dhclient when bridge was up
   shell: "dhclient"
-  when: bridge_result != ""
+  when: bridge_result.stdout != ""
 
 - name: restart NetworkManager services
   service: name=NetworkManager
@@ -81,6 +81,7 @@
      discovered_wireless_iface: "{{ wireless_list.stdout|trim }}"
   when: wireless_list.stdout != "" and wireless_list.stdout|trim != discovered_wan_iface
 
+- debug: var=user_wan_iface
 # override with user_wan_iface setting if no longer in auto
 - name: setting user WAN fact
   set_fact:
