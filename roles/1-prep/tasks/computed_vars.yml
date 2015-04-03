@@ -1,77 +1,44 @@
 # get local vars from scripts in /etc/ansible/facts.d
 
-- name: Create /etc/xsce
-  file: path=/etc/xsce
-        owner=root
-        group=root
-        mode=0755
-        state=directory
-
-# this script can be sourced to get xsce location
-- name: Create xsce.env file
-  template: backup=yes
-            src=xsce.env.j2
-            dest=/etc/xsce/xsce.env
-            owner=root
-            group=root
-            mode=0644
-
-- name: create ansible.d facts directory
-  file: path=/etc/ansible/facts.d
-        owner=root
-        group=root
-        mode=0750
-        state=directory
-
-- name: local facts script
-  template: backup=yes
-            src=local_facts.fact.j2
-            dest=/etc/ansible/facts.d/local_facts.fact
-            owner=root
-            group=root
-            mode=0700
-
 - name: re-read facts
   setup: filter=ansible_local
-
-# workaround for fact that auto create does not work on ini_file
-- name: Create xsce config file
-  file: dest='{{ xsce_config_file }}'
-        state=touch
-
-- name: add version section
-  ini_file: dest='{{ xsce_config_file }}'
-            backup=yes
-            section=version
-            option='{{ item.option }}'
-            value='{{ item.value }}'
-  with_items:
-    - option: 'xsce_branch'
-      value: '{{ ansible_local["local_facts"]["xsce_branch"] }}'
-    - option: 'xsce_commit'
-      value: '{{ ansible_local["local_facts"]["xsce_commit"] }}'
-    - option: 'xsce_uuid'
-      value: '{{ ansible_local["local_facts"]["xsce_uuid"] }}'
-    - option: 'install_date'
-      value: '{{ ansible_date_time["iso8601"] }}'
-
-- name: Add location section to config file
-  ini_file: dest='{{ xsce_config_file }}'
-            section=location
-            option='{{ item.option }}'
-            value='{{ item.value }}'
-  with_items:
-    - option: 'xsce_base'
-      value: '{{ xsce_base }}'
-    - option: 'xsce_dir'
-      value: '{{ xsce_dir }}'
 
 # set top level variables from local facts for convenience
 - set_fact:
      phplib_dir: '{{ ansible_local["local_facts"]["phplib_dir"] }}'
+     xsce_preload: '{{ ansible_local["local_facts"]["xsce_preload"] }}'
 
-- set_fact:
-     xo_model: '{{ ansible_local["local_facts"]["xo_model"] }}'
+- name: Defaulting xsce_prepped
+  set_fact:
+     xsce_prepped: False
+  tags:
+    - download
+    - download2
+
+- name: Testing for xsce_preload
+  set_fact:
+     use_cache: True
+     no_network: True
+  when: xsce_preload == "True"
+
+- name: add version section
+  ini_file: dest='{{ xsce_config_file }}'
+            section=runtime
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: 'runtime_branch'
+      value: '{{ ansible_local["local_facts"]["xsce_branch"] }}'
+    - option: 'runtime_commit'
+      value: '{{ ansible_local["local_facts"]["xsce_commit"] }}'
+    - option: 'xsce_uuid'
+      value: '{{ ansible_local["local_facts"]["xsce_uuid"] }}'
+    - option: 'runtime_date'
+      value: '{{ ansible_date_time["iso8601"] }}'
+    - option: 'runtime_php'
+      value: '{{ phplib_dir }}'
+    - option: 'runtime_preload'
+      value: '{{ xsce_preload }}'
 
 # Put all computed vars here so derive properly from any prior var file
 
@@ -104,3 +71,11 @@
      kiwix_src_file: "kiwix-server-0.9-linux-armv5tejl.tar.bz2"
      kiwix_src_bin_only: True
   when: ansible_machine == "armv7l"
+
+- name: Disable some install routines for CentOS
+  set_fact:
+    sugar-stats_install: False
+    sugar-stats_enabled: False
+    ajenti_install: False
+    ajenti_enabled: False
+  when: ansible_distribution == "CentOS"
