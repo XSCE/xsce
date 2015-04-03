@@ -1,0 +1,61 @@
+selinux --disabled
+firewall --disabled
+firstboot --disabled
+network --hostname=schoolserver --bootproto=dhcp --onboot=yes
+
+# optional can be set with gui
+# Language support
+#lang en_US
+
+# Keyboard
+#keyboard us
+
+# Timezone
+#timezone --utc Europe/Zurich
+
+# Bootloader
+#bootloader --location=mbr --driveorder=sda
+#zerombr
+
+# Partition table
+#clearpart --linux --drives=sda
+
+#part /boot --size=1024 --ondisk sda
+#part pv.01 --size=1    --ondisk sda --grow
+#volgroup vg1 pv.01
+#logvol /    --vgname=vg1 --size=10000  --name=root
+#logvol swap --vgname=vg1 --recommended --name=swap --fstype=swap
+#ignoredisk --only-use=sda
+
+reboot
+
+%post
+# ensure network cards are turned on
+NICs=`ls /etc/sysconfig/network-scripts/ifcfg-` 
+for nic in $NICs ; do
+    case $o in
+    *lo)
+        ;;
+    *)
+        sed -i -e "s/ONBOOT=no/ONBOOT=yes/" $nic
+        ;;
+    esac
+done
+
+# turn off the installer on the reboot
+touch /.xsce-installed
+
+# Don't start services while in the chroot
+cat > /opt/schoolserver/xsce/vars/local_vars.yml << EOF
+installing: True
+EOF
+
+# Run the XSCE base install
+/opt/schoolserver/xsce/install-console > /opt/schoolserver/xsce/kickstart.log
+
+# Turns off the auto config
+touch /.xsce-prepped
+
+cd /opt/schoolserver/xsce/
+git reset --hard 
+%end
