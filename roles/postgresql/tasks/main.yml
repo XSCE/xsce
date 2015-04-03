@@ -37,4 +37,3 @@
 - name: Enable postgresql service
   service: name=postgresql-xs
            enabled=yes
-           state=started 
