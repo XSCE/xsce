@@ -112,7 +112,7 @@ samba_install: True
 samba_enabled: False
 
 # postgresql
-postgresql_install: False
+postgresql_install: True
 postgresql_enabled: False
 
 # authserver
@@ -133,7 +133,7 @@ xo-services_enabled: True
 # 6-GENERIC-APPS
 
 # MYSQL
-mysql_install: False
+mysql_install: True
 mysql_enabled: False
 # password is fixmysql
 # mysql_root_password: $6$xsce51$3ICIW0CLWxxMW2a3yrHZ38ukZItD5tcadL4rWcE9D.qIGStxhh8rRsaSxoj3b.MYxI/VRDNjpzSYK/V6zkWFI0
