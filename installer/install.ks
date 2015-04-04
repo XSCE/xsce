@@ -55,7 +55,8 @@ EOF
 /opt/schoolserver/xsce/install-console > /opt/schoolserver/xsce/kickstart.log
 
 # Turns off the auto config
-touch /.xsce-prepped
+# Debugging ks install
+#touch /.xsce-prepped
 
 ##### testing only #####
 cat > /opt/schoolserver/xsce/vars/local_vars.yml << EOF
