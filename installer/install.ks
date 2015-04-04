@@ -80,4 +80,5 @@ EOF
 # Wipe the install info.
 #cd /opt/schoolserver/xsce/
 #git reset --hard > /dev/null
-#%end
+
+%end
