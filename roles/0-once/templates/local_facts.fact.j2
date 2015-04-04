@@ -23,9 +23,17 @@ else
   XO_VERSION="none"
 fi
 
+if [ -f /.preload ]
+then
+  PRELOAD="True"
+else
+  PRELOAD="False"
+fi
+
 cat <<EOF
-{"phplib_dir" : "$PHPLIB_DIR",
-"xsce_branch" : "$BRANCH",
-"xsce_commit" : "$COMMIT",
-"xo_model"    : "$XO_VERSION"}
+{"phplib_dir"  : "$PHPLIB_DIR",
+"xsce_branch"  : "$BRANCH",
+"xsce_commit"  : "$COMMIT",
+"xo_model"     : "$XO_VERSION",
+"xsce_preload" : "$PRELOAD"}
 EOF
