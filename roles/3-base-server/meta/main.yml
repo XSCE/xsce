@@ -1,6 +1,5 @@
 dependencies:
    - { role: httpd, tags: ['services','httpd','base'] }
-   - { role: postgresql, tags: ['services','postgresql','base'] }
-   - { role: authserver,  tags: ['services','authserver','base'] }   
    - { role: portal, tags: ['services','portal','base'] }
    - { role: xsce-admin, tags: ['services','xsce-admin','base'] }
+   - { role: network, tags: ['services','base','network'] }
