@@ -125,6 +125,8 @@
          creates=/etc/sysconfig/olpc-scripts/setup.d/installed/gateway
 
 - include: services.yml
+
+- include: services2.yml
   when: not installing  
   tags:
     - network
