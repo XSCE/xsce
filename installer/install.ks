@@ -2,6 +2,7 @@ selinux --disabled
 firewall --disabled
 firstboot --disabled
 network --hostname=schoolserver --bootproto=dhcp --onboot=yes
+services --enabled=sshd
 
 # optional can be set with gui
 # Language support
