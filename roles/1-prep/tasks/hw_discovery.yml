@@ -1,13 +1,3 @@
-
-- name: Set default for discovered hardware
-  set_fact:
-    wireless_lan_present: False
-    driver_name: nl80211
-    wifi_id: none
-    rpi_model: none
-    xo_model: none
-    rtc_id: none
-
 - name: Install packages needed to do HW detection
   yum:  name={{ item }}
         state=present

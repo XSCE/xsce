@@ -1,13 +1,4 @@
 # DETECT -- gateway and wireless
-- name: Set defaults for discovery process
-  set_fact:
-    discovered_wan_iface: "none"
-    discovered_lan_iface: "none"
-    discovered_wireless_iface: "none"
-    xsce_wireless_lan_iface: "none"
-    xsce_lan_iface: "none"
-    xsce_wan_iface: "none"
-
 - name: Get a list of slaves from previous config
   shell: "egrep -rn BRIDGE=br0 /etc/sysconfig/network-scripts | gawk -F'[-:]' '{print $3}'" 
   register: ifcfg_slaves 
