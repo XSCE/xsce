@@ -1,7 +1,6 @@
 - name: Disable dhcpd service
   service: name=dhcpd
            enabled=no
-           state=stopped
   when: not dhcpd_enabled
 
 # service is restarted with NM dispatcher.d script
@@ -9,13 +8,6 @@
   service: name=dhcpd
            enabled=yes
   when: dhcpd_enabled
-
-- name: Run iptables
-  command: /etc/sysconfig/iptables-config
-
-- name: Enable iptables service
-  service: name=iptables
-           enabled=yes
 
 - name: Enable named service
   service: name=named
@@ -25,7 +17,6 @@
 - name: Disable named service
   service: name=named
            enabled=no
-           state=stopped
   when: not named_enabled
 
 - name: Enable dansguardian
@@ -36,7 +27,6 @@
 - name: Disable dansguardian
   service: name=dansguardian
            enabled=no
-           state=stopped
   when: not dansguardian_enabled
 
 - name: Create xs_httpcache flag
@@ -52,7 +42,6 @@
 - name: Disable squid service
   service: name=squid
            enabled=no
-           state=stopped
   when: not squid_enabled
 
 - name: Remove xs_httpcache flag
@@ -68,5 +57,4 @@
 - name: Disable wondershaper service
   service: name=wondershaper
            enabled=no
-           state=stopped
   when: not wondershaper_enabled
