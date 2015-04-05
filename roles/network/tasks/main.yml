@@ -124,9 +124,9 @@
   shell: echo 1 > /etc/sysconfig/olpc-scripts/setup.d/installed/gateway
          creates=/etc/sysconfig/olpc-scripts/setup.d/installed/gateway
 
-- include: services.yml
+- include: enable.yml
 
-- include: services2.yml
+- include: restart.yml
   when: not installing  
   tags:
     - network
