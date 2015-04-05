@@ -7,9 +7,5 @@ ONBOOT=yes
 # needs work but it's a start
 HWADDR={{ hostvars[inventory_hostname]['ansible_' + item|trim]['macaddress'] }}
 DEVICE={{ item|trim }}
-{% if xsce_lan_iface == "br0" %}
-NM_CONTROLLED=no
-{% else %}
 NM_CONTROLLED=yes
-{% endif %}
 
