@@ -1,3 +1,8 @@
+- include: hostapd.yml
+- include: rpi2.yml
+  when: rpi_model == "rpi2"
+  tags:
+    - rpi2
 - name: Create olpc-scripts directory
   file: path={{ item }}
         owner=root

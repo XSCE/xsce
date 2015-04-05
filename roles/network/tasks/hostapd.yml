@@ -1,0 +1,64 @@
+- name: Install the standard hostapd if possible
+  yum:  name={{ item }}
+        state=present
+  with_items:
+       - hostapd
+       - wpa_supplicant
+  when: not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download
+
+- name: Download substitute software
+  get_url: url="{{ xsce_download_url }}/{{ item }}"  dest={{ downloads_dir}}/{{ item }}
+  with_items:
+     - hostapd_8188
+     - wpa_supplicant_8188
+  when: wifi_id  ==  "tplink_WM725M" and not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download
+
+- name: Put the substitute files in place
+  copy: src={{ downloads_dir }}/hostapd_8188
+        dest=/usr/sbin/hostapd
+        backup=yes
+        mode=0775
+        owner=root
+        group=root
+  when: wifi_id  ==  "tplink_WM725M"
+
+- name: Put the substitute wpa_supplicant in place
+  copy: src={{ downloads_dir }}/wpa_supplicant_8188
+        dest=/usr/sbin/wpa_supplicant
+        backup=yes
+        mode=0775
+        owner=root
+        group=root
+  when: wifi_id  ==  "tplink_WM725M"
+
+- name: Use a systemd unit file to start hostapd
+  template: src=hostapd/hostapd.service.j2
+            dest=/etc/systemd/system/hostapd.service
+            owner=root
+            group=root
+            mode=0644
+
+- name: Create a config file for hostapd
+  template: src=hostapd/hostapd.conf.j2
+            dest=/etc/hostapd/hostapd.conf
+            owner=root
+            group=root
+            mode=0644
+  when: xsce_wireless_lan_iface != "none"
+
+- name: ask systemd to reread the unit file, changing roles?
+  shell: systemctl daemon-reload
+
+- name: Enable the Access Point Hostapd program
+  service: enabled=yes
+           name=hostapd.service
+  when: xsce_network_mode != "Appliance" and wireless_lan_present
+
+- name: Disable the Access Point Hostapd program
+  service: enabled=no
+           name=hostapd.service
+  when: xsce_network_mode == "Appliance"
