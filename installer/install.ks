@@ -46,6 +46,10 @@ done
 # turn off the installer on the reboot
 touch /.xsce-installed
 
+# Grab the latest git - should test for gateway if left in for production
+cd /opt/schoolserver/xsce/
+git pull
+
 # Don't start services while in the chroot
 cat > /opt/schoolserver/xsce/vars/local_vars.yml << EOF
 installing: True
