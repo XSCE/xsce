@@ -5,11 +5,53 @@
   ignore_errors: True
   changed_when: False
 
+- name: Now disconnect slaves from bridge
+  shell: "brctl delif br0  {{ item }} "
+  with_items:
+    - "{{ ifcfg_slaves.stdout_lines }}"
+  when: ifcfg_slaves.stdout
+
+- name: Check to see if there is a bridge up
+  shell: "ip addr | gawk -F: '/br0/ {print $2}'"
+  register: bridge_result
+  ignore_errors: True
+  changed_when: False
+
+- name: A bridge that is up cannot be deleted
+  shell: "ifconfig br0 down"
+  when: bridge_result.stdout != ""
+
+- name: And delete it
+  shell: "brctl delbr br0"
+  when: bridge_result.stdout != ""
+
+- name: Start dhclient when bridge was up
+  shell: "dhclient"
+  when: bridge_result.stdout != ""
+
+- name: restart NetworkManager services
+  service: name=NetworkManager
+           enabled=yes
+           state=stopped
+- wait_for: path=/etc/passwd
+            delay=4
+            timeout=5
+- service: name=NetworkManager
+           enabled=yes
+           state=started
+- wait_for: path=/etc/passwd
+            delay=10
+            timeout=12
+
+- name: re-read facts
+  setup: filter=ansible_default_ipv4
+
+#
 # Discover  do we have a gateway? -- if ansible detects gateway, becomes WAN candidate
 - name: Found gateway
   set_fact:
     discovered_wan_iface: "{{ ansible_default_ipv4.alias }}"
-  when: 'ansible_default_ipv4.gateway is defined and xsce_wan_enabled'
+  when: 'ansible_default_ipv4.gateway is defined and  xsce_wan_enabled'
 
 # WIRELESS -- if wireless is detected as gateway, it becomes WAN candidate
 - name: Look for any wireless interfaces -- pick first one if more than one exists
