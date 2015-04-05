@@ -39,4 +39,3 @@
 - name: Enable avahi service
   service: name=avahi-daemon
            enabled=yes
-           state="restarted"

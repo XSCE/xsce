@@ -17,3 +17,8 @@
   service: name=wondershaper
             state=restarted
   when: wondershaper_enabled
+
+- name: Enable avahi service
+  service: name=avahi-daemon
+           state=restarted
+
