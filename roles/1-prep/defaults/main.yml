@@ -17,4 +17,5 @@ rpi_model: none
 xo_model: none
 rtc_id: none
 
-
+#Set default facts for rpi device detection
+wifi_id: none
