@@ -110,11 +110,6 @@
   shell: echo 1 > /etc/sysconfig/olpc-scripts/setup.d/installed/gateway
          creates=/etc/sysconfig/olpc-scripts/setup.d/installed/gateway
 
-- include: nonNM-bridging.yml
-  when: 'discovered_wireless_iface != "none"'
-  tags:
-    - network
-
 - name: Get a list of ifcfg files to delete
   shell: "ls -1 /etc/sysconfig/network-scripts/ifcfg-* | grep -v -e ifcfg-lo "
   register: ifcfg_files
@@ -154,6 +149,11 @@
   lineinfile: regexp="^/usr/sbin/brctr.*"
               state=absent
               dest=/etc/rc.d/rc.local
+
+- include: nonNM-bridging.yml
+  when: 'discovered_wireless_iface != "none"'
+  tags:
+    - network
 
 #- name: Connect LAN device(s) to Bridge
 #  lineinfile: line="/usr/sbin/brctl addif br0 {{ item|trim }}"
