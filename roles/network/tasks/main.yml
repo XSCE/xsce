@@ -129,12 +129,12 @@
 # supply an ifcfg if gateway detected default is dhcp
 # set user_wan_iface: <device> for static
 # use wan_* for static info
-- name: Supply wan interface file
+- name: Supply ifcfg-WAN file
   template: src=network/ifcfg-WAN.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-WAN
   when: 'xsce_wan_iface != "none"'
 
-- name: Configure lan interface
+- name: Configure LAN interface
   template: backup=yes
             src=network/ifcfg.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-LAN
@@ -143,7 +143,7 @@
 - debug: var=xsce_lan_iface
 - debug: var=xsce_wan_iface
 - pause: seconds=10
-- name: enslaving LAN device to Bridge
+- name: enslaving ## lan_list_result ## to Bridge
   template: src=network/ifcfg-slave.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-{{ item|trim }}
   when: num_lan_interfaces > "0" and xsce_lan_iface == "br0"
@@ -162,9 +162,9 @@
 #  with_items:
 #      - "{{ lan_list_result.stdout_lines }}"
 
-- include: NM.yml
-  tags:
-    - network
+#- include: NM.yml
+#  tags:
+#    - network
 
 - include: hostapd.yml
   tags:
