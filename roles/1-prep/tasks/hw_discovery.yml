@@ -15,6 +15,7 @@
         - i2c-tools
         - bridge-utils
         - usbutils
+        - pciutils
   when: not {{ use_cache }} and not {{ no_network }}
 
 ##  DISCOVER PLATFORMS ######

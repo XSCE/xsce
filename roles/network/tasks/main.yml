@@ -54,13 +54,14 @@
               group=root
               mode=0644
 
+# ifcfg files will be forced to conform with this run of network setup
 - name: Get a list of ifcfg files to delete
   shell: "ls -1 /etc/sysconfig/network-scripts/ifcfg-* | grep -v -e ifcfg-lo "
   register: ifcfg_files
   ignore_errors: True
   changed_when: False
 
-- name: Now get them out of the way
+- name: Now delete them
   shell: "rm -f {{ item }} "
   with_items:
     - "{{ ifcfg_files.stdout_lines }}"
@@ -77,6 +78,7 @@
   when: num_lan_interfaces > "0" and xsce_lan_iface == "br0"
   with_items:
       - "{{ lan_list_result.stdout_lines }}"
+
 - name: Delete any bridge add interface lines in rc.local
   lineinfile: regexp="^/usr/sbin/brctl.*"
               state=absent
@@ -88,6 +90,25 @@
   when: num_lan_interfaces > "0" and xsce_lan_iface == "br0" and item|trim != xsce_wan_iface
   with_items:
       - "{{ lan_list_result.stdout_lines }}"
+
+- name: Add a line in rc.local to execute up-bridge network script
+  lineinfile: line="/usr/local/sbin/up-bridge"
+              dest=/etc/rc.d/rc.local
+  when: xsce_network_mode != "Appliance" and xsce_lan_iface == "br0" 
+
+- name: Remove the line in rc.local that executes up-bridge network script
+  lineinfile: state=absent
+              regexp="/usr/sbin/up-bridge"
+              dest=/etc/rc.d/rc.local
+  when: xsce_network_mode == "Appliance" or xsce_lan_iface != "br0" 
+
+- name: Put a bash script to bring up bridge network with hostapd AP
+  template: src=up-bridge.j2
+            dest=/usr/local/sbin/up-bridge
+            mode=0755
+            owner=root
+            group=root
+  when: xsce_network_mode != "Appliance" and xsce_wireless_lan_iface != "none"
 
 # supply an ifcfg if no gateway detected but wan_ip is set
 # set user_wan_iface: <device> and use wan_* for static info
