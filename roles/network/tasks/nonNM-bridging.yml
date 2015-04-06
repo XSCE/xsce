@@ -1,5 +1,7 @@
 # Too do handle more than one detected interface
 - name: Turn off NM for {{discovered_wireless_iface}}
   lineinfile: state=present
+              backrefs=yes
+              regexp="NM_CONTROLLED"
               line="NM_CONTROLLED=no"
               dest=/etc/sysconfig/network-scripts/ifcfg-{{discovered_wireless_iface}}
