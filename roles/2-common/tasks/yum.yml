@@ -21,6 +21,9 @@
    - tar
    - unzip
    - bzip2
+   - i2c-tools
+   - bridge-utils
+   - usbutils
   tags:
     - download
 
