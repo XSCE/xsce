@@ -28,8 +28,6 @@ services --enabled=sshd
 #logvol swap --vgname=vg1 --recommended --name=swap --fstype=swap
 #ignoredisk --only-use=sda
 
-reboot
-
 %post
 # ensure network cards are turned on
 NICs=`ls /etc/sysconfig/network-scripts/ifcfg-` 
@@ -47,8 +45,8 @@ done
 touch /.xsce-installed
 
 # Grab the latest git - should test for gateway if left in for production
-cd /opt/schoolserver/xsce/
-git pull
+#cd /opt/schoolserver/xsce/
+#git pull
 
 # Don't start services while in the chroot
 cat > /opt/schoolserver/xsce/vars/local_vars.yml << EOF
