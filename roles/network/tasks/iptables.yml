@@ -5,7 +5,6 @@
 - name: Install iptables service package
   yum: name=iptables-services
        state=installed
-       enabled=yes
   tags:
     - download
 
