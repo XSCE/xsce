@@ -5,6 +5,15 @@
               regexp="NM_CONTROLLED"
               line="NM_CONTROLLED=no"
               dest=/etc/sysconfig/network-scripts/ifcfg-{{discovered_wireless_iface}}
+  when: xsce_lan_iface == "br0"
+
+- name: Turn off NM for LAN
+  lineinfile: state=present
+              backrefs=yes
+              regexp="NM_CONTROLLED"
+              line="NM_CONTROLLED=no"
+              dest=/etc/sysconfig/network-scripts/ifcfg-LAN
+  when: xsce_lan_iface == {{discovered_wireless_iface}}
 
 - name: Enable network.service for non-bridged Wifi
   service: name=network
