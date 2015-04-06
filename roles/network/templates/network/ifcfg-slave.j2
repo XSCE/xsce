@@ -7,5 +7,4 @@ ONBOOT=yes
 # needs work but it's a start
 HWADDR={{ hostvars[inventory_hostname]['ansible_' + item|trim]['macaddress'] }}
 DEVICE={{ item|trim }}
-NM_CONTROLLED=yes
 

@@ -1,5 +1,5 @@
 # Too do handle more than one detected interface
-- name: use network for F18 or others
+- name: name: Turn off NM for {{discovered_wireless_iface}}
   lineinfile: state=present
               line="NM_CONTROLLED=no"
               dest=/etc/sysconfig/network-scripts/ifcfg-{{discovered_wireless_iface}}
