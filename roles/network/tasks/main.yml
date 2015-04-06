@@ -142,7 +142,7 @@
               state=absent
               dest=/etc/rc.d/rc.local
 
-- include: nonNM-Wifi.yml
+- include: nonNM-bridging.yml
   when: 'discovered_wireless_iface != "none"'
   tags:
     - network
@@ -161,3 +161,4 @@
 - include: hostapd.yml
   tags:
     - network
+
