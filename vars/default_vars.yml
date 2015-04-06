@@ -24,6 +24,7 @@ no_network: False  # use cache or error out if cache does not exist
 platform: ""
 hostapd: ""
 wpa_supplicant: ""
+use_bridging: "False"
 
 # Users and Passwords
 # obtain a password hash with - python -c 'import crypt; print crypt.crypt("<plaintext>", "$6$<salt>")'

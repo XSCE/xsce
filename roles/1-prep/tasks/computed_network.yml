@@ -6,10 +6,10 @@
   changed_when: False
 
 # Discover  do we have a gateway? -- if ansible detects gateway, becomes WAN candidate
-- name: Found gateway
+- name: Finding gateway
   set_fact:
     discovered_wan_iface: "{{ ansible_default_ipv4.alias }}"
-  when: 'ansible_default_ipv4.gateway is defined and xsce_wan_enabled'
+  when: 'ansible_default_ipv4.gateway is defined'
 
 # WIRELESS -- if wireless is detected as gateway, it becomes WAN candidate
 - name: Look for any wireless interfaces -- pick first one if more than one exists
@@ -25,17 +25,22 @@
   when: wireless_list.stdout != "" and wireless_list.stdout|trim != discovered_wan_iface
 
 - debug: var=user_wan_iface
+
+- name: Setting wan if detected
+  set_fact:
+    xsce_wan_iface: "{{ discovered_wan_iface }}"
+  when: discovered_wan_iface != "none" and xsce_wan_iface == "none"
+
+- name: Checking xsce_wan_enabled
+  set_fact:
+    user_wan_iface: "none"
+  when: 'not xsce_wan_enabled'
+
 # override with user_wan_iface setting if no longer in auto
 - name: setting user WAN fact
   set_fact:
     xsce_wan_iface: "{{ user_wan_iface }}"
   when: user_wan_iface != "auto"
-
-- name: Setting wan if detected, and not user overridden
-  set_fact:
-    xsce_wan_iface: "{{ discovered_wan_iface }}"
-  when: xsce_wan_enabled and discovered_wan_iface != "none" and xsce_wan_iface == "none"
-
 
 # LAN - pick non WAN's
 - name: Create list of  LAN (non wan) ifaces
@@ -64,13 +69,14 @@
       num_lan_interfaces: "{{ num_lan_interfaces_result.stdout|int }}"
 
 - debug: var=xsce_wan_iface
+
 # If 2 interfaces found in gateway mode, with one wifi, declare other to be wan
-- name: In gateway mode with one wifi adapter, the other is WAN
-  set_fact:
-      xsce_wan_iface: "{{ discovered_lan_iface }}"
-      xsce_lan_iface: "{{ discovered_wireless_iface }}"
-      num_lan_interfaces: "1"
-  when: xsce_lan_enabled and xsce_wan_enabled and num_lan_interfaces == "2" and discovered_wireless_iface != "none" and xsce_wan_iface == "none"
+#- name: In gateway mode with one wifi adapter, the other is WAN
+#  set_fact:
+#      xsce_wan_iface: "{{ discovered_lan_iface }}"
+#      xsce_lan_iface: "{{ discovered_wireless_iface }}"
+#      num_lan_interfaces: "1"
+#  when: xsce_lan_enabled and xsce_wan_enabled and num_lan_interfaces == "2" and discovered_wireless_iface != "none" and xsce_wan_iface == "none"
 - debug: var=xsce_lan_enabled
 - debug: var=xsce_wan_enabled
 - debug: var=num_lan_interfaces
@@ -80,12 +86,11 @@
 - debug: var=xsce_lan_iface
 - pause: seconds=10
 
-
 - name: Set the variable for wireless_iface if present
   set_fact: 
        xsce_wireless_lan_iface: "{{ discovered_wireless_iface }}"
   when: discovered_wireless_iface != "none"
-- debug: var=xsce_lan_iface
+- debug: var=xsce_wireless_lan_iface
 
 - name: if only one lan interface, combine wireless and lan
   set_fact:
@@ -100,25 +105,25 @@
   when: 'discovered_lan_iface != "none"'
 
 - debug: var=xsce_lan_iface
-# overwrite this and create a lan bridge of multiple LAN interfaces if present
-# if more than 1 lan adapter, they are: xsce_lan_iface, and xsce_wireless_lan_iface
-- name: Create bridged LAN if multiple interfaces
-  set_fact:
-    xsce_lan_iface: "br0"
-  when:  num_lan_interfaces > "1"
-
-- debug: var=xsce_lan_iface
-# user disabled interface default is auto
-- name: checking xsce_lan_enabled
+# user disabled interface - overriding the default of auto
+- name: Checking xsce_lan_enabled
   set_fact:
     user_lan_iface: "none"
   when: 'not xsce_lan_enabled'
 
 # override with user_lan_iface setting if no longer in auto
-- name: setting user LAN fact
+- name: Setting user LAN for bridging
+  set_fact:
+    user_lan_iface: br0
+  when: use_bridging
+
+# override with user_lan_iface setting if no longer in auto
+- name: Setting user LAN fact
   set_fact:
     xsce_lan_iface: "{{ user_lan_iface }}"
   when: 'user_lan_iface != "auto"'
+
+- debug: var=xsce_lan_iface
 
 - name: No LAN configured - Appliance mode
   set_fact:
@@ -155,20 +160,23 @@
   with_items:
   - option: 'wan_enabled'
     value: '{{ xsce_wan_enabled }}'
-  - option: 'lan_enabled'
-    value: '{{ xsce_lan_enabled }}'
   - option: 'detected_gateway'
     value: '{{ discovered_wan_iface }}'
-  - option: 'detected_lan'
-    value: '{{ discovered_lan_iface }}'
   - option: 'user_gateway'
     value: '{{ user_wan_iface }}'
-  - option: 'user_lan'
-    value: '{{ user_lan_iface }}'
   - option: 'computed_gateway'
     value: '{{ xsce_wan_iface }}'
+  - option: 'lan_enabled'
+    value: '{{ xsce_lan_enabled }}'
+  - option: 'num_lan_interfaces'
+    value: '{{ num_lan_interfaces }}'
+  - option: 'discovered_wireless_iface'
+    value: '{{ discovered_wireless_iface }}'
+  - option: 'detected_lan'
+    value: '{{ discovered_lan_iface }}'
+  - option: 'user_lan'
+    value: '{{ user_lan_iface }}'
   - option: 'computed_lan'
     value: '{{ xsce_lan_iface }}'
   - option: 'xsce_network_mode'
     value: '{{ xsce_network_mode }}'
-

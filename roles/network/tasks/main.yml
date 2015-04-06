@@ -146,10 +146,10 @@
   shell: echo 1 > /etc/sysconfig/olpc-scripts/setup.d/installed/gateway
          creates=/etc/sysconfig/olpc-scripts/setup.d/installed/gateway
 
-- include: nonNM-bridging.yml
-  when: 'discovered_wireless_iface != "none"'
-  tags:
-    - network
+#- include: nonNM-bridging.yml
+#  when: 'discovered_wireless_iface != "none"'
+#  tags:
+#    - network
 
 - include: NM.yml
   tags:

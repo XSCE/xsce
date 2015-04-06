@@ -8,6 +8,7 @@ discovered_wireless_iface: "none"
 xsce_wireless_lan_iface: "none"
 xsce_lan_iface: "none"
 xsce_wan_iface: "none"
+use_bridging: "False"
 
 #Set default for discovered hardware
 wireless_lan_present: False
