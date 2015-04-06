@@ -8,13 +8,13 @@
 
 - name: Enable network.service for non-bridged Wifi
   service: name=network
-  enabled=yes
-  state=restarted
+           enabled=yes
+           state=restarted
   when: xsce_lan_iface != "br0"
 
 - name: Disable network.service for bridged Wifi
   service: name=network
-  enabled=no
-  state=stopped
+           enabled=no
+           state=stopped
   when: xsce_lan_iface == "br0"
 
