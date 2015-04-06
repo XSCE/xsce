@@ -2,6 +2,7 @@
 - name: Discover if this is a rpi2 -- if so it has a bcm2709 processor
   set_fact: 
      rpi_model: "rpi2"
+     use_bridging: True
   when:  ansible_cmdline["bcm2709.serial"]  is defined
   ignore_errors: true
 
