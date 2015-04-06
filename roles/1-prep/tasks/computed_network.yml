@@ -1,59 +1,165 @@
-# WAN 
-- name: Set default for discovered_wan_iface
+# DETECT -- gateway and wireless
+- name: Set defaults for discovery process
   set_fact:
     discovered_wan_iface: "none"
+    discovered_lan_iface: "none"
+    discovered_wireless_iface: "none"
+    xsce_wireless_lan_iface: "none"
+    xsce_lan_iface: "none"
+    xsce_wan_iface: "none"
 
-# Discover only do we have a gateway?
+- name: Get a list of slaves from previous config
+  shell: "egrep -rn BRIDGE=br0 /etc/sysconfig/network-scripts | gawk -F'[-:]' '{print $3}'" 
+  register: ifcfg_slaves 
+  ignore_errors: True
+  changed_when: False
+
+- name: Now disconnect slaves from bridge
+  shell: "brctl delif br0  {{ item }} "
+  with_items:
+    - "{{ ifcfg_slaves.stdout_lines }}"
+  when: ifcfg_slaves.stdout
+  ignore_errors: True
+
+- name: Check to see if there is a bridge up
+  shell: "ip addr | gawk -F: '/br0/ {print $2}'"
+  register: bridge_result
+  ignore_errors: True
+  changed_when: False
+
+- name: A bridge that is up cannot be deleted
+  shell: "ifconfig br0 down"
+  when: bridge_result.stdout != ""
+
+- name: And delete it
+  shell: "brctl delbr br0"
+  when: bridge_result.stdout != ""
+
+- name: Start dhclient when bridge was up
+  shell: "dhclient"
+  when: bridge_result.stdout != ""
+
+- name: restart NetworkManager services
+  service: name=NetworkManager
+           enabled=yes
+           state=stopped
+- wait_for: path=/etc/passwd
+            delay=4
+            timeout=5
+- service: name=NetworkManager
+           enabled=yes
+           state=started
+- wait_for: path=/etc/passwd
+            delay=10
+            timeout=12
+
+- name: re-read facts
+  setup: filter=ansible_default_ipv4
+
+#
+# Discover  do we have a gateway? -- if ansible detects gateway, becomes WAN candidate
 - name: Found gateway
   set_fact:
     discovered_wan_iface: "{{ ansible_default_ipv4.alias }}"
-  when: 'ansible_default_ipv4.gateway is defined'
+  when: 'ansible_default_ipv4.gateway is defined and  xsce_wan_enabled'
 
-# default is none
-- name: Setting detected gateway
+# WIRELESS -- if wireless is detected as gateway, it becomes WAN candidate
+- name: Look for any wireless interfaces -- pick first one if more than one exists
+  shell: "cat /proc/net/wireless | grep -v -e Inter -e face | gawk -F: '{print $1}' | head -n1"
+  register: wireless_list
+  ignore_errors: True
+  changed_when: False
+
+# maybe never TODO: deal with more that one wireless device
+- name: Set the discovered wireless, if found
   set_fact:
-    xsce_wan_iface: "{{ discovered_wan_iface }}"
+     discovered_wireless_iface: "{{ wireless_list.stdout|trim }}"
+  when: wireless_list.stdout != "" and wireless_list.stdout|trim != discovered_wan_iface
 
-# user disabled interface defaults to auto
-- name: checking xsce_wan_enabled
-  set_fact:
-    user_wan_iface: "none"
-  when: 'not xsce_wan_enabled' 
-
+- debug: var=user_wan_iface
 # override with user_wan_iface setting if no longer in auto
 - name: setting user WAN fact
   set_fact:
     xsce_wan_iface: "{{ user_wan_iface }}"
-  when: 'user_wan_iface != "auto"'
+  when: user_wan_iface != "auto"
 
-# LAN 
-- name: Set default for discovered_lan_iface
+- name: Setting wan if detected, and not user overridden
   set_fact:
-    discovered_lan_iface: "none"
+    xsce_wan_iface: "{{ discovered_wan_iface }}"
+  when: xsce_wan_enabled and discovered_wan_iface != "none" and xsce_wan_iface == "none"
 
-- name: Set default for xsce_lan_iface
-  set_fact:
-    xsce_lan_iface: "none"
 
-# Detection only
-- name: Discover LAN iface
-  shell: "/sbin/ip link show | grep -v -e DOWN -e lo -e tun -e {{ xsce_wan_iface }}| grep mtu | gawk -F: '{print $2}' | tr -d ' ' | head -n1 "
-  register: discovered_lan
+# LAN - pick non WAN's
+- name: Create list of  LAN (non wan) ifaces
+  shell: "/sbin/ip link show | grep -v  -e lo -e br0: -e tun -e {{ xsce_wan_iface }}| grep mtu | gawk -F: '{print $2}' "
+  register: lan_list_result
   ignore_errors: True
   changed_when: false
 
-# This returns "" for not found
+# Select an adapter that is not WAN and not wireless
 - name: Set xsce discovered lan fact
   set_fact:
-    discovered_lan_iface: "{{ discovered_lan.stdout }}"
-  when: 'discovered_lan is defined'
+    discovered_lan_iface: "{{ item|trim }}"
+  when: item|trim != discovered_wireless_iface and item|trim != discovered_wan_iface
+  with_items:
+      - "{{ lan_list_result.stdout_lines }}"
 
+- name: Count LAN ifaces
+  shell: "/sbin/ip link show | grep -v  -e lo -e br0: -e tun -e {{ xsce_wan_iface }} | grep mtu | wc | gawk '{print $1}'"
+  register: num_lan_interfaces_result
+  ignore_errors: True
+  changed_when: false
+
+# facts are apparently all stored as text, so do text comparisons from here on
+- name: create a simple variable from a compound one
+  set_fact: 
+      num_lan_interfaces: "{{ num_lan_interfaces_result.stdout|int }}"
+
+- debug: var=xsce_wan_iface
+# If 2 interfaces found in gateway mode, with one wifi, declare other to be wan
+- name: In gateway mode with one wifi adapter, the other is WAN
+  set_fact:
+      xsce_wan_iface: "{{ discovered_lan_iface }}"
+      xsce_lan_iface: "{{ discovered_wireless_iface }}"
+      num_lan_interfaces: "1"
+  when: xsce_lan_enabled and xsce_wan_enabled and num_lan_interfaces == "2" and discovered_wireless_iface != "none" and xsce_wan_iface == "none"
+- debug: var=xsce_lan_enabled
+- debug: var=xsce_wan_enabled
+- debug: var=num_lan_interfaces
+- debug: var=discovered_wireless_iface
+- debug: var=discovered_wan_iface
+- debug: var=xsce_wan_iface
+- debug: var=xsce_lan_iface
+- pause: seconds=10
+
+
+- name: Set the variable for wireless_iface if present
+  set_fact: 
+       xsce_wireless_lan_iface: "{{ discovered_wireless_iface }}"
+  when: discovered_wireless_iface != "none"
+- debug: var=xsce_lan_iface
+
+- name: if only one lan interface, combine wireless and lan
+  set_fact:
+    discovered_lan_iface: "{{ discovered_wireless_iface }}"
+  when: discovered_wireless_iface != "none" and num_lan_interfaces == "1"
+
+- debug: var=xsce_lan_iface
 # use value only if present
 - name: Setting detected lan
   set_fact:
     xsce_lan_iface: "{{ discovered_lan_iface }}"
-  when: 'discovered_lan_iface != ""'
+  when: 'discovered_lan_iface != "none"'
 
+- debug: var=xsce_lan_iface
+# overwrite this and create a lan bridge of multiple LAN interfaces if present
+# if more than 1 lan adapter, they are: xsce_lan_iface, and xsce_wireless_lan_iface
+- name: Create bridged LAN if multiple interfaces
+  set_fact:
+    xsce_lan_iface: "br0"
+  when:  num_lan_interfaces > "1"
+
+- debug: var=xsce_lan_iface
 # user disabled interface default is auto
 - name: checking xsce_lan_enabled
   set_fact:
@@ -74,7 +180,7 @@
     dhcpd_enabled: False
     wondershaper_enabled: False
     xsce_network_mode: "Appliance"
-  when: 'xsce_lan_iface == "none" or user_lan_iface == "none"' 
+  when: xsce_lan_iface == "none" or user_lan_iface == "none" or xsce_lan_enabled == False
 
 - name: LAN configured - LanController mode
   set_fact:
@@ -84,7 +190,7 @@
     squid_enabled: False
     wondershaper_enabled: False
     xsce_network_mode: "LanController"
-  when: 'xsce_lan_iface != "" and xsce_wan_iface == "none"'
+  when: xsce_lan_iface != "" and xsce_wan_iface == "none" and xsce_lan_enabled == True
 
 - name: LAN configured - Gateway mode
   set_fact:
@@ -117,3 +223,4 @@
     value: '{{ xsce_lan_iface }}'
   - option: 'xsce_network_mode'
     value: '{{ xsce_network_mode }}'
+
