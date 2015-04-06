@@ -19,6 +19,7 @@
   with_items:
     - "{{ ifcfg_slaves.stdout_lines }}"
   when: ifcfg_slaves.stdout
+  ignore_errors: True
 
 - name: Check to see if there is a bridge up
   shell: "ip addr | gawk -F: '/br0/ {print $2}'"
