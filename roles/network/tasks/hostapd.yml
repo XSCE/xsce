@@ -83,7 +83,7 @@
   when: xsce_lan_iface != "br0" and xsce_wireless_lan_iface != "none"
 
 - name: Checking if slave is active
-  shell: "sleep 3 | brctl show | grep {{ xsce_wireless_lan_iface }}"
+  shell: "sleep 6 | brctl show | grep {{ xsce_wireless_lan_iface }}"
   ignore_errors: True
   changed_when: False
   register: wifi-slave
