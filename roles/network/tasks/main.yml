@@ -154,9 +154,9 @@
 #  with_items:
 #      - "{{ lan_list_result.stdout_lines }}"
 
-#- include: NM.yml
-#  tags:
-#    - network
+- include: NM.yml
+  tags:
+    - network
 
 - include: hostapd.yml
   tags:
