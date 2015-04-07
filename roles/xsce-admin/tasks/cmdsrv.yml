@@ -115,6 +115,5 @@
 - name: Enable xsce-cmdsrv service
   service: name=xsce-cmdsrv
            enabled=yes
-           state=started
 
 #  when: xsce-cmdsrv_enabled - always enabled

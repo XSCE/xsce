@@ -53,7 +53,7 @@
 - name: Enable xs-authserver service
   service: name=xs-authserver
            enabled=yes
-           state=started
+  when: authserver_enabled
 
 - name: add xs-authserver to service list
   ini_file: dest='{{ service_filelist }}'

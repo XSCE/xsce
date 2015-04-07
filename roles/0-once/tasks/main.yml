@@ -1,0 +1,34 @@
+- include: fl.yml
+  tags:
+    - download
+    - download2
+
+- include: prep.yml
+  tags:
+    - download
+
+- include: xsce_ini.yml
+  when: xsce_preload == "False"
+  tags:
+    - download
+
+- name: Keep yum cache
+  ini_file: dest=/etc/yum.conf
+            section=main
+            option=keepcache
+            value=1
+
+# Put conditional includes for platforms here
+- include: xo.yml
+  when: xo_model != "none"
+  tags:
+    - xo
+
+- include: centos.yml
+  when: ansible_distribution == "CentOS"
+  tags:
+    - centos
+    - download
+
+- include: selinux.yml
+  when: ansible_selinux["status"] != "disabled"
