@@ -1,9 +1,5 @@
 # This is a dog's breakfast, but with ansible 1.6.3 service: name=NetworkManager state=restarted doesn't work
 
-- name: Disable the Access Point Hostapd program
-  service: name=hostapd.service
-           state=stopped
-
 - name: restart NetworkManager services
   service: name=NetworkManager
            enabled=yes

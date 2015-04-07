@@ -111,6 +111,10 @@
   ignore_errors: True
   changed_when: False
 
+- name: Stop the Access Point Hostapd program
+  service: name=hostapd.service
+           state=stopped
+
 - name: Now get them out of the way
   shell: "rm -f {{ item }} "
   with_items:
@@ -138,7 +142,7 @@
       - "{{ lan_list_result.stdout_lines }}"
 
 - name: Delete any bridge add interface lines in rc.local
-  lineinfile: regexp="^/usr/sbin/brctr.*"
+  lineinfile: regexp="^/usr/sbin/brctl.*"
               state=absent
               dest=/etc/rc.d/rc.local
 
