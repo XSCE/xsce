@@ -71,7 +71,6 @@
            state=restarted
   when: xsce_wireless_lan_iface != "none" and xsce_network_mode == "Appliance"
 
-
 - name: Disable network.service for bridged Wifi
   service: name=network
            enabled=no
@@ -83,3 +82,13 @@
            enabled=yes
            state=restarted
   when: xsce_lan_iface != "br0" and xsce_wireless_lan_iface != "none"
+
+- name: Checking if slave is active
+  shell: "sleep 3 | brctl show | grep {{ xsce_wireless_lan_iface }}"
+  register: wifi-slave
+  when: xsce_lan_iface == "br0" and xsce_wireless_lan_iface != "none"
+
+- name: Restart hostapd if slave is inactive
+  service: name=hostapd.service
+           state=restarted
+  when: xsce_lan_iface == "br0" and xsce_wireless_lan_iface != "none" and wifi-slave.stdout == ""
