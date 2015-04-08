@@ -126,7 +126,7 @@
 - name: Supply ifcfg-WAN file
   template: src=network/ifcfg-WAN.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-WAN
-  when: 'xsce_wan_iface != "none"'
+  when: 'xsce_wan_iface != "none" and wan_ip != "dhcp"'
 
 - name: Configure LAN interface
   template: backup=yes
