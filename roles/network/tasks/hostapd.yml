@@ -69,12 +69,12 @@
   service: name=network
            enabled=yes
            state=started
-  when: xsce_wireless_lan_iface != "none" and xsce_network_mode == "Appliance"
+  when: xsce_wireless_lan_iface != "none" and xsce_network_mode != "Appliance"
 
 - name: Disable network.service for bridged Wifi
   service: name=network
            enabled=no
-  when: xsce_lan_iface == "br0" or xsce_network_mode == "Appliance"
+  when: xsce_lan_iface == "br0" or xsce_network_mode != "Appliance"
 
 - name: Enable network.service for non-bridged Wifi
   service: name=network
