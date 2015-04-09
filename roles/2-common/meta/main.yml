@@ -1,2 +1,2 @@
 dependencies:
- - { role: network, tags: ['base','network'] }
+ - { role: network, tags: ['prep','base','network'] }
