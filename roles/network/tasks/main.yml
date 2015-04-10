@@ -126,7 +126,7 @@
 
 - name: Re-detect network facts if NM was restarted.
   setup: filter=ansible_local
-  include: ../../../*/*/*/computed_network.yml  
+  include: ../../../roles/1-prep/tasks/computed_network.yml  
   when: discovered_wan_iface == "none" and user_wan_iface == "auto" 
  
 # set user_wan_iface: <device> for static
