@@ -142,12 +142,17 @@
             dest=/etc/sysconfig/network-scripts/ifcfg-LAN
   when: xsce_lan_iface != "none"
 
-- name: enslaving ## lan_list_result ## to Bridge
+- name: Wired enslaving ## lan_list_result ## to Bridge
   template: src=network/ifcfg-slave.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-{{ item|trim }}
-  when: num_lan_interfaces > "0" and xsce_lan_iface == "br0"
+  when: xsce_lan_iface == "br0" and item|trim != xsce_wireless_lan_iface 
   with_items:
       - "{{ lan_list_result.stdout_lines }}"
+
+- name: WiFi enslaving ## lan_list_result ## to Bridge
+  template: src=network/wifi-slave.j2
+            dest=/etc/sysconfig/network-scripts/ifcfg-{{ xsce_wireless_lan_iface }}
+  when: xsce_lan_iface == "br0" and xsce_wireless_lan_iface != "none"
 
 - name: Delete any bridge add interface lines in rc.local
   lineinfile: regexp="^/usr/sbin/brctl.*"
