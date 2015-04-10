@@ -68,6 +68,12 @@
     mysql_service: mysqld
   when: ansible_distribution_release == "based on Fedora 18"
 
+- name: Set kiwix source file name i686
+  set_fact:
+     kiwix_src_file: "kiwix-linux-i686.tar.bz2"
+     kiwix_src_bin_only: False
+  when: ansible_machine == "i686"
+
 - name: Set kiwix source file name x86_64
   set_fact:
      kiwix_src_file: "kiwix-0.9-linux-x86_64.tar.bz2"
