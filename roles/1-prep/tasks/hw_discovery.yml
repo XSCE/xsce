@@ -1,0 +1,13 @@
+##  DISCOVER PLATFORMS ######
+- name: Discover if this is a rpi2 -- if so it has a bcm2709 processor
+  set_fact: 
+     rpi_model: "rpi2"
+  when:  ansible_cmdline["bcm2709.serial"]  is defined
+  ignore_errors: true
+
+- name: Discover if this is one of the XO models
+  set_fact:
+     xo_model: '{{ ansible_local["local_facts"]["xo_model"] }}'
+
+
+- include: hw_rpi2.yml
