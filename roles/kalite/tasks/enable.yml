@@ -9,6 +9,7 @@
            enabled=yes
            state=started           
   when: kalite_enabled  
+- debug: var=kalite_enabled
 
 - name: Disable kalite cron server
   service: name=kalite-cron 
