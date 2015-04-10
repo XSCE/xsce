@@ -136,9 +136,8 @@
             dest=/etc/sysconfig/network-scripts/ifcfg-WAN
   when: 'xsce_wan_iface != "none" and wan_ip != "dhcp"'
 
-- name: Configure LAN interface
-  template: backup=yes
-            src=network/ifcfg.j2
+- name: Configuring LAN interface as {{ xsce_lan_iface }}
+  template: src=network/ifcfg.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-LAN
   when: xsce_lan_iface != "none"
 
