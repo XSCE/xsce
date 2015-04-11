@@ -78,14 +78,12 @@
   set_fact: 
        xsce_wireless_lan_iface: "{{ discovered_wireless_iface }}"
   when: discovered_wireless_iface != "none"
-- debug: var=xsce_wireless_lan_iface
 
 #- name: if only one lan interface, combine wireless and lan
 #  set_fact:
 #    discovered_lan_iface: "{{ discovered_wireless_iface }}"
 #  when: discovered_wireless_iface != "none" and num_lan_interfaces == "1"
 
-- debug: var=xsce_lan_iface
 # use value only if present
 - name: Setting detected lan
   set_fact:
@@ -167,4 +165,3 @@
     value: '{{ xsce_lan_iface }}'
   - option: 'xsce_network_mode'
     value: '{{ xsce_network_mode }}'
-- pause: seconds=10
