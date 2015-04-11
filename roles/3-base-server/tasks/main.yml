@@ -4,10 +4,9 @@
 - name: Restart xsce-cmdsrv service
   service: name=xsce-cmdsrv
            state=restarted
+  when: not installing
 
 - name: Restart httpd
   service: name=httpd
            state=restarted
-
-
-
+  when: not installing

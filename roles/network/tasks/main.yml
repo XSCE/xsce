@@ -167,6 +167,11 @@
   tags:
     - network
 
-- include: services.yml
+- include: enable.yml
+  tags:
+    - network
+
+- include: restart.yml
+  when: not installing  
   tags:
     - network

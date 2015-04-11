@@ -16,6 +16,5 @@
 - name: Enable common services
   service: name={{ item }}
            enabled=yes
-           state=restarted
   with_items:
     - sshd
