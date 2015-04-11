@@ -1,6 +1,8 @@
 Networking
 ==========
 
+THIS DOCUMENT AND THE NETWORKING SECTION OF INSTALL AND OTHER DOCS NEEDS REVISING.
+==================================================================================
 
 The schoolserver community edition has two modes of operation:
 
