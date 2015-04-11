@@ -101,6 +101,10 @@
     - iptables
     - network
 
+- include: enable.yml
+  tags:
+    - network
+
 - name: Create gateway flag
   shell: echo 1 > /etc/sysconfig/olpc-scripts/setup.d/installed/gateway
          creates=/etc/sysconfig/olpc-scripts/setup.d/installed/gateway
@@ -163,15 +167,12 @@
   tags:
     - network
 
-- include: hostapd.yml
-  tags:
-    - network
-
-- include: enable.yml
-  tags:
-    - network
-
 - include: restart.yml
+  when: not installing  
+  tags:
+    - network
+
+- include: hostapd.yml
   when: not installing  
   tags:
     - network
