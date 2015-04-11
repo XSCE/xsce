@@ -42,7 +42,7 @@
 
 # LAN - pick non WAN's
 - name: Create list of  LAN (non wan) ifaces
-  shell: "/sbin/ip link show | grep -v  -e lo -e br0: -e tun -e {{ xsce_wan_iface }}| grep mtu | gawk -F: '{print $2}' "
+  shell: "/sbin/ip link show | grep -v  -e lo -e br0: -e tun -e {{ discovered_wan_iface }}| grep mtu | gawk -F: '{print $2}' "
   register: lan_list_result
   ignore_errors: True
   changed_when: false
