@@ -18,4 +18,4 @@ rpi_model: none
 xo_model: none
 rtc_id: none
 ssid: XSCE
-hostpad_wait: 10
+hostapd_wait: 10
