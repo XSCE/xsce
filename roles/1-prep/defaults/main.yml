@@ -1,0 +1,21 @@
+# These are defaults for routines, these entries should never be changed in this file.
+installing: False
+
+#Set defaults for discovery process
+discovered_wan_iface: "none"
+discovered_lan_iface: "none"
+discovered_wireless_iface: "none"
+xsce_wireless_lan_iface: "none"
+xsce_lan_iface: "none"
+xsce_wan_iface: "none"
+use_bridging: "False"
+
+#Set default for discovered hardware
+wireless_lan_present: False
+driver_name: nl80211
+wifi_id: none
+rpi_model: none
+xo_model: none
+rtc_id: none
+ssid: XSCE
+hostapd_wait: 10

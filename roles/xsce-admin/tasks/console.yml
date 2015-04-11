@@ -68,8 +68,4 @@
         owner=root
         group=root
         mode=0644   
-
-- name: Restart httpd service
-  service: name=httpd
-           state=restarted
                    

@@ -2,8 +2,10 @@
 TYPE=Ethernet
 BOOTPROTO=none
 BRIDGE=br0
+ONBOOT=yes
+NM_CONTROLLED=yes
 
 # needs work but it's a start
-HWADDR={{ hostvars[inventory_hostname]['ansible_' + discovered_lan_iface]['macaddress'] }}
-DEVICE={{ discovered_lan_iface }}
+HWADDR={{ hostvars[inventory_hostname]['ansible_' + item|trim]['macaddress'] }}
+DEVICE={{ item|trim }}
 

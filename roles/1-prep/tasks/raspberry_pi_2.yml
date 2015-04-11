@@ -1,0 +1,18 @@
+# Setup specific to the Raspberry Pi
+#
+- name: Load the modules for the RTC
+  template: dest=/etc/modules-load.d/rtc.conf
+            src=rtc.conf
+
+- name: Instantiate a connection to i2c RTC
+  lineinfile: dest=/etc/rc.d/rc.local
+              line="echo ds1307 0x68 > /sys/class/i2c-adapter/i2c-1/new_device"
+              create=yes
+  when:  rtc_id  == "DS3231" 
+
+- name: Delete instantiation if rtc is removed
+  lineinfile: dest=/etc/rc.d/rc.local
+              regexp="echo ds1307 0x68 > /sys/class/i2c-adapter/i2c-1/new_device"
+              state=absent
+  when:  rtc_id  != "DS3231" 
+

@@ -1,0 +1,60 @@
+- name: Disable dhcpd service
+  service: name=dhcpd
+           enabled=no
+  when: not dhcpd_enabled
+
+# service is restarted with NM dispatcher.d script
+- name: Enable dhcpd service
+  service: name=dhcpd
+           enabled=yes
+  when: dhcpd_enabled
+
+- name: Enable named service
+  service: name=named
+           enabled=yes
+  when: named_enabled
+
+- name: Disable named service
+  service: name=named
+           enabled=no
+  when: not named_enabled
+
+- name: Enable dansguardian
+  service: name=dansguardian
+           enabled=yes
+  when: dansguardian_enabled
+
+- name: Disable dansguardian
+  service: name=dansguardian
+           enabled=no
+  when: not dansguardian_enabled
+
+- name: Create xs_httpcache flag
+  shell: echo 1 > /etc/sysconfig/xs_httpcache_on
+         creates=/etc/sysconfig/xs_httpcache_on
+  when: squid_enabled
+
+- name: Enable squid service
+  service: name=squid
+           enabled=yes
+  when: squid_enabled
+
+- name: Disable squid service
+  service: name=squid
+           enabled=no
+  when: not squid_enabled
+
+- name: Remove xs_httpcache flag
+  file: path=/etc/sysconfig/xs_httpcache_on
+        state=absent
+  when: not squid_enabled
+
+- name: Enable wondershaper service
+  service: name=wondershaper
+           enabled=yes
+  when: wondershaper_enabled
+
+- name: Disable wondershaper service
+  service: name=wondershaper
+           enabled=no
+  when: not wondershaper_enabled

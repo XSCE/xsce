@@ -1,17 +1,3 @@
-- include: prep.yml
+- include: hw_discovery.yml
 - include: computed_vars.yml
 - include: computed_network.yml
-           
-# Put conditional includes for platforms here
-- include: xo.yml
-  when: xo_model != "none"
-  tags:
-    - xo
-
-- include: centos.yml
-  when: ansible_distribution == "CentOS"
-  tags:
-    - centos
-
-- include: selinux.yml
-  when: ansible_selinux["status"] != "disabled"

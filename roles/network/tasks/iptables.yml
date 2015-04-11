@@ -1,7 +1,6 @@
 - name: Disable firewalld service
   service: name=firewalld
            enabled=no
-           state=stopped
 
 - name: Install iptables service package
   yum: name=iptables-services
@@ -22,10 +21,3 @@
     - { src: "gateway/iptables-config" , dest: "/etc/sysconfig/iptables-config" }
     - { src: "gateway/iptables.service" , dest: "/etc/systemd/system/iptables.service" }
     - { src: "gateway/xs-gen-iptables" , dest: "/usr/bin/xs-gen-iptables" }
-
-- name: Run iptables 
-  command: /etc/sysconfig/iptables-config
-
-- name: Enable iptables service 
-  service: name=iptables
-           enabled=yes

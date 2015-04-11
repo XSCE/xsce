@@ -10,5 +10,5 @@
 - name: Update chrony config file
   template: backup=yes
             dest=/etc/chrony.conf
-            src=chrony.conf.j2
+            src=chrony/chrony.conf.j2
 
