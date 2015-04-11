@@ -1,0 +1,21 @@
+##  DISCOVER ADAPTERS   ######
+- name: Detect an i2c rtc if it exists
+  shell: "i2cdetect -y 1 | grep -e 68 -e UU | wc | gawk '{print $1}'"
+  register: rtc_response
+  ignore_errors: yes
+
+- name: Record whether rtc hardware was detected
+  set_fact:
+     rtc_id: "DS3231"
+  when:  rtc_response.stdout > "0"
+
+- name: Check of the identifier for tplink725 is present
+  shell: "lsusb | grep 0bda:8179 | wc |gawk '{print $1}'"
+  register: usb_response
+  ignore_errors: true
+
+- name: Use compiled hostapd, and wpa_supplicant if tplink WM725M
+  set_fact:
+     wifi_id: tplink_WM725M
+     driver_name: rtl871xdrv
+  when:  usb_response.stdout|int > 0

@@ -1,2 +1,3 @@
+- include: hw_discovery.yml
 - include: computed_vars.yml
 - include: computed_network.yml
