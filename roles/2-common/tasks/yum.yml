@@ -33,6 +33,7 @@
   yum: name={{ item }}
        state=latest
   with_items:
+   - NetworkManager
    - bash
    - iptables
    - vim-minimal # ejabberd erlang does not update this properly
