@@ -120,8 +120,9 @@
            state=stopped
   ignore_errors: yes
 
-- name: Now get them out of the way
+- name: Now delete all non-gateway ifcfg files
   shell: "rm -f {{ item }} "
+  when: item|trim != discovered_wan_iface
   with_items:
     - "{{ ifcfg_files.stdout_lines }}"
 
