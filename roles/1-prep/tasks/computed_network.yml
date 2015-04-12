@@ -1,7 +1,7 @@
 # DETECT -- gateway and wireless
 - name: Get a list of slaves from previous config
-  shell: "egrep -rn BRIDGE=br0 /etc/sysconfig/network-scripts | gawk -F'[-:]' '{print $3}'" 
-  register: ifcfg_slaves 
+  shell: "egrep -rn BRIDGE=br0 /etc/sysconfig/network-scripts | gawk -F'[-:]' '{print $3}'"
+  register: ifcfg_slaves
   ignore_errors: True
   changed_when: False
 
@@ -48,6 +48,7 @@
   changed_when: false
 
 # Select an adapter that is not WAN and not wireless
+# if there is more than one the last one wins
 - name: Set xsce discovered lan fact
   set_fact:
     discovered_lan_iface: "{{ item|trim }}"
@@ -63,7 +64,7 @@
 
 # facts are apparently all stored as text, so do text comparisons from here on
 - name: create a simple variable from a compound one
-  set_fact: 
+  set_fact:
       num_lan_interfaces: "{{ num_lan_interfaces_result.stdout|int }}"
 
 # If 2 interfaces found in gateway mode, with one wifi, declare other to be wan
@@ -75,7 +76,7 @@
 #  when: xsce_lan_enabled and xsce_wan_enabled and num_lan_interfaces == "2" and discovered_wireless_iface != "none" and xsce_wan_iface == "none"
 
 - name: Set the variable for wireless_iface if present
-  set_fact: 
+  set_fact:
        xsce_wireless_lan_iface: "{{ discovered_wireless_iface }}"
   when: discovered_wireless_iface != "none"
 
