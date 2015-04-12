@@ -24,6 +24,8 @@
    - i2c-tools
    - bridge-utils
    - usbutils
+   - hostapd
+   - wpa_supplicant
   tags:
     - download
 
