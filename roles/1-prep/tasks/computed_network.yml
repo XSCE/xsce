@@ -1,7 +1,7 @@
 # DETECT -- gateway and wireless
 - name: Get a list of slaves from previous config
-  shell: "egrep -rn BRIDGE=br0 /etc/sysconfig/network-scripts | gawk -F'[-:]' '{print $3}'" 
-  register: ifcfg_slaves 
+  shell: "egrep -rn BRIDGE=br0 /etc/sysconfig/network-scripts | gawk -F'[-:]' '{print $3}'"
+  register: ifcfg_slaves
   ignore_errors: True
   changed_when: False
 
@@ -63,7 +63,7 @@
 
 # facts are apparently all stored as text, so do text comparisons from here on
 - name: create a simple variable from a compound one
-  set_fact: 
+  set_fact:
       num_lan_interfaces: "{{ num_lan_interfaces_result.stdout|int }}"
 
 # If 2 interfaces found in gateway mode, with one wifi, declare other to be wan
@@ -75,7 +75,7 @@
 #  when: xsce_lan_enabled and xsce_wan_enabled and num_lan_interfaces == "2" and discovered_wireless_iface != "none" and xsce_wan_iface == "none"
 
 - name: Set the variable for wireless_iface if present
-  set_fact: 
+  set_fact:
        xsce_wireless_lan_iface: "{{ discovered_wireless_iface }}"
   when: discovered_wireless_iface != "none"
 
@@ -134,6 +134,16 @@
     dhcpd_enabled: True
     xsce_network_mode: "Gateway"
   when: 'xsce_lan_iface != "none" and xsce_wan_iface != "none"'
+
+- name: Set port 80 for Admin Console
+  set_fact:
+    gui_port: 80
+  when: not adm_cons_force_ssl
+
+- name: Set port 443 for Admin Console
+  set_fact:
+    gui_port: 443
+  when: adm_cons_force_ssl
 
 - name: Add location section to config file
   ini_file: dest='{{ xsce_config_file }}'
