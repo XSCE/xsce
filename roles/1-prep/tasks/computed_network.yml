@@ -80,16 +80,16 @@
        xsce_wireless_lan_iface: "{{ discovered_wireless_iface }}"
   when: discovered_wireless_iface != "none"
 
-#- name: if only one lan interface, combine wireless and lan
-#  set_fact:
-#    discovered_lan_iface: "{{ discovered_wireless_iface }}"
-#  when: discovered_wireless_iface != "none" and num_lan_interfaces == "1"
-
 # use value only if present
 - name: Setting detected lan
   set_fact:
     xsce_lan_iface: "{{ discovered_lan_iface }}"
   when: 'discovered_lan_iface != "none"'
+
+- name: if only wireless lan and no wired lan - WiFi is the LAN
+  set_fact:
+    xsce_lan_iface: "{{ discovered_wireless_iface }}"
+  when: discovered_wireless_iface != "none" and num_lan_interfaces == "1"
 
 # user disabled interface - overriding the default of auto
 - name: Checking xsce_lan_enabled
