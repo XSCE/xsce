@@ -11,14 +11,14 @@
     discovered_wan_iface: "{{ ansible_default_ipv4.alias }}"
   when: 'ansible_default_ipv4.gateway is defined'
 
-# WIRELESS -- if wireless is detected as gateway, it becomes WAN candidate
-- name: Look for any wireless interfaces -- pick first one if more than one exists
-  shell: "cat /proc/net/wireless | grep -v -e Inter -e face | gawk -F: '{print $1}' | head -n1"
-  register: wireless_list
-  ignore_errors: True
-  changed_when: False
 
-# maybe never TODO: deal with more that one wireless device
+# WIRELESS -- if any wireless is detected as gateway, it becomes WAN
+- name: Look for any wireless interfaces
+  register: wireless_list
+  shell: "ls -la /sys/class/net/*/phy80211 | awk -F / '{print $5}'"
+  ignore_errors: True
+ 
+# maybe never TODO: deal with more that one wireless device last match wins
 - name: Set the discovered wireless, if found
   set_fact:
      discovered_wireless_iface: "{{ wireless_list.stdout|trim }}"
