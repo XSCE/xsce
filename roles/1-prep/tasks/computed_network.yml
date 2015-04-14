@@ -86,10 +86,10 @@
     xsce_lan_iface: "{{ discovered_lan_iface }}"
   when: 'discovered_lan_iface != "none"'
 
-- name: if only wireless lan and no wired lan - WiFi is the LAN
+- name: WiFi is on the LAN - use bridging
   set_fact:
-    xsce_lan_iface: "{{ discovered_wireless_iface }}"
-  when: discovered_wireless_iface != "none" and num_lan_interfaces == "1"
+    xsce_lan_iface: br0
+  when: xsce_wireless_lan_iface != "none"
 
 # user disabled interface - overriding the default of auto
 - name: Checking xsce_lan_enabled
