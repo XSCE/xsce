@@ -23,3 +23,24 @@
   when: not kalite_installed.stat.exists == True
 
 - include: enable.yml
+
+- name: Add kalite to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=kalite
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: kalite
+    - option: description
+      value: '"KA-Lite is a server to present Khan Academy videos offline and to download them."'
+    - option: path
+      value: "{{ kalite_root }}"
+    - option: server_name
+      value: "{{ kalite_server_name }}"
+    - option: port
+      value: "{{ kalite_server_port }}"
+    - option: enabled
+      value: "{{ kalite_enabled }}"
+    - option: cron_enabled
+      value: "{{ kalite_cron_enabled }}"
