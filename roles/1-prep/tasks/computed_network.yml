@@ -16,7 +16,7 @@
   register: wireless_list
   shell: "ls -la /sys/class/net/*/phy80211 | awk -F / '{print $5}'"
   ignore_errors: True
- 
+
 # maybe never TODO: deal with more that one wireless device last match wins
 - name: Set the discovered wireless, if found
   set_fact:
@@ -41,7 +41,7 @@
 
 # LAN - pick non WAN's
 - name: Create list of  LAN (non wan) ifaces
-  shell: "/sbin/ip link show | grep -v  -e lo -e br0: -e tun -e {{ discovered_wan_iface }}| grep mtu | gawk -F: '{print $2}' "
+  shell: "/sbin/ip link show | grep -v -e wwlan -e ppp -e lo -e br0: -e tun -e {{ discovered_wan_iface }}| grep mtu | gawk -F: '{print $2}' "
   register: lan_list_result
   ignore_errors: True
   changed_when: false
