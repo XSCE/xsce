@@ -11,14 +11,13 @@
     discovered_wan_iface: "{{ ansible_default_ipv4.alias }}"
   when: 'ansible_default_ipv4.gateway is defined'
 
-# WIRELESS -- if wireless is detected as gateway, it becomes WAN candidate
-- name: Look for any wireless interfaces -- pick first one if more than one exists
-  shell: "cat /proc/net/wireless | grep -v -e Inter -e face | gawk -F: '{print $1}' | head -n1"
+# WIRELESS -- if any wireless is detected as gateway, it becomes WAN
+- name: Look for any wireless interfaces
   register: wireless_list
+  shell: "ls -la /sys/class/net/*/phy80211 | awk -F / '{print $5}'"
   ignore_errors: True
-  changed_when: False
 
-# maybe never TODO: deal with more that one wireless device
+# maybe never TODO: deal with more that one wireless device last match wins
 - name: Set the discovered wireless, if found
   set_fact:
      discovered_wireless_iface: "{{ wireless_list.stdout|trim }}"
@@ -42,12 +41,13 @@
 
 # LAN - pick non WAN's
 - name: Create list of  LAN (non wan) ifaces
-  shell: "/sbin/ip link show | grep -v  -e lo -e br0: -e tun -e {{ xsce_wan_iface }}| grep mtu | gawk -F: '{print $2}' "
+  shell: "/sbin/ip link show | grep -v -e wwlan -e ppp -e lo -e br0: -e tun -e {{ discovered_wan_iface }}| grep mtu | gawk -F: '{print $2}' "
   register: lan_list_result
   ignore_errors: True
   changed_when: false
 
 # Select an adapter that is not WAN and not wireless
+# if there is more than one the last one wins
 - name: Set xsce discovered lan fact
   set_fact:
     discovered_lan_iface: "{{ item|trim }}"
@@ -79,16 +79,21 @@
        xsce_wireless_lan_iface: "{{ discovered_wireless_iface }}"
   when: discovered_wireless_iface != "none"
 
-#- name: if only one lan interface, combine wireless and lan
-#  set_fact:
-#    discovered_lan_iface: "{{ discovered_wireless_iface }}"
-#  when: discovered_wireless_iface != "none" and num_lan_interfaces == "1"
-
 # use value only if present
 - name: Setting detected lan
   set_fact:
     xsce_lan_iface: "{{ discovered_lan_iface }}"
-  when: 'discovered_lan_iface != "none"'
+  when: 'discovered_lan_iface != "none" and num_lan_interfaces == "1"'
+
+- name: 2 devices on the LAN - use bridging
+   set_fact:
+     xsce_lan_iface: br0
+  when: 'discovered_lan_iface != "none" and num_lan_interfaces == "2"'
+
+- name: WiFi is on the LAN - use bridging
+  set_fact:
+    xsce_lan_iface: br0
+  when: xsce_wireless_lan_iface != "none"
 
 # user disabled interface - overriding the default of auto
 - name: Checking xsce_lan_enabled

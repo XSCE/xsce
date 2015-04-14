@@ -1,13 +1,3 @@
-- name: Install the standard hostapd if possible
-  yum:  name={{ item }}
-        state=present
-  with_items:
-       - hostapd
-       - wpa_supplicant
-  when: not {{ use_cache }} and not {{ no_network }}
-  tags:
-    - download
-
 - name: Download substitute software
   get_url: url="{{ xsce_download_url }}/{{ item }}"  dest={{ downloads_dir}}/{{ item }}
   with_items:

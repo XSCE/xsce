@@ -1,12 +1,3 @@
-# This is a dog's breakfast, but with ansible 1.6.3 service: name=NetworkManager state=restarted doesn't work
-- name: Update NM packages
-  yum: name={{ item }}
-       state=latest
-  with_items:
-   - NetworkManager
-  tags:
-    - download
-
 - name: restart NetworkManager services
   service: name=NetworkManager
            enabled=yes
