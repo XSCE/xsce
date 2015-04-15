@@ -27,9 +27,8 @@
 				<div class="xsce-top-nav"> <!-- Top Level Nav-->
 					<ul class="nav nav-tabs">
 						<li class="active"><a href="#Configure">Configure</a></li>
-						<li><a href="#Future">Install Content</a></li>
-						<li><a href="#Future">Assemble Content</a></li>
-						<!--  <li><a href="#Tools">Tools</a></li> -->
+						<li><a href="#InstallContent">Install Content</a></li>
+						<!--  <li><a href="#Future">Assemble Content</a></li> -->
 						<li><a href="#Util" call-after="getJobStat">Utilities</a></li>
 						<!--  <li><a href="#Test">Tests</a></li> -->
 					</ul>
@@ -64,27 +63,53 @@
 										<div class="tab-pane active" id="confNetwork"> <!-- Start Configure Network Pane -->
 											<h2>Network Parameters</h2>
 											<!-- <p></p> -->
-											<form role="form" id="confNetworkForm">
+											<form role="form" class="form-horizontal" id="confNetworkForm">
 												<div class="form-group">
-													<label for="xsce_hostname">Host Name (can't be changed)</label>
-													<input type="text"  name="xsce_hostname" class="form-control" id="xsce_hostname" readonly>
-												</div>
-												<div class="form-group">
-													<label for="xsce_domain">Domain Name (no inital dot)</label>
-													<input type="text" name="xsce_domain" class="form-control" id="xsce_domain" onchange="return xsce_domainVal()" placeholder="Enter new domain name without leading dot.">
-												</div>
-												<h3>Internet Gateway</h3>
+													<div class="col-sm-3"><label>Host Name (can't be changed)</label><input type="text" class="form-control" name="xsce_hostname" id="xsce_hostname" readonly></div>
+													<div class="col-sm-3"><label>Domain Name (no inital dot)</label><input type="text" class="form-control" name="xsce_domain" id="xsce_domain" onchange="return xsce_domainVal()"></div>
+											  </div>
+												<h3>Server's Role in the Network</h3>
+												<div class="radio">
+                          <label><input type="radio" name="gui_desired_network_role" id="gui_desired_network_role-Gateway" value="Gateway">Gateway - You need two or more network adapters, one of which must be connected to the Internet or a larger Network (WAN).</label>
+                        </div>
+                        <div class="radio">
+                          <label><input type="radio" name="gui_desired_network_role" id="gui_desired_network_role-Appliance" value="Appliance">Appliance - You only need one network adapter, which must be connected to the Internet or a larger Network (WAN).</label>
+                        </div>
+                        <div class="radio">
+                          <label><input type="radio" name="gui_desired_network_role" id="gui_desired_network_role-LanController" value="LanController">Lan Controller - You only need one network adapter. It is probably part of a standalone Network (LAN).</label>
+                        </div>
+												<h3>Network Discovered</h3>
+													<div id="discoveredNetwork">
+														Gateway Found<BR>
+														WAN Device p2p1<BR>
+														LAN Device p7p1<BR>
+															**** HARD CODED FOR TESTING ***
+													</div>
+												<h3>Override IP Addresses</h3>
 												<div class="checkbox">
-													<label>
-														<input type="checkbox" name="xsce_gateway_enabled" id="xsce_gateway_enabled">Check if the Server should act as a Gateway to the Internet (requires two network adapters)
-													</label>
+												  <label><input type="checkbox" name="gui_static_wan" id="gui_static_wan" >Check to use a static WAN IP Address instead of DHCP</label>
 												</div>
-												<h3>Override IP Addresses - Future</h3>
+												<p><b>Please Note:</b> This parameter only takes effect when you have checked the box above and have the necessary Network Adapters.</p>
+												<div class="form-group">
+													<label class="col-sm-12">Static Wan IP Address</label>
+                          <div class="col-sm-3"><input type="text" class="form-control" name="gui_wan_ip_msd" id="gui_wan_ip_msd" readonly>First Three Digits (can't be changed)</div>
+                          <div class="col-sm-3"><input type="text" class="form-control" name="gui_static_wan_ip_lsd" id="gui_static_wan_ip_lsd" onclick="return gui_static_wan_ip_lsdVal()">Last Digit (no dot)</div>
+                        </div>
+                        <h3>Internet Access for Installations</h3>
+                        <p><b>Please Note:</b> These parameters will only be rarely changed.</p>
+												<div class="checkbox">
+												  <label><input type="checkbox" name="use_cache" id="use_cache" >Check to force cache use even when online</label>
+												</div>
+												<h3>Admin Console Security</h3>
+                        <p><b>Please Note:</b> This program is password protected, so this only needs to be changed if you are worried that there could be people listening on your network.</p>
+												<div class="checkbox">
+												  <label><input type="checkbox" name="adm_cons_force_ssl" id="adm_cons_force_ssl" >Check to force https (ssl) access to this program.</label>
+												</div>
 											</form>
 										</div> <!--  network pane -->
 										<div class="tab-pane" id="confNetFilter"> <!-- Start Configure Network Filter Pane -->
 											<h2>Internet Caching/Filtering</h2>
-											<p><b>Please Note:</b> These parameters only take effect when you have Checked Server should act as a Gateway to the Internet the previous screen.</p>
+											<p><b>Please Note:</b> These parameters only take effect when you have selected the Gateway Role on the previous screen and have the necessary Network Adapters.</p>
 											<form role="form" id="confNetFilterForm">
 												<div class="checkbox">
 													<label>
@@ -140,6 +165,21 @@
 												<div class="checkbox">
 													<label>
 														<input type="checkbox" name="samba_enabled" id="samba_enabled">SAMBA provides Network File Sharing
+													</label>
+												</div>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="kiwix-serve_enabled" id="kiwix-serve_enabled">Kiwix, serves Wikipediae and other content from sources below.  You must also install content.
+													</label>
+												</div>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="kalite_enabled" id="kalite_enabled">Khan Academy Lite, downloads and serves Khan Academy videos.  You must also install content.
+													</label>
+												</div>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="kalite_cron_enabled" id="kalite_cron_enabled">Khan Academy Downloader, downloads Khan Academy videos.  You can turn this off if you don't plan to download videos.
 													</label>
 												</div>
 												<div class="checkbox">
@@ -209,7 +249,62 @@
 							</div> <!-- row -->
 						</div> <!-- tabbable -->
 					</div> <!-- Configure -->
-					<div class="tab-pane" id="Future"> <!-- Start XXX Top Level Pane -->
+					<div class="tab-pane" id="InstallContent"> <!-- Start InstallContent Top Level Pane -->
+						<div class="row-fluid"> <!-- InstallContent Top Level Header -->
+							<div class="col-md-9 col-md-offset-3">
+								<h1>Install School Server Content</h1>
+							</div>
+						</div> <!-- row-fluid -->
+						<div class="tabbable"> <!-- Start InstallContent Sublevel Menu Items and Options -->
+							<div class="row-fluid"> <!-- Start containing row -->
+								<div class="col-md-3 xsce-left-nav"> <!-- Start left column -->
+									<h2>Installation Tasks</h2>
+									<ul class="nav nav-pills nav-stacked"> <!-- Start XXX Sub Level Menu -->
+										<li class="active"><a href="#instConStart">Get Started</a></li>
+										<li><a href="#instConZims">Get Zim Files from Kiwix</a></li>
+										<li><a href="#instConKAlite">Download Khan Academy Videos</a></li>
+										<!-- <li><a href="#">Services Enabled</a></li> -->
+									</ul> <!-- End XXX Sub Level Menu -->
+									<h2>Actions</h2>
+									<div class="action-buttons">
+									  <button id="ZIM-STATUS-REFRESH" type="button" class="btn btn-lg btn-success">Refresh Zims Installed List </button>
+									  <button id="RESTART-KIWIX" type="button" class="btn btn-lg btn-success">Restart the Kiwix Zim Server</button>
+									  <button id="KIWIX-LIB-REFRESH" type="button" class="btn btn-lg btn-success">Refresh Kiwix Catalog</button>
+									</div>
+								</div> <!-- left column -->
+								<div class="col-md-9"> <!-- Start right column -->
+									<div class="tab-content"> <!-- Start Container for Sub Menu Options Panes -->
+										<div class="tab-pane active" id="instConStart"> <!-- Start instConStart Submenu Option Pane -->
+											<h2>Get Started</h2>
+											<p>Planned but not yet implemented</p>
+											<ul>
+										    <li>Search for media-based content such as RACHEL or IIAB on removable media to permit install</li>
+										    <li>Ability to set removable storage as working disk for downloads</li>
+										    <li>Flag to permit downloads of content, default false and must be set for each session.</li>
+									    </ul>
+										</div> <!--  End instConStart Submenu Option Pane -->
+										<div class="tab-pane" id="instConZims"> <!-- Start instConZims Submenu Option Pane -->
+											<h2>Install Kiwix Zim Files</h2>
+											<p>Kiwix has a large number of files containing compressed content which you can select by language.</p>
+											<div class="row">
+  											<div class="col-sm-2"><button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#selectLangCodes">Select Languages</button></div>
+  											<div class="col-sm-4"><span id="instZimsDiskSpace" >Disk Space: </span></div>
+  											<div class="col-sm-2"><button id="INST-ZIMS" type="button" class="btn btn-lg btn-primary">Install Selected Zims</button></div>
+										  </div>
+											<div id="ZimDownload" >  </div>
+										</div> <!--  End instConZims Submenu Option Pane -->
+										<div class="tab-pane" id="instConKAlite"> <!-- Start instConStart Submenu Option Pane -->
+											<h2>Download Khan Academy Videos</h2>
+											<p>Khan Academ Lite has the ability to download selected portions of the available videos in several different languages.</p>
+											<p>Click the Button below to launch it.</p>
+											<button id="launchKaliteButton" type="button" class="btn btn-lg btn-success">Launch KA Lite</button>
+										</div> <!--  End instConKAlite Submenu Option Pane -->
+									</div> <!-- End Container for Sub Menu Options Panes -->
+								</div> <!-- right column -->
+							</div> <!-- End containing row -->
+						</div> <!-- End XXX Sublevel Menu Items and Options -->
+					</div> <!-- End XXX Top Level Pane -->
+					<div class="tab-pane" id="Future"> <!-- Start Assemble Content Top Level Pane -->
 						<div class="row-fluid"> <!-- XXX Top Level Header -->
 							<div class="col-md-9 col-md-offset-3">
 								<h1>Future School Server Console Option</h1>
@@ -249,36 +344,36 @@
 									<ul class="nav nav-pills nav-stacked"> <!-- Start Status Sub Level Menu -->
 										<li class="active"><a href="#utilJobs" call-after="getJobStat">Display Job Status</a></li>
 										<li><a href="#utilsAnsible">Display Ansible Facts</a></li>
+										<li><a href="#utilsXsceIni">Display XSCE.INI File</a></li>
 										<li><a href="#utilsMemory" call-after="getSysMem">Display System Memory</a></li>
 										<li><a href="#utilsStorage" call-after="getSysStorage">Display System Storage</a></li>
+										<li><a href="#utilsSpeedTest">Perform Internet Speed Test</a></li>
 										<li><a href="#utilsAnsTags">Run Ansible by Tag</a></li>
 									</ul> <!-- End Status Sub Level Menu -->
 									<h2>Actions</h2>
 									<div class="action-buttons">
-									<button id="REBOOT" type="button" class="btn btn-lg btn-danger">REBOOT Server</button>									
+									<button id="REBOOT" type="button" class="btn btn-lg btn-danger">REBOOT Server</button>
 									</div>
 								</div> <!-- left column -->
 								<div class="col-md-9"> <!-- Start right column -->
 									<div class="tab-content"> <!-- Start Container for Sub Menu Options Panes -->
 										<div class="tab-pane active" id="utilJobs"> <!-- Start Status statusJobs Submenu Option Pane -->
 											<h2>Job Status</h2><br>
-											<button id="JOB-STATUS-REFRESH" type="button" class="btn btn-lg btn-primary">Refresh Status</button>
-											<span id="statusJobsRefreshTime" >Last Refreshed: </span>
+											<div class="row-fluid">
+  											<div class="col-sm-2"><button id="CANCEL-JOBS" type="button" class="btn btn-lg btn-primary">Cancel Checked Jobs</button></div>
+  											<div class="col-sm-5"><span id="statusJobsRefreshTime" >Last Refreshed: </span></div>
+  											<div class="col-sm-2"><button id="JOB-STATUS-REFRESH" type="button" class="btn btn-lg btn-primary">Refresh Status</button></div>
+										  </div>
 											<p></p>
 											<div id=jobStatTable> <!--  Start jobStatTable -->
-												<table class="table table-striped table-bordered">
-													<col width="10%">
-													<col width="30%">
-													<col width="40%">
-													<col width="10%">
-													<col width="10%">
+												<table class="jobTable table-striped table-bordered">
 													<thead>
 														<tr>
-															<th>#</th>
-															<th>Command</th>
-															<th>Result</th>
-															<th>Status</th>
-															<th>As Of</th>
+															<th style="width:10%">#</th>
+															<th style="width:30%">Command</th>
+															<th style="width:40%">Result</th>
+															<th style="width:10%">Status</th>
+															<th style="width:10%">As Of</th>
 														</tr>
 													</thead>
 													<tbody>
@@ -292,6 +387,11 @@
 											<div id=ansibleFacts>
 											</div>
 										</div> <!--  End statusAnsible pane -->
+										<div class="tab-pane" id="utilsXsceIni"> <!-- Start statusAnsible Pane -->
+											<h2>XSCE.INI file</h2>
+											<div id=xsceIni>
+											</div>
+										</div> <!--  End statusAnsible pane -->
 										<div class="tab-pane" id="utilsMemory"> <!-- Start statusAnsible Pane -->
 											<h2>System Memory</h2>
 											<pre><div id="sysMemory">
@@ -302,8 +402,27 @@
 											<pre><div id=sysStorage>
 											</div></pre>
 										</div> <!--  End utilsStorage pane -->
+										<div class="tab-pane" id="utilsSpeedTest"> <!-- Start utilsSpeedTest Pane -->
+											<h2>Internet Speed Test</h2>
+											<p><b>WARNING:</b> The first test retrieves a 10M data file.  The second is more than 100M.  If you have a mobile internet connection this could be costly.</p>
+											<p>If you have a mobile internet connection this could be <b>costly</b>.</p>
+											<div class="row">
+												<div class="col-sm-6">
+													<button id="GET-INET-SPEED" type="button" class="btn btn-lg btn-primary pane-buttons">Run 10M Speed Test</button>
+													<div id="intSpeed1">
+														No Test Results<BR>
+													</div>
+                        </div>
+                        <div class="col-sm-6">
+                        	<button id="GET-INET-SPEED2" type="button" class="btn btn-lg btn-primary pane-buttons">Run 100M+ Speed Test</button>
+                        	<div id="intSpeed2">
+                        		No Test Results<BR>
+													</div>
+                        </div>
+											</div> <!--  End row -->
+										</div> <!--  End utilsSpeedTest pane -->
 										<div class="tab-pane" id="utilsAnsTags"> <!-- Start utilsAnsTags Pane -->
-											<h2>Ansible Tags</h2>											
+											<h2>Ansible Tags</h2>
 												<form role="form" id="ansibleTagsForm">
 													<div id="ansibleTags">
 													</div>
@@ -326,6 +445,40 @@
 					</div> <!-- Test -->
 				</div> <!-- End Top Level Content -->
 			</div> <!-- End Top Level tabbable boxed parentTabs -->
+			<!-- Modal Pages go Here -->
+			<div id="tbdModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                    <h4>Header</h4>
+                </div>
+                <div class="modal-body">
+                    Modal Content
+                </div>
+            </div>
+        </div>
+      </div>
+      <!-- Select LangCodes Modal -->
+      <div class="modal fade modal-wide" id="selectLangCodes" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button id="selectLangButton2" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">Select Languages</h4>
+            </div>
+            <div class="modal-body">
+              <div id="ZimLanguages" class="lang-list">  </div>
+              <button id="moreLangButton" type="button" class="btn btn-primary">More Languages</button>
+              <div id="ZimLanguages2" class="lang-list">  </div>
+            </div>
+            <div class="modal-footer">
+              <button id="selectLangButton" type="button" class="btn btn-primary">Show Content</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Select LangCodes Modal -->
 		</div> <!-- End Outermost Container -->
 		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 		<script src="js/jquery.min.js"></script>
@@ -334,11 +487,33 @@
 
 		<script type="text/javascript">
 
+			var xsceContrDir = "/etc/xsce/";
+			var consoleJsonDir = "assets/";
 			var ansibleFacts = {};
 			var ansibleTagsStr = "";
 			var effective_vars = {};
 			var config_vars = {};
-			var job_status = {}
+			var xsce_ini = {};
+			var job_status = {};
+			var langCodes = {}; // iso code, local name and English name for all languages we support, read from file
+			var zimCatalog = {}; // working composite catalog of kiwix, installed, and wip zims
+			var zimLangs = {}; // working list of iso codes in zimCatalog
+			var zimGroups = {}; // zim ids grouped by language and category
+			var kiwixCatalog = {}; // catalog of kiwix zims, read from file downloaded from kiwix.org
+			var installedZimCat = {}; // catalog of installed, and wip zims
+
+			var zimsInstalled = []; // list of zims already installed
+			var zimsScheduled = []; // list of zims being installed (wip)
+
+			var langNames = []; // iso code, local name and English name for languages for which we have zims sorted by English name for language
+			var topNames = ["ara","eng","spa","fra","hin","por"]; // languages for top language menu
+			var defaultLang = "eng";
+			var langGroups = {"en":"eng"}; // language codes to treat as a single code
+			var selectedLangs = []; // languages selected by gui for display of content
+			var selectedZims = [];
+			var sysStorage = {};
+			sysStorage.zims_selected_size = 0;
+
 
 			// Set up nav
 
@@ -386,14 +561,14 @@
 					setWhitelist();
 					button_feedback("#SAVE-WHITELIST", false);
 				});
-				
+
 				$("#RUN-ANSIBLE").click(function(){
 					button_feedback("#RUN-ANSIBLE", true);
 					runAnsible("ALL-TAGS");
 					//runAnsible("addons");
 					button_feedback("#RUN-ANSIBLE", false);
 				});
-				
+
 				$("#RUN-TAGS").click(function(){
 					button_feedback("#RUN-TAGS", true);
 					tagList = "";
@@ -401,7 +576,7 @@
 						if (this.type == "checkbox") {
 							if (this.checked)
 							  tagList += this.name + ',';
-						}	
+						}
 						});
 					if (tagList.length > 0)
 					  tagList = tagList.substring(0, tagList.length - 1);
@@ -414,21 +589,101 @@
 					sendCmdSrvCmd("STOP", genericCmdHandler);
 				});
 
+				// Install Content Buttons
+
+				$("#selectLangButton").click(function(){
+				  procZimGroups();
+					$('#selectLangCodes').modal('hide');
+					$('#ZimLanguages2').hide();
+					procZimLangs(); // make top menu reflect selections
+			  });
+
+			  $("#selectLangButton2").click(function(){
+				  procZimGroups();
+					$('#selectLangCodes').modal('hide');
+					$('#ZimLanguages2').hide();
+					procZimLangs(); // make top menu reflect selections
+			  });
+
+		    $("#moreLangButton").click(function(){
+					$('#ZimLanguages2').show();
+			  });
+
+			  $("#INST-ZIMS").click(function(){
+			  	var zim_id;
+					button_feedback("#INST-ZIMS", true);
+
+					$('#ZimDownload input').each( function(){
+						if (this.type == "checkbox")
+							if (this.checked){
+								zim_id = this.name;
+								if (zimsInstalled.indexOf(zim_id) == -1 && zimsScheduled.indexOf(zim_id) == -1)
+							    instZim(zim_id);
+							}
+				  });
+					button_feedback("#INST-ZIMS", false);
+					procZimGrous();
+				});
+
+				$("#launchKaliteButton").click(function(){
+					var url = "http://" + window.location.host + ":8008";
+					//consoleLog(url);
+				 	window.open(url);
+			  });
+
+				$("#ZIM-STATUS-REFRESH").click(function(){
+					refreshDiskSpace();
+				});
+
+			  $("#RESTART-KIWIX").click(function(){
+					restartKiwix();
+				});
+
+				$("#KIWIX-LIB-REFRESH").click(function(){
+					getKiwixCatalog();
+				});
+
 				// Util Buttons
 
 				$("#JOB-STATUS-REFRESH").click(function(){
 					getJobStat();
 				});
-				
-					$("#REBOOT").click(function(){
+
+				$("#CANCEL-JOBS").click(function(){
+					button_feedback("#CANCEL-JOBS", true);
+					$('#jobStatTable input').each( function(){
+						if (this.type == "checkbox")
+							if (this.checked){
+							  job_idArr = this.id.split('-');
+							  job_id = job_idArr[1];
+							  cancelJob(job_id);
+							}
+				  });
+					button_feedback("#CANCEL-JOBS", false);
+				});
+
+				$("#GET-INET-SPEED").click(function(){
+					getInetSpeed();
+				});
+
+				$("#GET-INET-SPEED2").click(function(){
+					getInetSpeed2();
+				});
+
+				$("#REBOOT").click(function(){
 					rebootServer();
+				});
+
+				// Other Objects
+				$("#gui_static_wan").change(function(){
+					gui_static_wanVal();
 				});
 
         function button_feedback(id,turn_on) {
         	if (turn_on)
         	  $(id).css({opacity:".5"});
         	else
-        	  $(id).css({opacity:"1"});	
+        	  $(id).css({opacity:"1"});
 	      }
 				// Field Validations
 
@@ -457,6 +712,46 @@
 					}
 
 					return true;
+				}
+
+				function gui_static_wanVal()
+				{
+					alert ("in gui_static_wanVal");
+					// if static wan is checked make sure visit ip addr field
+					if ($("#gui_static_wan").prop('checked')){
+						setTimeout(function () {
+							$("#gui_static_wan_ip_lsd").focus(); // hack for IE
+						}, 100);
+					}
+        }
+
+        function gui_static_wan_ip_lsdVal()
+				{
+					//alert ("in gui_static_wan_ip_lsdVal");
+					gui_static_wan_ip_lsd = $("#gui_static_wan_ip_lsd").val();
+					consoleLog(gui_static_wan_ip_lsd);
+					rc = false;
+					if ($("#gui_static_wan").prop('checked')){
+					  if (gui_static_wan_ip_lsd == ""){
+						  alert ("Static IP Address can not be blank if use a static WAN IP Address is checked.");
+						}
+						else if (isNaN(gui_static_wan_ip_lsd)){
+							alert ("Static IP Address must be a number.");
+						}
+						else if (parseInt(gui_static_wan_ip_lsd) < 2 || parseInt(gui_static_wan_ip_lsd) > 250){
+							alert ("Static IP Address must be greater than 2 and less than 250.");
+						}
+						else
+							rc = true;
+					}
+					if (rc == false){
+						setTimeout(function () {
+							$("#gui_static_wan_ip_lsd").focus(); // hack for IE
+						}, 100);
+						return false;
+					}
+					else
+						return true;
 				}
 
 				//var testCmdHandler = function (data, textStatus, jqXHR) is not necessary
@@ -489,27 +784,27 @@
 					//alert ("in getAnsibleFacts");
 					consoleLog(data);
 					ansibleFacts = data;
-					jstr = JSON.stringify(ansibleFacts, undefined, 2);
-					html = jstr.replace(/\n/g, "<br>").replace(/[ ]/g, "&nbsp;");
+					var jstr = JSON.stringify(ansibleFacts, undefined, 2);
+					var html = jstr.replace(/\n/g, "<br>").replace(/[ ]/g, "&nbsp;");
 					$( "#ansibleFacts" ).html(html);
 					//consoleLog(jqXHR);
 					return true;
 				}
-				
+
 				function getAnsibleTags (data)
 				{
 					//alert ("in getAnsibleTags");
 					consoleLog(data);
 					ansibleTagsStr = data['ansible_tags'];
           ansibleTagsArr = ansibleTagsStr.split(',');
-          html = '<table width="80%"><tr>';
+          var html = '<table width="80%"><tr>';
           j = 0;
-          for (i in ansibleTagsArr){
+          for (var i in ansibleTagsArr){
           	html += '<td width="20%"><label><input type="checkbox" name="' + ansibleTagsArr[i] + '">' + ansibleTagsArr[i] + '</label></td>';
           	if (j++ == 4){
           		  html += '</tr><tr>';
           		  j = 0;
-          		}        	
+          		}
           }
           html += "</tr></table>";
           //consoleLog(html);
@@ -547,20 +842,60 @@
 						}
 						else{
 							if (this.type == "checkbox")
-							prop_val = False;
+							prop_val = false;
 							if (this.type == "text")
+							prop_val = "";
+							if (this.type == "radio")
 							prop_val = "";
 						}
 						if (this.type == "checkbox")
-						$(this).prop('checked', config_vars[this.name]);
+						  $(this).prop('checked', config_vars[this.name]);
 						if (this.type == "text")
-						this.value = config_vars[this.name];
+						  this.value = config_vars[this.name];
+						if (this.type == "radio"){
+							// this will get called once for each button, but should only check one of the set
+							setRadioButton(this.name, config_vars[this.name]);
+					}
 						//console.log($(this).val());
 						//consoleLog(this.name);
 					});
 					//config_vars = data;
 					//consoleLog(jqXHR);
+					//initConfigVars()
 					return true;
+				}
+
+				function setRadioButton(name, value){
+					// id must follow the convention name-value
+				  field_id = "#" + name + "-" + value;
+				  //consoleLog(field_id);
+    			$(field_id).prop('checked', true);
+    		}
+
+				function initConfigVars()
+				{
+  				var html = "Gateway: ";
+  				if(typeof ansibleFacts.ansible_default_ipv4.address === 'undefined'){
+  					html += "Not Found<BR>";
+  				  $("#gui_static_wan").prop('checked', false);
+  					wan_ip_msd = "";
+  					gui_static_wan_ip_lsd = "";
+  				}
+  				else {
+  					html += "Found<BR>";
+  					html += "WAN: " + ansibleFacts.ansible_default_ipv4.address + " on " + ansibleFacts.ansible_default_ipv4.alias + "<BR>";
+    				wan_ip = ansibleFacts.ansible_default_ipv4.address.split(".");
+    				//consoleLog(wan_ip);
+    				wan_ip_msd = wan_ip[0] + "." + wan_ip[1] + "." + wan_ip[2] + ".";
+    				$("#gui_static_wan_ip_lsd").val(wan_ip[3]);
+    				$("#gui_wan_ip_msd").val(wan_ip_msd);
+    			}
+    			//consoleLog(config_vars);
+    			// html += "LAN:
+    			html += "Network Mode: " + xsce_ini.network.xsce_network_mode + "<BR>";
+    			$("#discoveredNetwork").html(html);
+    			if (config_vars.gui_desired_network_role == "")
+    			  setRadioButton("gui_desired_network_role", xsce_ini.network.xsce_network_mode)
 				}
 
 				function setConfigVars ()
@@ -574,8 +909,14 @@
 							else
 								config_vars[this.name] = false;
 							}
-							if (this.type == "text")
+						if (this.type == "text")
 							config_vars[this.name] = $(this).val();
+						if (this.type == "radio"){
+							fieldName = this.name;
+							fieldName = "input[name=" + this.name + "]:checked"
+						//consoleLog(fieldName);
+						config_vars[this.name] = $(fieldName).val();
+						}
 						});
 						cmd_args['config_vars'] = config_vars;
 						cmd = "SET-CONF " + JSON.stringify(cmd_args);
@@ -584,6 +925,17 @@
 						return true;
 					}
 
+				function getXsceIni (data)
+				{
+					//alert ("in getXsceIni");
+					consoleLog(data);
+					xsce_ini = data;
+					jstr = JSON.stringify(xsce_ini, undefined, 2);
+					var html = jstr.replace(/\n/g, "<br>").replace(/[ ]/g, "&nbsp;");
+					$( "#xsceIni" ).html(html);
+					//consoleLog(jqXHR);
+					return true;
+				}
 					function getWhitelist (data)
 					{
 						//alert ("in getWhitelist");
@@ -610,16 +962,273 @@
             alert ("Saving White List.");
 						return true;
 					}
-					
+
 					function runAnsible (tags)
 					{
 						command = formCommand("RUN-ANSIBLE", "tags", tags);
-						//alert ("in runAnsible");												
+						//alert ("in runAnsible");
 						consoleLog(command);
 						sendCmdSrvCmd(command, genericCmdHandler);
             alert ("Scheduling Ansible Run.");
 						return true;
 					}
+
+          // Install Content functions
+
+    			function instZim(zim_id)
+					{
+						zimsScheduled.push(zim_id);
+						command = "INST-ZIMS"
+						cmd_args = {}
+						cmd_args['zim_id'] = zim_id;
+						cmd = command + " " + JSON.stringify(cmd_args);
+						sendCmdSrvCmd(cmd, genericCmdHandler);
+						return true;
+					}
+
+					function restartKiwix() // Restart Kiwix Server
+					{
+						command = "RESTART-KIWIX";
+						sendCmdSrvCmd(command, genericCmdHandler);
+						return true;
+					}
+
+					function getKiwixCatalog() // Downloads kiwix catalog from kiwix
+					{
+						command = "GET-KIWIX-CAT";
+						sendCmdSrvCmd(command, procKiwixCatalog);
+						return true;
+					}
+
+					function getZimStat(){
+						command = "GET-ZIM-STAT";
+						sendCmdSrvCmd(command, procZimStat);
+						return true;
+					}
+
+    			function procKiwixCatalog() {
+            readKiwixCatalog();
+            procZimCatalog();
+    			}
+
+    			function procZimStatInit(data) {
+    				installedZimCat = data;
+    			}
+
+    			 function procZimStat(data) {
+    				installedZimCat = data;
+    			  procZimCatalog();
+    			}
+
+    			function procZimLangs() {
+    				//consoleLog (zimLangs);
+    				var html = '';
+    				var topHtml = '';
+    				var bottomHtml = '';
+              for (var i in langNames){
+              	html = '<span class="lang-codes"><label><input type="checkbox" name="' + langNames[i].code + '"';
+              	if (selectedLangs.indexOf(langNames[i].code) != -1)
+                  html += ' checked';
+                html += '>&nbsp;&nbsp;<span>' + langNames[i].locname + '</span><span> (' + langNames[i].engname + ') [' + langNames[i].code + ']</span></label></span>';
+
+              	if (topNames.indexOf(langNames[i].code) >= 0 || selectedLangs.indexOf(langNames[i].code) != -1) {
+              		topHtml += html;
+              	}
+              	else {
+              		bottomHtml += html;
+              	}
+              }
+    					$( "#ZimLanguages" ).html(topHtml);
+    					$( "#ZimLanguages2" ).html(bottomHtml);
+    			}
+
+    			function procZimGroups() {
+    				// get list of selected langcodes
+    				selectedLangs = [];
+    				$('#selectLangCodes input').each( function(){
+    						if (this.checked) {
+    							selectedLangs.push(this.name);
+    						}
+    				});
+    				var html = "<br>";
+    				$.each(selectedLangs, function(index, lang) {
+    		      //consoleLog(index);
+    					if (lang in zimGroups){
+                //consoleLog (lang);
+                html += "<h2>" + langCodes[lang]['locname'] + ' (' + langCodes[lang]['engname'] + ")</h2>";
+                $.each(zimGroups[lang], function(key, zimList) {
+                  html += "<h3>" + key + "</h3>";
+                  $.each(zimList, function(key, zimId) {
+                  	var zim = zimCatalog[zimId];
+                  	var colorClass = "";
+                  	var colorClass2 = "";
+                  	if (zimsInstalled.indexOf(zimId) >= 0){
+                  	  colorClass = "installed";
+                  	  colorClass2 = 'class="installed"';
+                  	}
+                  	if (zimsScheduled.indexOf(zimId) >= 0){
+                  	  colorClass = "scheduled";
+                  	  colorClass2 = 'class="scheduled"';
+                  	}
+                  	html += '<label ';
+                  	html += '><input type="checkbox" name="' + zimId + '"';
+                  	//html += '><img src="images/' + zimId + '.png' + '"><input type="checkbox" name="' + zimId + '"';
+                  	if ((zimsInstalled.indexOf(zimId) >= 0) || (zimsScheduled.indexOf(zimId) >= 0))
+                  	  html += 'disabled="disabled" checked="checked"';
+                  	html += 'onChange="updateZimDiskSpace(this)"></label>'; // end input
+                  	zimDesc = zim.title + ' (' + zim.description + ') [' + zim.perma_ref + ']';
+                  	html += '<span class="zim-desc ' + colorClass + '" >&nbsp;&nbsp;' + zimDesc + '</span>';
+                  	html += '<span ' + colorClass2 + 'style="display:inline-block; width:120px;"> Date: ' + zim.date + '</span>';
+                  	html += '<span ' + colorClass2 +'> Size: ' + readableSize(zim.size);
+                  	if (zimsInstalled.indexOf(zimId) >= 0)
+                  	  html += ' - INSTALLED';
+                  	if (zimsScheduled.indexOf(zimId) >= 0)
+                  	  html += ' - WORKING ON IT';
+                  	html += '</span><BR>';
+                  });
+                });
+              }
+    				});
+    						//consoleLog (html);
+    			  $( "#ZimDownload" ).html(html);
+    			}
+
+    			function getLangCodes() {
+    				//alert ("in sendCmdSrvCmd(");
+    				//consoleLog ('ran sendCmdSrvCmd');
+    				//if (asyncFlag === undefined) asyncFlag = false;
+
+    				resp = $.ajax({
+							type: 'GET',
+    					url: consoleJsonDir + 'lang_codes.json',
+    					dataType: 'json'
+						})
+						  .done(function( data ) {
+						  	langCodes = data;
+						  	consoleLog(langCodes);
+						  })
+						  .fail(jsonErrhandler);
+
+    				return resp;
+          }
+
+    			function readKiwixCatalog() { // Reads kiwix catalog from file system as json
+    				//alert ("in sendCmdSrvCmd(");
+    				//consoleLog ('ran sendCmdSrvCmd');
+    				//if (asyncFlag === undefined) asyncFlag = false;
+
+    				resp = $.ajax({
+							type: 'GET',
+    					url: consoleJsonDir + 'kiwix_catalog.json',
+    					dataType: 'json'
+						})
+						  .done(function( data ) {
+						  	kiwixCatalog = data;
+						  	consoleLog(kiwixCatalog);
+						  })
+						  .fail(jsonErrhandler);
+
+    				return resp;
+          }
+
+    			function procZimCatalog() {
+    				// Uses installedZimCat, kiwixCatalog, langCodes, and langGroups
+    				// Calculates zimCatalog, zimGroups, langNames, zimsInstalled, zimsScheduled
+
+    				consoleLog('in procZimCatalog');
+
+            zimCatalog = {};
+            zimGroups = {};
+            zimLangs = [];
+
+    				// Add to zimCatalog
+
+            procOneCatalog(installedZimCat['INSTALLED']);
+            procOneCatalog(installedZimCat['WIP']);
+            procOneCatalog(kiwixCatalog);
+
+            // Create working arrays of installed and wip
+            zimsInstalled = [];
+            zimsScheduled = [];
+            for (var id in installedZimCat['INSTALLED']){
+              zimsInstalled.push(id);
+              lang = installedZimCat['INSTALLED'][id]['language'];
+              if (selectedLangs.indexOf(lang) == -1) // automatically select any language for which zim is installed
+      					    selectedLangs.push (lang);
+            }
+            for (var id in installedZimCat['WIP']){
+              zimsScheduled.push(id);
+              lang = installedZimCat['WIP'][id]['language'];
+              if (selectedLangs.indexOf(lang) == -1) // automatically select any language for which zim is being installed
+      					    selectedLangs.push (lang);
+            }
+
+            if (selectedLangs.length == 0)
+              selectedLangs.push (defaultLang); // default
+
+            sortZimLangs(); // Create langNames from zimLangs and sort
+            procZimLangs(); // Create language menu
+            procZimGroups(); // Create zim list for selected languages
+
+    				return true;
+          }
+
+          function procOneCatalog(catalog){
+          	if (Object.keys(catalog).length > 0){
+            	for (var id in catalog) {
+      					var lang = catalog[id].language;
+      					if (lang in langGroups)
+                  lang = langGroups[lang]; // group synomyms like en/eng
+      					var cat = catalog[id].creator;
+
+      					if (!(lang in zimGroups)){
+      						var cats = {};
+      						cats[cat] = [];
+      						zimGroups[lang] = cats;
+      					}
+
+      					if (!(cat in zimGroups[lang]))
+      						zimGroups[lang][cat] = [];
+
+      					if (zimGroups[lang][cat].indexOf(id) == -1)
+      					    zimGroups[lang][cat].push (id);
+
+      					zimCatalog[id] = catalog[id]; // add to working catalog
+                if (zimLangs.indexOf(lang) == -1)
+                	zimLangs.push(lang);
+      				}
+    			  }
+          }
+
+          function readableSize(kbytes) {
+          	if (kbytes == 0)
+          	  return "0";
+            var bytes = 1024 * kbytes;
+            var s = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'];
+            var e = Math.floor(Math.log(bytes) / Math.log(1024));
+            return (bytes / Math.pow(1024, e)).toFixed(2) + " " + s[e];
+          }
+
+          function sortZimLangs(){
+          	langNames = [];
+            for (var i in zimLangs){
+            	if (langCodes[zimLangs[i]] === undefined){ // for now ignore languages we don't know
+            	  consoleLog('Language code ' + zimLangs[i] + ' not in langCodes.');
+            	  continue;
+            	}
+            	attr = {};
+            	attr.locname = langCodes[zimLangs[i]]['locname'];
+            	attr.code = zimLangs[i];
+            	attr.engname = langCodes[zimLangs[i]]['engname'];
+              langNames.push(attr);
+              }
+            langNames = langNames.sort(function(a,b){
+            	if (a.locname < b.locname) return -1;
+            	else return 1;
+            });
+          }
+
+          // Util functions
 
 					function getJobStat()
 					{
@@ -631,15 +1240,19 @@
 					function procJobStat(data)
 					{
 						job_status = {};
-						html = "";
-						html_break = '<br>';
+						var html = "";
+						var html_break = '<br>';
 						data.forEach(function(entry) {
-							console.log(entry);
+							//console.log(entry);
 							html += "<tr>";
 							job_info = {};
 
 							job_info['job_no'] = entry[0];
-							html += "<td>" + entry[0] + "</td>";
+							html += "<td>" + entry[0] + "<BR>"; // job number
+							// html +=  '<input type="checkbox" name="' gw_squid_whitelist + '" id="' xo-gw_squid_whitelist +'">';
+							jobId = "job_stat_id-" + entry[0];
+							html +=  '<input type="checkbox" id="' + jobId + '">';
+							html += "</td>";
 							job_info['command'] = entry[1];
 							html += '<td style="overflow: hidden; text-overflow: ellipsis">' + entry[1] + "</td>";
 
@@ -672,60 +1285,108 @@
 						today = new Date();
 						$( "#statusJobsRefreshTime" ).html("Last Refreshed: <b>" + today + "</b>");
 					}
-					
+
+					function cancelJob(job_id)
+					{
+						command = "CANCEL-JOB"
+						cmd_args = {}
+						cmd_args['job_id'] = job_id;
+						cmd = command + " " + JSON.stringify(cmd_args);
+						sendCmdSrvCmd(cmd, genericCmdHandler);
+						return true;
+					}
+
 					function getSysMem()
 					{
 						command = "GET-MEM-INFO"
 						sendCmdSrvCmd(command, procSysMem);
 						return true;
 					}
-					
+
 					function procSysMem(data)
 					{
 						//alert ("in procSysMem");
   					consoleLog(data);
   					sysMemory = data['system_memory'];
-  					html = "";
-  					for (i in sysMemory)
+  					var html = "";
+  					for (var i in sysMemory)
   					  html += sysMemory[i] + "<BR>"
-  					  
+
   					$( "#sysMemory" ).html(html);
   					//consoleLog(jqXHR);
   					return true;
 					}
-					
+
+					function refreshDiskSpace(){
+						$.when(sendCmdSrvCmd("GET-STORAGE-INFO", procSysStorageDat),sendCmdSrvCmd("GET-ZIM-STAT", procZimStatInit)).then(procDiskSpace);
+					}
+
+					function procDiskSpace(){
+						//procZimGroups(); - don't call because resets check boxes
+						procSysStorage();
+						sumCheckedZimDiskSpace()
+						// setZimDiskSpace(); called by previous
+					}
+
 					function getSysStorage()
 					{
 						command = "GET-STORAGE-INFO"
-						sendCmdSrvCmd(command, procSysStorage);
+						sendCmdSrvCmd(command, procSysStorageAll);
 						return true;
 					}
-					
-					function procSysStorage(data)
+
+					function procSysStorageAll(data)
+					{
+						//alert ("in procSysStorageDat");
+  					consoleLog(data);
+  					sysStorage.raw = data;
+  					procSysStorage();
+  					setZimDiskSpace();
+  				}
+
+  				function procSysStorageDat(data)
+					{
+						//alert ("in procSysStorageDat");
+  					consoleLog(data);
+  					sysStorage.raw = data;
+  				}
+
+					function procSysStorage()
 					{
 						//alert ("in procSysStorage");
-  					consoleLog(data);
-  					sysStorage = data;
-  					html = "";
-  					for (i in sysStorage) {
-  						dev = sysStorage[i];
-  					  html += "<b>" + dev['device'] + "</b>";
-  					  html += " " + dev['desc'];
-  					  html += " " + dev['type'];
-  					  html += " " + dev['size'];
+  					sysStorage.root = {};
+  					sysStorage.library = {};
+  					sysStorage.library.partition = false; // no separate library partition
+
+  					var html = "";
+  					for (var i in sysStorage.raw) {
+  						dev = sysStorage.raw[i];
+  					  html += "<b>" + dev.device + "</b>";
+  					  html += " " + dev.desc;
+  					  html += " " + dev.type;
+  					  html += " " + dev.size;
   					  html += ":<BR><BR>";
-  					  
-  					  for (j in sysStorage[i]['blocks']){
-  					  	block = dev['blocks'][j];
-  					    html += block['part_dev'];
-  					    if (block['part_dev'] == 'unallocated')
-  					      html += " " + block['size'];
+
+  					  for (j in sysStorage.raw[i].blocks){
+  					  	block = dev.blocks[j];
+  					    html += block.part_dev;
+  					    if (block.part_dev == 'unallocated')
+  					      html += " " + block.size;
   					    else {
-  					    	html += " " + block['type'];  					    
-  					    	html += " " + block['size'];
-  					    	if (block['part_prop']['TYPE'] != "\"swap\""){  					    
-  					        html += " (" + block['part_prop']['avail_in_megs'] + "M avail)";  					    
-    					      html += " " + block['part_prop']['mount_point'];
+  					    	html += " " + block.type;
+  					    	html += " " + block.size;
+  					    	if (block.part_prop.TYPE != "\"swap\""){
+  					        html += " (" + block.part_prop.avail_in_megs + "M avail)";
+    					      html += " " + block.part_prop.mount_point;
+    					      if (block.part_prop.mount_point == "/"){
+    					        sysStorage.root.part_dev = block.part_dev;
+    					        sysStorage.root.avail_in_megs = block.part_prop.avail_in_megs;
+    					      }
+    					      if (block.part_prop.mount_point == "/library"){
+    					        sysStorage.library.part_dev = block.part_dev;
+    					        sysStorage.library.avail_in_megs = block.part_prop.avail_in_megs;
+    					        sysStorage.library.partition = true;
+    					      }
     					    }
   					    }
   					    html += "<BR>";
@@ -733,58 +1394,162 @@
   					  html += "<BR>";
   					}
   					$( "#sysStorage" ).html(html);
+
   					//consoleLog(jqXHR);
   					return true;
 					}
-					
+
+					function setZimDiskSpace(){
+						var html = "Library Space Available : <b>";
+            var avail_in_megs;
+            var zims_selected_size;
+
+            if (sysStorage.library.partition == true)
+              avail_in_megs = sysStorage.library.avail_in_megs;
+            else
+            	avail_in_megs = sysStorage.root.avail_in_megs;
+
+            html += readableSize(avail_in_megs * 1024) + "</b><BR>";
+
+            html += "Total Space Selected: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>";
+            html += readableSize(sysStorage.zims_selected_size) + "</b>"
+  					$( "#instZimsDiskSpace" ).html(html);
+					}
+
+					function updateZimDiskSpace(cb){
+						var zim_id = cb.name
+						var zim = zimCatalog[zim_id]
+						var size =  parseInt(zim.size);
+
+            consoleLog(cb);
+            consoleLog(zim);
+            var zimIdx = selectedZims.indexOf(zim_id);
+
+						if (cb.checked){
+							if (zimsInstalled.indexOf(zim_id) == -1){ // only update if not already installed zims
+						    sysStorage.zims_selected_size += size;
+						    selectedZims.push(zim_id);
+						  }
+						}
+						else {
+							if (zimIdx != -1){
+                sysStorage.zims_selected_size -= size;
+                selectedZims.splice(zimIdx, 1);
+              }
+            }
+
+            setZimDiskSpace();
+
+					}
+
+					function sumCheckedZimDiskSpace(){
+						var zim_id = '';
+						var zim = {};
+						var size = 0;
+
+						sysStorage.zims_selected_size = 0;
+
+						for (var i in selectedZims){
+							zim_id = selectedZims[i]
+							zim = zimCatalog[zim_id];
+							var size =  parseInt(zim.size);
+
+							sysStorage.zims_selected_size += size;
+
+              setZimDiskSpace();
+            }
+					}
+
+					function getInetSpeed(){
+						command = "GET-INET-SPEED";
+						sendCmdSrvCmd(command, procInetSpeed, "GET-INET-SPEED");
+						$( "#intSpeed1" ).html("Working ...");
+						//$('#myModal').modal('show');
+						return true;
+					}
+
+					function procInetSpeed(data){
+						//alert ("in procInetSpeed");
+  					consoleLog(data);
+  					intSpeed = data["internet_speed"];
+  					var html = "";
+  					for (var i in intSpeed)
+  					  html += intSpeed[i] + "<BR>"
+
+  					$( "#intSpeed1" ).html(html);
+  					return true;
+  				}
+
+  				function getInetSpeed2(){
+						command = "GET-INET-SPEED2"
+						sendCmdSrvCmd(command, procInetSpeed2, "GET-INET-SPEED2");
+						$( "#intSpeed2" ).html("Working ...");
+						return true;
+					}
+
+					function procInetSpeed2(data){
+						//alert ("in procInetSpeed2");
+  					consoleLog(data);
+  					intSpeed = data["internet_speed"];
+  					var html = "";
+  					for (var i in intSpeed)
+  					  html += intSpeed[i] + "<BR>"
+
+  					$( "#intSpeed2" ).html(html);
+  					//consoleLog(jqXHR);
+  				}
+
+
 					function rebootServer()
 					{
 						command = "REBOOT"
 						sendCmdSrvCmd(command, genericCmdHandler);
 						return true;
 					}
-					
+
 					function formCommand(cmd_verb, args_name, args_obj)
-					{						
+					{
 						cmd_args = {}
 						cmd_args[args_name] = args_obj;
 						command = cmd_verb + " " + JSON.stringify(cmd_args);
-						consoleLog(command);						
-						
+						consoleLog(command);
+
 						return command;
 					}
 
-					function sendCmdSrvCmd(command, callback, asyncFlag) {
-						//alert ("in sendCmdSrvCmd(");
-						//consoleLog ('ran sendCmdSrvCmd');
-						if (asyncFlag === undefined) asyncFlag = false;
+          // monitor for awhile and use version if no problems present
 
-						$.ajax({
+					function sendCmdSrvCmd(command, callback, buttonId) {
+						// takes following arguments:
+						//   command - command to send to cmdsrv
+						//   callback - function to call on success
+						//   buttonId - ID of button to disable and re-enable
+						//   TODO  - add assignmentVar to can assign variable before running callback
+						//alert ("in sendCmdSrvCmd(");
+						//consoleLog ('buttonid = ' + buttonId);;
+						if (buttonId === undefined)
+						  buttonId = "";
+						else
+							$('#' + buttonId).prop('disabled', true);
+
+						resp = $.ajax({
 							type: 'POST',
 							url: 'cmd-service.php',
 							data: {
 								command: command
 							},
-							async: asyncFlag,
 							dataType: 'json',
-							//success: callback,
-							callback: callback,
-							success: function(data, textStatus, jqXHR){
-								//consoleLog(textStatus);
-								//consoleLog(jqXHR);
-								// consoleLog(this.callback);
-								if ("Error" in data) {
-									alert ("Error: " + data["Error"]);
-								}
-								else {
-									this.callback(data);
-								}
-							},
-							error: jsonErrhandler
-						});
+							buttonId: buttonId
+						})
+						  .done(callback)
+						  .fail(jsonErrhandler)
+						  .always(function() {
+						  	$('#' + this.buttonId).prop('disabled', false);
+               });
 
-						return true;
+						return resp;
 					}
+
 					function jsonErrhandler (jqXHR, textStatus, errorThrown)
 					{
 						alert ("in Errhandler: " + textStatus + ", " + errorThrown);
@@ -801,11 +1566,16 @@
 
 					function init ()
 					{
-						sendCmdSrvCmd("GET-ANS", getAnsibleFacts);
+
+						//sendCmdSrvCmd("GET-ANS", getAnsibleFacts);
 						sendCmdSrvCmd("GET-ANS-TAGS", getAnsibleTags);
 						sendCmdSrvCmd("GET-VARS", getInstallVars);
-						sendCmdSrvCmd("GET-CONF", getConfigVars);
+						//sendCmdSrvCmd("GET-XSCE-INI", getXsceIni);
+						//sendCmdSrvCmd("GET-CONF", getConfigVars);
 						sendCmdSrvCmd("GET-WHLIST", getWhitelist);
+            $.when(sendCmdSrvCmd("GET-ANS", getAnsibleFacts),sendCmdSrvCmd("GET-CONF", getConfigVars),sendCmdSrvCmd("GET-XSCE-INI", getXsceIni)).then(initConfigVars);
+            $.when(getLangCodes(),readKiwixCatalog(),sendCmdSrvCmd("GET-ZIM-STAT", procZimStatInit)).then(procZimCatalog);
+            getSysStorage();
 					}
 
 				</script>
