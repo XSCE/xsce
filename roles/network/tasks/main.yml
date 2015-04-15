@@ -153,13 +153,13 @@
             dest=/etc/sysconfig/network-scripts/ifcfg-LAN
   when: xsce_lan_iface != "none"
 
-- name: Turn off NM for WiFi LAN
-  lineinfile: state=present
-              backrefs=yes
-              regexp="NM_CONTROLLED"
-              line="NM_CONTROLLED=no"
-              dest=/etc/sysconfig/network-scripts/ifcfg-LAN
-  when: xsce_lan_iface == "{{ xsce_wireless_lan_iface }}"
+#- name: Turn off NM for WiFi LAN
+#  lineinfile: state=present
+#              backrefs=yes
+#              regexp="NM_CONTROLLED"
+#              line="NM_CONTROLLED=no"
+#              dest=/etc/sysconfig/network-scripts/ifcfg-LAN
+#  when: xsce_lan_iface == "{{ xsce_wireless_lan_iface }}"
 
 # can be more than one wired interface
 - name: Wired enslaving ## lan_list_result ## to Bridge
