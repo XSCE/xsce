@@ -70,6 +70,15 @@
             owner=root
             group=root
             mode=0644
+  when: not {{ adm_cons_force_ssl }}
+
+- name: Install admin-console config file with ssl support
+  template: src=console/xs-console-ssl.conf.j2
+            dest=/etc/httpd/conf.d/xs-console.conf
+            owner=root
+            group=root
+            mode=0644
+  when: {{ adm_cons_force_ssl }}
 
 - name: Install admin-console service
   template: src=console/cmd-service.php
