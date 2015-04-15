@@ -782,14 +782,18 @@ def get_zim_stat(cmd_info):
     all_zims['INSTALLED'] = {}
 
     lib_xml_file = zim_dir + "/library.xml"
-    tree = ET.parse(lib_xml_file)
-    root = tree.getroot()
 
-    for child in root:
-        attributes = child.attrib
-        if 'id' in attributes:
-            id = attributes['id']
-            all_zims['INSTALLED'][id] = attributes
+    try:
+        tree = ET.parse(lib_xml_file)
+        root = tree.getroot()
+
+        for child in root:
+            attributes = child.attrib
+            if 'id' in attributes:
+                id = attributes['id']
+                all_zims['INSTALLED'][id] = attributes
+    except IOError:
+        all_zims['INSTALLED'] = {}
 
     resp = json.dumps(all_zims)
     return (resp)
