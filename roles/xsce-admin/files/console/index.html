@@ -894,7 +894,7 @@
     			// html += "LAN:
     			html += "Network Mode: " + xsce_ini.network.xsce_network_mode + "<BR>";
     			$("#discoveredNetwork").html(html);
-    			if (config_vars.gui_desired_network_role == "")
+    			if (typeof config_vars.gui_desired_network_role === "undefined")
     			  setRadioButton("gui_desired_network_role", xsce_ini.network.xsce_network_mode)
 				}
 
@@ -1504,6 +1504,7 @@
 					{
 						command = "REBOOT"
 						sendCmdSrvCmd(command, genericCmdHandler);
+						alert ("Reboot Initiated");
 						return true;
 					}
 

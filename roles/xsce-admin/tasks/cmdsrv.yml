@@ -42,6 +42,17 @@
   shell: yes '' | pecl install zmq*tgz
          creates="{{ phplib_dir }}/modules/zmq.so"
 
+- name: Download speedtest-cli
+  pip: name=speedtest-cli
+       extra_args="--download-cache {{ pip_packages_dir }}"
+  when: not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download2
+
+- name: Install speedtest-cli
+  pip: name=speedtest-cli
+       extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
+
 - name: Create admin-console directory
   file: path={{ item }}
         mode=0700
