@@ -26,6 +26,7 @@
    - usbutils
    - hostapd
    - wpa_supplicant
+   - wget
   tags:
     - download
 
