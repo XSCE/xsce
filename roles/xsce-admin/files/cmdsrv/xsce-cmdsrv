@@ -901,8 +901,8 @@ def restart_kiwix(cmd_info):
     return (resp)
 
 def reboot_server(cmd_info):
-    resp = cmd_success(cmd_info['cmd'])
-    rc = subprocess.call(["/usr/sbin/reboot"])
+    resp = cmd_success_msg(cmd_info['cmd'], 'Reboot Initiated')
+    rc = subprocess.check_output(["/usr/sbin/shutdown", "-r", "-t","5"])
     return (resp)
 
 def request_job(cmd_info, job_command, cmd_step_no=1, depend_on_job_id=-1, has_dependent="N"):
@@ -1046,7 +1046,12 @@ def get_cmd_info_key(cmd_info, key):
        return None
 
 def cmd_success(cmd):
-   return ('{"Success": "Command ' + cmd + '."}')
+   msg = 'Command ' + cmd
+   return (cmd_success_msg(cmd, msg))
+
+def cmd_success_msg(cmd, msg):
+   return ('{"Success": "' + msg + '."}')
+
 
 def cmd_error(cmd="", msg="Internal Server Error processing Command"):
     return ('{"Error": "' + msg + ' ' + cmd + '."}')
