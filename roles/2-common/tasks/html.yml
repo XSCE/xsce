@@ -22,7 +22,7 @@
 
 - name: Copy js files
   copy: src={{ item }}
-        dest=- /var/www/html/common/js
+        dest=/var/www/html/common/js
         mode=0644
         owner=root
         group=root
