@@ -7,7 +7,7 @@
 		<title>School Server Admin Console</title>
 
 		<!-- Bootstrap -->
-		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="/common/css/bootstrap.min.css" rel="stylesheet">
 		<!-- <link href="css/xsce.css" rel="stylesheet"> -->
 		<link href="css/xsce.css" rel="stylesheet">
 
@@ -30,6 +30,7 @@
 						<li><a href="#InstallContent">Install Content</a></li>
 						<!--  <li><a href="#Future">Assemble Content</a></li> -->
 						<li><a href="#Util" call-after="getJobStat">Utilities</a></li>
+						<li><a href="#Help" call-after="getHelp" call-after-arg="Overview.rst">Help</a></li>
 						<!--  <li><a href="#Test">Tests</a></li> -->
 					</ul>
 				</div>
@@ -443,6 +444,34 @@
 						<button id="SET-CONF-CMD" type="button" class="btn btn-lg btn-primary">CmdSrv Set Conf</button>
 						<button id="STOP" type="button" class="btn btn-lg btn-primary">STOP Command Server</button>
 					</div> <!-- Test -->
+					<div class="tab-pane" id="Help"> <!-- Start Assemble Content Top Level Pane -->
+						<div class="row-fluid"> <!-- Help Top Level Header -->
+							<div class="col-md-9 col-md-offset-3">
+								<h1>Help</h1>
+							</div>
+						</div> <!-- row-fluid -->
+						<div class="tabbable"> <!-- Start XXX Sublevel Menu Items and Options -->
+							<div class="row-fluid"> <!-- Start containing row -->
+								<div class="col-md-3 xsce-left-nav"> <!-- Start left column -->
+									<h2>Help Sections</h2>
+									<ul class="nav nav-pills nav-stacked"> <!-- Start XXX Sub Level Menu -->
+										<li class="active"><a href="#helpText" call-after="getHelp" call-after-arg="Overview.rst">Overview</a></li>
+										<li><a href="#helpText" call-after="getHelp" call-after-arg="Config.rst">Configuration</a></li>
+										<li><a href="#helpText" call-after="getHelp" call-after-arg="InstContent.rst">Install Content</a></li>
+										<!-- <li><a href="#">Internet Caching/Filtering</a></li>
+										<li><a href="#">Services Enabled</a></li> -->
+									</ul> <!-- End XXX Sub Level Menu -->
+								</div> <!-- left column -->
+								<div class="col-md-9"> <!-- Start right column -->
+									<div class="tab-content"> <!-- Start Container for Sub Menu Options Panes -->
+										<div class="tab-pane active" id="helpText"> <!-- Start XXX Submenu Option Pane -->
+											<div id="helpItem"></div>
+										</div> <!--  End XXX Submenu Option Pane -->
+									</div> <!-- End Container for Sub Menu Options Panes -->
+								</div> <!-- right column -->
+							</div> <!-- End containing row -->
+						</div> <!-- End XXX Sublevel Menu Items and Options -->
+					</div> <!-- End Help Top Level Pane -->
 				</div> <!-- End Top Level Content -->
 			</div> <!-- End Top Level tabbable boxed parentTabs -->
 			<!-- Modal Pages go Here -->
@@ -481,14 +510,16 @@
       <!-- Select LangCodes Modal -->
 		</div> <!-- End Outermost Container -->
 		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-		<script src="js/jquery.min.js"></script>
+		<script src="/common/js/jquery.min.js"></script>
 		<!-- Include all compiled plugins (below), or include individual files as needed -->
-		<script src="js/bootstrap.min.js"></script>
+		<script src="/common/js/bootstrap.min.js"></script>
+		<script src="/common/js/Markdown.Converter.js"></script>
+		<script src="/common/js/Markdown.Sanitizer.js"></script>
 
 		<script type="text/javascript">
 
 			var xsceContrDir = "/etc/xsce/";
-			var consoleJsonDir = "assets/";
+			var consoleJsonDir = "/var/www/html/common/assets/";
 			var ansibleFacts = {};
 			var ansibleTagsStr = "";
 			var effective_vars = {};
@@ -524,9 +555,13 @@
 				if ($(this).is('[call-after]')) {
 					//if ($this).attr('call-after') !== undefined) {
 					console.log($(this).attr('call-after'));
-					//exec_func = $(this).attr('call-after');
-					//exec_func;
-					window[$(this).attr('call-after')]();
+					if ($(this).is('[call-after-arg]'))
+					{
+					  console.log($(this).attr('call-after-arg'));
+					  window[$(this).attr('call-after')]($(this).attr('call-after-arg'));
+					}
+					else
+					  window[$(this).attr('call-after')]();
 				}
 				else
 					console.log(' no call-after');
@@ -1505,6 +1540,17 @@
 						command = "REBOOT"
 						sendCmdSrvCmd(command, genericCmdHandler);
 						alert ("Reboot Initiated");
+						return true;
+					}
+
+					function getHelp(arg)
+					{
+						$.get( "help/" + arg, function( data ) {
+    				rst = data;
+    				convert = new Markdown.getSanitizingConverter().makeHtml;
+    				html = convert(rst);
+            $( "#helpItem" ).html( html );
+            });
 						return true;
 					}
 
