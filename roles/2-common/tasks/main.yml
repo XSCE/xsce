@@ -1,6 +1,6 @@
 - include: prelim.yml
 
-- include: yum.yml 
+- include: yum.yml
   when: not no_network
   tags:
     - download
@@ -12,3 +12,4 @@
 
 - include: chrony.yml
 - include: sysctl.yml
+- include: html.yml
