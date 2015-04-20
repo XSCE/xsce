@@ -1,6 +1,5 @@
 - name: Disable firewalld service
   service: name=firewalld
-           enabled=no
            state=stopped
 
 - name: Install iptables service package

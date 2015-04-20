@@ -9,6 +9,10 @@
            enabled=yes
   when: dhcpd_enabled
 
+- name: Enable iptables service
+  service: name=iptables
+           enabled=yes
+
 - name: Enable named service
   service: name=named
            enabled=yes
