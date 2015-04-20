@@ -111,4 +111,6 @@
       value: "Download an Activity."
     - option: path
       value: /activities
+    - option: enabled
+      value: "{{ xo_services_enabled }}"
             

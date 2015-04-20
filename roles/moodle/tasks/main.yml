@@ -71,3 +71,5 @@
       value: "Access the Moodle learning management system."
     - option: path
       value: /moodle
+    - option: enabled
+      value: "{{ moodle_enabled }}"
