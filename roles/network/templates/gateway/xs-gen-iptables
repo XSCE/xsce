@@ -7,6 +7,23 @@ clear_fw() {
 $IPTABLES -F
 $IPTABLES -t nat -F
 $IPTABLES -X
+
+# first match wins
+# Always accept loopback traffic 
+$IPTABLES -A INPUT -i lo -j ACCEPT
+
+# Always drop rpc 
+$IPTABLES -A INPUT -p tcp --dport 111 -j DROP
+$IPTABLES -A INPUT -p udp --dport 111 -j DROP
+# mysql
+$IPTABLES -A INPUT -p tcp --dport 3306 -j DROP
+$IPTABLES -A INPUT -p udp --dport 3306 -j DROP
+# postgre - not needed listens on lo only
+$IPTABLES -A INPUT -p tcp --dport 5432 -j DROP
+$IPTABLES -A INPUT -p udp --dport 5432 -j DROP
+# couchdb
+$IPTABLES -A INPUT -p tcp --dport 5984 -j DROP
+$IPTABLES -A INPUT -p udp --dport 5984 -j DROP
 }
 
 if [  "x$WANIF" == "x" ]; then
