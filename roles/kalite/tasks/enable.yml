@@ -8,6 +8,8 @@
   service: name=kalite-serve 
            enabled=yes
            state=started           
+  async: 60
+  poll: 5
   when: kalite_enabled  
 
 - name: Disable kalite cron server
