@@ -167,7 +167,7 @@ owncloud_enabled: False
 
 # Moodle
 moodle_install: True
-moodle_enabled: False
+moodle_enabled: True
 
 # Internet-in-a-Box
 iiab_install: True
