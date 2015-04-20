@@ -863,6 +863,11 @@
 					//alert ("in getConfigVars");
 					consoleLog(data);
 					config_vars = data;
+					return true;
+				}
+
+				function assignConfigVars (data)
+				{
 					// If config_vars has a value use it
 					// Otherwise if effective_vars has a value use it
 					$('#Configure input').each( function(){
@@ -909,6 +914,7 @@
 
 				function initConfigVars()
 				{
+  				assignConfigVars();
   				var html = "Gateway: ";
   				if(typeof ansibleFacts.ansible_default_ipv4.address === 'undefined'){
   					html += "Not Found<BR>";
@@ -1616,11 +1622,11 @@
 
 						//sendCmdSrvCmd("GET-ANS", getAnsibleFacts);
 						sendCmdSrvCmd("GET-ANS-TAGS", getAnsibleTags);
-						sendCmdSrvCmd("GET-VARS", getInstallVars);
+						//sendCmdSrvCmd("GET-VARS", getInstallVars);
 						//sendCmdSrvCmd("GET-XSCE-INI", getXsceIni);
 						//sendCmdSrvCmd("GET-CONF", getConfigVars);
 						sendCmdSrvCmd("GET-WHLIST", getWhitelist);
-            $.when(sendCmdSrvCmd("GET-ANS", getAnsibleFacts),sendCmdSrvCmd("GET-CONF", getConfigVars),sendCmdSrvCmd("GET-XSCE-INI", getXsceIni)).then(initConfigVars);
+            $.when(sendCmdSrvCmd("GET-VARS", getInstallVars), sendCmdSrvCmd("GET-ANS", getAnsibleFacts),sendCmdSrvCmd("GET-CONF", getConfigVars),sendCmdSrvCmd("GET-XSCE-INI", getXsceIni)).then(initConfigVars);
             $.when(getLangCodes(),readKiwixCatalog(),sendCmdSrvCmd("GET-ZIM-STAT", procZimStatInit)).then(procZimCatalog);
             getSysStorage();
 					}
