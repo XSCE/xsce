@@ -90,6 +90,10 @@ detect_slaves: False
 dhcpd_install: True
 dhcpd_enabled: False
 
+# iptables
+iptables_install: True
+iptables_install: False
+
 # named
 named_install: True
 named_enabled: True
