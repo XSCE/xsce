@@ -64,3 +64,16 @@
            enabled=yes
            state=restarted
   when: ajenti_enabled
+
+- name: Add ajenti to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=ajenti
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: ajenti
+    - option: description
+      value: "Ajenti is a client server systems administration tool controlled by a web browser"
+    - option: enabled
+      value: "{{ ajenti_enabled }}"

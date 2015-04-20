@@ -68,3 +68,16 @@
              regexp='^#allowsftp'
              insertafter='^#allowsftp'
              line=allowsftp
+
+- name: Add idmgr to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=idmgr
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: idmgr
+    - option: description
+      value: "Idmgr is an automatic identity manager for XO clients which enables automatic backup"
+    - option: enabled
+      value: "{{ xo_services_enabled }}"

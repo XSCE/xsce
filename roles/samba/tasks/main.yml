@@ -48,3 +48,16 @@
     - samba
   when : not samba_enabled
 
+- name: Add samba to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=samba
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: samba
+    - option: description
+      value: "Samba is a Microsoft compatible remote file access system  - generalized to CIFS --common internet file system"
+    - option: enabled
+      value: "{{ samba_enabled }}"
+
