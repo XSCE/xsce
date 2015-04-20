@@ -684,6 +684,8 @@ def get_storage_info(cmd_info):
                 blk_info['type'] = blk_attr[4]
                 if blk_info['type'] == 'free':
                     blk_info['part_dev'] = 'unallocated'
+                elif blk_info['type'] == '': # this is an extension partition, so ignore
+                    continue
                 else:
                     # this is a kluge
                     if "mmc" in dev_info['device']:
