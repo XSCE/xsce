@@ -120,7 +120,6 @@
     named_enabled: False
     dhcpd_enabled: False
     wondershaper_enabled: False
-    iptables_enabled: False
     xsce_network_mode: "Appliance"
   when: xsce_lan_iface == "none" or user_lan_iface == "none" or xsce_lan_enabled == False
 
@@ -131,7 +130,6 @@
     dansguardian_enabled: False
     squid_enabled: False
     wondershaper_enabled: False
-    iptables_enabled: False
     xsce_network_mode: "LanController"
   when: xsce_lan_iface != "" and xsce_wan_iface == "none" and xsce_lan_enabled == True
 
@@ -139,7 +137,6 @@
   set_fact:
     named_enabled: True
     dhcpd_enabled: True
-    iptables_enabled: True
     xsce_network_mode: "Gateway"
   when: 'xsce_lan_iface != "none" and xsce_wan_iface != "none"'
 
