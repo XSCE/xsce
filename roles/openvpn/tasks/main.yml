@@ -50,14 +50,14 @@
   lineinfile: dest=/etc/crontab
             line="25 *  *  *  * root (/usr/bin/xs-vpn test) > /dev/null"
   when:
-            openvpn_enabled
+            openvpn_enabled and openvpn_cron_enabled
 
 - name: make openvpn connection manual
   lineinfile: dest=/etc/crontab
             regexp=".*/usr/bin/xs-vpn.*"
             state=absent
   when:
-            not openvpn_enabled
+            not openvpn_enabled or not openvpn_cron_enabled
 
 - name: start the openvpn tunnel at boot time
   lineinfile:
@@ -73,3 +73,22 @@
             state=absent
   when:
             not openvpn_enabled
+
+- name: Add openvpn to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=openvpn
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: "openvpn"
+    - option: description
+      value: "Openvpn is a means of Contacting a server anywhere on the internet via a middleman server"
+    - option: middleman_url
+      value: "{{ vpn_presence }}"
+    - option: port
+      value: "{{ openvpn_server_port }}"
+    - option: enabled
+      value: "{{ openvpn_enabled }}"
+    - option: cron_enabled
+      value: "{{ openvpn_cron_enabled }}"

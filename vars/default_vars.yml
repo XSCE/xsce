@@ -116,6 +116,8 @@ xsce_gateway_enabled: True
 
 # openvpn
 vpn_presence: unleashkids.org
+openvpn_server_port: 1194
+openvpn_cron_enabled: True
 openvpn_install: True
 openvpn_enabled: False
 
