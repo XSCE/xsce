@@ -25,7 +25,7 @@
     - option: description
       value: "Educational resources, packaged together for download and distribution in places without internet."
     - option: path
-      value: "{{ rachel_conent_path }}"
+      value: "{{ rachel_content_path }}"
     - option: content_found
       value: "{{ rachel_content_found }}"
     - option: enabled
