@@ -142,7 +142,7 @@ ejabberd_enabled: True
 # idmgr and activity-server
 idmgr_install: True
 activity-server_install: True
-xo-services_enabled: True
+xo_services_enabled: True
 
 # 6-GENERIC-APPS
 
@@ -168,14 +168,14 @@ owncloud_enabled: False
 
 # Moodle
 moodle_install: True
-moodle_enabled: False
+moodle_enabled: True
 
 # Internet-in-a-Box
 iiab_install: True
 iiab_enabled: True
 
 # Pathagar
-pathagar_install: False
+pathagar_install: True
 pathagar_enabled: False
 
 # RACHEL

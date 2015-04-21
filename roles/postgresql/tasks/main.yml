@@ -34,6 +34,11 @@
             group=postgres
             mode=0640
 
+- name: Disable stock postgresql service
+  service: name=postgresql
+           enabled=no
+  when: postgresql_enabled
+
 - name: Enable postgresql service
   service: name=postgresql-xs
            enabled=yes
