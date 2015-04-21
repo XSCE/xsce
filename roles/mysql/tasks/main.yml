@@ -99,7 +99,11 @@
               value: mysql-database
             - option: description
               value: "mySQL is a widely used database service on the Internet which runs on many platforms, and is often offered and available at hosting Internet Service Providers"
-      when: mysql_enabled
+            - option: enabled
+              value: "{{ mysql_enabled }}"
+
+    - name: Initially mysql and phpmyadmin were enabled together -- work to separate them -- then delete this
+      set_fact: phpmyadmin_enabled=mysql_enabled
 
     - name: add phpmyadmin to service list
       ini_file: dest='{{ service_filelist }}'
@@ -113,4 +117,6 @@
               value: "phpMyAdmin is an interface with a mysql database written in php, and available to administer the database engine locally or across the network"
             - option: path
               value: /opt/phpmyadmin
-      when: mysql_enabled
+# TODO (maybe?) separately enable phpmyadmin in GUI (and disable the set fact above
+            - option: enabled
+              value: "{{ phpmyadmin_enabled }}"

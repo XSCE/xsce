@@ -149,6 +149,7 @@ xo-services_enabled: True
 # MYSQL
 mysql_install: True
 mysql_enabled: False
+phpmyadmin_enabled: False
 # password is fixmysql
 # mysql_root_password: $6$xsce51$3ICIW0CLWxxMW2a3yrHZ38ukZItD5tcadL4rWcE9D.qIGStxhh8rRsaSxoj3b.MYxI/VRDNjpzSYK/V6zkWFI0
 mysql_root_password: fixmysql
