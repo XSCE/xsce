@@ -103,7 +103,7 @@
               value: "{{ mysql_enabled }}"
 
     - name: Initially mysql and phpmyadmin were enabled together -- work to separate them -- then delete this
-      set_fact: phpmyadmin_enabled=mysql_enabled
+      set_fact: phpmyadmin_enabled='{{ mysql_enabled }}'
 
     - name: add phpmyadmin to service list
       ini_file: dest='{{ service_filelist }}'
