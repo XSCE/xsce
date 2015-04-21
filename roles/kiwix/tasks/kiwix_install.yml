@@ -17,7 +17,7 @@
     
 # we get a whole web server for intel but only the kiwix execs for arm
 
-- name: Unarchive it to permanent location
+- name: Unarchive it to permanent location - not bin_only
   unarchive: src="{{ downloads_dir }}/{{ kiwix_src_file }}"  
              dest="{{ xsce_base }}"
              owner=root
@@ -31,7 +31,7 @@
         mode=0755
         state=directory
 
-- name: Unarchive it to permanent location
+- name: Unarchive it to permanent location - bin only
   unarchive: src="{{ downloads_dir }}/{{ kiwix_src_file }}"  
              dest="{{ xsce_base }}/kiwix/bin"
              owner=root
