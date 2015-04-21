@@ -17,7 +17,7 @@
     
 # we get a whole web server for intel but only the kiwix execs for arm
 
-- name: Unarchive it to permanent location
+- name: Unarchive it to permanent location - not bin_only
   unarchive: src="{{ downloads_dir }}/{{ kiwix_src_file }}"  
              dest="{{ xsce_base }}"
              owner=root
@@ -31,7 +31,7 @@
         mode=0755
         state=directory
 
-- name: Unarchive it to permanent location
+- name: Unarchive it to permanent location - bin only
   unarchive: src="{{ downloads_dir }}/{{ kiwix_src_file }}"  
              dest="{{ xsce_base }}/kiwix/bin"
              owner=root
@@ -62,7 +62,7 @@
 
 - name: add kiwix to service list
   ini_file: dest='{{ service_filelist }}'
-            section=kiwix-serve
+            section=kiwix
             option='{{ item.option }}'
             value='{{ item.value }}'
   with_items:
@@ -83,7 +83,7 @@
     - option: kiwix_content_path
       value: "{{ kiwix_content_path }}"      
     - option: enabled
-      value: "{{ kiwix_enabled }}"
+      value: "{{ kiwix_serve_enabled }}"
 
 - name: Copy xsce-make-kiwix-lib to /usr/bin
   copy: src=xsce-make-kiwix-lib
@@ -96,4 +96,4 @@
   service: name=kiwix-serve 
            enabled=yes
            state=restarted           
-  when: kiwix-serve_enabled
+  when: kiwix_serve_enabled
