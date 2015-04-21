@@ -66,6 +66,14 @@
   sudo: yes
   sudo_user: postgres
 
+- name: Stop postgresql
+  service: name=postgresql
+           state=stopped
+
+- name: Start postgresql-xs
+  service: name=postgresql-xs
+           state=started
+
 - name: Enable pathagar postgresql user access by md5 method
   lineinfile: backup=yes
               dest=/library/pgsql-xs/pg_hba.conf
