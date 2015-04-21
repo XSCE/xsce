@@ -13,3 +13,20 @@
 
 - include: rachel_enabled.yml
   when: rachel_enabled and rachel_content_found
+
+- name: Add rachel to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=rachel
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: rachel
+    - option: description
+      value: "Educational resources, packaged together for download and distribution in places without internet."
+    - option: path
+      value: "{{ rachel_conent_path }}"
+    - option: content_found
+      value: "{{ rachel_content_found }}"
+    - option: enabled
+      value: "{{ rachel_enabled }}"
