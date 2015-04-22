@@ -1,9 +1,3 @@
-- name: Get the kiwix software 
-  get_url: url="{{ xsce_download_url }}/{{ kiwix_src_file }}"  dest="{{ downloads_dir }}/{{ kiwix_src_file }}"
-  when: not {{ use_cache }} and not {{ no_network }}
-  tags:
-    - download2
-
 - name: Create various directories for zims
   file: path={{ item }}
         owner=root
