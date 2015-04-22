@@ -62,7 +62,7 @@
 
 - name: add kiwix to service list
   ini_file: dest='{{ service_filelist }}'
-            section=kiwix
+            section=kiwix-serve
             option='{{ item.option }}'
             value='{{ item.value }}'
   with_items:
