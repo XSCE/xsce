@@ -27,6 +27,7 @@
    - hostapd
    - wpa_supplicant
    - wget
+   - openssl   #FC 18 does not supply, but pear requires
   tags:
     - download
 
