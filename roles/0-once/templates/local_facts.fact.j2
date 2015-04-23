@@ -7,6 +7,8 @@ if [ ! -f /etc/xsce/uuid ]; then
 fi
 UUID=`cat /etc/xsce/uuid`
 
+ARCH=`uname -m`
+
 cd $XSCE_DIR
 
 # while we're here untrack local vars
@@ -39,6 +41,7 @@ fi
 
 cat <<EOF
 {"phplib_dir"  : "$PHPLIB_DIR",
+"arch"         : "$ARCH",
 "xsce_branch"  : "$BRANCH",
 "xsce_commit"  : "$COMMIT",
 "xsce_uuid"    : "$UUID",
