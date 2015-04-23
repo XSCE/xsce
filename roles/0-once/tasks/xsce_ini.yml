@@ -52,4 +52,4 @@
     - option: 'product_id'
       value: '{{ ansible_product_uuid }}'
     - option: 'library_gb'
-      value: '{{ ansible_devices.sda.sda3.size }}'
+      value: '{{ ansible_devices.sda.partitions.sda3.size }}'
