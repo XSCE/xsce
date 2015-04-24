@@ -33,7 +33,7 @@
   shell: "systemctl disable firewalld.service"
 
 - name: Run iptables
-  command: /etc/sysconfig/iptables-config
+  command: /usr/bin/xs-gen-iptables
 
 - name: Restart iptables service
   service: name=iptables
