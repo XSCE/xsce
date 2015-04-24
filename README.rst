@@ -32,7 +32,7 @@ To manually install and experiment with these changes please do the following:
 * 'yum -y install git ansible'
 * 'mkdir /opt/schoolserver'
 * 'cd /opt/schoolserver' 
-* 'git clone https://github.com/XSCE/xsce --depth 1'
+* 'git clone https://github.com/XSCE/xsce --branch stable --depth 1'
 * 'cd xsce'
 
 At this point you can use the new Gui Console by typing
