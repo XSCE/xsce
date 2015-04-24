@@ -38,6 +38,7 @@
    - bash
    - iptables
    - vim-minimal # ejabberd erlang does not update this properly
+   - dbus-glib   # NM does not update this properly
   tags:
     - download
 
