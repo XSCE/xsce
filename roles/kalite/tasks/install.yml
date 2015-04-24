@@ -43,6 +43,8 @@
             
 - name: Run the install
   command: "/tmp/kalite_install.exp"
+  async: 300
+  poll: 10
 
 - name: Create kalite service(s) and support scripts
   template: backup=yes
