@@ -8,6 +8,7 @@
     - /library/zims
     - /library/zims/content
     - /library/zims/index
+    - /library/downloads/zims
     
 # we get a whole web server for intel but only the kiwix execs for arm
 
