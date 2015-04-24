@@ -1,5 +1,6 @@
 #!/bin/bash -x
 IPTABLES=/usr/sbin/iptables
+IPTABLES_DATA=/etc/sysconfig/iptables
 LANIF=`cat /etc/sysconfig/xs_lan_device`
 WANIF=`cat /etc/sysconfig/xs_wan_device`
 
@@ -28,10 +29,14 @@ $IPTABLES -A INPUT -p udp --dport 5984 -j DROP
 
 if [  "x$WANIF" == "x" ]; then
     clear_fw
+    # save the rule set
+    $IPTABLES-save > "$IPTABLES_DATA"
     exit 0
 fi
 if [  "x$LANIF" == "x" ]; then
     clear_fw
+    # save the rule set
+    $IPTABLES-save > "$IPTABLES_DATA"
     exit 0
 fi
 
@@ -51,13 +56,11 @@ echo "Lan is $lan and WAN is $wan"
 # delete all existing rules.
 #
 
-clear_fw
 /sbin/modprobe ip_tables
 /sbin/modprobe iptable_filter
 /sbin/modprobe ip_conntrack
 /sbin/modprobe iptable_nat
-# Always accept loopback traffic
-$IPTABLES -A INPUT -i lo -j ACCEPT
+clear_fw
 
 # Allow established connections, and those not coming from the outside
 $IPTABLES -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
@@ -103,4 +106,6 @@ fi
 
 # Enable routing.
 echo 1 > /proc/sys/net/ipv4/ip_forward
+# save the whole rule set now
+$IPTABLES-save > "$IPTABLES_DATA"
 exit 0
