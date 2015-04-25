@@ -3,6 +3,10 @@
            state=stopped
   ignore_errors: yes
 
+- name: Remove iptables.service file from /etc
+  file: path=/etc/systemd/system/iptables.service 
+        state=absent
+
 - name: Install iptables service package
   yum: name=iptables-services
        state=installed
