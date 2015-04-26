@@ -20,7 +20,7 @@ The installation does not need to be done is a single process. There is a new XS
 Supported Network Modes 
 =======================
 
-At the administrative console at http://schoolserver/admin (username and password are available but not widely published) a user can select one of three server roles:
+At the administrative console at http://schoolserver/admin (username:xsce-admin password:g0adm1n -- note the numbers 0,1) a user can select one of three server roles:
 
    * Lan-Conatoller (Local Area Network) - In this mode, the server configures clients with ip addresses (dhcpd - dynamic host configuration protocol), name resolution (defines schoolserver for all clients)
    * Gateway -- does dhcpd (ip addresses),name lookup (dns), firewall, local web page cache for faster retrieval the second time, content filtering to block porn(dansguardian), site "whitelists" if wanted
@@ -29,6 +29,16 @@ At the administrative console at http://schoolserver/admin (username and passwor
 Based upon selection of the above mode at the Administrative Console, XSCE software will attempt to set up network connections. If appliance mode is wanted, the network adapter will be set up. If Gateway is selected, and one of the adapters discovers that it is connected to a source of ip addresses, that adapter will be the internet, and the other the wifi connector. If LanController is selected, any adapter found will be act as server to any clients that might ask to connect.
 
 The XSCE installation attempts to determine the network topology based on the number and types of connections it discovers. In general, it looks to see if there is a connection to a gateway and whether other wireless or wired connections are present. 
+
+A Note on Server Security
++++++++++++++++++++++++++
+The first time you sign into the console would be the best time to change the password, and before then next release, there will be a GUI option which makes this easy. But at this point in time, the server's text console, or a ssh session from another computer, is the way to accomplish this. As root, issue the following command::
+  
+   [root@locahost ~]# passwd xsce-admin
+   Changing password for user xsce-admin.
+   New password: <new password>
+   Retype new password: <new password>
+   passwd: all authentication tokens updated successfully.   
 
 Installation of Specific Hardware Platforms (Ordered small to Large)
 ===================================================================
