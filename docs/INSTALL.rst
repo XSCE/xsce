@@ -47,8 +47,11 @@ The fully installed XSCE image is available at::
 
    http://downloads.unleashkids.org/xscd/downloads/installer/rpi2
 
+XSCE On the XO 1.5, XO-1.75, or XO-4 laptop
+------------------------------------------
+
 Gateway Installation Network Configurations
--------------------------------------------
+===========================================
 
 | **One Dongle**
 |    eth0 - internal wifi for gateway
@@ -60,7 +63,7 @@ Gateway Installation Network Configurations
 |    eth2 - usb ethernet for schoolserver LAN connected to an access point
 
 Non-Gateway (aka "Appliance") Installation Network Configurations
------------------------------------------------------------------
+================================================================
 
 **NOTE:** Appliance installs integrate into existing networking infrastructure and do not include dhcpd, squid, dansguardian, or wondershaper.  This installation does not behave as an internet gateway.
 
@@ -71,9 +74,8 @@ Non-Gateway (aka "Appliance") Installation Network Configurations
 |    eth0 - internal wifi not used
 |    eth1 - usb ethernet connected to an existing LAN 
 
-
-On the XO 1.5, XO-1.75, or XO-4 laptop
-======================================
+How To Install XSCE on an XO
+----------------------------
 
 * Flash the XO1.75 or XO4 laptop with a stable `13.2.4 image`_ (or the XO1.5 with `13.2.3 image`_)
 
