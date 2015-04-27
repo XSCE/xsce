@@ -120,6 +120,12 @@
            state=stopped
   ignore_errors: yes
 
+# Disconnects the slaves quickly, deletes the bridge
+- name: Stop the LAN Bridge F21
+  shell: 'nmcli con delete "Bridge LAN"'
+  ignore_errors: yes
+  when: ansible_distribution_version >= "21"
+
 - name: Now delete all non-gateway ifcfg files
   shell: "rm -f {{ item }} "
   when: item|trim != discovered_wan_iface
