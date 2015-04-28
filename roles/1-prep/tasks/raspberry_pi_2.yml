@@ -6,7 +6,8 @@
   lineinfile: dest=/boot/config.txt
               regexp="^#device_tree_param=i2c1=on"
               line="device_tree_param=i2c1=on" 
-              register=rpiconfig
+              backrefs=yes
+  register: rpiconfig
 
 - name: Reboot if the config.txt was changed
   command: /sbin/reboot
