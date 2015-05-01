@@ -181,13 +181,15 @@ Option 1
    4. Click on software selection, and then on lower left of that page select "minimal install", done
    5. Then click start install
    6. You will need to put in a password for root, during the install.
+   7. At the end of the install, a button will appear, which asks you to reboot into the newly installed Operating System.
     
 3. Once you have a console prompt, the steps are pretty straight forward:
 
     a. Connect the wifi unit to the adapter that will be used as the local area network (LAN), and make sure everything is under power with link lights.
     b. Issue the following commands::
 
-         ping yahoo.com
+         ping yahoo.com (this verifies that the server is properly connected to internet after the reboot)
+         yum -y update
          yum -y install git ansible
          cd /opt
          mkdir -p schoolserver
