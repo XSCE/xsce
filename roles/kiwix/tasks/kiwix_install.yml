@@ -78,7 +78,7 @@
     - option: kiwix_content_path
       value: "{{ kiwix_content_path }}"      
     - option: enabled
-      value: "{{ kiwix_serve_enabled }}"
+      value: "{{ kiwix-serve_enabled }}"
 
 - name: Copy xsce-make-kiwix-lib to /usr/bin
   copy: src=xsce-make-kiwix-lib
@@ -91,4 +91,4 @@
   service: name=kiwix-serve 
            enabled=yes
            state=restarted           
-  when: kiwix_serve_enabled
+  when: kiwix-serve_enabled

@@ -187,7 +187,7 @@ rachel_doc_root: /var/www/html{{ rachel_url }}
 
 # Kiwix-Serve
 kiwix_install: True
-kiwix_serve_enabled: False
+kiwix-serve_enabled: False
 xsce_zim_path: /library/zims
 
 # KA Lite
