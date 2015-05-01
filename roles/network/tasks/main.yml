@@ -182,6 +182,13 @@
   tags:
     - network
 
+# monitor-connection-files defaults to no with F21, F18-F20 defaults to yes
+- name: Re-read network config files
+  shell: 'nmcli con reload'
+  ignore_errors: yes
+  when: ansible_distribution_version >= "21"
+
+
 - include: restart.yml
   when: not installing
   tags:
