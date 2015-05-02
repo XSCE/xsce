@@ -13,9 +13,10 @@
 
 # WIRELESS -- if any wireless is detected as gateway, it becomes WAN
 - name: Look for any wireless interfaces
+  shell: "cat /proc/net/wireless | grep -v -e Inter -e face | gawk -F: '{print $1}' | head -n1"
   register: wireless_list
-  shell: "ls -la /sys/class/net/*/phy80211 | awk -F / '{print $5}'"
   ignore_errors: True
+  changed_when: False
 
 # maybe never TODO: deal with more that one wireless device last match wins
 - name: Set the discovered wireless, if found
