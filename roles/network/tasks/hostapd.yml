@@ -60,11 +60,11 @@
            enabled=no
   when: xsce_lan_iface == "br0" or xsce_network_mode != "Appliance"
 
-- name: Enable network.service for bridged Wifi on rpi2
-  service: name=network
-           enabled=yes
-           state=started
-  when: xsce_wireless_lan_iface == "br0" and rpi_model != "none"
+#- name: Enable network.service for bridged Wifi on rpi2
+#  service: name=network
+#           enabled=yes
+#           state=started
+#  when: xsce_wireless_lan_iface == "br0" and rpi_model != "none"
 
 - name: Checking if slave is active waiting 10 seconds
   shell: "sleep {{ hostapd_wait }} | brctl show | grep {{ xsce_wireless_lan_iface }}"
