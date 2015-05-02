@@ -47,13 +47,13 @@
   service: enabled=yes
            name=hostapd.service
            state=restarted
-  when: xsce_network_mode != "Appliance"
+  when: xsce_wireless_lan_iface != "none" and xsce_network_mode != "Appliance"
 
 - name: Disable the Access Point Hostapd program
   service: enabled=no
            name=hostapd.service
            state=stopped
-  when: xsce_network_mode == "Appliance"
+  when: xsce_wireless_lan_iface == "none" or xsce_network_mode == "Appliance"
 
 - name: Disable network.service for bridged Wifi
   service: name=network

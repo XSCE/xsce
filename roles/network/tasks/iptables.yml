@@ -7,6 +7,10 @@
   file: path=/etc/systemd/system/iptables.service 
         state=absent
 
+- name: Remove iptables-xs.service file from /etc
+  file: path=/etc/systemd/system/iptables-xs.service 
+        state=absent
+
 - name: Install iptables service package
   yum: name=iptables-services
        state=installed
