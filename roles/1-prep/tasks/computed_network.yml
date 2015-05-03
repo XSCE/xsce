@@ -78,7 +78,7 @@
 - name: Set the variable for wireless_iface if present
   set_fact:
        xsce_wireless_lan_iface: "{{ discovered_wireless_iface }}"
-  when: discovered_wireless_iface != "none"
+  when: discovered_wireless_iface != "none" and discovered_wireless_iface != xsce_wan_iface
 
 # use value only if present
 - name: Setting detected lan
