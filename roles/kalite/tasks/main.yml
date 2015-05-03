@@ -11,7 +11,7 @@
   git: repo={{ kalite_repo_url }}
        dest={{ downloads_dir }}/ka-lite
        depth=1
-       version="0.12.x"
+       version="0.13.x"
   when: not {{ use_cache }}
   tags:
     - download2

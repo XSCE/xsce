@@ -47,24 +47,24 @@
   service: enabled=yes
            name=hostapd.service
            state=restarted
-  when: xsce_network_mode != "Appliance"
+  when: xsce_wireless_lan_iface != "none" and xsce_network_mode != "Appliance"
 
 - name: Disable the Access Point Hostapd program
   service: enabled=no
            name=hostapd.service
            state=stopped
-  when: xsce_network_mode == "Appliance"
+  when: xsce_wireless_lan_iface == "none" or xsce_network_mode == "Appliance"
 
 - name: Disable network.service for bridged Wifi
   service: name=network
            enabled=no
   when: xsce_lan_iface == "br0" or xsce_network_mode != "Appliance"
 
-#- name: Enable network.service for non-bridged Wifi
+#- name: Enable network.service for bridged Wifi on rpi2
 #  service: name=network
 #           enabled=yes
 #           state=started
-#  when: xsce_wireless_lan_iface != "none" and xsce_network_mode != "Appliance"
+#  when: xsce_wireless_lan_iface == "br0" and rpi_model != "none"
 
 - name: Checking if slave is active waiting 10 seconds
   shell: "sleep {{ hostapd_wait }} | brctl show | grep {{ xsce_wireless_lan_iface }}"

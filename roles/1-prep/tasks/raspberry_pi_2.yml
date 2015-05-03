@@ -1,5 +1,20 @@
 # Setup specific to the Raspberry Pi
 #
+#
+# kernel 3.18 requires a change to the device tree (and reboot)
+- name: Check for needing to enable i2c rtc device in config.txt
+  lineinfile: dest=/boot/config.txt
+              regexp="^#device_tree_param=i2c1=on"
+              line="device_tree_param=i2c1=on" 
+              backrefs=yes
+  register: rpiconfig
+
+- name: Reboot if the config.txt was changed
+  command: /sbin/reboot
+  when: rpiconfig.changed
+  async: 300
+  poll: 120
+
 - name: Load the modules for the RTC
   template: dest=/etc/modules-load.d/rtc.conf
             src=rtc.conf
