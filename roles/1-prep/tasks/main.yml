@@ -1,3 +1,5 @@
 - include: hw_discovery.yml
 - include: computed_vars.yml
 - include: computed_network.yml
+- include: raspberry_pi_2.yml
+  when: rpi_model != "none"

@@ -9,4 +9,5 @@ expect "Password:" {send "{{ kalite_password }}\r"}
 expect "Password (again):" {send "{{ kalite_password }}\r"}
 expect "Please enter a name for this server" {send "{{ kalite_server_name }}\r"}
 expect "Please enter a one-line description" {send "\r"}
+expect "Do you wish to download the assessment items package now?" {send "yes\r"}
 expect "CONGRATULATIONS!" {exit}
