@@ -7,3 +7,4 @@ dependencies:
    - { role: portal, tags: ['services','portal','base'] }
    - { role: xsce-admin, tags: ['services','xsce-admin','base'] }
    - { role: activation-server, tags: ['olpc','activation-server','core'] } 
+   - { role: nrpe, tags: ['services','nrpe','core'] }
