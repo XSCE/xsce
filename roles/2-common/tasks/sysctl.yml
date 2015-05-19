@@ -1,3 +1,6 @@
+- name: make sure the bridge module is loaded (centos i686 failure)
+  modprobe: name=bridge
+  
 - sysctl: name=net.ipv4.ip_forward value=1 state=present
 - sysctl: name=net.ipv4.conf.default.rp_filter value=1 state=present
 - sysctl: name=net.ipv4.conf.default.accept_source_route value=0 state=present
