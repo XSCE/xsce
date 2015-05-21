@@ -65,7 +65,7 @@ view "localhost_resolver"
 	/* and these are the local subnet names  */
 	zone "{{ xsce_domain }}" in {
 		type master;
-		file "school.internal.zone.db";
+		file "school.local.zone.db";
 		allow-update {127.0.0.1; };
 	};
 };
