@@ -5,3 +5,4 @@ dependencies:
    - { role: monit, tags: ['services','monit','tools'], when: monit_install }
    - { role: vnstat, tags: ['services','vnstat','tools'], when: vnstat_install }
    - { role: xovis, tags: ['services','xovis','tools'], when: xovis_install }
+   - { role: awstats, tags: ['services','awstats','tools'], when: awstats_install }
