@@ -38,3 +38,4 @@
 - name: Restart iptables service
   service: name=iptables
            state=restarted
+  ignore_errors: True
