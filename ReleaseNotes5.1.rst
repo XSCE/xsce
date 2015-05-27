@@ -1,6 +1,4 @@
-Testing
-
-asd
+Testing 5.1
 
 ==========================
 Release Notes for XSCE 5.1
