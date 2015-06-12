@@ -83,7 +83,7 @@
     - option: name
       value: "openvpn"
     - option: description
-      value: "Openvpn is a means of Contacting a server anywhere on the internet via a middleman server"
+      value: '"Openvpn is a means of Contacting a server anywhere on the internet via a middleman server"'
     - option: middleman_url
       value: "{{ vpn_presence }}"
     - option: port
