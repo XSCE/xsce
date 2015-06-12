@@ -9,16 +9,17 @@
     - /library/zims/content
     - /library/zims/index
     - /library/downloads/zims
-    
+    - /library/working/zims
+
 # we get a whole web server for intel but only the kiwix execs for arm
 
 - name: Unarchive it to permanent location - not bin_only
-  unarchive: src="{{ downloads_dir }}/{{ kiwix_src_file }}"  
+  unarchive: src="{{ downloads_dir }}/{{ kiwix_src_file }}"
              dest="{{ xsce_base }}"
              owner=root
              group=root
   when: not kiwix_src_bin_only
-  
+
 - name: Create directory for kiwix bin
   file: path="{{ xsce_base }}/kiwix/bin"
         owner=root
@@ -27,20 +28,21 @@
         state=directory
 
 - name: Unarchive it to permanent location - bin only
-  unarchive: src="{{ downloads_dir }}/{{ kiwix_src_file }}"  
+  unarchive: src="{{ downloads_dir }}/{{ kiwix_src_file }}"
              dest="{{ xsce_base }}/kiwix/bin"
              owner=root
              group=root
   when: kiwix_src_bin_only
-    
+
 # workaround because unarchive does not set ownership properly
 - name: Set kiwix ownership
   command: "chown -R root:root {{ xsce_base }}"
 
-- name: Create kiwix library file
-  file: dest='{{ kiwix_library_xml }}'
-        state=touch    
-                
+# we need no file rather than an empty one
+#- name: Create kiwix library file
+#  file: dest='{{ kiwix_library_xml }}'
+#        state=touch
+
 # Create kiwix service
 
 - name: Create kiwix-serve service
@@ -50,9 +52,9 @@
             owner=root
             group=root
             mode={{ item.mode }}
-  with_items:    
+  with_items:
     - { src: 'kiwix-serve.service.j2', dest: '/etc/systemd/system/kiwix-serve.service', mode: '0655'}
-    
+
 #    - { src: 'kiwix-serve-init.j2', dest: '/usr/libexec/kiwix-serve-init', mode: '0755'}
 
 - name: add kiwix to service list
@@ -68,15 +70,15 @@
     - option: kiwix_url
       value: "{{ kiwix_url }}"
     - option: kiwix_path
-      value: "{{ kiwix_path }}"      
+      value: "{{ kiwix_path }}"
     - option: kiwix_port
       value: "{{ kiwix_port }}"
     - option: xsce_zim_path
-      value: "{{ xsce_zim_path }}"            
+      value: "{{ xsce_zim_path }}"
     - option: kiwix_library_xml
-      value: "{{ kiwix_library_xml }}"      
+      value: "{{ kiwix_library_xml }}"
     - option: kiwix_content_path
-      value: "{{ kiwix_content_path }}"      
+      value: "{{ kiwix_content_path }}"
     - option: enabled
       value: "{{ kiwix_serve_enabled }}"
 
@@ -85,10 +87,10 @@
         dest=/usr/bin/xsce-make-kiwix-lib
         mode=0755
         owner=root
-        group=root  
+        group=root
 
 - name: Enable kiwix-serve service
-  service: name=kiwix-serve 
+  service: name=kiwix-serve
            enabled=yes
-           state=restarted           
+           state=restarted
   when: kiwix_serve_enabled
