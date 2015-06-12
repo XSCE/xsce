@@ -1,3 +1,7 @@
+- name: install yum if it has been dropped from our distribution -- Fedora 22 uses dnf!!!
+  shell: dnf install -y yum
+  when: ansible_distribution == "Fedora" and ansible_distribution_version|int >= 22
+
 - name: Install common packages
   yum: name={{ item }}
        state=present

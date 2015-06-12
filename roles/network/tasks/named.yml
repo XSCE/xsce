@@ -42,6 +42,8 @@
     - { src: 'named/school.internal.zone.16.in-addr.db.j2', dest: '/var/named-xs/school.internal.zone.16.in-addr.db' , owner: "named" , mode: '0644'}
     - { src: 'named/school.internal.zone.32.in-addr.db.j2', dest: '/var/named-xs/school.internal.zone.32.in-addr.db' , owner: "named" , mode: '0644'}
     - { src: 'named/school.internal.zone.48.in-addr.db.j2', dest: '/var/named-xs/school.internal.zone.48.in-addr.db' , owner: "named" , mode: '0644'}
+# the following two files are not writeable by named, but bind 9.4 cannot discover that fact correctly
     - { src: 'named/school.internal.zone.db', dest: '/var/named-xs/school.internal.zone.db' , owner: "root" , mode: '0644'}
+    - { src: 'named/school.local.zone.db', dest: '/var/named-xs/school.local.zone.db' , owner: "root" , mode: '0644'}
     - { src: 'named/school.internal.zone.in-addr.db.j2', dest: '/var/named-xs/school.internal.zone.in-addr.db' , owner: "named" , mode: '0644'}
     - { src: 'named/dummy', dest: '/var/named-xs/data/dummy' , owner: "named" , mode: '0644'}
