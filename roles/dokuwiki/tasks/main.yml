@@ -1,0 +1,20 @@
+- name: Get the Dokuwiki software
+  get_url: url="http://download.dokuwiki.org/src/dokuwiki/dokuwiki-stable.tgz"  dest={{ downloads_dir}}/dokuwiki-stable.tgz
+  when: not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download2
+
+- name: Copy it to permanent location /opt
+  unarchive: src={{ downloads_dir}}/dokuwiki-stable.tgz  dest=/opt
+
+- name: Rename /opt/dokuwiki* to /opt/dokuwiki
+  shell: if [ ! -d /opt/dokuwiki ]; then mv /opt/dokuwiki* /opt/dokuwiki; fi
+
+- name: Install config file for dokuwiki in Apache
+  template: src=dokuwiki.conf.j2 dest=/etc/httpd/conf.d/dokuwiki.conf
+
+- name: Change permissions on engine directory so apache can write
+  file: path=/opt/dokuwiki owner=apache mode=0755 state=directory recurse=yes
+
+- name: Restart apache, so it picks up the new aliases
+  service: name=httpd state=restarted
