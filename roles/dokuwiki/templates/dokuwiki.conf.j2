@@ -1,0 +1,8 @@
+RewriteEngine on
+
+Alias /wiki /opt/dokuwiki
+<Directory /opt/dokuwiki>
+    Options Indexes FollowSymLinks
+    AllowOverride All
+    Require all granted
+</Directory>
