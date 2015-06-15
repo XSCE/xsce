@@ -49,11 +49,11 @@
 										<li class="active"><a href="#confNetwork">Network Parameters</a></li>
 										<li><a href="#confNetFilter">Internet Caching/Filtering</a></li>
 										<li><a href="#confServices">Services Enabled</a></li>
-										<li><a href="#confWhitelist">Edit White List</a></li>
+										<li><a href="#confWhitelist">Edit Permitted URLs</a></li>
 									</ul>
 									<h2>Actions</h2>
 									<div class="action-buttons">
-										<button id="SAVE-WHITELIST" type="button" class="btn btn-lg btn-success">Update White List</button>
+										<button id="SAVE-WHITELIST" type="button" class="btn btn-lg btn-success">Update Permitted URLs List</button>
 										<button id="SET-CONF-CMD" type="button" class="btn btn-lg btn-success">Save Configuration</button>
 										<button id="RUN-ANSIBLE" type="button" class="btn btn-lg btn-danger">Install Configured Server Options</button>
 									</div>
@@ -119,7 +119,7 @@
 												</div>
 												<div class="checkbox">
 													<label>
-														<input type="checkbox" name="gw_squid_whitelist" id="xo-gw_squid_whitelist">Check to Restrict Web Page Access to a Specific List of Sites (whitelist)
+														<input type="checkbox" name="gw_squid_whitelist" id="xo-gw_squid_whitelist">Check to Restrict Web Page Access to a Specific List of Sites (Permitted URLs)
 													</label>
 												</div>
 												<div class="checkbox">
@@ -236,11 +236,11 @@
 											</form>
 										</div> <!--  services pane -->
 										<div class="tab-pane" id="confWhitelist"> <!-- Start Configure Whitelist Pane -->
-											<h2>Edit Whitelist</h2>
+											<h2>Edit Permitted URLs</h2>
 											<p><b>Please Note:</b> These parameters only take effect when you have Checked Server should act as a Gateway to the Internet the previous screen.</p>
 											<form role="form" id="confNetFilterForm">
 												<div class="form-group">
-													<label for="xsce_domain">White List URLs</label>
+													<label for="xsce_domain">Permitted URLs</label>
 													<textarea rows="20" name="xsce_whitelist" class="form-control" id="xsce_whitelist" placeholder="Enter a list of permitted URLs."></textarea>
 												</div>
 											</form>
@@ -1000,7 +1000,7 @@
 						cmd = "SET-WHLIST " + JSON.stringify(whlist_ret);
 						consoleLog(cmd);
 						sendCmdSrvCmd(cmd, genericCmdHandler);
-            alert ("Saving White List.");
+            alert ("Saving Permitted URLs List.");
 						return true;
 					}
 

@@ -33,6 +33,6 @@ Internet Caching/Filtering
 Services Enabled
 ----------------
 
-Edit White List
----------------
+Edit Permitted URLs
+-------------------
 
