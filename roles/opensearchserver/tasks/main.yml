@@ -11,8 +11,24 @@
 - name: Configure the server to run on port 9092 (as cockpit runs on port 9090 in fedora)
   replace: dest='/etc/opensearchserver' regexp='SERVER_PORT=9090' replace='SERVER_PORT=9092'
 
-- name: Enable service
-  service: name=opensearchserver enabled=yes
+- name: Create OpenSearchServer service
+  template: backup=yes
+            src={{ item.src }}
+            dest={{ item.dest }}
+            owner=root
+            group=root
+            mode={{ item.mode }}
+  with_items:
+    - { src: 'opensearchserver.service.j2', dest: '/etc/systemd/system/opensearchserver.service', mode: '0655'}
 
-- name: (Re)start service
-  command: service opensearchserver restart
+- name: Enable OpenSearchServer service
+  service: name=opensearchserver
+           enabled=yes
+           state=restarted
+  when: oss_enabled
+
+#- name: Enable opensearchserver service
+#  command: chkconfig opensearchserver on
+
+#- name: (Re)start service
+#  command: service opensearchserver restart
