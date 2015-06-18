@@ -1,5 +1,5 @@
 - name: Get the Dokuwiki software
-  get_url: url="http://download.dokuwiki.org/src/dokuwiki/dokuwiki-stable.tgz"  dest={{ downloads_dir}}/dokuwiki-stable.tgz
+  get_url: url="{{ xsce_download_url }}/dokuwiki-2014-09-29.tgz"  dest={{ downloads_dir}}/dokuwiki-stable.tgz
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
