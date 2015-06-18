@@ -4,7 +4,7 @@
   tags:
     - download2
 
-- name: Copy it to permanent location /opt
+- name: Copy it to permanent location /library
   unarchive: src={{ downloads_dir}}/dokuwiki-stable.tgz  dest=/library
 
 - name: Rename /library/dokuwiki* to /library/dokuwiki
