@@ -22,10 +22,6 @@ do
     mv $zimpath $DESTDIR/content/$zimfile; rc1=$?
     rc=$((rc + rc1))
 
-    if [[ $rc1 == 0 ]]; then
-        echo "Removing $zimpath"
-        rm $zimpath
-    fi
 done
 
 if  [[ $rc > 0 ]]; then

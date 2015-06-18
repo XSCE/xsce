@@ -17,7 +17,7 @@
       <h3>School Server powered by XSCE</h3>
 	  </div>
   </div>
-  <div style="clear:both";></div>
+  <div style="clear:both;"></div>
 
 <div id="main">
 <br><h2>Interesting Things:</h2>
