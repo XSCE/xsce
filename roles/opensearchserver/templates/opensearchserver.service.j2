@@ -1,0 +1,12 @@
+[Unit]
+Description=OpenSearchServer daemon service
+After=syslog.target network.target local-fs.target
+
+[Service]
+Type=forking
+ExecStart=/bin/bash /etc/init.d/opensearchserver start
+ExecStop=/bin/bash /etc/init.d/opensearchserver stop
+ExecReload=/bin/bash /etc/init.d/opensearchserver restart
+
+[Install]
+WantedBy=multi-user.target

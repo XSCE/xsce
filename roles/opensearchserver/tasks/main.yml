@@ -1,0 +1,3 @@
+- name: OpenSearchServer will only install on x86_64
+  include: install.yml
+  when: ansible_userspace_architecture == "x86_64"

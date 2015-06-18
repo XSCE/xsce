@@ -1,0 +1,29 @@
+- name: Get the OpenSearchServer software
+  command: wget -c -t 20 http://people.sugarlabs.org/anish/opensearchserver-1.5.12-b940.rpm -O {{ downloads_dir}}/opensearchserver.rpm
+  when: not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download2
+
+
+- name: Install the package
+  yum: name={{ downloads_dir}}/opensearchserver.rpm
+       state=present
+
+- name: Configure the server to run on port 9092 (as cockpit runs on port 9090 in fedora)
+  replace: dest='/etc/opensearchserver' regexp='SERVER_PORT=9090' replace='SERVER_PORT=9092'
+
+- name: Create OpenSearchServer service
+  template: backup=yes
+            src={{ item.src }}
+            dest={{ item.dest }}
+            owner=root
+            group=root
+            mode={{ item.mode }}
+  with_items:
+    - { src: 'opensearchserver.service.j2', dest: '/etc/systemd/system/opensearchserver.service', mode: '0655'}
+
+- name: Enable OpenSearchServer service
+  service: name=opensearchserver
+           enabled=yes
+           state=restarted
+  when: oss_enabled
