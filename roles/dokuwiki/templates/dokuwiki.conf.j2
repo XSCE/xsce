@@ -1,7 +1,7 @@
 RewriteEngine on
 
-Alias /wiki /opt/dokuwiki
-<Directory /opt/dokuwiki>
+Alias {{ dokuwiki_url }} /library/dokuwiki
+<Directory /library/dokuwiki>
     Options Indexes FollowSymLinks
     AllowOverride All
     Require all granted
