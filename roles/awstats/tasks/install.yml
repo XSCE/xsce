@@ -7,7 +7,6 @@
     - pwauth
   tags:
     - download
-  when: awstats_install
 
 - name: Create directory for awstat to use as intermediate summary storage
   file: path={{ item }}
@@ -20,14 +19,14 @@
 
 - name: Install the Apache config for Advanced Web Statistics 
   template: src=awstats.schoolserver.conf.j2
-            dest=/etc/httpd/conf.d/awstats.schoolserver.conf
+            dest=/etc/httpd/conf.d/awstats.conf
             owner=root
             group=root
             mode=0644
   when: awstats_enabled
 
 - name: On first enabling of awstats, summarize httpd logs up to now
-  shell: /usr/bin/perl /usr/share/awstats/wwwhtml/awstats.pl -config=schoolserver -update
+  shell: /usr/bin/perl /usr/share/awstats/wwwhtml/awstats.pl  -update
   when: awstats_enabled
 
 - name: remove config file when it is disabled

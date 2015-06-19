@@ -47,7 +47,7 @@
 # If there are several log files from load balancing servers :
 # Example: "/pathtotools/logresolvemerge.pl *.log |"
 #
-LogFile="/var/log/httpd/access_log"
+LogFile="/usr/share/awstats/wwwhtml/cgi/logresolvemerge.pl /var/log/httpd/access_log* |"
 
 
 # Enter the log file type you want to analyze.
@@ -200,7 +200,7 @@ DNSLookup=2
 # Example: "C:/awstats_data_dir"
 # Default: "."          (means same directory as awstats.pl)
 #
-DirData="/var/lib/awstats"
+DirData="{{ awstats_data_dir }}"
 
 
 # Relative or absolute web URL of your awstats cgi-bin directory.
