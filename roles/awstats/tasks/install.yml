@@ -18,7 +18,7 @@
     - "{{ awstats_data_dir }}"
 
 - name: Install the Apache config for Advanced Web Statistics 
-  template: src=apache_awstats.conf.j2
+  template: src=apache-awstats.conf.j2
             dest=/etc/httpd/conf.d/awstats.conf
             owner=root
             group=root
