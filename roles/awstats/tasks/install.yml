@@ -15,7 +15,7 @@
         group=root
         state=directory
   with_items:
-    - "{{ awstats_data_path }}"
+    - "{{ awstats_data_dir }}"
 
 - name: Install the Apache config for Advanced Web Statistics 
   template: src=awstats.schoolserver.conf.j2
@@ -26,7 +26,7 @@
   when: awstats_enabled
 
 - name: On first enabling of awstats, summarize httpd logs up to now
-  shell: /usr/bin/perl /usr/share/awstats/wwwhtml/awstats.pl  -update
+  shell: /usr/bin/perl /usr/share/awstats/wwwroot/cgi-bin/awstats.pl  -update
   when: awstats_enabled
 
 - name: remove config file when it is disabled

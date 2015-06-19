@@ -1,2 +1,2 @@
-- include: name=install_awstats.yml
+- include: install.yml
   when: awstats_install
