@@ -33,8 +33,14 @@
             mode=0644
   when: awstats_enabled
 
+- name: Create a symbolic link to use when access is by ip address
+  file: src=/etc/awstats/awstats.schoolserver.conf
+        dest=/etc/awstats/awstats.conf
+        state=link
+  when: awstats_enabled
+
 - name: On first enabling of awstats, summarize httpd logs up to now
-  shell: /usr/bin/perl /usr/share/awstats/wwwroot/cgi-bin/awstats.pl  -update
+  shell: /usr/bin/perl /usr/share/awstats/wwwroot/cgi-bin/awstats.pl -config=schoolserver -update
   when: awstats_enabled
 
 - name: remove config file when it is disabled
