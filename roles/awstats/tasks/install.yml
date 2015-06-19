@@ -18,8 +18,16 @@
     - "{{ awstats_data_dir }}"
 
 - name: Install the Apache config for Advanced Web Statistics 
-  template: src=awstats.schoolserver.conf.j2
+  template: src=apache_awstats.conf.j2
             dest=/etc/httpd/conf.d/awstats.conf
+            owner=root
+            group=root
+            mode=0644
+  when: awstats_enabled
+
+- name: Install the awstats config for Advanced Web Statistics 
+  template: src=awstats.schoolserver.conf.j2
+            dest=/etc/awstats/awstats.schoolserver.conf
             owner=root
             group=root
             mode=0644
