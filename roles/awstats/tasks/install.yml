@@ -1,0 +1,37 @@
+- name: Install awstats package
+  yum: pkg={{ item }} state=installed
+  with_items:
+    - awstats
+    - mod_ssl
+    - mod_authnz_external
+    - pwauth
+  tags:
+    - download
+  when: awstats_install
+
+- name: Create directory for awstat to use as intermediate summary storage
+  file: path={{ item }}
+        mode=0755
+        owner=root
+        group=root
+        state=directory
+  with_items:
+    - "{{ awstats_data_path }}"
+
+- name: Install the Apache config for Advanced Web Statistics 
+  template: src=awstats.schoolserver.conf.j2
+            dest=/etc/httpd/conf.d/awstats.schoolserver.conf
+            owner=root
+            group=root
+            mode=0644
+  when: awstats_enabled
+
+- name: On first enabling of awstats, summarize httpd logs up to now
+  shell: /usr/bin/perl /usr/share/awstats/wwwhtml/awstats.pl -config=schoolserver -update
+  when: awstats_enabled
+
+- name: remove config file when it is disabled
+  file: dest=/etc/httpd/conf.d/awstats.schoolserver.conf
+        state=absent
+  when: not awstats_enabled
+
