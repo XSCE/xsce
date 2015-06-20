@@ -32,7 +32,7 @@
   git: repo=https://github.com/PathagarBooks/pathagar.git
        dest={{ pathagar_src }}
        update=yes
-       version=xsce-devel
+       version=master
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
