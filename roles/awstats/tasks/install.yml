@@ -48,3 +48,12 @@
         state=absent
   when: not awstats_enabled
 
+- name: change the log format of squid to be compatible with awstats
+  lineinfile: line='logformat combined %>a %ui %un [%{%d/%b/%Y:%H:%M:%S +0000}tl] "%rm %ru HTTP/%rv" %Hs %<st "%{Referer}>h" "%{User-Agent}>h" %Ss:%Sh'
+              dest=/etc/squid/squid-xs.conf
+  when: squid_install
+
+- name: select this format
+  lineinfile: dest=/squid/squid-xs.conf
+              line="access_log /var/log/squid3/access.log combined"
+  when: squid_install
