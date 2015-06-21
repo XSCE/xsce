@@ -23,9 +23,11 @@
     - option: name
       value: rachel
     - option: description
-      value: "Educational resources, packaged together for download and distribution in places without internet."
+      value: '"Educational resources, packaged together for download and distribution in places without internet."'
     - option: path
       value: "{{ rachel_content_path }}"
+    - option: rachel_src_url
+      value: "{{ rachel_src_url }}"
     - option: content_found
       value: "{{ rachel_content_found }}"
     - option: enabled
