@@ -5,7 +5,7 @@
     - download2
 
 - name: Copy it to permanent location /library
-  unarchive: src={{ downloads_dir}}/dokuwiki-stable.tgz  dest=/library
+  unarchive: src={{ downloads_dir}}/{{ dokuwiki_version }}  dest=/library
 
 - name: Rename /library/dokuwiki* to /library/dokuwiki
   shell: if [ ! -d /library/dokuwiki ]; then mv /library/dokuwiki* /library/dokuwiki; fi
