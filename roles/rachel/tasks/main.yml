@@ -1,3 +1,12 @@
+- name: Create various directories for rachel
+  file: path={{ item }}
+        owner=root
+        group=root
+        mode=0755
+        state=directory
+  with_items:
+    - /library/rachel
+
 - name: See if rachel content is installed
   stat: path="{{ rachel_content_path }}/index.php"
   register: rachel_content

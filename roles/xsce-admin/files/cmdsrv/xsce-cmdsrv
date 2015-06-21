@@ -910,6 +910,8 @@ def install_rachel(cmd_info):
         return resp
 
     downloadSrcFile = xsce_ini['rachel']['rachel_src_url']
+    rachel_version = xsce_ini['rachel']['rachel_version']
+
     try:
         rc = urllib2.urlopen(downloadSrcFile)
         rc.close()
@@ -1505,7 +1507,6 @@ def read_xsce_cmdsrv_conf_file():
     zim_download_prefix = conf['zim_download_prefix']
     rachel_downloads_dir = conf['rachel_downloads_dir']
     rachel_working_dir = conf['rachel_working_dir']
-    rachel_version = conf['rachel_version']
 
 # These two were taken from the OLPC idmgr application
 
