@@ -13,7 +13,7 @@
 
 - name: Install statistics-consolidation with pip
   pip: name=stats-consolidation version=2.1.2
-       extra_args="--no-index --find-links=file://{{ pip_packages_dir }}/pytz"
+       extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
 
 - name: Install required libraries
   yum: name={{ item }}

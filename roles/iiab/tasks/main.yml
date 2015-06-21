@@ -12,10 +12,6 @@
   tags:
     - download
 
-- name: Remove Pip Tmp directory
-  file: path=/piptmp
-        state=absent
-
 - name: download latest setuptools
   shell: pip install --download {{ pip_packages_dir }} ez_setup
   when: not {{ use_cache }} and not {{ no_network }}
@@ -60,14 +56,14 @@
 - name: download IIAB with pip
   pip: name=Internet-in-a-Box
        state=latest
-       extra_args="-b /piptmp --download {{ pip_packages_dir }}"
+       extra_args="--download {{ pip_packages_dir }}"
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
 
 - name: install IIAB  from local download directory
   pip: name=Internet-in-a-Box
-       extra_args="-b /piptmp --no-index --find-links=file:///{{ pip_packages_dir }}"
+       extra_args="--no-index --find-links=file:///{{ pip_packages_dir }}"
 
 # Patch the Whoosh dependency to downgrade to 2.6
 
@@ -79,7 +75,7 @@
   pip: name=whoosh
        version=2.6
        state=present
-       extra_args="-b /piptmp --download {{ pip_packages_dir }}"
+       extra_args="--download {{ pip_packages_dir }}"
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
@@ -88,11 +84,7 @@
   pip: name=whoosh
        version=2.6
        state=present
-       extra_args="-b /piptmp --no-index --find-links=file:///{{ pip_packages_dir }}"
-
-- name: Remove Pip Tmp directory
-  file: path=/piptmp
-        state=absent
+       extra_args="--no-index --find-links=file:///{{ pip_packages_dir }}"
 
 - name: Copy IIAB config file
   template: backup=yes
