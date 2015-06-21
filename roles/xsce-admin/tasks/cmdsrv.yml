@@ -18,7 +18,7 @@
 
 - name: Download zeromq and python binding
   pip: name=pyzmq
-       extra_args="--download-cache {{ pip_packages_dir }}"
+       extra_args="--download {{ pip_packages_dir }}"
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
@@ -44,7 +44,7 @@
 
 - name: Download speedtest-cli
   pip: name=speedtest-cli
-       extra_args="--download-cache {{ pip_packages_dir }}"
+       extra_args="--download {{ pip_packages_dir }}"
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
