@@ -140,7 +140,7 @@ $("#INST-ZIMS").click(function(){
     }
   });
   button_feedback("#INST-ZIMS", false);
-  procZimGrous();
+  procZimGroups();
 });
 
 $("#launchKaliteButton").click(function(){
@@ -164,19 +164,38 @@ $("#KIWIX-LIB-REFRESH").click(function(){
 // Util Buttons
 
 $("#JOB-STATUS-REFRESH").click(function(){
+	button_feedback("#JOB-STATUS-REFRESH", true);
   getJobStat();
+  button_feedback("#JOB-STATUS-REFRESH", false);
 });
 
 $("#CANCEL-JOBS").click(function(){
+	var cmdList = [];
   button_feedback("#CANCEL-JOBS", true);
   $('#jobStatTable input').each( function(){
     if (this.type == "checkbox")
-    if (this.checked){
-      job_idArr = this.id.split('-');
-      job_id = job_idArr[1];
-      cancelJob(job_id);
-    }
+      if (this.checked){
+        job_idArr = this.id.split('-');
+        job_id = job_idArr[1];
+
+        // cancelJobFunc returns the function to call not the result as needed by array.push()
+        cmdList.push(cancelJobFunc(job_id));
+        if (job_status[job_id]["cmd_verb"] == "INST-ZIMS"){
+        	var zim_id = job_status[job_id]["cmd_args"]["zim_id"];
+        	consoleLog (zim_id);
+          if (zimsScheduled.indexOf(zim_id) > -1){
+            zimsScheduled.pop(zim_id);
+            updateZimDiskSpaceUtil(zim_id, false)
+            procZimGroups();
+            //$( "input[name*='" + zim_id + "']" ).checked = false;
+          }
+        }
+        this.checked = false;
+      }
   });
+  //consoleLog(cmdList);
+  $.when.apply($, cmdList).then(getJobStat, procZimCatalog);
+  alert ("Jobs marked for Cancellation.\n\nPlease click Refresh to see the results.");
   button_feedback("#CANCEL-JOBS", false);
 });
 
@@ -197,12 +216,17 @@ $("#gui_static_wan").change(function(){
   gui_static_wanVal();
 });
 
-function button_feedback(id,turn_on) {
-  if (turn_on)
-  $(id).css({opacity:".5"});
-  else
-    $(id).css({opacity:"1"});
+function button_feedback(id, grey_out) {
+	// true means grey out the button and disable, false means the opposite
+  if (grey_out){
+  	$(id).prop('disabled', true);
+    $(id).css({opacity:".5"});
   }
+  else {
+  	$(id).css({opacity:"1"});
+    $(id).prop('disabled', false);
+  }
+}
 
 // Field Validations
 
@@ -507,7 +531,18 @@ function setConfigVars ()
     cmd_args = {}
     cmd_args['zim_id'] = zim_id;
     cmd = command + " " + JSON.stringify(cmd_args);
-    sendCmdSrvCmd(cmd, genericCmdHandler);
+    sendCmdSrvCmd(cmd, genericCmdHandler, "", instZimError, cmd_args);
+    return true;
+  }
+
+  function instZimError(data, cmd_args)
+  {
+    consoleLog(cmd_args);
+    //cmdargs = JSON.parse(command);
+    //consoleLog(cmdargs);
+    consoleLog(cmd_args["zim_id"]);
+    zimsScheduled.pop(cmd_args["zim_id"]);
+    procZimGroups();
     return true;
   }
 
@@ -521,7 +556,7 @@ function setConfigVars ()
   function getKiwixCatalog() // Downloads kiwix catalog from kiwix
   {
     command = "GET-KIWIX-CAT";
-    sendCmdSrvCmd(command, procKiwixCatalog);
+    sendCmdSrvCmd(command, procKiwixCatalog, "KIWIX-LIB-REFRESH");
     return true;
   }
 
@@ -534,6 +569,7 @@ function setConfigVars ()
   function procKiwixCatalog() {
     readKiwixCatalog();
     procZimCatalog();
+    alert ("Kiwix Catalog has been downloaded.");
   }
 
   function procZimStatInit(data) {
@@ -767,6 +803,7 @@ function procJobStat(data)
   job_status = {};
   var html = "";
   var html_break = '<br>';
+
   data.forEach(function(entry) {
     //console.log(entry);
     html += "<tr>";
@@ -800,6 +837,10 @@ function procJobStat(data)
     html += "<td>" + entry[4] + "</td>";
 
     html += "</tr>";
+
+    var cmd_parse = entry[5].split(" ");
+    job_info['cmd_verb'] = cmd_parse[0];
+    job_info['cmd_args'] = JSON.parse(cmd_parse[1]);
     job_status[job_info['job_no']] = job_info;
 
   });
@@ -817,8 +858,20 @@ function cancelJob(job_id)
   cmd_args = {}
   cmd_args['job_id'] = job_id;
   cmd = command + " " + JSON.stringify(cmd_args);
-  sendCmdSrvCmd(cmd, genericCmdHandler);
+  $.when(sendCmdSrvCmd(cmd, genericCmdHandler)).then(getJobStat);
   return true;
+}
+
+function cancelJobFunc(job_id)
+{
+  command = "CANCEL-JOB"
+  cmd_args = {}
+  cmd_args['job_id'] = job_id;
+  cmd = command + " " + JSON.stringify(cmd_args);
+  return $.Deferred( function () {
+  	var self = this;
+  	sendCmdSrvCmd(cmd, genericCmdHandler);
+  	});
 }
 
 function getSysMem()
@@ -943,14 +996,16 @@ function setZimDiskSpace(){
 
 function updateZimDiskSpace(cb){
   var zim_id = cb.name
+  updateZimDiskSpaceUtil(zim_id, cb.checked);
+}
+
+function updateZimDiskSpaceUtil(zim_id, checked){
   var zim = zimCatalog[zim_id]
   var size =  parseInt(zim.size);
 
-  consoleLog(cb);
-  consoleLog(zim);
   var zimIdx = selectedZims.indexOf(zim_id);
 
-  if (cb.checked){
+  if (checked){
     if (zimsInstalled.indexOf(zim_id) == -1){ // only update if not already installed zims
       sysStorage.zims_selected_size += size;
       selectedZims.push(zim_id);
@@ -1056,18 +1111,20 @@ function formCommand(cmd_verb, args_name, args_obj)
 
 // monitor for awhile and use version if no problems present
 
-function sendCmdSrvCmd(command, callback, buttonId) {
+function sendCmdSrvCmd(command, callback, buttonId, errCallback, cmdArgs) {
   // takes following arguments:
-  //   command - command to send to cmdsrv
-  //   callback - function to call on success
-  //   buttonId - ID of button to disable and re-enable
+  //   command - Command to send to cmdsrv
+  //   callback - Function to call on success
+  //   buttonId - Optional ID of button to disable and re-enable
+  //   errCallback - Optional function to call if return from cmdsrv has error object; not the same as an error in ajax
+  //   cmdArgs - Optional arguments to original command for use by errCallback
   //   TODO  - add assignmentVar to can assign variable before running callback
   //alert ("in sendCmdSrvCmd(");
   //consoleLog ('buttonid = ' + buttonId);;
   if (buttonId === undefined)
   buttonId = "";
   else
-    $('#' + buttonId).prop('disabled', true);
+    button_feedback('#' + buttonId, true);
 
     resp = $.ajax({
       type: 'POST',
@@ -1078,10 +1135,23 @@ function sendCmdSrvCmd(command, callback, buttonId) {
       dataType: 'json',
       buttonId: buttonId
     })
-    .done(callback)
+    //.done(callback)
+    .done(function(data) {
+    	var dataResp = data;
+    	if ("Error" in dataResp){
+    	  consoleLog(dataResp["Error"]);
+    	  alert("Error: " + dataResp["Error"]);
+    	  if (typeof errCallback != 'undefined'){
+    	    consoleLog(errCallback);
+    	    errCallback(data, cmdArgs);
+    	  }
+    	}
+    	else
+    	  callback(data);
+    })
     .fail(jsonErrhandler)
     .always(function() {
-      $('#' + this.buttonId).prop('disabled', false);
+      button_feedback('#' + this.buttonId, false);
     });
 
     return resp;
