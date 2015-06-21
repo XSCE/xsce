@@ -17,7 +17,7 @@
         state=absent
 
 - name: download latest setuptools
-  shell: pip install --download-cache={{ pip_packages_dir }} ez_setup
+  shell: pip install --download {{ pip_packages_dir }} ez_setup
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
@@ -35,7 +35,7 @@
 
 - name: download latest MarkupSafe
   pip: name=MarkupSafe
-       extra_args="--download-cache={{ pip_packages_dir }}"
+       extra_args="--download {{ pip_packages_dir }}"
        state=latest
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
@@ -47,7 +47,7 @@
 
 - name: download latest pytz
   pip: name=pytz
-       extra_args="--download-cache={{ pip_packages_dir }}"
+       extra_args="--download {{ pip_packages_dir }}"
        state=latest
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
@@ -60,7 +60,7 @@
 - name: download IIAB with pip
   pip: name=Internet-in-a-Box
        state=latest
-       extra_args="-b /piptmp --download-cache={{ pip_packages_dir }}"
+       extra_args="-b /piptmp --download {{ pip_packages_dir }}"
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
@@ -79,7 +79,7 @@
   pip: name=whoosh
        version=2.6
        state=present
-       extra_args="-b /piptmp --download-cache={{ pip_packages_dir }}"
+       extra_args="-b /piptmp --download {{ pip_packages_dir }}"
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2

@@ -19,7 +19,7 @@
 
 - name: download ajenti from our repo 
   pip: name="{{ xsce_download_url }}"/ajenti-0.99.34-patched5.tar.gz
-          extra_args="--download-cache={{ pip_packages_dir }}" 
+          extra_args="--download {{ pip_packages_dir }}" 
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
@@ -33,7 +33,7 @@
 
 - name: download python-catcher
   pip: name=python-catcher version=0.1.3
-          extra_args="--download-cache {{ pip_packages_dir }}"
+          extra_args="--download {{ pip_packages_dir }}"
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
