@@ -972,7 +972,7 @@ def cancel_job(cmd_info):
 
 def get_last_jobs_stat(cmd_info):
     conn = sqlite3.connect(xsce_cmdsrv_dbpath)
-    cur = conn.execute ("SELECT rowid, job_command, job_output, job_status, last_update_datetime FROM jobs ORDER BY rowid DESC LIMIT 30")
+    cur = conn.execute ("SELECT jobs.rowid, job_command, job_output, job_status, last_update_datetime, cmd_msg FROM jobs, commands where cmd_rowid = commands.rowid ORDER BY jobs.rowid DESC LIMIT 30")
     last_jobs = cur.fetchall()
     conn.close()
 
@@ -998,6 +998,7 @@ def get_last_jobs_stat(cmd_info):
             job_cc.append(job_output)
             job_cc.append(job[3])
             job_cc.append(job[4])
+            job_cc.append(job[5])
 
             last_jobs_cc.append(job_cc)
         else:
@@ -1373,7 +1374,7 @@ def get_incomplete_jobs():
             # Add to active_commands
             active_commands[cmd_rowid] = cmd_msg
             if job_info['cmd'] == "INST-ZIMS":
-                id = cmd_info['cmd_args']['zim_id']
+                id = job_info['cmd_args']['zim_id']
                 if id in kiwix_catalog:
                     zims_wip[id] = kiwix_catalog[id]
                 else:
