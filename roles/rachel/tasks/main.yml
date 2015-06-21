@@ -24,8 +24,12 @@
       value: rachel
     - option: description
       value: '"Educational resources, packaged together for download and distribution in places without internet."'
-    - option: path
+    - option: rachel_content_path
       value: "{{ rachel_content_path }}"
+    - option: rachel_version
+      value: "{{ rachel_version }}"
+    - option: rachel_mysqldb_path
+      value: "{{ rachel_mysqldb_path }}"
     - option: rachel_src_url
       value: "{{ rachel_src_url }}"
     - option: content_found
