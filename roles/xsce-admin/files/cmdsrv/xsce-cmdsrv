@@ -909,6 +909,10 @@ def install_rachel(cmd_info):
         resp = cmd_error(cmd='INST-RACHEL', msg='RACHEL is not installed')
         return resp
 
+     # all jobs must have cmd_args even if not used
+     if 'cmd_args' not in cmd_info:
+         return cmd_malformed(cmd_info['cmd'])
+
     downloadSrcFile = xsce_ini['rachel']['rachel_src_url']
     rachel_version = xsce_ini['rachel']['rachel_version']
 
@@ -946,7 +950,7 @@ def install_rachel(cmd_info):
     print job_command
 
     # move to location and clean up
-    job_command = "/opt/schoolserver/xsce_cmdsrv/scripts/zim_install_step3.sh " + rachelName
+    job_command = "/opt/schoolserver/xsce_cmdsrv/scripts/rachel_install_step3.sh " + rachelName
     print job_command
     resp = request_job(cmd_info=cmd_info, job_command=job_command, cmd_step_no=3, depend_on_job_id=job_id, has_dependent="N")
     #resp = cmd_error(cmd='INST-ZIMS', msg='Just testing')
@@ -1063,8 +1067,8 @@ def get_last_jobs_stat(cmd_info):
         else:
             last_jobs_cc.append(job)
 
-    #print "last_jobs_cc"
-    #print last_jobs_cc
+    print "last_jobs_cc"
+    print last_jobs_cc
     resp = json.dumps(last_jobs_cc)
     return resp
 

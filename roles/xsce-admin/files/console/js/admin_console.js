@@ -139,8 +139,9 @@ $("#INST-ZIMS").click(function(){
       instZim(zim_id);
     }
   });
-  button_feedback("#INST-ZIMS", false);
   procZimGroups();
+  alert ("Selected Zims scheduled to be installed.\n\nPlease view Utilities->Display Job Status to see the results.");
+  button_feedback("#INST-ZIMS", false);
 });
 
 $("#launchKaliteButton").click(function(){
