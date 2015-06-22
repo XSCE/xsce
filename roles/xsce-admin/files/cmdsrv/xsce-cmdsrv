@@ -909,10 +909,6 @@ def install_rachel(cmd_info):
         resp = cmd_error(cmd='INST-RACHEL', msg='RACHEL is not installed')
         return resp
 
-     # all jobs must have cmd_args even if not used
-     if 'cmd_args' not in cmd_info:
-         return cmd_malformed(cmd_info['cmd'])
-
     downloadSrcFile = xsce_ini['rachel']['rachel_src_url']
     rachel_version = xsce_ini['rachel']['rachel_version']
 
@@ -1067,8 +1063,6 @@ def get_last_jobs_stat(cmd_info):
         else:
             last_jobs_cc.append(job)
 
-    print "last_jobs_cc"
-    print last_jobs_cc
     resp = json.dumps(last_jobs_cc)
     return resp
 
