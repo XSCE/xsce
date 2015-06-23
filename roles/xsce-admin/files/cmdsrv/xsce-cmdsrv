@@ -916,7 +916,7 @@ def install_rachel(cmd_info):
         rc = urllib2.urlopen(downloadSrcFile)
         rc.close()
     except (urllib2.URLError) as exc:
-        errmsg = str("Can't access " + rachel_src_url + " Cmd")
+        errmsg = str("Can't access " + downloadSrcFile + " Cmd")
         resp = cmd_error(cmd='INST-RACHEL', msg=errmsg)
         return resp
 
@@ -933,7 +933,6 @@ def install_rachel(cmd_info):
     # at this point we can create all the jobs
 
     downloadFile = rachel_downloads_dir + rachelName + '.zip'
-    print downloadFile
 
     # download zip file
     job_command = "/usr/bin/wget -c --progress=dot:giga " + downloadSrcFile + " -O " + downloadFile
