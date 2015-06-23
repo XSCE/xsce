@@ -139,8 +139,9 @@ $("#INST-ZIMS").click(function(){
       instZim(zim_id);
     }
   });
-  button_feedback("#INST-ZIMS", false);
   procZimGroups();
+  alert ("Selected Zims scheduled to be installed.\n\nPlease view Utilities->Display Job Status to see the results.");
+  button_feedback("#INST-ZIMS", false);
 });
 
 $("#launchKaliteButton").click(function(){
@@ -838,9 +839,15 @@ function procJobStat(data)
 
     html += "</tr>";
 
+    // there should be one or two parts
     var cmd_parse = entry[5].split(" ");
     job_info['cmd_verb'] = cmd_parse[0];
-    job_info['cmd_args'] = JSON.parse(cmd_parse[1]);
+    if(cmd_parse.length == 0 || typeof cmd_parse[1] === 'undefined')
+      job_info['cmd_args'] = ""
+    else
+      job_info['cmd_args'] = JSON.parse(cmd_parse[1]);
+
+    consoleLog(job_info);
     job_status[job_info['job_no']] = job_info;
 
   });
