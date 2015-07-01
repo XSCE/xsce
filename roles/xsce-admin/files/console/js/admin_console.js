@@ -54,6 +54,18 @@ $("ul.nav a").click(function (e) {
 init();
 
 // BUTTONS
+
+// Control Buttons
+
+$("#REBOOT").click(function(){
+  rebootServer();
+});
+
+$("#POWEROFF").click(function(){
+  poweroffServer();
+});
+
+
 // Configuration Buttons
 $("#Bad-CMD").click(function(){
   sendCmdSrvCmd("XXX", testCmdHandler);
@@ -206,10 +218,6 @@ $("#GET-INET-SPEED").click(function(){
 
 $("#GET-INET-SPEED2").click(function(){
   getInetSpeed2();
-});
-
-$("#REBOOT").click(function(){
-  rebootServer();
 });
 
 // Other Objects
@@ -1092,6 +1100,14 @@ function rebootServer()
   command = "REBOOT"
   sendCmdSrvCmd(command, genericCmdHandler);
   alert ("Reboot Initiated");
+  return true;
+}
+
+function poweroffServer()
+{
+  command = "POWEROFF"
+  sendCmdSrvCmd(command, genericCmdHandler);
+  alert ("Shutdown Initiated");
   return true;
 }
 

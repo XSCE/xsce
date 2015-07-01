@@ -26,7 +26,8 @@
 			<div class="tabbable boxed parentTabs"> <!-- Start Top Level tabbable boxed parentTabs -->
 				<div class="xsce-top-nav"> <!-- Top Level Nav-->
 					<ul class="nav nav-tabs">
-						<li class="active"><a href="#Configure">Configure</a></li>
+						<li class="active"><a href="#ControlServer">Control</a></li>
+						<li><a href="#Configure">Configure</a></li>
 						<li><a href="#InstallContent">Install Content</a></li>
 						<!--  <li><a href="#Future">Assemble Content</a></li> -->
 						<li><a href="#Util" call-after="getJobStat">Utilities</a></li>
@@ -35,7 +36,39 @@
 					</ul>
 				</div>
 				<div class="tab-content"> <!-- Start Top Level Content-->
-					<div class="tab-pane active" id="Configure"> <!-- Start Configure Pane -->
+					<div class="tab-pane active" id="ControlServer"> <!-- Start ControlServer Top Level Pane -->
+						<div class="row-fluid"> <!-- ControlServer Top Level Header -->
+							<div class="col-md-9 col-md-offset-3">
+								<h1>Control School Server</h1>
+							</div>
+						</div> <!-- row-fluid -->
+						<div class="tabbable"> <!-- Start ControlServer Sublevel Menu Items and Options -->
+							<div class="row-fluid"> <!-- Start containing row -->
+								<div class="col-md-3 xsce-left-nav"> <!-- Start left column -->
+									<h2>Control Server</h2>
+									<ul class="nav nav-pills nav-stacked"> <!-- Start XXX Sub Level Menu -->
+										<li class="active"><a href="#controlWarning">Warning</a></li>
+										<!-- <li><a href="#">Services Enabled</a></li> -->
+									</ul> <!-- End XXX Sub Level Menu -->
+									<h2>Actions</h2>
+									<div class="action-buttons">
+									  <button id="REBOOT" type="button" class="btn btn-lg btn-danger">REBOOT Server</button>
+									  <button id="POWEROFF" type="button" class="btn btn-lg btn-danger">POWER OFF Server</button>
+									</div>
+								</div> <!-- left column -->
+								<div class="col-md-9"> <!-- Start right column -->
+									<div class="tab-content"> <!-- Start Container for Sub Menu Options Panes -->
+										<div class="tab-pane active" id="controlWarning"> <!-- Start instConStart Submenu Option Pane -->
+											<h2>WARNING</h2>
+											<p>Please use caution in rebooting or powering off the server.</p>
+											<p>Please make sure that no one is using it.</p>
+										</div> <!--  End controlWarning Submenu Option Pane -->
+									</div> <!-- End Container for Sub Menu Options Panes -->
+								</div> <!-- right column -->
+							</div> <!-- End containing row -->
+						</div> <!-- End XXX Sublevel Menu Items and Options -->
+					</div> <!-- End ControlServer Top Level Pane -->
+					<div class="tab-pane" id="Configure"> <!-- Start Configure Pane -->
 						<div class="row-fluid"> <!-- Configure Header -->
 							<div class="col-md-9 col-md-offset-3">
 								<h1>Configure the School Server</h1>
@@ -354,6 +387,7 @@
 									<h2>Actions</h2>
 									<div class="action-buttons">
 									<button id="REBOOT" type="button" class="btn btn-lg btn-danger">REBOOT Server</button>
+									<button id="POWEROFF" type="button" class="btn btn-lg btn-danger">POWER OFF Server</button>
 									</div>
 								</div> <!-- left column -->
 								<div class="col-md-9"> <!-- Start right column -->
@@ -424,11 +458,12 @@
 										</div> <!--  End utilsSpeedTest pane -->
 										<div class="tab-pane" id="utilsAnsTags"> <!-- Start utilsAnsTags Pane -->
 											<h2>Ansible Tags</h2>
-												<form role="form" id="ansibleTagsForm">
-													<div id="ansibleTags">
-													</div>
-												</form>
-												<button id="RUN-TAGS" type="button" class="btn btn-lg btn-danger">Run Ansible with Checked Tags</button>
+											<p><b>WARNING:</b> This option should only be used by EXPERTS. Not all combinations of tags will work.</p>
+											<form role="form" id="ansibleTagsForm">
+												<div id="ansibleTags">
+												</div>
+											</form>
+											<button id="RUN-TAGS" type="button" class="btn btn-lg btn-danger">Run Ansible with Checked Tags</button>
 										</div> <!--  End utilsAnsTags pane -->
 									</div> <!-- End Container for Status Sub Menu Options Panes -->
 								</div> <!-- right column -->
