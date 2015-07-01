@@ -80,9 +80,9 @@
 
 <h2>Collaboration</h2>
 
-<?php hard_link("/owncloud", "ownCloud", "Offline file sharing, calendaring, and collaboration for teachers especially."); ?>
+<?php hard_link("/owncloud", "ownCloud", "Offline file sharing, calendaring, and collaboration for teachers especially.", "/opt/owncloud/index.php"); ?>
 
-<?php hard_link("/elgg", "Elgg", "Offline social media for students especially."); ?>
+<?php hard_link("/elgg", "Elgg", "Offline social media for students especially.", "/opt/elgg/index.php"); ?>
 
 <?php hard_link("/content", "Access Other Content", "TestPrep PDFs and a growing  list of documents."); ?>
 
