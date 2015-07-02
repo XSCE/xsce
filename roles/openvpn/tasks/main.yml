@@ -47,7 +47,7 @@
             openvpn_enabled
 
 - name: Make sure rc.local is executable if enabled
-  file:     dest=rc.local
+  file:     dest=/etc/rc.d/rc.local
             mode=0755
             owner=root
             group=root
