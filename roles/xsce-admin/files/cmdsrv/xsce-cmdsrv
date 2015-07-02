@@ -546,7 +546,8 @@ def cmd_handler(cmd_msg):
         "INST-ZIMS": install_zims,
         "INST-RACHEL": install_rachel,
         "RESTART-KIWIX": restart_kiwix,
-        "REBOOT": reboot_server
+        "REBOOT": reboot_server,
+        "POWEROFF": poweroff_server
         }
 
     # Check for Duplicate Command
@@ -963,6 +964,11 @@ def restart_kiwix(cmd_info):
 def reboot_server(cmd_info):
     resp = cmd_success_msg(cmd_info['cmd'], 'Reboot Initiated')
     rc = subprocess.check_output(["/usr/sbin/shutdown", "-r", "-t","5"])
+    return (resp)
+
+def poweroff_server(cmd_info):
+    resp = cmd_success_msg(cmd_info['cmd'], 'Power Off Initiated')
+    rc = subprocess.check_output(["/usr/sbin/shutdown", "-P", "-t","5"])
     return (resp)
 
 def request_job(cmd_info, job_command, cmd_step_no=1, depend_on_job_id=-1, has_dependent="N"):
