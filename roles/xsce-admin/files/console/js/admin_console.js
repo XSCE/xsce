@@ -1194,16 +1194,27 @@ function consoleLog (msg)
   console.log(msg); // for IE there can be no console messages unless in tools mode
 }
 
+function waitDeferred(msec) {
+    var deferredObject = $.Deferred();
+
+    setTimeout(function() { deferredObject.resolve();  }, msec);
+
+    return deferredObject.promise();
+}
+
 function init ()
 {
+  $('#initDataModal').modal('show');
+  $.when(
+    sendCmdSrvCmd("GET-ANS-TAGS", getAnsibleTags),
+    sendCmdSrvCmd("GET-WHLIST", getWhitelist),
+    $.when(sendCmdSrvCmd("GET-VARS", getInstallVars), sendCmdSrvCmd("GET-ANS", getAnsibleFacts),sendCmdSrvCmd("GET-CONF", getConfigVars),sendCmdSrvCmd("GET-XSCE-INI", getXsceIni)).done(initConfigVars),
+    $.when(getLangCodes(),readKiwixCatalog(),sendCmdSrvCmd("GET-ZIM-STAT", procZimStatInit)).done(procZimCatalog),
+    sendCmdSrvCmd("GET-STORAGE-INFO", procSysStorageAll),
+    waitDeferred(3000))
+    .done(function () {consoleLog("worked"); $('#initDataModal').modal('hide');})
+    .fail(function () {consoleLog("failed");})
 
-  //sendCmdSrvCmd("GET-ANS", getAnsibleFacts);
-  sendCmdSrvCmd("GET-ANS-TAGS", getAnsibleTags);
-  //sendCmdSrvCmd("GET-VARS", getInstallVars);
-  //sendCmdSrvCmd("GET-XSCE-INI", getXsceIni);
-  //sendCmdSrvCmd("GET-CONF", getConfigVars);
-  sendCmdSrvCmd("GET-WHLIST", getWhitelist);
-  $.when(sendCmdSrvCmd("GET-VARS", getInstallVars), sendCmdSrvCmd("GET-ANS", getAnsibleFacts),sendCmdSrvCmd("GET-CONF", getConfigVars),sendCmdSrvCmd("GET-XSCE-INI", getXsceIni)).then(initConfigVars);
-  $.when(getLangCodes(),readKiwixCatalog(),sendCmdSrvCmd("GET-ZIM-STAT", procZimStatInit)).then(procZimCatalog);
-  getSysStorage();
+    //$.when($.wait(5000)).done())
+    //$.wait(5000, function () {var dfd = new $.Deferred(); dfd.resolve(); return dfd.promise();}))
 }
