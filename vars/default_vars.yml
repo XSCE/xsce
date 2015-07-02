@@ -230,6 +230,10 @@ watchdog:
 vnstat_install: True
 vnstat_enabled: False
 
+# awstats -- sumarizes http access logs
+awstats_install: True
+awstats_enabled: False
+
 # xovis
 xovis_install: True
 xovis_enabled: True

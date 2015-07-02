@@ -9,6 +9,8 @@
     - python-pip
     - python-psycopg2
     - mod_wsgi
+    - libxml2-devel
+    - libxslt-devel
   tags:
     - download
 
@@ -27,22 +29,23 @@
         mode=0755
 
 - name: Clone pathagar repo
-  git: repo=https://github.com/migonzalvar/pathagar.git
+  git: repo=https://github.com/PathagarBooks/pathagar.git
        dest={{ pathagar_src }}
        update=yes
-       version=xsce-devel
+       version=master
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
       
 - name: download pathagar requirements in a virtualenv
   pip: name={{ item }}
-          extra_args="--download-cache {{ pip_packages_dir }}"
+          extra_args="--download {{ pip_packages_dir }}"
   with_items:
     - Django==1.4.5
     - django-tagging==0.3.1
     - django-sendfile==0.3.6
     - django-taggit==0.10
+    - lxml==3.4.4
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
@@ -57,6 +60,7 @@
     - django-tagging==0.3.1
     - django-sendfile==0.3.6
     - django-taggit==0.10
+    - lxml==3.4.4
 
 - name: Create pathagar postgresql user
   postgresql_user: name={{ pathagar_db_user }}

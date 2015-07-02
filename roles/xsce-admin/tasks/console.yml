@@ -18,6 +18,7 @@
     - "{{ admin_console_path }}"
     - "{{ admin_console_path }}/css"
     - "{{ admin_console_path }}/help"
+    - "{{ admin_console_path }}/js"
 
 - name: Copy admin-console css files
   copy: src={{ item }}
@@ -36,6 +37,15 @@
         group=root
   with_fileglob:
         - console/help/*
+
+- name: Copy admin-console javascript files
+  copy: src={{ item }}
+        dest="{{ admin_console_path }}/js"
+        mode=0644
+        owner=root
+        group=root
+  with_fileglob:
+        - console/js/*
 
 - name: Install admin-console config file
   template: src=console/xs-console.conf.j2

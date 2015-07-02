@@ -6,14 +6,14 @@
 
 - name: Download statistics-consolidation with pip
   pip: name=stats-consolidation version=2.1.2
-          extra_args="--download-cache {{ pip_packages_dir }}"
+          extra_args="--download {{ pip_packages_dir }}"
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
 
 - name: Install statistics-consolidation with pip
   pip: name=stats-consolidation version=2.1.2
-       extra_args="--no-index --find-links=file://{{ pip_packages_dir }}/pytz"
+       extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
 
 - name: Install required libraries
   yum: name={{ item }}

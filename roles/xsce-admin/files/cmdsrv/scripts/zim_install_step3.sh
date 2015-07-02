@@ -3,31 +3,28 @@
 WORKINGDIR=/library/working/zims/$1
 SRCDIR=$WORKINGDIR/data
 DESTDIR=/library/zims
-ZIMFILE=/content/$1.zim
+#ZIMFILE=/content/$1.zim*
 ZIMIDX=/index/$1.zim.idx
 
 EXITCODE=0
+rc=0
 
-# ZIM File
+# ZIM File(s)
 
-if [[ -f $DESTDIR$ZIMFILE ]]; then
-    echo "$DESTDIR$ZIMFILE already exists - nothing to do"
-    if [[ -f $SRCDIR$ZIMFILE ]]; then
-        echo "Removing $SRCDIR$ZIMFILE"
-        rm $SRCDIR$ZIMFILE
+for zimpath in $SRCDIR/content/$1.zim*
+do
+    zimfile=$(basename $zimpath)
+    if [[ -f $DESTDIR/content/$zimfile ]]; then
+        echo "Removing existing $DESTDIR/content/$zimfile."
+        rm $DESTDIR/content/$zimfile
     fi
-else
-    if [[ -f $SRCDIR$ZIMFILE ]]; then
-        echo "Moving $SRCDIR$ZIMFILE "
-        mv $SRCDIR$ZIMFILE $DESTDIR$ZIMFILE; rc1=$?
-    else
-        echo "Can not find $SRCDIR$ZIMFILE"
-        echo "Unable to move it"
-        rc2=1
-    fi
-fi
+    echo "Moving $zimpath"
+    mv $zimpath $DESTDIR/content/$zimfile; rc1=$?
+    rc=$((rc + rc1))
 
-if  [[ $rc1 > 0 || $rc2 > 0 ]]; then
+done
+
+if  [[ $rc > 0 ]]; then
     EXITCODE=1
 fi
 

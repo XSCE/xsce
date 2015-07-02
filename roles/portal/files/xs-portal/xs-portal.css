@@ -10,35 +10,35 @@
 	margin-left: auto;
 	margin-right: auto;
 	text-align: center;
-	
+
 }
 
 #main {
 	text-align: left;
-	
+
 }
 
 
 #xsBanner {
 	/*width:900px;*/
 	height:200px;
-	
+
 }
 .xsIcon {
-	width:400px; 
-	float:left; 
-	border-width:3px; 
-	border-style:solid; 
-	border-color:#333;	
+	width:400px;
+	float:left;
+	border-width:3px;
+	border-style:solid;
+	border-color:#333;
 }
 
 .xsLanguage {
-	width:150px; 
-	float:right; 
-	border-width:3px; 
+	width:150px;
+	float:right;
+	border-width:3px;
 	border-style:solid;
-	color: #000; 
-	border-color:#333;	
+	color: #000;
+	border-color:#333;
 	background-color: #DDC;
 }
 
@@ -47,9 +47,9 @@
 	font-size: 16pt;
 	margin: 4px 4px 0 0;
 	padding: 3px 6px;
-	text-align: left;	
+	text-align: left;
 	/* get rid of the bullets */
-	list-style-type: none;	
+	list-style-type: none;
 }
 
 #xsLanguageSelect a {
@@ -73,13 +73,31 @@
 	font-weight:bold
 }
 
+.xsMenuHeading {
+	margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.xsMenuHeading h2{
+	display: inline;
+	vertical-align: middle;
+}
+
+.xsMenuHeading img{
+	display: inline;
+	vertical-align: middle;
+	height: 70px;
+	margin-right: 20px;
+}
+
 .xsServiceWrapper {
-	margin-top: 10px; 
-	margin-right: 10px; 
+	margin-top: 10px;
+	margin-left: 20px;
+	margin-right: 10px;
 }
 
 .xsServiceLink {
-	width:250px; 
+	width:250px;
 	float:left;
 }
 
@@ -105,7 +123,7 @@
 	font-weight:bold
 }
 
-.xsServiceDesc {	
+.xsServiceDesc {
 	 overflow:hidden;
 }
 #rotator img { position: absolute; }

@@ -12,3 +12,4 @@
 .voanouvel.com
 .bing.com
 .microsofttranslator.com
+.sugarlabs.org

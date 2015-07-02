@@ -46,6 +46,14 @@
   when:
             openvpn_enabled
 
+- name: Make sure rc.local is executable if enabled
+  file:     dest=/etc/rc.d/rc.local
+            mode=0755
+            owner=root
+            group=root
+  when:
+            openvpn_enabled
+
 - name: make openvpn connection automatic
   lineinfile: dest=/etc/crontab
             line="25 *  *  *  * root (/usr/bin/xs-vpn test) > /dev/null"
@@ -83,7 +91,7 @@
     - option: name
       value: "openvpn"
     - option: description
-      value: "Openvpn is a means of Contacting a server anywhere on the internet via a middleman server"
+      value: '"Openvpn is a means of Contacting a server anywhere on the internet via a middleman server"'
     - option: middleman_url
       value: "{{ vpn_presence }}"
     - option: port

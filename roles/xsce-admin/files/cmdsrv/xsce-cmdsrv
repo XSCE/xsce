@@ -60,6 +60,9 @@ zim_working_dir = "/library/working/zims/"
 zim_dir = "/library/zims"
 zim_content_dir = "/library/zims/content/"
 zim_index_dir = "/library/zims/index/"
+rachel_downloads_dir = "/library/downloads/"
+rachel_working_dir = "/library/working/"
+rachel_version = 'rachelusb_32EN_3_1_5'
 
 # Global Variables
 last_command_rowid = 0
@@ -541,8 +544,10 @@ def cmd_handler(cmd_msg):
         "GET-KIWIX-CAT": get_kiwix_catalog,
         "GET-ZIM-STAT": get_zim_stat,
         "INST-ZIMS": install_zims,
+        "INST-RACHEL": install_rachel,
         "RESTART-KIWIX": restart_kiwix,
-        "REBOOT": reboot_server
+        "REBOOT": reboot_server,
+        "POWEROFF": poweroff_server
         }
 
     # Check for Duplicate Command
@@ -893,6 +898,60 @@ def install_zims(cmd_info):
     #resp = cmd_error(cmd='INST-ZIMS', msg='Just testing')
     return resp
 
+def install_rachel(cmd_info):
+
+    global ansible_running_flag
+    global jobs_requested
+    global xsce_ini
+
+    # make sure rachel is installed
+
+    if 'rachel' not in xsce_ini:
+        resp = cmd_error(cmd='INST-RACHEL', msg='RACHEL is not installed')
+        return resp
+
+    downloadSrcFile = xsce_ini['rachel']['rachel_src_url']
+    rachel_version = xsce_ini['rachel']['rachel_version']
+
+    try:
+        rc = urllib2.urlopen(downloadSrcFile)
+        rc.close()
+    except (urllib2.URLError) as exc:
+        errmsg = str("Can't access " + downloadSrcFile + " Cmd")
+        resp = cmd_error(cmd='INST-RACHEL', msg=errmsg)
+        return resp
+
+    rachelName = rachel_version
+    targetDir = rachel_working_dir + rachelName
+
+    if not os.path.exists(targetDir):
+        try:
+            os.makedirs(targetDir)
+        except OSError:
+            resp = cmd_error(cmd='INST-RACHEL', msg='Error creating directory in Command')
+            return resp
+
+    # at this point we can create all the jobs
+
+    downloadFile = rachel_downloads_dir + rachelName + '.zip'
+
+    # download zip file
+    job_command = "/usr/bin/wget -c --progress=dot:giga " + downloadSrcFile + " -O " + downloadFile
+    job_id = request_one_job(cmd_info, job_command, 1, -1, "Y")
+    print job_command
+
+    # unzip
+    job_command = "/usr/bin/unzip -uo " + downloadFile + " -d " + targetDir
+    job_id = request_one_job(cmd_info, job_command, 2, job_id, "Y")
+    print job_command
+
+    # move to location and clean up
+    job_command = "/opt/schoolserver/xsce_cmdsrv/scripts/rachel_install_step3.sh " + rachelName
+    print job_command
+    resp = request_job(cmd_info=cmd_info, job_command=job_command, cmd_step_no=3, depend_on_job_id=job_id, has_dependent="N")
+    #resp = cmd_error(cmd='INST-ZIMS', msg='Just testing')
+    return resp
+
 def restart_kiwix(cmd_info):
     rc = subprocess.call(["/usr/bin/systemctl", "restart", "kiwix-serve.service"])
     print rc
@@ -905,6 +964,11 @@ def restart_kiwix(cmd_info):
 def reboot_server(cmd_info):
     resp = cmd_success_msg(cmd_info['cmd'], 'Reboot Initiated')
     rc = subprocess.check_output(["/usr/sbin/shutdown", "-r", "-t","5"])
+    return (resp)
+
+def poweroff_server(cmd_info):
+    resp = cmd_success_msg(cmd_info['cmd'], 'Power Off Initiated')
+    rc = subprocess.check_output(["/usr/sbin/shutdown", "-P", "-t","5"])
     return (resp)
 
 def request_job(cmd_info, job_command, cmd_step_no=1, depend_on_job_id=-1, has_dependent="N"):
@@ -972,7 +1036,7 @@ def cancel_job(cmd_info):
 
 def get_last_jobs_stat(cmd_info):
     conn = sqlite3.connect(xsce_cmdsrv_dbpath)
-    cur = conn.execute ("SELECT rowid, job_command, job_output, job_status, last_update_datetime FROM jobs ORDER BY rowid DESC LIMIT 30")
+    cur = conn.execute ("SELECT jobs.rowid, job_command, job_output, job_status, last_update_datetime, cmd_msg FROM jobs, commands where cmd_rowid = commands.rowid ORDER BY jobs.rowid DESC LIMIT 30")
     last_jobs = cur.fetchall()
     conn.close()
 
@@ -998,13 +1062,12 @@ def get_last_jobs_stat(cmd_info):
             job_cc.append(job_output)
             job_cc.append(job[3])
             job_cc.append(job[4])
+            job_cc.append(job[5])
 
             last_jobs_cc.append(job_cc)
         else:
             last_jobs_cc.append(job)
 
-    #print "last_jobs_cc"
-    #print last_jobs_cc
     resp = json.dumps(last_jobs_cc)
     return resp
 
@@ -1373,7 +1436,7 @@ def get_incomplete_jobs():
             # Add to active_commands
             active_commands[cmd_rowid] = cmd_msg
             if job_info['cmd'] == "INST-ZIMS":
-                id = cmd_info['cmd_args']['zim_id']
+                id = job_info['cmd_args']['zim_id']
                 if id in kiwix_catalog:
                     zims_wip[id] = kiwix_catalog[id]
                 else:
@@ -1428,6 +1491,10 @@ def read_xsce_cmdsrv_conf_file():
     global kiwix_catalog_file
     global zim_downloads_dir
     global zim_download_prefix
+    global rachel_downloads_dir
+    global rachel_working_dir
+    global rachel_version
+
 
     stream = open (xsce_cmdsrv_config_file,"r")
     inp = json.load(stream)
@@ -1441,7 +1508,8 @@ def read_xsce_cmdsrv_conf_file():
     kiwix_catalog_file = conf['kiwix_catalog_file']
     zim_downloads_dir = conf['zim_downloads_dir']
     zim_download_prefix = conf['zim_download_prefix']
-
+    rachel_downloads_dir = conf['rachel_downloads_dir']
+    rachel_working_dir = conf['rachel_working_dir']
 
 # These two were taken from the OLPC idmgr application
 

@@ -1,3 +1,12 @@
+- name: Create various directories for rachel
+  file: path={{ item }}
+        owner=root
+        group=root
+        mode=0755
+        state=directory
+  with_items:
+    - /library/rachel
+
 - name: See if rachel content is installed
   stat: path="{{ rachel_content_path }}/index.php"
   register: rachel_content
@@ -23,9 +32,15 @@
     - option: name
       value: rachel
     - option: description
-      value: "Educational resources, packaged together for download and distribution in places without internet."
-    - option: path
+      value: '"Educational resources, packaged together for download and distribution in places without internet."'
+    - option: rachel_content_path
       value: "{{ rachel_content_path }}"
+    - option: rachel_version
+      value: "{{ rachel_version }}"
+    - option: rachel_mysqldb_path
+      value: "{{ rachel_mysqldb_path }}"
+    - option: rachel_src_url
+      value: "{{ rachel_src_url }}"
     - option: content_found
       value: "{{ rachel_content_found }}"
     - option: enabled

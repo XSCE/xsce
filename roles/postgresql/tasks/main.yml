@@ -22,9 +22,14 @@
         mode=0700
         state=directory
 
-- name: Create initial postgres db
-  command:  /usr/bin/postgresql-setup  initdb postgresql-xs -E 'UTF-8' --lc-collate='en_US.UTF-8' --lc-ctype='en_US.UTF-8' 
-           creates=/library/pgsql-xs/pg_hba.conf
+- name: Discover if the postgresql database data directory has already been created
+  stat: path="/library/pgsql-xs/base"
+  register: p
+   
+- name: Initialize the postgres db
+  command:  su - postgres -c "/usr/bin/initdb -E 'UTF-8' --lc-collate='en_US.UTF-8' --lc-ctype='en_US.UTF-8' -D /library/pgsql-xs"
+            creates=/library/pgsql-xs/pg_hba.conf
+  when: p.stat.exists is defined and not p.stat.exists
 
 - name: Configure postgres 
   template: backup=yes
