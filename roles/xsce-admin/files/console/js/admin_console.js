@@ -28,6 +28,11 @@ var selectedZims = [];
 var sysStorage = {};
 sysStorage.zims_selected_size = 0;
 
+// because jquery does not percolate .fail conditions in async chains
+// and because an error returned from the server is not an ajax error
+// flag must be set to false before use
+
+var globalAjaxErrorFlag = false;
 
 // Set up nav
 
@@ -1163,6 +1168,7 @@ function sendCmdSrvCmd(command, callback, buttonId, errCallback, cmdArgs) {
     	var dataResp = data;
     	if ("Error" in dataResp){
     	  consoleLog(dataResp["Error"]);
+    	  globalAjaxErrorFlag = true;
     	  alert("Error: " + dataResp["Error"]);
     	  if (typeof errCallback != 'undefined'){
     	    consoleLog(errCallback);
@@ -1187,11 +1193,40 @@ function jsonErrhandler (jqXHR, textStatus, errorThrown)
   consoleLog(textStatus);
   consoleLog(errorThrown);
   consoleLog(jqXHR);
+  globalAjaxErrorFlag = true;
+  consoleLog(globalAjaxErrorFlag);
   return false;
 }
 function consoleLog (msg)
 {
   console.log(msg); // for IE there can be no console messages unless in tools mode
+}
+
+function init ()
+{
+  $('#initDataModal').modal('show');
+  globalAjaxErrorFlag = false;
+
+  $.when(
+    sendCmdSrvCmd("GET-ANS-TAGS", getAnsibleTags),
+    sendCmdSrvCmd("GET-WHLIST", getWhitelist),
+    $.when(sendCmdSrvCmd("GET-VARS", getInstallVars), sendCmdSrvCmd("GET-ANS", getAnsibleFacts),sendCmdSrvCmd("GET-CONF", getConfigVars),sendCmdSrvCmd("GET-XSCE-INI", getXsceIni)).done(initConfigVars),
+    $.when(getLangCodes(),readKiwixCatalog(),sendCmdSrvCmd("GET-ZIM-STAT", procZimStatInit)).done(procZimCatalog),
+    sendCmdSrvCmd("GET-STORAGE-INFO", procSysStorageAll),
+    waitDeferred(3000))
+    .done(initDone)
+    .fail(function () {consoleLog("failed");})
+}
+
+function initDone ()
+{
+	if (globalAjaxErrorFlag == false){
+	  consoleLog("Init Finished Successfully");
+	  $('#initDataModal').modal('hide');
+  } else {
+    consoleLog("Init Failed");
+    $('#initDataModalResult').html("<b>There was an error on the Server.</b>");
+  }
 }
 
 function waitDeferred(msec) {
@@ -1200,21 +1235,4 @@ function waitDeferred(msec) {
     setTimeout(function() { deferredObject.resolve();  }, msec);
 
     return deferredObject.promise();
-}
-
-function init ()
-{
-  $('#initDataModal').modal('show');
-  $.when(
-    sendCmdSrvCmd("GET-ANS-TAGS", getAnsibleTags),
-    sendCmdSrvCmd("GET-WHLIST", getWhitelist),
-    $.when(sendCmdSrvCmd("GET-VARS", getInstallVars), sendCmdSrvCmd("GET-ANS", getAnsibleFacts),sendCmdSrvCmd("GET-CONF", getConfigVars),sendCmdSrvCmd("GET-XSCE-INI", getXsceIni)).done(initConfigVars),
-    $.when(getLangCodes(),readKiwixCatalog(),sendCmdSrvCmd("GET-ZIM-STAT", procZimStatInit)).done(procZimCatalog),
-    sendCmdSrvCmd("GET-STORAGE-INFO", procSysStorageAll),
-    waitDeferred(3000))
-    .done(function () {consoleLog("worked"); $('#initDataModal').modal('hide');})
-    .fail(function () {consoleLog("failed");})
-
-    //$.when($.wait(5000)).done())
-    //$.wait(5000, function () {var dfd = new $.Deferred(); dfd.resolve(); return dfd.promise();}))
 }
