@@ -5,7 +5,6 @@
    - nss-mdns
    - avahi
    - avahi-tools
-   - avahi-ui
   tags:
     - download
 
