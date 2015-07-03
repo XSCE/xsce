@@ -10,3 +10,9 @@
   service: name=httpd
            state=restarted
   when: not installing
+
+# If we got here we're done
+- name: Create hidden xsce-prepped file 
+  file: dest=/.xsce-prepped
+        state=touch
+
