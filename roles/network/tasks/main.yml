@@ -110,7 +110,7 @@
          creates=/etc/sysconfig/olpc-scripts/setup.d/installed/gateway
 
 - name: Get a list of ifcfg files to delete
-  shell: "ls -1 /etc/sysconfig/network-scripts/ifcfg-* | grep -v -e ifcfg-lo "
+  shell: "ls -1 /etc/sysconfig/network-scripts/ifcfg-* | grep -v -e ifcfg-lo  -e ifcfg-WAN"
   register: ifcfg_files
   ignore_errors: True
   changed_when: False
@@ -127,6 +127,12 @@
   ignore_errors: yes
   when: ansible_distribution_version >= "21" and not installing
 
+# might have wifi info if wireless is used as uplink.
+- name: Rename supplied gateway ifcfg file to WAN if present
+  shell: "mv /etc/sysconfig/network-scripts/ifcfg-{{ discovered_wan_iface }} /etc/sysconfig/network-scripts/ifcfg-WAN"
+  ignore_errors: True
+  when: discovered_wan_iface != "none"
+
 - name: Now delete all non-gateway ifcfg files
   shell: "rm -f {{ item }} "
   when: item|trim != discovered_wan_iface
@@ -139,12 +145,6 @@
   template: src=network/ifcfg-WAN.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-WAN
   when: 'user_wan_iface != "none" and discovered_wan_iface == "none"'
-
-# might have wifi info if wireless is used as uplink.
-- name: Rename supplied gateway ifcfg file to WAN if present
-  shell: "mv /etc/sysconfig/network-scripts/ifcfg-{{ discovered_wan_iface }} /etc/sysconfig/network-scripts/ifcfg-WAN"
-  ignore_errors: True
-  when: discovered_wan_iface != "none"
 
 #- name: Restart NM if gateway was not detected, and not disabled
 #  include: NM.yml
