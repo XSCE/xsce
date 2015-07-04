@@ -67,8 +67,8 @@ echo "path is $PATH"
 mkdir -p /opt/schoolserver
 cd /opt/schoolserver
 
-#git clone --depth 1 --branch stable https://github.com/XSCE/xsce 
-git clone --depth 1 --branch F21net https://github.com/jvonau/xsce
+git clone --depth 1 --branch stable https://github.com/XSCE/xsce 
+#git clone --depth 1 --branch F21net https://github.com/jvonau/xsce
 
 cd xsce
 
