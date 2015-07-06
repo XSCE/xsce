@@ -18,13 +18,6 @@
   with_items:
     - /library/content
 
-- name: Create link from doc root
-  file: src=/library/content
-        dest=/var/www/html/content
-        owner=root
-        group=admin
-        state=link
-
 - name: Copy xs-portal php files
   copy: src={{ item }}
         dest=/var/www/html/xs-portal
@@ -77,6 +70,7 @@
   with_items:
             - xs-portal.conf
             - xs-portal-lang.inc
+            - content_dir.conf
 
 
 - name: Install xs-portal service discovery
