@@ -544,6 +544,7 @@ def cmd_handler(cmd_msg):
         "GET-KIWIX-CAT": get_kiwix_catalog,
         "GET-ZIM-STAT": get_zim_stat,
         "INST-ZIMS": install_zims,
+        "GET-RACHEL-STAT": get_rachel_stat,
         "INST-RACHEL": install_rachel,
         "RESTART-KIWIX": restart_kiwix,
         "REBOOT": reboot_server,
@@ -842,6 +843,58 @@ def run_ansible(cmd_info): # create multiple jobs to run in succession
 
     resp = request_job(cmd_info, job_command)
     return resp
+
+def get_rachel_stat(cmd_info):
+    # see if rachel installed from xsce_ini
+    # see if rachel content installed from xsce_ini.rachel_content_path
+    # get list of modules and modules.out
+
+    global xsce_ini
+    rachel_stat = {}
+
+    rachel_stat['status'] = 'NOT-INSTALLED'
+    rachel_stat['content_installed'] = False
+
+    if 'rachel' in xsce_ini:
+        rachel_stat['status'] = 'INSTALLED'
+
+        if xsce_ini['rachel']['enabled'] == True:
+            rachel_stat['status'] = 'ENABLED'
+
+        rachel_index = xsce_ini['rachel']['rachel_content_path'] + "index.php"
+        if os.path.isfile(rachel_index):
+            rachel_stat['content_installed'] = True
+            mods_enabled = get_rachel_modules(xsce_ini['rachel']['rachel_content_path'] + "modules")
+            mods_disabled = get_rachel_modules(xsce_ini['rachel']['rachel_content_path'] + "modules.out")
+
+            rachel_stat['enabled'] = mods_enabled
+            rachel_stat['disabled'] = mods_disabled
+
+    resp = json.dumps(rachel_stat)
+    return (resp)
+
+def get_rachel_modules(module_dir):
+
+    modules = []
+    dir_list = [os.path.join(module_dir,o) for o in os.listdir(module_dir) if os.path.isdir(os.path.join(module_dir,o))]
+
+    for dir in dir_list:
+        f = open(dir + '/index.htmlf')
+        html = f.read()
+        nophp = re.sub(r'<\?(.*)\?>', r'', html)
+
+        # assume these html fragments remain constant - based on 3.1.5
+        start = nophp.find('<h2>') + len('<h2>')
+        end = nophp[start:].find('</h2>')
+        h2 = nophp[start:start+end]
+        title =  re.sub(r'<(.*?)>', r'', h2)
+
+        module = {}
+        module['path'] = dir
+        module['title'] = title
+        modules.append(module)
+
+    return (modules)
 
 def install_zims(cmd_info):
 
