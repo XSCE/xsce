@@ -3,15 +3,18 @@
 WORKINGDIR=/library/working/zims/$1
 SRCDIR=$WORKINGDIR/data
 DESTDIR=/library/zims
-#ZIMFILE=/content/$1.zim*
-ZIMIDX=/index/$1.zim.idx
+
+ZIMIDXPATH=`find $SRCDIR/index/ -name *.idx`
+ZIMIDXNAME=`basename $ZIMIDXPATH`
+ZIMIDX=/index/$ZIMIDXNAME
+
 
 EXITCODE=0
 rc=0
 
 # ZIM File(s)
 
-for zimpath in $SRCDIR/content/$1.zim*
+for zimpath in $SRCDIR/content/*.zim*
 do
     zimfile=$(basename $zimpath)
     if [[ -f $DESTDIR/content/$zimfile ]]; then

@@ -84,7 +84,7 @@
 
 <?php hard_link("/elgg", "Elgg", "Offline social media for students especially.", "/opt/elgg/index.php"); ?>
 
-<?php hard_link("/content", "Access Other Content", "TestPrep PDFs and a growing  list of documents."); ?>
+<?php hard_link("/content", "Access Other Content", "TestPrep PDFs and a growing  list of documents.","/library/content"); ?>
 
 <h2>Tools for Administrators</h2>
 
