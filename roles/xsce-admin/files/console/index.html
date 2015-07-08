@@ -297,6 +297,7 @@
 										<li class="active"><a href="#instConStart">Get Started</a></li>
 										<li><a href="#instConZims">Get Zim Files from Kiwix</a></li>
 										<li><a href="#instConKAlite">Download Khan Academy Videos</a></li>
+										<li><a href="#instConRachel" call-after="getRachelStat">Get RACHEL</a></li>
 										<!-- <li><a href="#">Services Enabled</a></li> -->
 									</ul> <!-- End XXX Sub Level Menu -->
 									<h2>Actions</h2>
@@ -322,11 +323,51 @@
 											<p>Kiwix has a large number of files containing compressed content which you can select by language.</p>
 											<div class="row">
   											<div class="col-sm-2"><button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#selectLangCodes">Select Languages</button></div>
-  											<div class="col-sm-4"><span id="instZimsDiskSpace" >Disk Space: </span></div>
+  											<div class="col-sm-4"><span id="zimDiskSpace" >Disk Space: </span></div>
   											<div class="col-sm-2"><button id="INST-ZIMS" type="button" class="btn btn-lg btn-primary">Install Selected Zims</button></div>
 										  </div>
 											<div id="ZimDownload" >  </div>
 										</div> <!--  End instConZims Submenu Option Pane -->
+										<div class="tab-pane" id="instConRachel"> <!-- Start instConRachel Submenu Option Pane -->
+											<h2>Install Rachel</h2>
+											<p>RACHEL is a collection of a variety of educational content.</p>
+											<div class="row">
+												<div class="col-sm-4">
+													<h3>Rachel Status: </h3>
+													<table>
+														<tr><td>Installed:&nbsp;</td><td id="rachelInstalled"></td></tr>
+														<tr><td>Enabled:&nbsp;</td><td id="rachelEnabled"></td></tr>
+														<tr><td>Content Found:&nbsp;</td><td id="rachelContentFound"></td></tr>
+												  </table>
+												</div>
+  											<div class="col-sm-4">
+  												<h3>Disk Space:</h3>
+  												<span id="rachelDiskSpace" >Disk Space: </span><BR><BR>
+  											  <button id="DOWNLOAD-RACHEL" type="button" class="btn btn-lg btn-primary">Download RACHEL Content</button></div>
+										  </div>
+										  <div id=rachelModules class="row">
+												<div class="col-sm-4">
+													<h3>Rachel Modules: </h3>
+													<div> <!--  Start rachelModules Table -->
+    												<table class="rachelModules">
+    													<thead>
+    														<tr>
+    															<th style="width:40%">Title</th>
+    															<th style="width:10%">Enabled</th>
+    														</tr>
+    													</thead>
+    													<tbody>
+
+    													</tbody>
+    												</table>
+    											</div> <!--  End rachelModules Table -->
+    										</div>
+    										<div class="col-sm-4"><BR><BR><BR>
+  											   <!--  <button id="ENABLE-RACHEL" type="button" class="btn btn-lg btn-primary">Enable RACHEL Content</button>-->
+  											</div>
+										  </div>
+											<div id="RachelDownload" >  </div>
+										</div> <!--  End instConRachel Submenu Option Pane -->
 										<div class="tab-pane" id="instConKAlite"> <!-- Start instConStart Submenu Option Pane -->
 											<h2>Download Khan Academy Videos</h2>
 											<p>Khan Academ Lite has the ability to download selected portions of the available videos in several different languages.</p>

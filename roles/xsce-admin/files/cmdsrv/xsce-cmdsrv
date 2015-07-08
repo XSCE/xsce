@@ -858,24 +858,26 @@ def get_rachel_stat(cmd_info):
     if 'rachel' in xsce_ini:
         rachel_stat['status'] = 'INSTALLED'
 
-        if xsce_ini['rachel']['enabled'] == True:
+        print xsce_ini['rachel']['enabled']
+        if xsce_ini['rachel']['enabled']: # is True doesn't work
             rachel_stat['status'] = 'ENABLED'
 
         rachel_index = xsce_ini['rachel']['rachel_content_path'] + "index.php"
         if os.path.isfile(rachel_index):
             rachel_stat['content_installed'] = True
-            mods_enabled = get_rachel_modules(xsce_ini['rachel']['rachel_content_path'] + "modules")
-            mods_disabled = get_rachel_modules(xsce_ini['rachel']['rachel_content_path'] + "modules.out")
+            mods_enabled = get_rachel_modules(xsce_ini['rachel']['rachel_content_path'] + "modules", True)
+            mods_disabled = get_rachel_modules(xsce_ini['rachel']['rachel_content_path'] + "modules.out", False)
 
-            rachel_stat['enabled'] = mods_enabled
-            rachel_stat['disabled'] = mods_disabled
+            rachel_stat['enabled'] = {}
+            rachel_stat['enabled'].update (mods_enabled)
+            rachel_stat['enabled'].update (mods_disabled)
 
     resp = json.dumps(rachel_stat)
     return (resp)
 
-def get_rachel_modules(module_dir):
+def get_rachel_modules(module_dir, state):
 
-    modules = []
+    modules = {}
     dir_list = [os.path.join(module_dir,o) for o in os.listdir(module_dir) if os.path.isdir(os.path.join(module_dir,o))]
 
     for dir in dir_list:
@@ -891,8 +893,8 @@ def get_rachel_modules(module_dir):
 
         module = {}
         module['path'] = dir
-        module['title'] = title
-        modules.append(module)
+        module['enabled'] = state
+        modules[title] = module
 
     return (modules)
 
