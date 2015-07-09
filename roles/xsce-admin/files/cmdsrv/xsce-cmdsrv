@@ -996,7 +996,8 @@ def install_rachel(cmd_info):
     print job_command
 
     # unzip
-    job_command = "/usr/bin/unzip -uo " + downloadFile + " -d " + targetDir
+    #job_command = "/usr/bin/unzip -uo " + downloadFile + " -d " + targetDir
+    job_command = "/opt/schoolserver/xsce_cmdsrv/scripts/rachel_install_step2.sh " + rachelName
     job_id = request_one_job(cmd_info, job_command, 2, job_id, "Y")
     print job_command
 

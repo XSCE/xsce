@@ -181,6 +181,16 @@ $("#KIWIX-LIB-REFRESH").click(function(){
   getKiwixCatalog();
 });
 
+$("#DOWNLOAD-RACHEL").click(function(){
+	if (rachelStat.content_installed == true){
+	  var rc = confirm("RACHEL content is already in the library.  Are you sure you want to download again?");
+	  if (rc != true)
+	    return;
+	}
+  sendCmdSrvCmd("INST-RACHEL", genericCmdHandler, "DOWNLOAD-RACHEL");
+  alert ("RACHEL scheduled to be downloaded and installed.\n\nPlease view Utilities->Display Job Status to see the results.");
+});
+
 // Util Buttons
 
 $("#JOB-STATUS-REFRESH").click(function(){
