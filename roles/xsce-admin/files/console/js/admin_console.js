@@ -36,6 +36,9 @@ sysStorage.zims_selected_size = 0;
 
 var globalAjaxErrorFlag = false;
 
+// Set jquery ajax calls not to cache in browser
+$.ajaxSetup({ cache: false });
+
 // Set up nav
 
 $("ul.nav a").click(function (e) {
