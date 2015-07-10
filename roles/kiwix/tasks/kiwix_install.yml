@@ -5,9 +5,9 @@
         mode=0755
         state=directory
   with_items:
-    - /library/zims
-    - /library/zims/content
-    - /library/zims/index
+    - "{{ xsce_zim_path }}"
+    - "{{ kiwix_content_path }}"
+    - "{{ xsce_zim_path }}/index"
     - /library/downloads/zims
     - /library/working/zims
 
@@ -38,10 +38,19 @@
 - name: Set kiwix ownership
   command: "chown -R root:root {{ xsce_base }}"
 
-# we need no file rather than an empty one
-#- name: Create kiwix library file
-#  file: dest='{{ kiwix_library_xml }}'
-#        state=touch
+- name: Copy test.zim file
+  copy: src=test.zim
+        dest="{{ kiwix_content_path }}"
+        mode=0644
+        owner=root
+        group=root
+
+- name: Copy kiwix library file
+  copy: src=library.xml
+        dest="{{ kiwix_library_xml }}"
+        mode=0644
+        owner=root
+        group=root
 
 # Create kiwix service
 
