@@ -16,6 +16,8 @@ var zimGroups = {}; // zim ids grouped by language and category
 var kiwixCatalog = {}; // catalog of kiwix zims, read from file downloaded from kiwix.org
 var installedZimCat = {}; // catalog of installed, and wip zims
 
+var rachelStat = {}; // installed, enabled and whether content is installed and which is enabled
+
 var zimsInstalled = []; // list of zims already installed
 var zimsScheduled = []; // list of zims being installed (wip)
 
@@ -177,6 +179,16 @@ $("#RESTART-KIWIX").click(function(){
 
 $("#KIWIX-LIB-REFRESH").click(function(){
   getKiwixCatalog();
+});
+
+$("#DOWNLOAD-RACHEL").click(function(){
+	if (rachelStat.content_installed == true){
+	  var rc = confirm("RACHEL content is already in the library.  Are you sure you want to download again?");
+	  if (rc != true)
+	    return;
+	}
+  sendCmdSrvCmd("INST-RACHEL", genericCmdHandler, "DOWNLOAD-RACHEL");
+  alert ("RACHEL scheduled to be downloaded and installed.\n\nPlease view Utilities->Display Job Status to see the results.");
 });
 
 // Util Buttons
@@ -803,6 +815,61 @@ function sortZimLangs(){
     });
 }
 
+function getRachelStat(){
+  command = "GET-RACHEL-STAT";
+  sendCmdSrvCmd(command, procRachelStat);
+  return true;
+}
+
+function procRachelStat(data) {
+  rachelStat = data;
+
+  setRachelDiskSpace();
+  var html = "";
+  var htmlNo = "<b>NO</b>";
+  var htmlYes = "<b>YES</b>";
+  var installedHtml = htmlNo;
+  var enabledHtml = htmlNo;
+  var contentHtml = htmlNo;
+
+  if (rachelStat["status"] == "INSTALLED")
+    installedHtml = htmlYes;
+
+  if (rachelStat["status"] == "ENABLED"){
+    installedHtml = htmlYes;
+    enabledHtml = htmlYes;
+  }
+
+  if (rachelStat["content_installed"] == true)
+    contentHtml = htmlYes;
+
+  $("#rachelInstalled").html(installedHtml);
+  $("#rachelEnabled").html(enabledHtml);
+  $("#rachelContentFound").html(contentHtml);
+
+  var moduleList = [];
+
+  if (rachelStat["content_installed"] == true){
+    for (title in rachelStat.enabled) {
+      moduleList.push(title);
+    }
+
+    moduleList.sort();
+
+    for (idx in moduleList) {
+    	html += '<tr><td>' + moduleList[idx] + '</td><td>';
+    	if (rachelStat.enabled[moduleList[idx]].enabled == true)
+    	  html += htmlYes + '</td></tr>'
+    	else
+    		html += htmlNo + '</td></tr>'
+    }
+    $("#rachelModules tbody").html(html);
+    $("#rachelModules").show();
+  }
+  else
+  	$("#rachelModules").hide();
+}
+
 // Util functions
 
 function getJobStat()
@@ -998,6 +1065,20 @@ function procSysStorage()
 }
 
 function setZimDiskSpace(){
+  var html = calcLibraryDiskSpace();
+
+  html += "<b>" + readableSize(sysStorage.zims_selected_size) + "</b>"
+  $( "#zimDiskSpace" ).html(html);
+}
+
+function setRachelDiskSpace(){
+  var html = calcLibraryDiskSpace();
+
+  html += "<b>" + "23G (X 2 for Download)" + "</b>"
+  $( "#rachelDiskSpace" ).html(html);
+}
+
+function calcLibraryDiskSpace(){
   var html = "Library Space Available : <b>";
   var avail_in_megs;
   var zims_selected_size;
@@ -1009,9 +1090,8 @@ function setZimDiskSpace(){
 
     html += readableSize(avail_in_megs * 1024) + "</b><BR>";
 
-    html += "Total Space Selected: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>";
-    html += readableSize(sysStorage.zims_selected_size) + "</b>"
-    $( "#instZimsDiskSpace" ).html(html);
+    html += "Total Space Required: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+    return html;
 }
 
 function updateZimDiskSpace(cb){

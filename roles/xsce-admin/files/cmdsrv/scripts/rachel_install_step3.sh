@@ -1,7 +1,7 @@
 #!/bin/sh
 
 VERSION=$1
-WORKINGDIR=/library/working/$VERSION
+WORKINGDIR=/library/working/rachel/$VERSION
 DESTDIR=/library/rachel
 
 if [[ -d "$DESTDIR/www" ]]; then

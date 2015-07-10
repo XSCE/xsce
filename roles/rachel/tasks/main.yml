@@ -6,6 +6,8 @@
         state=directory
   with_items:
     - /library/rachel
+    - /library/downloads/rachel
+    - /library/working/rachel
 
 - name: See if rachel content is installed
   stat: path="{{ rachel_content_path }}/index.php"
