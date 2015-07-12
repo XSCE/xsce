@@ -39,6 +39,9 @@ var globalAjaxErrorFlag = false;
 // Set jquery ajax calls not to cache in browser
 $.ajaxSetup({ cache: false });
 
+// get default help
+getHelp("Overview.rst");
+
 // Set up nav
 
 $("ul.nav a").click(function (e) {

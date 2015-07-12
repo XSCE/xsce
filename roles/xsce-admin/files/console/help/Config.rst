@@ -1,11 +1,5 @@
-XSCE Admin Console - Configuration
-==================================
-
----
-
-**More help is on the way.**
-
----
+XSCE Admin Console - Configure
+==============================
 
 When you installed the XSCE School Server, a great deal of software was included, but much of it was not turned on.
 
@@ -16,7 +10,7 @@ Configuration is divided into the following sections:
 Network Parameters
 ------------------
 
-You will not usually need to touch these, but they are here in case and also for reference.
+You will not usually need to touch these, but they are here in case you do and also for reference.
 
 The most important is the role of the server in your network.  The server can play one of three roles
 
@@ -26,6 +20,8 @@ This means that the server has two connections, ethernet and/or wifi, and that i
 client machines to the internet.
 
 ### Appliance
+
+### Lan Controller
 
 Internet Caching/Filtering
 --------------------------
