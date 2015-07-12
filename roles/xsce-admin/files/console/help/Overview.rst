@@ -6,6 +6,12 @@ the School Server.
 
 The following menu options are available.  Please see the help for each individually.
 
+Control
+-------
+
+* Reboot Server
+* Power Off Server
+
 Configuration
 -------------
 
@@ -20,6 +26,7 @@ Install Content
 * Get Started
 * Get Zim Files from Kiwix
 * Download Khan Academy Videos
+* Get RACHEL
 
 Utilities
 ---------
