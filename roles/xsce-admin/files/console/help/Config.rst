@@ -134,6 +134,8 @@ The options below are intended for administrators and people who may help with o
 
 * **VnStat** gathers and displays networking statistics.
 
+* **AWStats** graphs statistics on web server usage.
+
 * **Open VPN** allows a secure connection between servers over the Internet for remote maintenance.
 
 Edit Permitted URLs
