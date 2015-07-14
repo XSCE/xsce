@@ -151,7 +151,7 @@ Edit Permitted URLs
 
 Under **Configure** - **Internet Caching/Filtering** you can turn on Internet filtering to only permit access to URLs or web sites that are in this list. Here you can modify the list to add or remove sites.  To remove a site delete the line that has its URL. To add a site add a line with the site's URL.  The dot at the beginning of the line means to match anything up to that point, so .unleashkids.org is the same as www.unleashkids.org and download.unleashkids.org.
 
-ACTIONS
+Actions
 -------
 
 ### Update Permitted URLs List

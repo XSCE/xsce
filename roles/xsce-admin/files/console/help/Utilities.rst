@@ -8,6 +8,10 @@ Actions that will require more than a few seconds to complete are handled as lon
 
 Jobs that are no longer desired may be cancelled and doing so will cancel any jobs that were created as part of the same task.  To cancel a job check the box beside it and click **Cancel Checked Jobs**.
 
+###Admin Tools
+
+Use these tools to administer, monitor, and evaluate server usage.
+
 ###Display Ansible Facts
 
 All software on the server has been installed using a product called ansible.  This option will tell you more than you probably wanted to know about its variables.
