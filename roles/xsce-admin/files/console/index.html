@@ -429,6 +429,7 @@
 									<h2>Menu Options</h2>
 									<ul class="nav nav-pills nav-stacked"> <!-- Start Status Sub Level Menu -->
 										<li class="active"><a href="#utilJobs" call-after="getJobStat">Display Job Status</a></li>
+										<li><a href="#utilsTools">Admin Tools</a></li>
 										<li><a href="#utilsAnsible">Display Ansible Facts</a></li>
 										<li><a href="#utilsXsceIni">Display XSCE.INI File</a></li>
 										<li><a href="#utilsMemory" call-after="getSysMem">Display System Memory</a></li>
@@ -469,6 +470,17 @@
 												</table>
 											</div> <!--  End jobStatTable -->
 										</div> <!--  End Status statusJobs Submenu Option Pane -->
+										<div class="tab-pane" id="utilsTools"> <!-- Start utilsTools Pane -->
+											<h2>Administration Tools</h2>
+
+											<ul >
+												<li><a href="http://schoolserver:5984/xovis/_design/xovis-couchapp/index.html" target="_blank">XOvis - Graphs statistics on XO use of Activities.</a></li>
+                        <li><a href="/munin" target="_blank">Munin - Drill down to monitor server performance.</a></li>
+                        <li><a href="/awstats" target="_blank">AWStats - Statistics on web server usage.</a></li>
+
+
+											</ul>
+										</div> <!--  End utilsTools pane -->
 										<div class="tab-pane" id="utilsAnsible"> <!-- Start statusAnsible Pane -->
 											<h2>Ansible Facts</h2>
 											<div id=ansibleFacts>
