@@ -499,15 +499,9 @@ function initConfigVars()
   else {
     html += "Found<BR>";
     html += "WAN: " + ansibleFacts.ansible_default_ipv4.address + " on " + ansibleFacts.ansible_default_ipv4.alias + "<BR>";
-    wan_ip = ansibleFacts.ansible_default_ipv4.address.split(".");
-    //consoleLog(wan_ip);
-    $("#gui_static_wan_ip").val(ansibleFacts.ansible_default_ipv4.address);
-    $("#gui_static_wan_netmask").val(ansibleFacts.ansible_default_ipv4.netmask);
-    $("#gui_static_wan_gateway").val(ansibleFacts.ansible_default_ipv4.gateway);
-    $("#gui_static_wan_nameserver").val(ansibleFacts.ansible_default_ipv4.gateway);
   }
   //consoleLog(config_vars);
-  // html += "LAN:
+  html += "LAN: on " + xsce_ini.network.computed_lan  + "<BR>";
   html += "Network Mode: " + xsce_ini.network.xsce_network_mode + "<BR>";
   $("#discoveredNetwork").html(html);
   if (typeof config_vars.gui_desired_network_role === "undefined")
@@ -519,8 +513,6 @@ function initStaticWanVars() {
 	if ($("#gui_static_wan").prop('checked') == false){
     staticIpDefaults ();
   }
-
-	;
 }
 
 function setConfigVars ()
