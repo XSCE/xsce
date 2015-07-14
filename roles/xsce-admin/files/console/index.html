@@ -123,12 +123,13 @@
 												<div class="checkbox">
 												  <label><input type="checkbox" name="gui_static_wan" id="gui_static_wan" >Check to use a static WAN IP Address instead of DHCP</label>
 												</div>
-												<p><b>Please Note:</b> This parameter only takes effect when you have checked the box above and have the necessary Network Adapters.</p>
-												<div class="form-group">
-													<label class="col-sm-12">Static Wan IP Address</label>
-                          <div class="col-sm-3"><input type="text" class="form-control" name="gui_wan_ip_msd" id="gui_wan_ip_msd" readonly>First Three Digits (can't be changed)</div>
-                          <div class="col-sm-3"><input type="text" class="form-control" name="gui_static_wan_ip_lsd" id="gui_static_wan_ip_lsd" onclick="return gui_static_wan_ip_lsdVal()">Last Digit (no dot)</div>
-                        </div>
+												<p><b>Please Note:</b> These parameters only take effect when you have checked the box above and have the necessary Network Adapters.</p>
+
+												<div class="row"><label class="col-md-2">Static Wan IP Address</label><div class="col-md-3"><input type="text" class="form-control" name="gui_static_wan_ip" id="gui_static_wan_ip"></div></div>
+                        <div class="row"><label class="col-md-2">Static Wan Mask</label><div class="col-md-3"><input type="text" class="form-control" name="gui_static_wan_netmask" id="gui_static_wan_netmask"></div></div>
+                        <div class="row"><label class="col-md-2">Static Wan Gateway</label><div class="col-md-3"><input type="text" class="form-control" name="gui_static_wan_gateway" id="gui_static_wan_gateway"></div></div>
+                        <div class="row"><label class="col-md-2">Static Wan Name Server</label><div class="col-md-3"><input type="text" class="form-control" name="gui_static_wan_nameserver" id="gui_static_wan_nameserver"></div></div>
+
                         <h3>Internet Access for Installations</h3>
                         <p><b>Please Note:</b> This parameter will only be rarely changed.</p>
 												<div class="checkbox">
