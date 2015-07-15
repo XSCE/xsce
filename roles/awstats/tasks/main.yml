@@ -1,7 +1,2 @@
-- name: Install awstats package
-  yum: pkg={{ item }} state=installed
-  with_items:
-  - awstats
-  tags:
-    - download
-
+- include: install.yml
+  when: awstats_install
