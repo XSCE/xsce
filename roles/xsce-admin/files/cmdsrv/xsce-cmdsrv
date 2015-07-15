@@ -1107,7 +1107,8 @@ def get_last_jobs_stat(cmd_info):
             job_cc.append(job[0])
             job_cc.append(job[1])
             job_output = job[2]
-            if jobs_running[job_id]['cmd'] == "RUN-ANSIBLE" and jobs_running[job_id]['status'] == "STARTED":
+            #if jobs_running[job_id]['cmd'] == "RUN-ANSIBLE" and jobs_running[job_id]['status'] == "STARTED":
+            if jobs_running[job_id]['status'] == "STARTED" or jobs_running[job_id]['status'] == "RESTARTED":
                 # load output from tmp file
                 output_file = jobs_running[job_id]['output_file']
                 file = open(output_file, 'r')

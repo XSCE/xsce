@@ -243,9 +243,26 @@ $("#GET-INET-SPEED2").click(function(){
   getInetSpeed2();
 });
 
-// Other Objects
+// Static Wan Fields
+
 $("#gui_static_wan").change(function(){
   gui_static_wanVal();
+});
+
+$("#gui_static_wan_ip").on('blur', function(){
+  staticIpVal("#gui_static_wan_ip");
+});
+
+$("#gui_static_wan_netmask").on('blur', function(){
+  staticIpVal("#gui_static_wan_netmask");
+});
+
+$("#gui_static_wan_gateway").on('blur', function(){
+  staticIpVal("#gui_static_wan_gateway");
+});
+
+$("#gui_static_wan_nameserver").on('blur', function(){
+  staticIpVal("#gui_static_wan_nameserver");
 });
 
 function button_feedback(id, grey_out) {
@@ -291,37 +308,56 @@ function xsce_domainVal()
 
 function gui_static_wanVal()
 {
-  alert ("in gui_static_wanVal");
-  // if static wan is checked make sure visit ip addr field
+  // we come here if the checkbox was clicked
+  // if it is now checked then it is newly so and we assign defaults
+
+  // alert ("in gui_static_wanVal");
+
   if ($("#gui_static_wan").prop('checked')){
-    setTimeout(function () {
-      $("#gui_static_wan_ip_lsd").focus(); // hack for IE
-    }, 100);
+    staticIpDefaults ();
   }
 }
 
-function gui_static_wan_ip_lsdVal()
-{
-  //alert ("in gui_static_wan_ip_lsdVal");
-  gui_static_wan_ip_lsd = $("#gui_static_wan_ip_lsd").val();
-  consoleLog(gui_static_wan_ip_lsd);
-  rc = false;
-  if ($("#gui_static_wan").prop('checked')){
-    if (gui_static_wan_ip_lsd == ""){
-      alert ("Static IP Address can not be blank if use a static WAN IP Address is checked.");
+function staticIpDefaults () {
+	if(typeof ansibleFacts.ansible_default_ipv4.address === 'undefined'){
+		$("#gui_static_wan_ip").val("127.0.0.1");
+    $("#gui_static_wan_netmask").val("255.255.255.0");
+    $("#gui_static_wan_gateway").val("127.0.0.1");
+    $("#gui_static_wan_nameserver").val("127.0.0.1");
+  }
+  else {
+    $("#gui_static_wan_ip").val(ansibleFacts.ansible_default_ipv4.address);
+    $("#gui_static_wan_netmask").val(ansibleFacts.ansible_default_ipv4.netmask);
+    $("#gui_static_wan_gateway").val(ansibleFacts.ansible_default_ipv4.gateway);
+    $("#gui_static_wan_nameserver").val(ansibleFacts.ansible_default_ipv4.gateway);
+  }
+}
+
+function staticIpVal(fieldId) {
+    //Check Format
+    var fieldVal = $(fieldId).val();
+    var ip = fieldVal.split(".");
+    var valid = true;
+
+    if (ip.length != 4) {
+        valid = false;
     }
-    else if (isNaN(gui_static_wan_ip_lsd)){
-      alert ("Static IP Address must be a number.");
+
+    //Check Numbers
+    for (var c = 0; c < 4; c++) {
+        //Perform Test
+        if ( ip[c] <= -1 || ip[c] > 255 ||
+             isNaN(parseFloat(ip[c])) ||
+             !isFinite(ip[c])  ||
+             ip[c].indexOf(" ") !== -1 ) {
+
+             valid = false;
+        }
     }
-    else if (parseInt(gui_static_wan_ip_lsd) < 2 || parseInt(gui_static_wan_ip_lsd) > 250){
-      alert ("Static IP Address must be greater than 2 and less than 250.");
-    }
-    else
-      rc = true;
-    }
-    if (rc == false){
+    if (valid == false){
+    	alert ("Invalid: Field must be N.N.N.N where N is a number between 0 and 255");
       setTimeout(function () {
-        $("#gui_static_wan_ip_lsd").focus(); // hack for IE
+        $(fieldId).focus(); // hack for IE
       }, 100);
       return false;
     }
@@ -459,24 +495,24 @@ function initConfigVars()
   if(typeof ansibleFacts.ansible_default_ipv4.address === 'undefined'){
     html += "Not Found<BR>";
     $("#gui_static_wan").prop('checked', false);
-    wan_ip_msd = "";
-    gui_static_wan_ip_lsd = "";
   }
   else {
     html += "Found<BR>";
     html += "WAN: " + ansibleFacts.ansible_default_ipv4.address + " on " + ansibleFacts.ansible_default_ipv4.alias + "<BR>";
-    wan_ip = ansibleFacts.ansible_default_ipv4.address.split(".");
-    //consoleLog(wan_ip);
-    wan_ip_msd = wan_ip[0] + "." + wan_ip[1] + "." + wan_ip[2] + ".";
-    $("#gui_static_wan_ip_lsd").val(wan_ip[3]);
-    $("#gui_wan_ip_msd").val(wan_ip_msd);
   }
   //consoleLog(config_vars);
-  // html += "LAN:
+  html += "LAN: on " + xsce_ini.network.computed_lan  + "<BR>";
   html += "Network Mode: " + xsce_ini.network.xsce_network_mode + "<BR>";
   $("#discoveredNetwork").html(html);
   if (typeof config_vars.gui_desired_network_role === "undefined")
   setRadioButton("gui_desired_network_role", xsce_ini.network.xsce_network_mode)
+}
+
+function initStaticWanVars() {
+	// if use static wan is checked they are assumed to be valid
+	if ($("#gui_static_wan").prop('checked') == false){
+    staticIpDefaults ();
+  }
 }
 
 function setConfigVars ()

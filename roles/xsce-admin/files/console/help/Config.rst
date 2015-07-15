@@ -33,9 +33,17 @@ This is similar to an Appliance except that the server is playing a network role
 
 ### Override IP Addresses
 
-There may be times when in order to fit into an existing network you need to change the IP Address of the adapter connected to that network. Again this is something you would seldom do.
+There may be times when in order to fit into an existing network you need to change the IP Address of the adapter connected to that network. Again this is something you would seldom do.  There are four fields that must be entered:
 
-You must check the box and enter a number between 1 and 255. The current value is displayed.
+**Please Note**: None of the values entered have any effect unless you **Check the Box** titled 'Check to use a static WAN IP Address instead of DHCP'.
+
+**Static Wan IP Address** - Must be a valid IP Address.  The default is the current dynamic address if known, otherwise 127.0.0.1.
+
+**Static Wan Mask** - Must be a valid Network Mask.  The default is the current maks if known, otherwise 255.255.255.0.
+
+**Static Wan Gateway** - Must be a valid IP Address.  The default is the current gateway if known, otherwise 127.0.0.1.
+
+**Static Wan Name Server** - Must be a valid IP Address.  The default is the current gateway address if known, otherwise 127.0.0.1.
 
 ### Internet Access for Installations
 
@@ -134,9 +142,26 @@ The options below are intended for administrators and people who may help with o
 
 * **VnStat** gathers and displays networking statistics.
 
+* **AWStats** graphs statistics on web server usage.
+
 * **Open VPN** allows a secure connection between servers over the Internet for remote maintenance.
 
 Edit Permitted URLs
 -------------------
 
 Under **Configure** - **Internet Caching/Filtering** you can turn on Internet filtering to only permit access to URLs or web sites that are in this list. Here you can modify the list to add or remove sites.  To remove a site delete the line that has its URL. To add a site add a line with the site's URL.  The dot at the beginning of the line means to match anything up to that point, so .unleashkids.org is the same as www.unleashkids.org and download.unleashkids.org.
+
+Actions
+-------
+
+### Update Permitted URLs List
+
+Saves the list of permitted URLs edited above and makes them active.
+
+### Save Configuration
+
+Saves all configuration variables so that they will be used when the follwing button is clicked.
+
+### Install Configured Server Options
+
+**Warning:** This option will **Reconfigure your Server**. It runs the Ansible configuration software using all configuration variables that have been saved with the above button.

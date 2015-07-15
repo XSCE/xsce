@@ -1,7 +1,7 @@
 XSCE Admin Console - Install Content
 ====================================
 
-The options on this menu allow you to download and install content onto the School Server.  As of this release all of this content comes from the internet, but in the future there will be menu options to copy from a portal hard disk drive.
+The options on this menu allow you to download and install content onto the School Server.  As of this release all of this content comes from the internet, but in the future there will be menu options to copy from a portable hard disk drive.
 
 These options are aimed at people who plan to set up the server in a location where there is a relatively high bandwidth connection and then deploy it where there is little or no connectivity.
 

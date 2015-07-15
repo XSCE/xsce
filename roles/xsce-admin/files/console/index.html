@@ -123,12 +123,13 @@
 												<div class="checkbox">
 												  <label><input type="checkbox" name="gui_static_wan" id="gui_static_wan" >Check to use a static WAN IP Address instead of DHCP</label>
 												</div>
-												<p><b>Please Note:</b> This parameter only takes effect when you have checked the box above and have the necessary Network Adapters.</p>
-												<div class="form-group">
-													<label class="col-sm-12">Static Wan IP Address</label>
-                          <div class="col-sm-3"><input type="text" class="form-control" name="gui_wan_ip_msd" id="gui_wan_ip_msd" readonly>First Three Digits (can't be changed)</div>
-                          <div class="col-sm-3"><input type="text" class="form-control" name="gui_static_wan_ip_lsd" id="gui_static_wan_ip_lsd" onclick="return gui_static_wan_ip_lsdVal()">Last Digit (no dot)</div>
-                        </div>
+												<p><b>Please Note:</b> These parameters only take effect when you have checked the box above and have the necessary Network Adapters.</p>
+
+												<div class="row"><label class="col-md-2">Static Wan IP Address</label><div class="col-md-3"><input type="text" class="form-control" name="gui_static_wan_ip" id="gui_static_wan_ip"></div></div>
+                        <div class="row"><label class="col-md-2">Static Wan Mask</label><div class="col-md-3"><input type="text" class="form-control" name="gui_static_wan_netmask" id="gui_static_wan_netmask"></div></div>
+                        <div class="row"><label class="col-md-2">Static Wan Gateway</label><div class="col-md-3"><input type="text" class="form-control" name="gui_static_wan_gateway" id="gui_static_wan_gateway"></div></div>
+                        <div class="row"><label class="col-md-2">Static Wan Name Server</label><div class="col-md-3"><input type="text" class="form-control" name="gui_static_wan_nameserver" id="gui_static_wan_nameserver"></div></div>
+
                         <h3>Internet Access for Installations</h3>
                         <p><b>Please Note:</b> This parameter will only be rarely changed.</p>
 												<div class="checkbox">
@@ -268,6 +269,11 @@
 												</div>
 												<div class="checkbox">
 													<label>
+														<input type="checkbox" name="awstats_enabled" id="awstats_enabled">AWStats graphs statistics on web server usage.
+													</label>
+												</div>
+												<div class="checkbox">
+													<label>
 														<input type="checkbox" name="openvpn_enabled" id="openvpn_enabled">Open VPN allows a secure connection between servers over the Internet for remote maintenance.
 													</label>
 												</div>
@@ -316,11 +322,13 @@
 									<div class="tab-content"> <!-- Start Container for Sub Menu Options Panes -->
 										<div class="tab-pane active" id="instConStart"> <!-- Start instConStart Submenu Option Pane -->
 											<h2>Get Started</h2>
-											<p>Planned but not yet implemented</p>
+											<p>The options on this menu allow you to download and install content onto the School Server. As of this release all of this content comes from the internet, but in the future there will be menu options to copy from a portable hard disk drive.</p>
+											<p>These options are aimed at people who plan to set up the server in a location where there is a relatively high bandwidth connection and then deploy it where there is little or no connectivity.</p>
+											<p>Options planned but not yet implemented</p>
 											<ul>
-										    <li>Search for media-based content such as RACHEL or IIAB on removable media to permit install</li>
-										    <li>Ability to set removable storage as working disk for downloads</li>
-										    <li>Flag to permit downloads of content, default false and must be set for each session.</li>
+										    <li>Search for media-based content such as RACHEL or IIAB on removable media to permit installation.</li>
+										    <li>Ability to set removable storage as working disk for downloads.</li>
+										    <li>Flag to allow downloads of content to be valid only for each session.</li>
 									    </ul>
 										</div> <!--  End instConStart Submenu Option Pane -->
 										<div class="tab-pane" id="instConZims"> <!-- Start instConZims Submenu Option Pane -->
@@ -423,6 +431,7 @@
 									<h2>Menu Options</h2>
 									<ul class="nav nav-pills nav-stacked"> <!-- Start Status Sub Level Menu -->
 										<li class="active"><a href="#utilJobs" call-after="getJobStat">Display Job Status</a></li>
+										<li><a href="#utilsTools">Admin Tools</a></li>
 										<li><a href="#utilsAnsible">Display Ansible Facts</a></li>
 										<li><a href="#utilsXsceIni">Display XSCE.INI File</a></li>
 										<li><a href="#utilsMemory" call-after="getSysMem">Display System Memory</a></li>
@@ -463,6 +472,17 @@
 												</table>
 											</div> <!--  End jobStatTable -->
 										</div> <!--  End Status statusJobs Submenu Option Pane -->
+										<div class="tab-pane" id="utilsTools"> <!-- Start utilsTools Pane -->
+											<h2>Administration Tools</h2>
+
+											<ul >
+												<li><a href="http://schoolserver:5984/xovis/_design/xovis-couchapp/index.html" target="_blank">XOvis - Graphs statistics on XO use of Activities.</a></li>
+                        <li><a href="/munin" target="_blank">Munin - Drill down to monitor server performance.</a></li>
+                        <li><a href="/awstats" target="_blank">AWStats - Statistics on web server usage.</a></li>
+
+
+											</ul>
+										</div> <!--  End utilsTools pane -->
 										<div class="tab-pane" id="utilsAnsible"> <!-- Start statusAnsible Pane -->
 											<h2>Ansible Facts</h2>
 											<div id=ansibleFacts>
