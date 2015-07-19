@@ -3,7 +3,7 @@
 
 - name: Install xfce group of packages
   shell: "yum groupinstall -y xfce"
-  when: not {{ use_cache }} and not {{ no_network }}
+  when: xo_model == "none" and not {{ use_cache }} and not {{ no_network }}
   tags:
     - download
 
