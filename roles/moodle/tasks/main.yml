@@ -60,6 +60,7 @@
 
 - name: enable use of admin password from login -- initially set to changeme
   shell: /usr/bin/php /var/www/moodle/web/local/scripts/adminuser-enable.php
+  ignore_errors: true
 
 - name: Restart postgresql-xs
   service: name=postgresql-xs
