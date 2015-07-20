@@ -54,7 +54,7 @@ start() {
 		    --siteshortname='XS' \
 		    --sitesummary='Put the name of your school here' \
 		    --adminfirstname=Admin --adminlastname=OLPC \
-		    --adminusername=admin --adminpassword=`cat /etc/moodle/adminpw` \
+		    --adminusername=admin --adminpassword=changeme \
 		    --adminemail=admin@localhost \
 		    --verbose=0 --interactivelevel=0" apache 2>&1 && \
                     runuser -s /bin/bash -c "/usr/bin/php /var/www/moodle/web/local/scripts/adminuser-disable.php" apache 2>&1 ) \
