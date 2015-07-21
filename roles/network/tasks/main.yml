@@ -119,6 +119,23 @@
   service: name=network
            enabled=no
 
+- name: Mask network.service
+  shell: 'systemctl mask network.service'
+
+# Network Manager starts this if needed
+- name: Disable wpa_supplicant
+  service: name=wpa_supplicant
+           enabled=no
+
+- name: Mask wpa_supplicant
+  shell: 'systemctl mask wpa_supplicant'
+
+- name: Stop wpa_supplicant
+  service: name=wpa_supplicant
+           state=stopped
+  ignore_errors: yes
+  when: not installing
+
 - name: Stop the Access Point Hostapd program
   service: name=hostapd.service
            state=stopped
