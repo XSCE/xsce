@@ -1,9 +1,25 @@
-- name: Download substitute software
+- name: Download substitute software for arm
   get_url: url="{{ xsce_download_url }}/{{ item }}"  dest={{ downloads_dir}}/{{ item }}
   with_items:
-     - hostapd_8188
-     - wpa_supplicant_8188
-  when: wifi_id  ==  "tplink_WM725M" and not {{ use_cache }} and not {{ no_network }}
+     - hostapd_8188_armv7hl
+     - wpa_supplicant_8188_armv7hl
+  when: wifi_id  ==  "tplink_WM725M" and rpi_model == "rpi2" and not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download
+
+- name: Download substitute software for i386
+  get_url: url="{{ xsce_download_url }}/{{ item }}"  dest={{ downloads_dir}}/{{ item }}
+  with_items:
+     - hostapd_8188_i386
+  when: wifi_id  ==  "tplink_WM725M" and ansible_architecture == 'i386'  and not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download
+
+- name: Download substitute software for x86_64
+  get_url: url="{{ xsce_download_url }}/{{ item }}"  dest={{ downloads_dir}}/{{ item }}
+  with_items:
+     - hostapd_8188_x86_64
+  when: wifi_id  ==  "tplink_WM725M" and ansible_architecture == 'x86_64'  and not {{ use_cache }} and not {{ no_network }}
   tags:
     - download
 
