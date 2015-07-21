@@ -56,9 +56,9 @@ start() {
 		    --adminfirstname=Admin --adminlastname=OLPC \
 		    --adminusername=admin --adminpassword=changeme \
 		    --adminemail=admin@localhost \
-		    --verbose=0 --interactivelevel=0" apache 2>&1 && \
-                    runuser -s /bin/bash -c "/usr/bin/php /var/www/moodle/web/local/scripts/adminuser-disable.php" apache 2>&1 ) \
-		    >> /var/log/moodle-instupg.log 
+		    --verbose=0 --interactivelevel=0" apache 2>&1 ) #&& \
+        #  runuser -s /bin/bash -c "/usr/bin/php /var/www/moodle/web/local/scripts/adminuser-disable.php" apache 2>&1 ) \
+        # >> /var/log/moodle-instupg.log 
 		if [ $? = 0 ]; then
 		    # success
 		    echo "["`date`"]" Finished install / upgrade - Success >> /var/log/moodle-instupg.log 

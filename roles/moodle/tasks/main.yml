@@ -58,10 +58,6 @@
 - name: Execute moodle startup script
   command: /usr/libexec/moodle-xs-init start
 
-- name: enable use of admin password from login -- initially set to changeme
-  shell: /usr/bin/php /var/www/moodle/web/local/scripts/adminuser-enable.php
-  ignore_errors: true
-
 - name: Restart postgresql-xs
   service: name=postgresql-xs
            state=restarted
@@ -74,6 +70,10 @@
   service: name=moodle-xs
            enabled=yes
            state=started
+
+- name: fetch the administrative password for moodle
+  shell: cat /etc/moodle/adminpw
+  register: moodlepw
 
 - name: add moodle to service list
   ini_file: dest='{{ service_filelist }}'
@@ -89,3 +89,5 @@
       value: /moodle
     - option: enabled
       value: "{{ moodle_enabled }}"
+    - option: adminpw
+      value: "{{ moodlepw.stdout }}"
