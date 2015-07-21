@@ -11,7 +11,7 @@
   get_url: url="{{ xsce_download_url }}/{{ item }}"  dest={{ downloads_dir}}/{{ item }}
   with_items:
      - hostapd_8188_i386
-  when: wifi_id  ==  "tplink_WM725M" and xo_model == "XO1.5"  and not {{ use_cache }} and not {{ no_network }}
+  when: wifi_id  ==  "tplink_WM725M" and xo_model == "XO-1.5"  and not {{ use_cache }} and not {{ no_network }}
   tags:
     - download
 
@@ -40,7 +40,7 @@
         mode=0775
         owner=root
         group=root
-  when: wifi_id  ==  "tplink_WM725M" and xo_model == "XO1.5"
+  when: wifi_id  ==  "tplink_WM725M" and xo_model == "XO-1.5"
 
 - name: Use a systemd unit file to start hostapd
   template: src=hostapd/hostapd.service.j2
