@@ -146,6 +146,7 @@
 # might have wifi info if wireless is used as uplink.
 - name: Rename supplied gateway ifcfg file to WAN if present
   shell: "mv /etc/sysconfig/network-scripts/ifcfg-{{ discovered_wan_iface }} /etc/sysconfig/network-scripts/ifcfg-WAN"
+  register: moved_gw
   ignore_errors: True
   when: discovered_wan_iface != "none"
 
@@ -160,7 +161,7 @@
 - name: Supply ifcfg-WAN file
   template: src=network/ifcfg-WAN.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-WAN
-  when: 'user_wan_iface != "none" and discovered_wan_iface == "none"'
+  when: 'user_wan_iface != "none" and not moved_gw is defined' 
 
 - name: Configuring LAN interface as xsce_lan_iface
   template: src=network/ifcfg.j2
