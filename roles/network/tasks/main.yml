@@ -160,12 +160,16 @@
   with_items:
     - "{{ ifcfg_files.stdout_lines }}"
 
+- name: Checking for ifcfg-WAN file
+  stat: path=/etc/sysconfig/network-scripts/ifcfg-WAN
+  register: needs_WAN
+
 # set user_wan_iface: <device> for static
 # use wan_* for static info
 - name: Supply ifcfg-WAN file
   template: src=network/ifcfg-WAN.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-WAN
-  when: 'user_wan_iface != "none" and not moved_gw is defined' 
+  when: xsce_wan_iface != "none" and not needs_WAN.stat.exists
 
 - name: Configuring LAN interface as xsce_lan_iface
   template: src=network/ifcfg.j2
