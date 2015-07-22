@@ -110,12 +110,6 @@
   shell: echo 1 > /etc/sysconfig/olpc-scripts/setup.d/installed/gateway
          creates=/etc/sysconfig/olpc-scripts/setup.d/installed/gateway
 
-- name: Get a list of ifcfg files to delete
-  shell: "ls -1 /etc/sysconfig/network-scripts/ifcfg-* | grep -v -e ifcfg-lo  -e ifcfg-WAN"
-  register: ifcfg_files
-  ignore_errors: True
-  changed_when: False
-
 - name: Disable network.service
   service: name=network
            enabled=no
