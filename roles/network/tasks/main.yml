@@ -58,7 +58,7 @@
 - name: Re-read network config files
   shell: 'nmcli con reload'
   ignore_errors: yes
-  when: ansible_distribution_version >= "21" and wan_ip != "dhcp"'
+  when: 'ansible_distribution_version >= "21" and wan_ip != "dhcp"'
 
 - name: use upstream nameserver until named is installed
   lineinfile: dest=/etc/resolv.conf
