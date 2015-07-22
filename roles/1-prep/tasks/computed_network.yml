@@ -5,6 +5,12 @@
   ignore_errors: True
   changed_when: False
 
+- name: Get a list of ifcfg files to delete
+  shell: "ls -1 /etc/sysconfig/network-scripts/ifcfg-* | grep -v -e ifcfg-lo  -e ifcfg-WAN"
+  register: ifcfg_files
+  ignore_errors: True
+  changed_when: False
+
 # Discover  do we have a gateway? -- if ansible detects gateway, becomes WAN candidate
 - name: Finding gateway
   set_fact:
