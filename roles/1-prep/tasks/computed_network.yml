@@ -18,6 +18,13 @@
   ignore_errors: True
   changed_when: False
 
+# maybe never TODO: deal with more that one wireless device last match wins
+- name: Set the discovered wireless, if found
+  set_fact:
+     wifi1: "{{ wireless_list1.stdout|trim }}"
+     discovered_wireless_iface: "{{ wireless_list1.stdout|trim }}"
+  when: wireless_list1.stdout != "" and wireless_list1.stdout|trim != discovered_wan_iface
+
 # WIRELESS -- Sigh... Not all drivers update /proc/net/wireless correctly
 - name: Look for any wireless interfaces take 2
   shell: "ls -la /sys/class/net/*/phy80211 | awk -F / '{print $5}'"
@@ -25,13 +32,11 @@
   ignore_errors: True
   changed_when: False
 
-# maybe never TODO: deal with more that one wireless device last match wins
-- name: Set the discovered wireless, if found
-  set_fact:
-     discovered_wireless_iface: "{{ wireless_list1.stdout|trim }}"
-  when: wireless_list1.stdout != "" and wireless_list1.stdout|trim != discovered_wan_iface
-
 - name: Set the discovered wireless, if found take 2
+     wifi2: "{{ wireless_list2.stdout|trim }}"
+  when: wireless_list2.stdout != "" and wireless_list2.stdout|trim != discovered_wan_iface
+
+- name: Use discovered wireless, take 2
   set_fact:
      discovered_wireless_iface: "{{ wireless_list2.stdout|trim }}"
   when: wireless_list2.stdout != "" and wireless_list2.stdout|trim != discovered_wan_iface and wireless_list1.stdout == ""
@@ -181,6 +186,10 @@
     value: '{{ xsce_lan_enabled }}'
   - option: 'num_lan_interfaces'
     value: '{{ num_lan_interfaces }}'
+  - option: ' wireless_list_1'
+    value: '{{ wifi1 }}'
+  - option: ' wireless_list_2'
+    value: '{{ wifi2 }}'
   - option: 'discovered_wireless_iface'
     value: '{{ discovered_wireless_iface }}'
   - option: 'xsce_wireless_lan_iface'

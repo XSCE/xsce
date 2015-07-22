@@ -11,6 +11,8 @@ xsce_wan_iface: "none"
 use_bridging: "False"
 
 #Set default for discovered hardware
+wifi1: "not found"
+wifi2: "not found"
 wireless_lan_present: False
 driver_name: nl80211
 wifi_id: none
