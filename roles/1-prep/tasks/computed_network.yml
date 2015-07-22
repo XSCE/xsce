@@ -14,15 +14,27 @@
 # WIRELESS -- if any wireless is detected as gateway, it becomes WAN
 - name: Look for any wireless interfaces
   shell: "cat /proc/net/wireless | grep -v -e Inter -e face | gawk -F: '{print $1}' | head -n1"
-  register: wireless_list
+  register: wireless_list1
+  ignore_errors: True
+  changed_when: False
+
+# WIRELESS -- Sigh... Not all drivers update /proc/net/wireless correctly
+- name: Look for any wireless interfaces take 2
+  shell: "ls -la /sys/class/net/*/phy80211 | awk -F / '{print $5}'"
+  register: wireless_list2
   ignore_errors: True
   changed_when: False
 
 # maybe never TODO: deal with more that one wireless device last match wins
 - name: Set the discovered wireless, if found
   set_fact:
-     discovered_wireless_iface: "{{ wireless_list.stdout|trim }}"
-  when: wireless_list.stdout != "" and wireless_list.stdout|trim != discovered_wan_iface
+     discovered_wireless_iface: "{{ wireless_list1.stdout|trim }}"
+  when: wireless_list1.stdout != "" and wireless_list1.stdout|trim != discovered_wan_iface
+
+- name: Set the discovered wireless, if found take 2
+  set_fact:
+     discovered_wireless_iface: "{{ wireless_list2.stdout|trim }}"
+  when: wireless_list2.stdout != "" and wireless_list2.stdout|trim != discovered_wan_iface and wireless_list1.stdout == ""
 
 - name: Setting wan if detected
   set_fact:
