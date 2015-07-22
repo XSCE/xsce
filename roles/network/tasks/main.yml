@@ -1,13 +1,3 @@
-- name: Create olpc-scripts directory
-  file: path={{ item }}
-        owner=root
-        group=root
-        mode=0755
-        state=directory
-  with_items:
-    - /etc/sysconfig/olpc-scripts/
-    - /etc/sysconfig/olpc-scripts/setup.d/installed/
-
 - name: Set hostname
   template: dest=/etc/hostname
             src=network/hostname.j2
