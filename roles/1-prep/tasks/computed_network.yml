@@ -33,6 +33,7 @@
   changed_when: False
 
 - name: Set the discovered wireless, if found take 2
+  set_fact:
      wifi2: "{{ wireless_list2.stdout|trim }}"
   when: wireless_list2.stdout != "" and wireless_list2.stdout|trim != discovered_wan_iface
 
