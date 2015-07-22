@@ -134,6 +134,7 @@
 
 - name: ask systemd to reread the unit files, picks up changes done
   shell: systemctl daemon-reload
+  when: not installing
 
 # Disconnects the slaves quickly, deletes the bridge
 - name: Stop the LAN Bridge F21
@@ -159,15 +160,6 @@
   template: src=network/ifcfg-WAN.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-WAN
   when: 'user_wan_iface != "none" and discovered_wan_iface == "none"'
-
-#- name: Restart NM if gateway was not detected, and not disabled
-#  include: NM.yml
-#  when: discovered_wan_iface == "none" and user_wan_iface == "auto"
-
-#- name: Re-detect network facts if NM was restarted.
-#  setup: filter=ansible_local
-#  include: ../../../roles/1-prep/tasks/computed_network.yml
-#  when: discovered_wan_iface == "none" and user_wan_iface == "auto"
 
 - name: Configuring LAN interface as xsce_lan_iface
   template: src=network/ifcfg.j2
