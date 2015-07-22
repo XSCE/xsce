@@ -8,6 +8,7 @@
 
 # need to add this field in the GUI
 - name: Using GUI_WAN info
+  set_fact:
     user_wan_iface: "{{ gui_wan_iface }}"
   when: 'gui_wan_iface != "unset"'
 
