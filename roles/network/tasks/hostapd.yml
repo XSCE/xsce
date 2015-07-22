@@ -40,9 +40,6 @@
             mode=0644
   when: xsce_wireless_lan_iface != "none" 
 
-- name: ask systemd to reread the unit file, changing roles?
-  shell: systemctl daemon-reload
-
 - name: Enable the Access Point Hostapd program
   service: enabled=yes
            name=hostapd.service
