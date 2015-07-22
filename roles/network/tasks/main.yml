@@ -142,6 +142,9 @@
   ignore_errors: yes
   when: not installing
 
+- name: ask systemd to reread the unit files, picks up changes done
+  shell: systemctl daemon-reload
+
 # Disconnects the slaves quickly, deletes the bridge
 - name: Stop the LAN Bridge F21
   shell: 'nmcli con delete "Bridge LAN"'
