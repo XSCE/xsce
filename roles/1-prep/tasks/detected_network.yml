@@ -116,12 +116,6 @@
     xsce_lan_iface: br0
   when: xsce_wireless_lan_iface != "none"
 
-# override with xsce_lan_iface setting if no longer in auto
-- name: Setting xsce LAN for bridging
-  set_fact:
-    xsce_lan_iface: br0
-  when: use_bridging
-
 - name: No LAN configured - Appliance mode
   set_fact:
     xsce_network_mode: "Appliance"
