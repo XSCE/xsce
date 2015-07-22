@@ -1,14 +1,14 @@
 - name: Using GUI_STATIC info
   set_fact:
-    wan_ip: {{ gui_static_wan_ip }}
-    wan_netmask: {{ gui_static_wan_netmask }}
-    wan_gateway: {{ gui_static_wan_gateway }}
-    wan_nameserver: {{ gui_static_wan_nameserver }}
+    wan_ip: "{{ gui_static_wan_ip }}"
+    wan_netmask: "{{ gui_static_wan_netmask }}"
+    wan_gateway: "{{ gui_static_wan_gateway }}"
+    wan_nameserver: "{{ gui_static_wan_nameserver }}"
   when: 'gui_static_wan_ip != "unset"'
 
 # need to add this field in the GUI
 - name: Using GUI_WAN info
-    user_wan_iface: {{ gui_wan_iface }}
+    user_wan_iface: "{{ gui_wan_iface }}"
   when: 'gui_wan_iface != "unset"'
 
 # override with user_wan_iface setting if no longer in auto
