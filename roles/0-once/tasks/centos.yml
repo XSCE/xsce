@@ -2,7 +2,7 @@
   command: echo Starting centos.yml
 
 - name: Install epel-release for CentOS
-  yum: name={{ item }}
+  {{ ansible_pkg_mgr }} name={{ item }}
        state=present
   with_items:
    - epel-release

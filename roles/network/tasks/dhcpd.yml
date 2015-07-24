@@ -1,5 +1,5 @@
 - name: Install dhcp package
-  yum: name=dhcp
+  {{ ansible_pkg_mgr }} name=dhcp
        state=installed
   tags:
     - download

@@ -1,5 +1,5 @@
     - name: Install MySQL
-      yum: name={{ item }}
+      {{ ansible_pkg_mgr }} name={{ item }}
       with_items:
         - MySQL-python
         - mysql

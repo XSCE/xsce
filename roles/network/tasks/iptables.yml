@@ -12,7 +12,7 @@
         state=absent
 
 - name: Install iptables service package
-  yum: name=iptables-services
+  {{ ansible_pkg_mgr }} name=iptables-services
        state=installed
   tags:
     - download

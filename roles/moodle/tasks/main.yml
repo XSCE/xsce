@@ -1,6 +1,6 @@
 ---
 - name: Install moodle required packages
-  yum: name={{ item }}
+  {{ ansible_pkg_mgr }} name={{ item }}
        state=present
   with_items:
     - moodle-xs

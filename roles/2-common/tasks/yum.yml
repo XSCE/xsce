@@ -3,7 +3,7 @@
   when: ansible_distribution == "Fedora" and ansible_distribution_version|int >= 22
 
 - name: Install common packages
-  yum: name={{ item }}
+  {{ ansible_pkg_mgr }} name={{ item }}
        state=present
   with_items:
    - createrepo
@@ -36,7 +36,7 @@
     - download
 
 - name: Update common packages
-  yum: name={{ item }}
+  {{ ansible_pkg_mgr }} name={{ item }}
        state=latest
   with_items:
    - NetworkManager
