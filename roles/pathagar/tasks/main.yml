@@ -1,8 +1,8 @@
 - name: Remove if exist pathagar rpm version
-  yum: name=pathagar state=absent
+  {{ ansible_pkg_mgr }} name=pathagar state=absent
 
 - name: Install pathagar pre requisites
-  yum: name={{ item }}
+  {{ ansible_pkg_mgr }} name={{ item }}
        state=latest
   with_items:
     - python-virtualenv

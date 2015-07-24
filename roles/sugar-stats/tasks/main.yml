@@ -1,5 +1,5 @@
 - name: Install sugar-stats required packages
-  yum: name={{ item }}
+  {{ ansible_pkg_mgr }} name={{ item }}
        state=installed
   with_items:
     - sugar-stats-server

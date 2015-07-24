@@ -26,7 +26,7 @@
               state=present
 
 - name: pre(re)-Install packages
-  yum: name={{ item }}
+  {{ ansible_pkg_mgr }} name={{ item }}
        state=latest
   with_items:
    - usbmount

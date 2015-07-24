@@ -1,5 +1,5 @@
 - name: Install monit package
-  yum: name=monit
+  {{ ansible_pkg_mgr }} name=monit
        state=present
   tags:
     - download

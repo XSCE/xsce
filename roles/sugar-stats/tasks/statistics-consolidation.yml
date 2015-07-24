@@ -1,5 +1,5 @@
 - name: Install python-pip package
-  yum: name=python-pip
+  {{ ansible_pkg_mgr }} name=python-pip
        state=installed
   tags: 
     - download
@@ -16,7 +16,7 @@
        extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
 
 - name: Install required libraries
-  yum: name={{ item }}
+  {{ ansible_pkg_mgr }} name={{ item }}
        state=installed
   with_items:
     - rrdtool-python

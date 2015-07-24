@@ -1,11 +1,11 @@
 - name: Install python-pip package
-  yum: name=python-pip
+  {{ ansible_pkg_mgr }} name=python-pip
        state=installed
   tags:
     - download
 
 - name: Install required libraries
-  yum: name={{ item.pkg }}
+  {{ ansible_pkg_mgr }} name={{ item.pkg }}
        state=installed
   with_items:
     - pkg: python-imaging
