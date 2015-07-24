@@ -27,5 +27,6 @@
 
 - name: Do the install of teamviewer, pulling in any required dependencies
   shell: "yum localinstall -y {{ downloads_dir }}/{{ teamviewer_rpm_file }}"
-  when: teamviewer_enable and not {{ use_cache }} and not {{ no_network }}
-
+  when: teamviewer_install and not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download
