@@ -1,13 +1,3 @@
-- name: Create olpc-scripts directory
-  file: path={{ item }}
-        owner=root
-        group=root
-        mode=0755
-        state=directory
-  with_items:
-    - /etc/sysconfig/olpc-scripts/
-    - /etc/sysconfig/olpc-scripts/setup.d/installed/
-
 - name: Set hostname
   template: dest=/etc/hostname
             src=network/hostname.j2
@@ -59,7 +49,12 @@
   when: 'xsce_wan_iface != "none" and wan_ip != "dhcp"'
 
 - include: NM.yml
-  when: 'xsce_wan_iface != "none" and wan_ip != "dhcp"'
+  when: 'ansible_distribution_version <= "20" and wan_ip != "dhcp"'
+
+- name: Re-read network config files
+  shell: 'nmcli con reload'
+  ignore_errors: yes
+  when: 'ansible_distribution_version >= "21" and wan_ip != "dhcp"'
 
 - name: use upstream nameserver until named is installed
   lineinfile: dest=/etc/resolv.conf
@@ -67,6 +62,8 @@
               create=yes
               state=present
   when: 'xsce_wan_iface != "none" and wan_ip != "dhcp"'
+
+##### End static ip address info
 
 - include: avahi.yml
   tags:
@@ -115,10 +112,35 @@
   ignore_errors: True
   changed_when: False
 
+- name: Disable network.service
+  service: name=network
+           enabled=no
+
+- name: Mask network.service
+  shell: 'systemctl mask network.service'
+
+# Network Manager starts this if needed
+- name: Disable wpa_supplicant
+  service: name=wpa_supplicant
+           enabled=no
+
+- name: Mask wpa_supplicant
+  shell: 'systemctl mask wpa_supplicant'
+
+- name: Stop wpa_supplicant
+  service: name=wpa_supplicant
+           state=stopped
+  ignore_errors: yes
+  when: not installing
+
 - name: Stop the Access Point Hostapd program
   service: name=hostapd.service
            state=stopped
   ignore_errors: yes
+  when: not installing
+
+- name: ask systemd to reread the unit files, picks up changes done
+  shell: systemctl daemon-reload
   when: not installing
 
 # Disconnects the slaves quickly, deletes the bridge
@@ -145,15 +167,6 @@
   template: src=network/ifcfg-WAN.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-WAN
   when: 'user_wan_iface != "none" and discovered_wan_iface == "none"'
-
-#- name: Restart NM if gateway was not detected, and not disabled
-#  include: NM.yml
-#  when: discovered_wan_iface == "none" and user_wan_iface == "auto"
-
-#- name: Re-detect network facts if NM was restarted.
-#  setup: filter=ansible_local
-#  include: ../../../roles/1-prep/tasks/computed_network.yml
-#  when: discovered_wan_iface == "none" and user_wan_iface == "auto"
 
 - name: Configuring LAN interface as xsce_lan_iface
   template: src=network/ifcfg.j2
