@@ -3,13 +3,19 @@
 
 - name: Install xfce group of packages
   shell: "yum groupinstall -y xfce"
-  when: xo_model == "none" and not {{ use_cache }} and not {{ no_network }}
+  when: xo_model == "none" and not {{ use_cache }} and not {{ no_network }} and ansible_distribution_version <= "20"
   tags:
     - download
 
 - name: Install X11 group of packages
   shell: "yum groupinstall -y 'X Window system'"
-  when: xo_model == "none" and not {{ use_cache }} and not {{ no_network }}
+  when: xo_model == "none" and not {{ use_cache }} and not {{ no_network }} and ansible_distribution_version <= "20"
+  tags:
+    - download
+
+- name: Install xfce group of packages
+  shell: yum groupinstall -y "Xfce Desktop" --exclude fedora-release\*
+  when: xo_model == "none" and not {{ use_cache }} and not {{ no_network }} and ansible_distribution_version >= "21"
   tags:
     - download
 
