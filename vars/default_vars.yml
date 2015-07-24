@@ -67,9 +67,6 @@ wan_ip: dhcp
 wan_netmask:
 wan_gateway:
 wan_nameserver:
-user_wan_iface: auto
-use_bridging: False
-detect_slaves: False
 #only change these if you know what you are doing
 
 # Parameters by Aggregate Roles

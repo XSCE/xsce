@@ -5,10 +5,23 @@
   ignore_errors: True
   changed_when: False
 
+- name: Get a list of ifcfg files to delete
+  shell: "ls -1 /etc/sysconfig/network-scripts/ifcfg-* | grep -v -e ifcfg-lo  -e ifcfg-WAN"
+  register: ifcfg_files
+  ignore_errors: True
+  changed_when: False
+
 # Discover  do we have a gateway? -- if ansible detects gateway, becomes WAN candidate
 - name: Finding gateway
   set_fact:
     discovered_wan_iface: "{{ ansible_default_ipv4.alias }}"
+  when: 'ansible_default_ipv4.gateway is defined'
+
+- name: find gateway config
+  shell: "egrep -rn DEVICE={{ ansible_default_ipv4.alias }} /etc/sysconfig/network-scripts | gawk -F'[-:]' '{print $3}'"  
+  register: ifcfg_gw
+  ignore_errors: True
+  changed_when: False
   when: 'ansible_default_ipv4.gateway is defined'
 
 # WIRELESS -- if any wireless is detected as gateway, it becomes WAN
@@ -46,17 +59,6 @@
   set_fact:
     xsce_wan_iface: "{{ discovered_wan_iface }}"
   when: discovered_wan_iface != "none" and xsce_wan_iface == "none"
-
-- name: Checking xsce_wan_enabled
-  set_fact:
-    user_wan_iface: "none"
-  when: 'not xsce_wan_enabled'
-
-# override with user_wan_iface setting if no longer in auto
-- name: setting user WAN fact
-  set_fact:
-    xsce_wan_iface: "{{ user_wan_iface }}"
-  when: user_wan_iface != "auto"
 
 # LAN - pick non WAN's
 - name: Create list of  LAN (non wan) ifaces
@@ -114,48 +116,18 @@
     xsce_lan_iface: br0
   when: xsce_wireless_lan_iface != "none"
 
-# user disabled interface - overriding the default of auto
-- name: Checking xsce_lan_enabled
-  set_fact:
-    user_lan_iface: "none"
-  when: 'not xsce_lan_enabled'
-
-# override with user_lan_iface setting if no longer in auto
-- name: Setting user LAN for bridging
-  set_fact:
-    user_lan_iface: br0
-  when: use_bridging
-
-# override with user_lan_iface setting if no longer in auto
-- name: Setting user LAN fact
-  set_fact:
-    xsce_lan_iface: "{{ user_lan_iface }}"
-  when: 'user_lan_iface != "auto"'
-
 - name: No LAN configured - Appliance mode
   set_fact:
-    dansguardian_enabled: False
-    squid_enabled: False
-    named_enabled: False
-    dhcpd_enabled: False
-    wondershaper_enabled: False
     xsce_network_mode: "Appliance"
   when: xsce_lan_iface == "none" or user_lan_iface == "none" or xsce_lan_enabled == False
 
 - name: LAN configured - LanController mode
   set_fact:
-    named_enabled: True
-    dhcpd_enabled: True
-    dansguardian_enabled: False
-    squid_enabled: False
-    wondershaper_enabled: False
     xsce_network_mode: "LanController"
   when: xsce_lan_iface != "" and xsce_wan_iface == "none" and xsce_lan_enabled == True
 
 - name: LAN configured - Gateway mode
   set_fact:
-    named_enabled: True
-    dhcpd_enabled: True
     xsce_network_mode: "Gateway"
   when: 'xsce_lan_iface != "none" and xsce_wan_iface != "none"'
 
@@ -175,16 +147,8 @@
             option='{{ item.option }}'
             value='{{ item.value }}'
   with_items:
-  - option: 'wan_enabled'
-    value: '{{ xsce_wan_enabled }}'
   - option: 'detected_gateway'
     value: '{{ discovered_wan_iface }}'
-  - option: 'user_gateway'
-    value: '{{ user_wan_iface }}'
-  - option: 'computed_gateway'
-    value: '{{ xsce_wan_iface }}'
-  - option: 'lan_enabled'
-    value: '{{ xsce_lan_enabled }}'
   - option: 'num_lan_interfaces'
     value: '{{ num_lan_interfaces }}'
   - option: 'wireless_list_1'
@@ -197,9 +161,5 @@
     value: '{{ xsce_wireless_lan_iface }}'
   - option: 'detected_lan'
     value: '{{ discovered_lan_iface }}'
-  - option: 'user_lan'
-    value: '{{ user_lan_iface }}'
-  - option: 'computed_lan'
-    value: '{{ xsce_lan_iface }}'
   - option: 'xsce_network_mode'
     value: '{{ xsce_network_mode }}'

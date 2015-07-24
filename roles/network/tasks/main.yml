@@ -1,3 +1,7 @@
+- include: computed_network.yml
+  tags:
+    - network
+
 - name: Set hostname
   template: dest=/etc/hostname
             src=network/hostname.j2
@@ -106,12 +110,6 @@
   shell: echo 1 > /etc/sysconfig/olpc-scripts/setup.d/installed/gateway
          creates=/etc/sysconfig/olpc-scripts/setup.d/installed/gateway
 
-- name: Get a list of ifcfg files to delete
-  shell: "ls -1 /etc/sysconfig/network-scripts/ifcfg-* | grep -v -e ifcfg-lo  -e ifcfg-WAN"
-  register: ifcfg_files
-  ignore_errors: True
-  changed_when: False
-
 - name: Disable network.service
   service: name=network
            enabled=no
@@ -149,24 +147,28 @@
   ignore_errors: yes
   when: ansible_distribution_version >= "21" and not installing
 
-# might have wifi info if wireless is used as uplink.
-- name: Rename supplied gateway ifcfg file to WAN if present
-  shell: "mv /etc/sysconfig/network-scripts/ifcfg-{{ discovered_wan_iface }} /etc/sysconfig/network-scripts/ifcfg-WAN"
-  ignore_errors: True
-  when: discovered_wan_iface != "none"
-
 - name: Now delete all non-gateway ifcfg files
   shell: "rm -f {{ item }} "
   when: item|trim != discovered_wan_iface
   with_items:
     - "{{ ifcfg_files.stdout_lines }}"
 
+# might have wifi info if wireless is used as uplink.
+- name: Rename supplied gateway ifcfg file to WAN if present
+  shell: "mv /etc/sysconfig/network-scripts/ifcfg-{{ ifcfg_gw.stdout }} /etc/sysconfig/network-scripts/ifcfg-WAN"
+  ignore_errors: True
+  when: ifcfg_gw is defined and xsce_wan_iface != "none" and ifcfg_gw.stdout != "WAN"
+
+- name: Checking for ifcfg-WAN file
+  stat: path=/etc/sysconfig/network-scripts/ifcfg-WAN
+  register: has_WAN
+
 # set user_wan_iface: <device> for static
 # use wan_* for static info
 - name: Supply ifcfg-WAN file
   template: src=network/ifcfg-WAN.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-WAN
-  when: 'user_wan_iface != "none" and discovered_wan_iface == "none"'
+  when: xsce_wan_iface != "none" and not has_WAN.stat.exists
 
 - name: Configuring LAN interface as xsce_lan_iface
   template: src=network/ifcfg.j2
@@ -185,7 +187,7 @@
 - name: Wired enslaving ## lan_list_result ## to Bridge
   template: src=network/ifcfg-slave.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-{{ item|trim }}
-  when: xsce_lan_iface == "br0" and item|trim != xsce_wireless_lan_iface
+  when: xsce_lan_iface == "br0" and item|trim != xsce_wireless_lan_iface and item|trim != xsce_wan_iface
   with_items:
       - "{{ lan_list_result.stdout_lines }}"
 
