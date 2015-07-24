@@ -40,9 +40,6 @@
             mode=0644
   when: xsce_wireless_lan_iface != "none" 
 
-- name: ask systemd to reread the unit file, changing roles?
-  shell: systemctl daemon-reload
-
 - name: Enable the Access Point Hostapd program
   service: enabled=yes
            name=hostapd.service
@@ -54,17 +51,6 @@
            name=hostapd.service
            state=stopped
   when: xsce_wireless_lan_iface == "none" or xsce_network_mode == "Appliance" 
-
-- name: Disable network.service for bridged Wifi
-  service: name=network
-           enabled=no
-  when: xsce_lan_iface == "br0" or xsce_network_mode != "Appliance"
-
-#- name: Enable network.service for bridged Wifi on rpi2
-#  service: name=network
-#           enabled=yes
-#           state=started
-#  when: xsce_wireless_lan_iface == "br0" and rpi_model != "none"
 
 - name: Checking if slave is active waiting 10 seconds
   shell: "sleep {{ hostapd_wait }} | brctl show | grep {{ xsce_wireless_lan_iface }}"
