@@ -32,13 +32,18 @@
     - domain_name
 
 #TODO: Use vars instead of hardcoded values
-- name: Configure /etc/hosts
+- name: Configure /etc/hosts with LAN
   lineinfile: dest=/etc/hosts
               regexp='^172\.18\.96\.1'
               line='172.18.96.1            {{ xsce_hostname }}.{{ xsce_domain }}      {{ xsce_hostname }}'
-              owner=root
-              group=root
-              mode=0644
+              state=present
+  when: xsce_lan_iface != "none"
+
+- name: Configure /etc/hosts without LAN
+  lineinfile: dest=/etc/hosts
+              regexp='^172\.18\.96\.1'
+              state=absent
+  when: xsce_lan_iface == "none"
 
 - name: Configure /etc/hosts
   lineinfile: dest=/etc/hosts
