@@ -24,6 +24,10 @@
   changed_when: False
   when: 'ansible_default_ipv4.gateway is defined'
 
+- name: Checking for ifcfg-WAN file
+  stat: path=/etc/sysconfig/network-scripts/ifcfg-WAN
+  register: has_WAN
+
 - name: xs_wan_device
   shell: "cat /etc/sysconfig/xs_wan_device"
   register: prior_gw
