@@ -7,17 +7,9 @@
             src=network/hostname.j2
             owner=root
             mode=0644
-
-- name: Create xs network flags
-  template: src=network/{{ item }}.j2
-            dest=/etc/sysconfig/{{ item }}
-            mode=0644
-  with_items:
-    - xs_wan_device
-    - xs_lan_device
-    - xs_domain_name
   tags:
-    - network-discover
+    - network
+    - domain_name
 
 - name: Configure /etc/sysconfig/network
   template: src=network/sysconfig.network.j2
@@ -25,6 +17,19 @@
             owner=root
             group=root
             mode=0644
+  tags:
+    - network
+    - domain_name
+
+- name: Create xs_domain_name flag
+  template: src=network/{{ item }}.j2
+            dest=/etc/sysconfig/{{ item }}
+            mode=0644
+  with_items:
+    - xs_domain_name
+  tags:
+    - network
+    - domain_name
 
 #TODO: Use vars instead of hardcoded values
 - name: Configure /etc/hosts
@@ -207,5 +212,15 @@
 
 - include: hostapd.yml
   when: not installing
+  tags:
+    - network
+
+- name: Create xs network flags
+  template: src=network/{{ item }}.j2
+            dest=/etc/sysconfig/{{ item }}
+            mode=0644
+  with_items:
+    - xs_wan_device
+    - xs_lan_device
   tags:
     - network
