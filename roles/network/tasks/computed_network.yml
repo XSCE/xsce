@@ -24,11 +24,6 @@
     xsce_wan_iface: "{{ user_wan_iface }}"
   when: user_wan_iface != "auto"
 
-- name: Checking for prior gateway interface
-  set_fact:
-    had_gw: "{{ prior_gw }}"
-  when: prior_gw is defined and prior_gw != ""
-
 # user disabled interface - overriding all other entries
 - name: Checking xsce_lan_enabled
   set_fact:

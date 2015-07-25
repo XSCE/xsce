@@ -30,6 +30,11 @@
   ignore_errors: True
   changed_when: False
 
+- name: Checking for prior gateway interface
+  set_fact:
+    had_gw: "{{ prior_gw }}"
+  when: prior_gw is defined and prior_gw != ""
+
 # WIRELESS -- if any wireless is detected as gateway, it becomes WAN
 - name: Look for any wireless interfaces
   shell: "cat /proc/net/wireless | grep -v -e Inter -e face | gawk -F: '{print $1}' | head -n1"
@@ -68,7 +73,7 @@
 
 # LAN - pick non WAN's
 - name: Create list of  LAN (non wan) ifaces
-  shell: "/sbin/ip link show | grep -v -e wwlan -e ppp -e lo -e br0: -e tun -e {{ xsce_wan_iface }}| grep mtu | gawk -F: '{print $2}' "
+  shell: "/sbin/ip link show | grep -v -e wwlan* -e ppp* -e lo -e br0: -e tun* -e {{ had_gw }} -e {{ xsce_wan_iface }}| grep mtu | gawk -F: '{print $2}' "
   register: lan_list_result
   ignore_errors: True
   changed_when: false
@@ -83,7 +88,7 @@
       - "{{ lan_list_result.stdout_lines }}"
 
 - name: Count LAN ifaces
-  shell: "/sbin/ip link show | grep -v  -e lo -e br0: -e tun -e {{ xsce_wan_iface }} | grep mtu | wc | gawk '{print $1}'"
+  shell: "/sbin/ip link show | grep -v  -e wwlan* -e ppp* -e lo -e br0: -e tun* -e {{ had_gw }} -e {{ xsce_wan_iface }} | grep mtu | wc | gawk '{print $1}'"
   register: num_lan_interfaces_result
   ignore_errors: True
   changed_when: false
