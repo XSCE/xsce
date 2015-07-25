@@ -24,6 +24,12 @@
   changed_when: False
   when: 'ansible_default_ipv4.gateway is defined'
 
+- name: xs_wan_device
+  shell: "cat /etc/sysconfig/xs_wan_device"
+  register: prior_gw
+  ignore_errors: True
+  changed_when: False
+
 # WIRELESS -- if any wireless is detected as gateway, it becomes WAN
 - name: Look for any wireless interfaces
   shell: "cat /proc/net/wireless | grep -v -e Inter -e face | gawk -F: '{print $1}' | head -n1"
