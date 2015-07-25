@@ -211,16 +211,6 @@
   ignore_errors: yes
   when: ansible_distribution_version >= "21" and not installing
 
-- include: restart.yml
-  when: not installing
-  tags:
-    - network
-
-- include: hostapd.yml
-  when: not installing
-  tags:
-    - network
-
 - name: Create xs network flags
   template: src=network/{{ item }}.j2
             dest=/etc/sysconfig/{{ item }}
@@ -228,5 +218,15 @@
   with_items:
     - xs_wan_device
     - xs_lan_device
+  tags:
+    - network
+
+- include: restart.yml
+  when: not installing
+  tags:
+    - network
+
+- include: hostapd.yml
+  when: not installing
   tags:
     - network

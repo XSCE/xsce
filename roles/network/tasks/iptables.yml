@@ -1,7 +1,15 @@
 - name: Disable firewalld service
   service: name=firewalld
+           enabled=no
+
+- name: Mask firewalld service
+  shell: 'systemctl mask firewalld'
+
+- name: Stop firewalld service
+  service: name=firewalld
            state=stopped
   ignore_errors: yes
+  when: not installing
 
 - name: Remove iptables.service file from /etc
   file: path=/etc/systemd/system/iptables.service 
@@ -18,8 +26,7 @@
     - download
 
 - name: Install iptables services
-  template: backup=yes
-            src={{ item.src }}
+  template: src={{ item.src }}
             dest={{ item.dest }}
             owner=root
             group=root
