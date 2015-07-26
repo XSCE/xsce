@@ -32,12 +32,11 @@
   shell: "cat /etc/sysconfig/xs_wan_device"
   register: prior_gw
   ignore_errors: True
-  changed_when: False
 
 - name: Checking for prior gateway interface
   set_fact:
     had_gw: "{{ prior_gw.stdout }}"
-  when: prior_gw is defined and prior_gw != ""
+  when: prior_gw is defined and prior_gw.stdout != ""
 
 # WIRELESS -- if any wireless is detected as gateway, it becomes WAN
 - name: Look for any wireless interfaces
