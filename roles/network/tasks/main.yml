@@ -9,7 +9,7 @@
             mode=0644
   tags:
     - network
-    - domain_name
+    - domain
 
 - name: Configure /etc/sysconfig/network
   template: src=network/sysconfig.network.j2
@@ -19,7 +19,7 @@
             mode=0644
   tags:
     - network
-    - domain_name
+    - domain
 
 - name: Create xs_domain_name flag
   template: src=network/{{ item }}.j2
@@ -27,9 +27,15 @@
             mode=0644
   with_items:
     - xs_domain_name
+  register: domainname
   tags:
     - network
-    - domain_name
+    - domain
+
+- name: Domain name did not change setting xsce_prepped
+  set_fact: 
+    xsce_prepped: True
+  when: not domainname.changed
 
 #TODO: Use vars instead of hardcoded values
 - name: Configure /etc/hosts with LAN
@@ -79,6 +85,11 @@
 
 ##### End static ip address info
 
+- include: net_mods.yml
+  when: not xsce_prepped
+  tags:
+    - network 
+
 - include: avahi.yml
   tags:
     - network
@@ -108,6 +119,7 @@
     - network
 
 - include: iptables.yml
+  when: not xsce_prepped
   tags:
     - iptables
     - network
@@ -115,10 +127,6 @@
 - include: enable.yml
   tags:
     - network
-
-- include: net_mods.yml
-  tags:
-    - network 
 
 - name: ask systemd to reread the unit files, picks up changes done
   shell: systemctl daemon-reload
