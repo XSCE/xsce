@@ -1,14 +1,16 @@
 # Disconnects the slaves quickly, deletes the bridge
 - name: Stop the LAN Bridge F21
-  shell: 'nmcli con delete "Bridge LAN"'
-  ignore_errors: yes
+  shell: nmcli con delete "Bridge LAN"
+  ignore_errors: True
+  changed_when: False
   when: ansible_distribution_version >= "21" and not installing
 
 # might have wifi info if wireless is used as uplink.
 - name: Rename supplied gateway ifcfg file to WAN if present
-  shell: "mv /etc/sysconfig/network-scripts/ifcfg-{{ ifcfg_gw.stdout }} /etc/sysconfig/network-scripts/ifcfg-WAN"
+  shell: mv {{ ifcfg_gw.stdout }} /etc/sysconfig/network-scripts/ifcfg-WAN
   ignore_errors: True
-  when: ifcfg_gw is defined and xsce_wan_iface != "none" and ifcfg_gw.stdout != "WAN"
+  changed_when: False
+  when: ifcfg_gw is defined and ifcfg_gw.stdout != "/etc/sysconfig/network-scripts/ifcfg-WAN"
 
 - name: Now delete all non-gateway ifcfg files
   shell: "rm -f {{ item }} "

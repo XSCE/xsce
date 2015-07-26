@@ -18,7 +18,7 @@
   when: 'ansible_default_ipv4.gateway is defined'
 
 - name: find gateway config
-  shell: "egrep -rn DEVICE={{ ansible_default_ipv4.alias }} /etc/sysconfig/network-scripts | gawk -F'[-:]' '{print $3}'"  
+  shell: "egrep -rn {{ ansible_default_ipv4.alias }} /etc/sysconfig/network-scripts/ifcfg* | gawk -F ':' '{print $1}'"  
   register: ifcfg_gw
   ignore_errors: True
   changed_when: False
