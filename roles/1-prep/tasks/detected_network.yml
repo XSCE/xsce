@@ -1,3 +1,13 @@
+- name: Checking xs_domain_name 
+  shell: "cat /etc/sysconfig/xs_domain_name"
+  register: prior_domain
+  ignore_errors: True
+
+- name: Checking for prior domain name
+  set_fact:
+    xsce_domain: "{{ prior_domain.stdout }}"
+  when: prior_domain is defined and prior_domain.stdout != "lan"
+
 # DETECT -- gateway and wireless
 - name: Get a list of slaves from previous config
   shell: "egrep -rn BRIDGE=br0 /etc/sysconfig/network-scripts | gawk -F'[-:]' '{print $3}'"
