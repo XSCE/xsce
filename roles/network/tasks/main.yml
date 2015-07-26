@@ -117,7 +117,7 @@
     - network
 
 - include: net_mods.yml
-   tags:
+  tags:
     - network 
 
 - name: ask systemd to reread the unit files, picks up changes done
