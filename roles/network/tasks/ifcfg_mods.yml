@@ -24,11 +24,11 @@
             dest=/etc/sysconfig/network-scripts/ifcfg-WAN
   when: xsce_wan_iface != "none" and not has_WAN.stat.exists
 
-- name: Turn off NM for WAN on reboot if disabled
+- name: Turn off ONBOOT for WAN on reboot if disabled
   lineinfile: state=present
               backrefs=yes
-              regexp="ON_BOOT"
-              line="ON_BOOT=no"
+              regexp="ONBOOT"
+              line="ONBOOT=no"
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
   when: has_WAN.stat.exists and xsce_wan_iface == "none"
 
@@ -36,6 +36,18 @@
   shell: nmcli con down "System WAN" 
   ignore_errors: yes
   when: has_WAN.stat.exists and xsce_wan_iface == "none"
+
+- name: Enabling pre-existing ifcfg-WAN file
+  shell: nmcli conn up "System WAN"
+  when: ifcfg_gw is defined and xsce_wan_iface != "none" and ifcfg_gw.stdout == "WAN"
+
+- name: Turn on ONBOOT for WAN on reboot if enabled
+  lineinfile: state=present
+              backrefs=yes
+              regexp="ONBOOT"
+              line="ONBOOT=yes"
+              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+  when: ifcfg_gw is defined and xsce_wan_iface != "none" and ifcfg_gw.stdout == "WAN"
 
 - name: Configuring LAN interface as xsce_lan_iface
   template: src=network/ifcfg.j2
