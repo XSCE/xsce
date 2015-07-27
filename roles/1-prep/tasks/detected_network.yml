@@ -46,7 +46,12 @@
 
 - name: Checking for ifcfg-WAN file
   stat: path=/etc/sysconfig/network-scripts/ifcfg-WAN
-  register: has_WAN
+  register: has_ifcfg_WAN
+
+- name: Setting has_WAN
+  set_fact:
+    has_WAN: True
+  when: has_ifcfg_WAN.stat.exists
 
 - name: xs_wan_device
   shell: "cat /etc/sysconfig/xs_wan_device"

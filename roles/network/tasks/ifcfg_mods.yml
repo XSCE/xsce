@@ -12,26 +12,24 @@
   changed_when: False
   when: has_ifcfg_gw != "none" and has_ifcfg_gw != "/etc/sysconfig/network-scripts/ifcfg-WAN"
 
-- name: Now delete all non-gateway ifcfg files
-  shell: "rm -f {{ item }} "
-  ignore_errors: True
-  when: item|trim != discovered_wan_iface and item|trim != had_gw
-  with_items:
-    - "{{ ifcfg_files.stdout_lines }}"
-
 # set user_wan_iface: <device> for static
 # use wan_* for static info
 # if we get here we have gateway but no ifcfg file
 - name: Supply ifcfg-WAN file
   template: src=network/ifcfg-WAN.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-WAN
-  when: xsce_wan_iface != "none" and not has_WAN.stat.exists and has_ifcfg_gw == "none"
+  when: xsce_wan_iface != "none" and not has_WAN and has_ifcfg_gw == "none"
+
+- name: Now setting has_WAN
+  set_fact:
+    has_WAN: True
+  when: xsce_wan_iface != "none" and has_ifcfg_gw != "none"
 
 - name: Stop 'Wired connection 1'
   shell: nmcli con delete "Wired connection 1"
   ignore_errors: True
   changed_when: False
-  when: discovered_wan_iface != "none" and not has_WAN.stat.exists and has_ifcfg_gw == "none"
+  when: discovered_wan_iface != "none" and not has_WAN and has_ifcfg_gw == "none"
 
 - name: Turn off ONBOOT for WAN on reboot if disabled
   lineinfile: state=present
@@ -39,16 +37,16 @@
               regexp="ONBOOT"
               line="ONBOOT=no"
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
-  when: has_WAN.stat.exists and xsce_wan_iface == "none"
+  when: has_WAN and xsce_wan_iface == "none"
 
 - name: Disable WAN for session if disabled
   shell: nmcli con down "System WAN" 
   ignore_errors: yes
-  when: has_WAN.stat.exists and xsce_wan_iface == "none"
+  when: has_WAN and xsce_wan_iface == "none"
 
 - name: Enabling pre-existing ifcfg-WAN file
   shell: nmcli conn up "System WAN"
-  when: ifcfg_gw is defined and xsce_wan_iface != "none" and ifcfg_gw.stdout == "WAN"
+  when: has_WAN and xsce_wan_iface != "none"
 
 - name: Turn on ONBOOT for WAN on reboot if enabled
   lineinfile: state=present
@@ -56,7 +54,14 @@
               regexp="ONBOOT"
               line="ONBOOT=yes"
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
-  when: ifcfg_gw is defined and xsce_wan_iface != "none" and ifcfg_gw.stdout == "WAN"
+  when: has_WAN and xsce_wan_iface != "none"
+
+- name: Now delete all non-gateway ifcfg files
+  shell: "rm -f {{ item }} "
+  ignore_errors: True
+  when: item|trim != discovered_wan_iface and item|trim != had_gw
+  with_items:
+    - "{{ ifcfg_files.stdout_lines }}"
 
 - name: Configuring LAN interface as xsce_lan_iface
   template: src=network/ifcfg.j2
