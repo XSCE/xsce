@@ -63,7 +63,7 @@
   register: ifcfg_gw_old
   ignore_errors: True
   changed_when: False
-  when had_gw != "none" and discovered_wan_iface == "none"
+  when: had_gw != "none" and discovered_wan_iface == "none"
 
 - name: Setting has_ifcfg_gw old ifcfg, if found
   set_fact:
