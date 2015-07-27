@@ -6,6 +6,12 @@
     wan_nameserver: "{{ gui_static_wan_nameserver }}"
   when: gui_static_wan_ip != "unset"
 
+# OK try old gw
+- name: Has old gateway and no discovered gateway setting WAN
+  set_fact:
+    gui_wan_iface: "{{ had_gw }}"
+  when: user_wan_iface == "auto" and had_gw != "none" and discovered_wan_iface == "none"
+
 # need to add this field in the GUI
 - name: Using GUI_WAN info
   set_fact:
