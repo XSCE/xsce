@@ -27,7 +27,7 @@
     discovered_wan_iface: "{{ ansible_default_ipv4.alias }}"
   when: 'ansible_default_ipv4.gateway is defined'
 
- name: Setting wan if detected
+- name: Setting wan if detected
   set_fact:
     xsce_wan_iface: "{{ discovered_wan_iface }}"
   when: discovered_wan_iface != "none" and xsce_wan_iface == "none"
