@@ -65,7 +65,7 @@
   changed_when: False
   when had_gw != "none" and discovered_wan_iface == "none"
 
-- name: Set has_ifcfg_gw old ifcfg, if found
+- name: Setting has_ifcfg_gw old ifcfg, if found
   set_fact:
     has_ifcfg_gw: "{{ ifcfg_gw_old.stdout }}"
   when: ifcfg_gw_old is defined and ifcfg_gw_old.stdout != ""
