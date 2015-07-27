@@ -9,6 +9,8 @@ xsce_wireless_lan_iface: "none"
 xsce_lan_iface: "none"
 xsce_wan_iface: "none"
 had_gw: "none"
+has_ifcfg_gw: "none"
+
 
 #Set default for discovered hardware
 wifi1: "not found"

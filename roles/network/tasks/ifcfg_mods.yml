@@ -10,7 +10,7 @@
   shell: mv {{ ifcfg_gw.stdout }} /etc/sysconfig/network-scripts/ifcfg-WAN
   ignore_errors: True
   changed_when: False
-  when: ifcfg_gw is defined and ifcfg_gw.stdout != "/etc/sysconfig/network-scripts/ifcfg-WAN"
+  when: has_ifcfg_gw != "none" and has_ifcfg_gw != "/etc/sysconfig/network-scripts/ifcfg-WAN"
 
 - name: Now delete all non-gateway ifcfg files
   shell: "rm -f {{ item }} "

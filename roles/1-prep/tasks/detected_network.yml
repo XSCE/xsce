@@ -32,12 +32,17 @@
     xsce_wan_iface: "{{ discovered_wan_iface }}"
   when: discovered_wan_iface != "none" and xsce_wan_iface == "none"
 
-- name: Find gateway config
+- name: Find active gateway config
   shell: "egrep -rn {{ ansible_default_ipv4.alias }} /etc/sysconfig/network-scripts/ifcfg* | gawk -F ':' '{print $1}'"  
   register: ifcfg_gw
   ignore_errors: True
   changed_when: False
   when: 'ansible_default_ipv4.gateway is defined'
+
+- name: Set has_ifcfg_gw active ifcfg, if found
+  set_fact:
+    has_ifcfg_gw: "{{ ifcfg_gw.stdout }}"
+  when: ifcfg_gw is defined and ifcfg_gw.stdout != ""
 
 - name: Checking for ifcfg-WAN file
   stat: path=/etc/sysconfig/network-scripts/ifcfg-WAN
@@ -52,6 +57,18 @@
   set_fact:
     had_gw: "{{ prior_gw.stdout }}"
   when: prior_gw is defined and prior_gw.stdout != ""
+
+- name: Find old gateway config
+  shell: "egrep -rn {{ had_gw }} /etc/sysconfig/network-scripts/ifcfg* | gawk -F ':' '{print $1}'"  
+  register: ifcfg_gw_old
+  ignore_errors: True
+  changed_when: False
+  when had_gw != "none" and discoverd-wan_iface == "none"
+
+- name: Set has_ifcfg_gw old ifcfg, if found
+  set_fact:
+    has_ifcfg_gw: "{{ ifcfg_gw_old.stdout }}"
+  when: ifcfg_gw_old is defined and ifcfg_gw_old.stdout != ""
 
 # WIRELESS -- if any wireless is detected as gateway, it becomes WAN
 - name: Look for any wireless interfaces
