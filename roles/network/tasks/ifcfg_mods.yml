@@ -83,3 +83,9 @@
   shell: 'nmcli con reload'
   ignore_errors: yes
   when: ansible_distribution_version >= "21" and not installing
+
+- name: Start WAN F21
+  shell: nmcli con up "System WAN"
+  ignore_errors: True
+  changed_when: False
+  when: ansible_distribution_version >= "21" and not installing
