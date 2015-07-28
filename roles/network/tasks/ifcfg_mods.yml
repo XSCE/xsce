@@ -13,8 +13,6 @@
 # handles git pull after first write of ifcfg-WAN to change the name
 - name: Fix the NM name
   lineinfile: state=present
-              backrefs=yes
-              regexp="NAME"
               line="NAME=xsce-WAN"
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
 
@@ -51,8 +49,6 @@
     has_WAN: True
   when: xsce_wan_iface != "none" and has_ifcfg_gw != "none"
 
-- include: enable_wan.yml
-
 - name: Configuring LAN interface as xsce_lan_iface
   template: src=network/ifcfg.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-LAN
@@ -79,8 +75,5 @@
   ignore_errors: yes
   when: ansible_distribution_version >= "21" and not installing
 
-- name: Start WAN F21
-  shell: nmcli con up xsce-WAN
-  ignore_errors: True
-  changed_when: False
-  when: ansible_distribution_version >= "21" and not installing
+- include: enable_wan.yml
+  when: not installing

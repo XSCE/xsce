@@ -7,12 +7,12 @@
   when: has_WAN and xsce_wan_iface == "none"
 
 - name: Disable WAN for session if disabled
-  shell: nmcli con down "xsce-WAN" 
+  shell: nmcli con down id xsce-WAN 
   ignore_errors: yes
   when: has_WAN and xsce_wan_iface == "none"
 
 - name: Enabling pre-existing ifcfg-WAN file
-  shell: nmcli conn up xsce-WAN
+  shell: nmcli conn up id xsce-WAN
   when: has_WAN and xsce_wan_iface != "none"
 
 - name: Turn on ONBOOT for WAN on reboot if enabled
