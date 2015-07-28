@@ -1,3 +1,13 @@
+- name: Checking xs_domain_name 
+  shell: "cat /etc/sysconfig/xs_domain_name"
+  register: prior_domain
+  ignore_errors: True
+
+- name: Checking for prior domain name
+  set_fact:
+    xsce_domain: "{{ prior_domain.stdout }}"
+  when: prior_domain is defined and prior_domain.stdout != "lan"
+
 # DETECT -- gateway and wireless
 - name: Get a list of slaves from previous config
   shell: "egrep -rn BRIDGE=br0 /etc/sysconfig/network-scripts | gawk -F'[-:]' '{print $3}'"
@@ -17,12 +27,53 @@
     discovered_wan_iface: "{{ ansible_default_ipv4.alias }}"
   when: 'ansible_default_ipv4.gateway is defined'
 
-- name: find gateway config
-  shell: "egrep -rn DEVICE={{ ansible_default_ipv4.alias }} /etc/sysconfig/network-scripts | gawk -F'[-:]' '{print $3}'"  
+- name: Setting wan if detected
+  set_fact:
+    xsce_wan_iface: "{{ discovered_wan_iface }}"
+  when: discovered_wan_iface != "none" and xsce_wan_iface == "none"
+
+- name: Find active gateway config
+  shell: "egrep -rn {{ ansible_default_ipv4.alias }} /etc/sysconfig/network-scripts/ifcfg* | gawk -F ':' '{print $1}' | head -n 1"  
   register: ifcfg_gw
   ignore_errors: True
   changed_when: False
   when: 'ansible_default_ipv4.gateway is defined'
+
+- name: Set has_ifcfg_gw active ifcfg, if found
+  set_fact:
+    has_ifcfg_gw: "{{ ifcfg_gw.stdout|trim }}"
+  when: ifcfg_gw is defined and ifcfg_gw.stdout != ""
+
+- name: Checking for ifcfg-WAN file
+  stat: path=/etc/sysconfig/network-scripts/ifcfg-WAN
+  register: has_ifcfg_WAN
+
+- name: Setting has_WAN
+  set_fact:
+    has_WAN: True
+  when: has_ifcfg_WAN.stat.exists
+
+- name: xs_wan_device
+  shell: "cat /etc/sysconfig/xs_wan_device"
+  register: prior_gw
+  ignore_errors: True
+
+- name: Checking for prior gateway interface
+  set_fact:
+    had_gw: "{{ prior_gw.stdout }}"
+  when: prior_gw is defined and prior_gw.stdout != ""
+
+- name: Find old gateway config
+  shell: "egrep -rn {{ had_gw }} /etc/sysconfig/network-scripts/ifcfg* | gawk -F ':' '{print $1}'| head -n 1"  
+  register: ifcfg_gw_old
+  ignore_errors: True
+  changed_when: False
+  when: had_gw != "none" and discovered_wan_iface == "none"
+
+- name: Setting has_ifcfg_gw old ifcfg, if found
+  set_fact:
+    has_ifcfg_gw: "{{ ifcfg_gw_old.stdout|trim }}"
+  when: ifcfg_gw_old is defined and ifcfg_gw_old.stdout != ""
 
 # WIRELESS -- if any wireless is detected as gateway, it becomes WAN
 - name: Look for any wireless interfaces
@@ -55,14 +106,9 @@
      discovered_wireless_iface: "{{ wireless_list2.stdout|trim }}"
   when: wireless_list2.stdout != "" and wireless_list2.stdout|trim != discovered_wan_iface and wireless_list1.stdout == ""
 
-- name: Setting wan if detected
-  set_fact:
-    xsce_wan_iface: "{{ discovered_wan_iface }}"
-  when: discovered_wan_iface != "none" and xsce_wan_iface == "none"
-
 # LAN - pick non WAN's
 - name: Create list of  LAN (non wan) ifaces
-  shell: "/sbin/ip link show | grep -v -e wwlan -e ppp -e lo -e br0: -e tun -e {{ xsce_wan_iface }}| grep mtu | gawk -F: '{print $2}' "
+  shell: "/sbin/ip link show | grep -v -e wwlan -e ppp -e lo -e br0: -e tun -e {{ had_gw }} -e {{ xsce_wan_iface }}| grep mtu | gawk -F: '{print $2}' "
   register: lan_list_result
   ignore_errors: True
   changed_when: false
@@ -77,7 +123,7 @@
       - "{{ lan_list_result.stdout_lines }}"
 
 - name: Count LAN ifaces
-  shell: "/sbin/ip link show | grep -v  -e lo -e br0: -e tun -e {{ xsce_wan_iface }} | grep mtu | wc | gawk '{print $1}'"
+  shell: "/sbin/ip link show | grep -v  -e wwlan -e ppp -e lo -e br0: -e tun -e {{ had_gw }} -e {{ xsce_wan_iface }} | grep mtu | wc | gawk '{print $1}'"
   register: num_lan_interfaces_result
   ignore_errors: True
   changed_when: false
@@ -149,6 +195,8 @@
   with_items:
   - option: 'detected_gateway'
     value: '{{ discovered_wan_iface }}'
+  - option: 'prior_gateway'
+    value: '{{ had_gw }}'
   - option: 'num_lan_interfaces'
     value: '{{ num_lan_interfaces }}'
   - option: 'wireless_list_1'

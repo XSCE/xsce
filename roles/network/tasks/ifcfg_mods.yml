@@ -1,0 +1,78 @@
+# Disconnects the slaves quickly, deletes the bridge
+- name: Stop the LAN/Bridge on F21
+  shell: nmcli con delete xsce-LAN
+  ignore_errors: True
+  changed_when: False
+  when: ansible_distribution_version >= "21"
+
+# move gateway if not WAN
+# might have wifi info if wireless is used as uplink.
+- include: edit_ifcfg.yml
+  when: has_ifcfg_gw != "none" and has_ifcfg_gw != "/etc/sysconfig/network-scripts/ifcfg-WAN"
+
+# clear all non WAN ifcfg files
+- name: Now delete all non-gateway ifcfg files
+  shell: "rm -f {{ item }} "
+  ignore_errors: True
+  when: item|trim != discovered_wan_iface and item|trim != had_gw
+  with_items:
+    - "{{ ifcfg_files.stdout_lines }}"
+
+# insert gateway auto detection here
+# create new fact for wanted operation ??? = Gateway
+# - include: redetect.yml
+#   when: discovered_wan_iface == "none" and user_wan_iface == "auto" and ??? = "Gateway"
+
+# set user_wan_iface: <device> for static
+# use wan_* for static info
+# create ifcfg-WAN if missing
+# if we get here we have gateway but no ifcfg file
+- name: Supply ifcfg-WAN file
+  template: src=network/ifcfg-WAN.j2
+            dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+  when: xsce_wan_iface != "none" and not has_WAN and has_ifcfg_gw == "none"
+
+- name: Stop 'Wired WAN connection'
+  shell: nmcli dev disconnect {{ discovered_wan_iface }}
+  ignore_errors: True
+  changed_when: False
+  when: discovered_wan_iface != "none" and not has_WAN and has_ifcfg_gw == "none"
+
+- name: Now setting has_WAN
+  set_fact:
+    has_WAN: True
+  when: xsce_wan_iface != "none" and has_ifcfg_gw != "none"
+
+- include: enable_wan.yml
+
+- name: Configuring LAN interface as xsce_lan_iface
+  template: src=network/ifcfg.j2
+            dest=/etc/sysconfig/network-scripts/ifcfg-LAN
+  when: xsce_lan_iface != "none"
+
+# can be more than one wired interface
+- name: Wired enslaving ## lan_list_result ## to Bridge
+  template: src=network/ifcfg-slave.j2
+            dest=/etc/sysconfig/network-scripts/ifcfg-{{ item|trim }}
+  when: xsce_lan_iface == "br0" and item|trim != xsce_wireless_lan_iface and item|trim != xsce_wan_iface and item|trim != had_gw
+  with_items:
+      - "{{ lan_list_result.stdout_lines }}"
+
+- name: WiFi enslaving {{ xsce_wireless_lan_iface }} to Bridge
+  template: src=network/wifi-slave.j2
+            dest=/etc/sysconfig/network-scripts/ifcfg-{{ xsce_wireless_lan_iface }}
+  when: xsce_lan_iface == "br0" and xsce_wireless_lan_iface != "none"
+  tags:
+    - network
+
+# monitor-connection-files defaults to no with F21, F18-F20 defaults to yes
+- name: Re-read network config files
+  shell: 'nmcli con reload'
+  ignore_errors: yes
+  when: ansible_distribution_version >= "21" and not installing
+
+- name: Start WAN F21
+  shell: nmcli con up xsce-WAN
+  ignore_errors: True
+  changed_when: False
+  when: ansible_distribution_version >= "21" and not installing

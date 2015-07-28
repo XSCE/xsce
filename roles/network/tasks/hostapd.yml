@@ -32,6 +32,9 @@
             group=root
             mode=0644
 
+- name: ask systemd to reread the unit files for hostapd
+  shell: systemctl daemon-reload
+
 - name: Create a config file for hostapd
   template: src=hostapd/hostapd.conf.j2
             dest=/etc/hostapd/hostapd.conf

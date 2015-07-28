@@ -6,17 +6,17 @@
     wan_nameserver: "{{ gui_static_wan_nameserver }}"
   when: gui_static_wan_ip != "unset"
 
+# OK try old gw
+- name: Has old gateway and no discovered gateway setting WAN
+  set_fact:
+    gui_wan_iface: "{{ had_gw }}"
+  when: user_wan_iface == "auto" and had_gw != "none" and discovered_wan_iface == "none"
+
 # need to add this field in the GUI
 - name: Using GUI_WAN info
   set_fact:
     user_wan_iface: "{{ gui_wan_iface }}"
   when: gui_wan_iface != "unset"
-
-# override with user_wan_iface setting if no longer in auto
-- name: setting user WAN fact
-  set_fact:
-    xsce_wan_iface: "{{ user_wan_iface }}"
-  when: user_wan_iface != "auto"
 
 # should make the GUI buttons the last call
 - name: Checking xsce_wan_enabled
@@ -24,17 +24,23 @@
     user_wan_iface: "none"
   when: 'not xsce_wan_enabled'
 
-# override with user_lan_iface setting if no longer in auto
-- name: Setting user LAN fact
+# override with user_wan_iface setting if no longer in auto
+- name: setting user WAN fact
   set_fact:
-    xsce_lan_iface: "{{ user_lan_iface }}"
-  when: 'user_lan_iface != "auto"'
+    xsce_wan_iface: "{{ user_wan_iface }}"
+  when: user_wan_iface != "auto"
 
 # user disabled interface - overriding all other entries
 - name: Checking xsce_lan_enabled
   set_fact:
     user_lan_iface: "none"
   when: 'not xsce_lan_enabled'
+
+# override with user_lan_iface setting if no longer in auto
+- name: Setting user LAN fact
+  set_fact:
+    xsce_lan_iface: "{{ user_lan_iface }}"
+  when: 'user_lan_iface != "auto"'
 
 - name: No LAN configured - Appliance mode
   set_fact:

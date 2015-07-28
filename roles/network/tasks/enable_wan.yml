@@ -1,0 +1,25 @@
+- name: Turn off ONBOOT for WAN on reboot if disabled
+  lineinfile: state=present
+              backrefs=yes
+              regexp="ONBOOT"
+              line="ONBOOT=no"
+              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+  when: has_WAN and xsce_wan_iface == "none"
+
+- name: Disable WAN for session if disabled
+  shell: nmcli con down "xsce-WAN" 
+  ignore_errors: yes
+  when: has_WAN and xsce_wan_iface == "none"
+
+- name: Enabling pre-existing ifcfg-WAN file
+  shell: nmcli conn up xsce-WAN
+  when: has_WAN and xsce_wan_iface != "none"
+
+- name: Turn on ONBOOT for WAN on reboot if enabled
+  lineinfile: state=present
+              backrefs=yes
+              regexp="ONBOOT"
+              line="ONBOOT=yes"
+              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+  when: has_WAN and xsce_wan_iface != "none"
+
