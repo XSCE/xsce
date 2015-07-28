@@ -90,10 +90,6 @@
   tags:
     - network 
 
-- include: avahi.yml
-  tags:
-    - network
-
 - include: named.yml
   when: not xsce_prepped
   tags:
@@ -124,7 +120,11 @@
     - iptables
     - network
 
-- include: enable.yml
+- include: avahi.yml
+  tags:
+    - network
+
+- include: enable_services.yml
   tags:
     - network
 
@@ -133,6 +133,7 @@
   when: not installing
 
 - include: ifcfg_mods.yml
+  when: not installing
   tags:
     - network
 
