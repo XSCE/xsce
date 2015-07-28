@@ -1,0 +1,31 @@
+- name: Rename supplied gateway ifcfg file to WAN if present
+  shell: mv {{ ifcfg_gw.stdout }} /etc/sysconfig/network-scripts/ifcfg-WAN
+  ignore_errors: True
+  changed_when: False
+
+- name: Turn off isp nameservers
+  lineinfile: state=present
+              backrefs=yes
+              regexp="PEERDNS"
+              line="PEERDNS=no"
+              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+
+- name: Fix the NM name
+  lineinfile: state=present
+              backrefs=yes
+              regexp="NAME"
+              line="NAME=xsce-WAN"
+              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+
+- name: Remove the UUID
+  lineinfile: state=absent
+              regexp="UUID"
+              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+
+- name: add marker
+  lineinfile: state=present
+              backrefs=yes
+              regexp="XSCE"
+              line="Modified by XSCE"
+              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+
