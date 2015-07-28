@@ -10,6 +10,14 @@
 - include: edit_ifcfg.yml
   when: has_ifcfg_gw != "none" and has_ifcfg_gw != "/etc/sysconfig/network-scripts/ifcfg-WAN"
 
+# handles git pull after first write of ifcfg-WAN to change the name
+- name: Fix the NM name
+  lineinfile: state=present
+              backrefs=yes
+              regexp="NAME"
+              line="NAME=xsce-WAN"
+              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+
 # clear all non WAN ifcfg files
 - name: Now delete all non-gateway ifcfg files
   shell: "rm -f {{ item }} "
