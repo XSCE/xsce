@@ -1,16 +1,9 @@
 # Disconnects the slaves quickly, deletes the bridge
-- name: Stop the LAN Bridge F21
-  shell: nmcli con delete "Bridge LAN"
+- name: Stop the LAN/Bridge on F21
+  shell: nmcli con delete xsce-LAN
   ignore_errors: True
   changed_when: False
   when: ansible_distribution_version >= "21" and not installing
-
-# might have wifi info if wireless is used as uplink.
-- name: Rename supplied gateway ifcfg file to WAN if present
-  shell: mv {{ ifcfg_gw.stdout }} /etc/sysconfig/network-scripts/ifcfg-WAN
-  ignore_errors: True
-  changed_when: False
-  when: has_ifcfg_gw != "none" and has_ifcfg_gw != "/etc/sysconfig/network-scripts/ifcfg-WAN"
 
 # set user_wan_iface: <device> for static
 # use wan_* for static info
@@ -20,16 +13,47 @@
             dest=/etc/sysconfig/network-scripts/ifcfg-WAN
   when: xsce_wan_iface != "none" and not has_WAN and has_ifcfg_gw == "none"
 
+# might have wifi info if wireless is used as uplink.
+- name: Rename supplied gateway ifcfg file to WAN if present
+  shell: mv {{ ifcfg_gw.stdout }} /etc/sysconfig/network-scripts/ifcfg-WAN
+  ignore_errors: True
+  changed_when: False
+  when: has_ifcfg_gw != "none" and has_ifcfg_gw != "/etc/sysconfig/network-scripts/ifcfg-WAN"
+
+- name: Turn off isp nameservers
+  lineinfile: state=present
+              backrefs=yes
+              regexp="PEERDNS"
+              line="PEERDNS=no"
+              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+  when: has_ifcfg_gw != "none" and has_ifcfg_gw != "/etc/sysconfig/network-scripts/ifcfg-WAN"
+
+- name: Fix the NM name
+  lineinfile: state=present
+              backrefs=yes
+              regexp="NAME"
+              line="NAME=xsce-WAN"
+              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+  when: has_ifcfg_gw != "none" and has_ifcfg_gw != "/etc/sysconfig/network-scripts/ifcfg-WAN"
+
+- name: add marker
+  lineinfile: state=present
+              backrefs=yes
+              regexp="XSCE"
+              line="Modified by XSCE"
+              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+  when: has_ifcfg_gw != "none" and has_ifcfg_gw != "/etc/sysconfig/network-scripts/ifcfg-WAN"
+
+- name: Stop 'Wired WAN connection'
+  shell: nmcli dev disconnect {{ discovered_wan_iface }}
+  ignore_errors: True
+  changed_when: False
+  when: discovered_wan_iface != "none" and not has_WAN and has_ifcfg_gw == "none"
+
 - name: Now setting has_WAN
   set_fact:
     has_WAN: True
   when: xsce_wan_iface != "none" and has_ifcfg_gw != "none"
-
-- name: Stop 'Wired connection 1'
-  shell: nmcli con delete "Wired connection 1"
-  ignore_errors: True
-  changed_when: False
-  when: discovered_wan_iface != "none" and not has_WAN and has_ifcfg_gw == "none"
 
 - name: Turn off ONBOOT for WAN on reboot if disabled
   lineinfile: state=present
@@ -90,7 +114,7 @@
   when: ansible_distribution_version >= "21" and not installing
 
 - name: Start WAN F21
-  shell: nmcli con up "System WAN"
+  shell: nmcli con up xsce-WAN
   ignore_errors: True
   changed_when: False
   when: ansible_distribution_version >= "21" and not installing
