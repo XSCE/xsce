@@ -13,8 +13,6 @@
 # handles git pull after first write of ifcfg-WAN to change the name
 - name: Fix the NM name
   lineinfile: state=present
-              backrefs=yes
-              regexp="NAME"
               line="NAME=xsce-WAN"
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
 
