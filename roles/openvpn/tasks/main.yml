@@ -39,6 +39,7 @@
 - name: start the openvpn tunnel at boot time
   service: name=openvpn@party-line
            enabled=yes
+           state=started
   when:
             openvpn_enabled
 
