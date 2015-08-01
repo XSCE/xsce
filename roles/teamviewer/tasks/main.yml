@@ -1,3 +1,3 @@
 - name: Install Teamviewer if intel
   include: install.yml
-  when: ansible_architecture == "i386" or ansible_architecture == "x86_64"
+  when: ansible_architecture == "i386" or ansible_architecture == "x86_64" and teamviewer_enable
