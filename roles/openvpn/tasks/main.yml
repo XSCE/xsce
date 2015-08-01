@@ -34,9 +34,9 @@
     - { src: 'client1.crt', dest: '/etc/openvpn/keys/client1.crt', owner: "root" , mode: '0644' }
     - { src: 'client1.key', dest: '/etc/openvpn/keys/client1.key', owner: "root" , mode: '0600' }
     - { src: 'xscenet.conf', dest: '/etc/openvpn/xscenet.conf', owner: "root" , mode: '0644' }
-    - { src: 'announce', dest: '/etc/openvpn/scripts/announce', owner: "root" , mode: '0644' }
-    - { src: 'silence', dest: '/etc/openvpn/scripts/silence', owner: "root" , mode: '0644' }
-    - { src: 'xs-handle', dest: '/usr/bin/xs-handle', owner: "root" , mode: '0644' }
+    - { src: 'announce', dest: '/etc/openvpn/scripts/announce', owner: "root" , mode: '0755' }
+    - { src: 'silence', dest: '/etc/openvpn/scripts/silence', owner: "root" , mode: '0755' }
+    - { src: 'xs-handle', dest: '/usr/bin/xs-handle', owner: "root" , mode: '0755' }
 
 - name: start the openvpn tunnel at boot time
   service: name=openvpn@xscenet
