@@ -1,7 +1,5 @@
 #!/bin/bash
 # if pid file for announce exists kill the process
 
-if [ -f /var/run/openvpn/announce.pid ]; then
-  /usr/bin/kill `cat /var/run/openvpn/announce.pid'
-  /usr/bin/rm -f /var/run/openvpn/announce.pid
-fi
+kill `pgrep ncat`
+
