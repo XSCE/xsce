@@ -10,12 +10,6 @@
 - include: edit_ifcfg.yml
   when: has_ifcfg_gw != "none" and has_ifcfg_gw != "/etc/sysconfig/network-scripts/ifcfg-WAN"
 
-# handles git pull after first write of ifcfg-WAN to change the name
-- name: Fix the NM name
-  lineinfile: state=present
-              line="NAME=xsce-WAN"
-              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
-
 # clear all non WAN ifcfg files
 - name: Now delete all non-gateway ifcfg files
   shell: "rm -f {{ item }} "
@@ -48,6 +42,13 @@
   set_fact:
     has_WAN: True
   when: xsce_wan_iface != "none" and has_ifcfg_gw != "none"
+
+# handles git pull after first write of ifcfg-WAN to change the name
+- name: Fix the NM name
+  lineinfile: state=present
+              line="NAME=xsce-WAN"
+              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+  when: has_WAN
 
 - name: Configuring LAN interface as xsce_lan_iface
   template: src=network/ifcfg.j2
