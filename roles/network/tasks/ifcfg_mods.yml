@@ -32,12 +32,6 @@
             dest=/etc/sysconfig/network-scripts/ifcfg-WAN
   when: xsce_wan_iface != "none" and not has_WAN and has_ifcfg_gw == "none"
 
-# handles git pull after first write of ifcfg-WAN to change the name
-- name: Fix the NM name
-  lineinfile: state=present
-              line="NAME=xsce-WAN"
-              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
-
 - name: Stop 'Wired WAN connection'
   shell: nmcli dev disconnect {{ discovered_wan_iface }}
   ignore_errors: True
@@ -48,6 +42,13 @@
   set_fact:
     has_WAN: True
   when: xsce_wan_iface != "none" and has_ifcfg_gw != "none"
+
+# handles git pull after first write of ifcfg-WAN to change the name
+- name: Fix the NM name
+  lineinfile: state=present
+              line="NAME=xsce-WAN"
+              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+  when: has_WAN
 
 - name: Configuring LAN interface as xsce_lan_iface
   template: src=network/ifcfg.j2
