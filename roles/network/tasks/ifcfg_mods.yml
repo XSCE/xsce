@@ -38,10 +38,10 @@
   changed_when: False
   when: discovered_wan_iface != "none" and not has_WAN and has_ifcfg_gw == "none"
 
-- name: Now setting has_WAN
+- name: Now setting has_WAN after creating file
   set_fact:
-    has_WAN: True
-  when: xsce_wan_iface != "none" and has_ifcfg_gw != "none"
+    has_WAN: "True"
+  when: xsce_wan_iface != "none" and has_ifcfg_gw == "none"
 
 # handles git pull after first write of ifcfg-WAN to change the name
 - name: Fix the NM name
