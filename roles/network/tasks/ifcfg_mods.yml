@@ -23,25 +23,10 @@
 # - include: redetect.yml
 #   when: discovered_wan_iface == "none" and user_wan_iface == "auto" and ??? = "Gateway"
 
-# set user_wan_iface: <device> for static
-# use wan_* for static info
 # create ifcfg-WAN if missing
 # if we get here we have gateway but no ifcfg file
-- name: Supply ifcfg-WAN file
-  template: src=network/ifcfg-WAN.j2
-            dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+- include: create_ifcfg.yml
   when: xsce_wan_iface != "none" and has_WAN == "False" and has_ifcfg_gw == "none"
-
-- name: Stop 'Wired WAN connection'
-  shell: nmcli dev disconnect {{ discovered_wan_iface }}
-  ignore_errors: True
-  changed_when: False
-  when: discovered_wan_iface != "none" and has_WAN == "False" and has_ifcfg_gw == "none"
-
-- name: Now setting has_WAN after creating file
-  set_fact:
-    has_WAN: "True"
-  when: xsce_wan_iface != "none" and has_ifcfg_gw == "none"
 
 # handles git pull after first write of ifcfg-WAN to change the name
 - name: Fix the NM name
