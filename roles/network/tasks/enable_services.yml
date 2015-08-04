@@ -57,7 +57,7 @@
   template: src={{ item.src }}
             dest={{ item.dest }}
             owner={{ item.owner }}
-            group={{ item.owner }}
+            group={{ item.group }}
             mode={{ item.mode }}
   with_items:
     - src: 'squid/squid-xs.conf.j2'
@@ -91,7 +91,7 @@
   template: src={{ item.src }}
             dest={{ item.dest }}
             owner={{ item.owner }}
-            group={{ item.owner }}
+            group={{ item.group }}
             mode={{ item.mode }}
   with_items:
    - src: 'gateway/xs-gen-iptables'
