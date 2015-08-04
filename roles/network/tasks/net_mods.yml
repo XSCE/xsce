@@ -19,8 +19,3 @@
   ignore_errors: yes
   when: not installing
 
-- name: Stop the Access Point Hostapd program
-  service: name=hostapd.service
-           state=stopped
-  ignore_errors: yes
-  when: not installing
