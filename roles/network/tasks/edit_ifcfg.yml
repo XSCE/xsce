@@ -22,8 +22,6 @@
 
 - name: add marker
   lineinfile: state=present
-              backrefs=yes
-              regexp="XSCE"
               line="# Modified by XSCE"
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
 
