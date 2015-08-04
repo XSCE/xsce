@@ -15,6 +15,11 @@
               regexp="UUID"
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
 
+- name: Remove the NAME
+  lineinfile: state=absent
+              regexp="NAME"
+              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+
 - name: add marker
   lineinfile: state=present
               backrefs=yes
