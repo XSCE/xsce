@@ -24,7 +24,7 @@
   lineinfile: state=present
               backrefs=yes
               regexp="XSCE"
-              line="Modified by XSCE"
+              line="# Modified by XSCE"
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
 
 - name: Now setting has_WAN after moving file
