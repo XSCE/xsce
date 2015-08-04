@@ -3,7 +3,7 @@
   shell: nmcli con delete xsce-LAN
   ignore_errors: True
   changed_when: False
-  when: ansible_distribution_version >= "21"
+  when: ansible_distribution_version >= "21" and xsce_lan_iface == "none"
 
 # move gateway if not WAN
 # might have wifi info if wireless is used as uplink.
@@ -59,7 +59,7 @@
 - name: Re-read network config files
   shell: 'nmcli con reload'
   ignore_errors: yes
-  when: ansible_distribution_version >= "21" and not installing
+  when: not installing
 
 - include: enable_wan.yml
   when: not installing
