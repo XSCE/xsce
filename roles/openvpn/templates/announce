@@ -1,32 +1,4 @@
-#!/bin/bash -x
-# small daemon to identify this machine to the openvpn server
-# current priority xsce.env, /etc/xsce/handle, /etc/xsce/xscd.ini, /etc/xsce/uuid
-
-HANDLE=
-source /etc/xsce/xsce.env
-if [ -z "$HANDLE" ]; then
-   HANDLE=`cat /etc/xsce/xsce.ini | gawk \
-	'{ if((toupper($1) == "HANDLE") && ($2 == "=")) { print $3;}}'`
-fi
-if [ -z "$HANDLE" ]; then
-   if [ -f /etc/xsce/handle ]; then
-   HANDLE=`cat /etc/xsce/handle`
-   fi
-fi
-if [ -z "$HANDLE" ]; then
-   if [ -f /etc/xsce/uuid ]; then
-	   HANDLE=`cat /etc/xsce/uuid`
-
-	   # the first few characters are enough
-	   HANDLE=${HANDLE:0:8}
-   fi
-fi
-
-# start the daemon which will serve the handle on demand
-source /etc/init.d/functions
-SERVER=/usr/bin/ncat
-PID_FILE=/var/run/openvpn/announce.pid
-OUTPUTCMD="/usr/bin/echo $HANDLE"
-OPTS="-l -k -p1705 --exec  '$OUTPUTCMD'"
-
-daemon --pidfile=${PID_FILE} $SERVER $OPTS &
+#!/bin/bash
+# disconnect out worker from everything
+DIR=$(dirname $0)
+nohup $DIR/announcer 0<&- &>/dev/null & 
