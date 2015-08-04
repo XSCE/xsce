@@ -59,7 +59,7 @@
 - name: Re-read network config files
   shell: 'nmcli con reload'
   ignore_errors: yes
-  when: ansible_distribution_version >= "21" and not installing
+  when: not installing
 
 - include: enable_wan.yml
   when: not installing
