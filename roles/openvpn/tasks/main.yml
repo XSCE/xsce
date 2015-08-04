@@ -15,6 +15,13 @@
         group=root
         mode=0755
 
+- name: Create the directory for scripts 
+  file: dest=/etc/openvpn/scripts
+        state=directory
+        owner=root
+        group=root
+        mode=0755
+
 - name: Configure openvpn
   template: backup=yes
             src={{ item.src }}
@@ -26,59 +33,35 @@
     - { src: 'ca.crt', dest: '/etc/openvpn/keys/ca.crt', owner: "root" , mode: '0644' }
     - { src: 'client1.crt', dest: '/etc/openvpn/keys/client1.crt', owner: "root" , mode: '0644' }
     - { src: 'client1.key', dest: '/etc/openvpn/keys/client1.key', owner: "root" , mode: '0600' }
-    - { src: 'roadwarrior-client.conf.j2', dest: '/etc/openvpn/roadwarrior-client.conf', owner: "root" , mode: '0644' }
-    - { src: 'xsce-vpn.conf.in', dest: '/etc/openvpn/xsce-vpn.conf.in', owner: "root" , mode: '0644' }
+    - { src: 'xscenet.conf', dest: '/etc/openvpn/xscenet.conf', owner: "root" , mode: '0644' }
+    - { src: 'announce', dest: '/etc/openvpn/scripts/announce', owner: "root" , mode: '0755' }
+    - { src: 'silence', dest: '/etc/openvpn/scripts/silence', owner: "root" , mode: '0755' }
+    - { src: 'xs-handle', dest: '/usr/bin/xs-handle', owner: "root" , mode: '0755' }
 
-- name: put the startup script on the path with other xs scripts
-  template: src=xs-vpn
-            dest=/usr/bin/xs-vpn
-            mode=0755
-            owner=root
-            group=root
-
-- name: If rc.local does not exist create it
-  copy:     src=rc.local
-            dest=/etc/rc.d/rc.local
-            force=no
-            mode=0755
-            owner=root
-            group=root
-  when:
-            openvpn_enabled
-
-- name: Make sure rc.local is executable if enabled
-  file:     dest=/etc/rc.d/rc.local
-            mode=0755
-            owner=root
-            group=root
+- name: start the openvpn tunnel at boot time
+  service: name=openvpn@xscenet
+           enabled=yes
+           state=started
   when:
             openvpn_enabled
 
 - name: make openvpn connection automatic
   lineinfile: dest=/etc/crontab
-            line="25 *  *  *  * root (/usr/bin/xs-vpn test) > /dev/null"
+            line="25 *  *  *  * root (/usr/bin/systemctl restart openvpn@xscenet.service) > /dev/null"
   when:
             openvpn_enabled and openvpn_cron_enabled
 
 - name: make openvpn connection manual
   lineinfile: dest=/etc/crontab
-            regexp=".*/usr/bin/xs-vpn.*"
+            regexp=".*/usr/bin/systemctl*"
             state=absent
   when:
             not openvpn_enabled or not openvpn_cron_enabled
 
-- name: start the openvpn tunnel at boot time
-  lineinfile:
-            dest=/etc/rc.d/rc.local
-            line='/usr/bin/xs-vpn test > /dev/null'
-  when:
-            openvpn_enabled
 
 - name: stop starting the openvpn tunnel at boot time
-  lineinfile:
-            dest=/etc/rc.d/rc.local
-            regexp=".*/usr/bin/xs-vpn.*"
-            state=absent
+  service: name=openvpn@xscenet
+           enabled=no 
   when:
             not openvpn_enabled
 
