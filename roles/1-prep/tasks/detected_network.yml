@@ -33,7 +33,7 @@
   when: discovered_wan_iface != "none" and xsce_wan_iface == "none"
 
 - name: Find active gateway config
-  shell: "egrep -rn {{ ansible_default_ipv4.alias }} /etc/sysconfig/network-scripts/ifcfg* | gawk -F ':' '{print $1}' | head -n 1"  
+  shell: "egrep -irn {{ ansible_default_ipv4.macaddress }} /etc/sysconfig/network-scripts/ifcfg* | gawk -F ':' '{print $1}' | head -n 1"  
   register: ifcfg_gw
   ignore_errors: True
   changed_when: False
