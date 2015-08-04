@@ -87,6 +87,19 @@
            enabled=no
   when: not wondershaper_enabled
 
+- name: Grap clean copy of xs-gen-iptables
+  template: src={{ item.src }}
+            dest={{ item.dest }}
+            owner={{ item.owner }}
+            group={{ item.owner }}
+            mode={{ item.mode }}
+  with_items:
+   - src: 'gateway/xs-gen-iptables'
+     dest: '/usr/bin/xs-gen-iptables'
+     owner: 'root'
+     group: 'root'
+     mode: '0755'
+
 - name: Add squid to service list
   ini_file: dest='{{ service_filelist }}'
             section=squid
