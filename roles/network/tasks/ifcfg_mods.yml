@@ -59,7 +59,7 @@
 - name: Re-read network config files
   shell: 'nmcli con reload'
   ignore_errors: yes
-  when: not installing
+  when: mysql_service != "mysqld" and not installing
 
 - include: enable_wan.yml
   when: not installing
