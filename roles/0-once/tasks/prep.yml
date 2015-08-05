@@ -17,14 +17,14 @@
             src=rpmfusion-free-updates.repo
             owner=root
             mode=0666
-  when:     ansible_distribution == fedora
+  when:     ansible_distribution == "fedora"
 
 - name: Install proper repo -- for exfat
   template: dest=/etc/yum.repos.d/li.nux.ro.repo
             src=li.nux.ro.repo
             owner=root
             mode=0666
-  when:     ansible_distribution == Centos
+  when:     ansible_distribution == "Centos"
 
 - name: Create /etc/xsce
   file: path=/etc/xsce
