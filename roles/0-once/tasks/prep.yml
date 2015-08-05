@@ -17,7 +17,7 @@
             src=rpmfusion-free-updates.repo
             owner=root
             mode=0666
-  when:     ansible_distribution == "fedora"
+  when:     ansible_distribution == "Fedora"
 
 - name: Install proper repo -- for exfat
   template: dest=/etc/yum.repos.d/li.nux.ro.repo
