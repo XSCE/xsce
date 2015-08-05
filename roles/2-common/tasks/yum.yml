@@ -32,6 +32,8 @@
    - wpa_supplicant
    - wget
    - openssl   #FC 18 does not supply, but pear requires
+   - exfat-utils
+   - fuse-exfat
   tags:
     - download
 
