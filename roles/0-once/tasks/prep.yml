@@ -24,7 +24,7 @@
             src=li.nux.ro.repo
             owner=root
             mode=0666
-  when:     ansible_distribution == "Centos"
+  when:     ansible_distribution == "CentOS"
 
 - name: Create /etc/xsce
   file: path=/etc/xsce
