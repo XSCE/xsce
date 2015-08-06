@@ -51,7 +51,7 @@
            enabled=yes
            state=started
   when:
-            openvpn_enabled and not stat.exits is defined
+            openvpn_enabled and not stat.exists is defined
 
 - name: make openvpn connection automatic
   lineinfile: dest=/etc/crontab
