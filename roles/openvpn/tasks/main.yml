@@ -44,7 +44,7 @@
 
 - name: check for manually configured openvpn tunnel
   stat: path=/etc/openvpn/xsce-vpn.conf
-        register: stat
+  register: stat
 
 - name: start the openvpn tunnel at boot time
   service: name=openvpn@xscenet
