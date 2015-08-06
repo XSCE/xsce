@@ -1,4 +1,4 @@
 #!/bin/bash
-# disconnect out worker from everything
+# disconnect our worker from everything
 DIR=$(dirname $0)
 nohup $DIR/announcer 0<&- &>/dev/null & 
