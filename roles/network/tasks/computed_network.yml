@@ -4,7 +4,7 @@
     wan_netmask: "{{ gui_static_wan_netmask }}"
     wan_gateway: "{{ gui_static_wan_gateway }}"
     wan_nameserver: "{{ gui_static_wan_nameserver }}"
-  when: gui_static_wan_ip != "unset"
+  when: gui_static_wan_ip != "unset" and gui_static_wan_ip != "undefined"
 
 # OK try old gw
 - name: Has old gateway and no discovered gateway setting WAN
