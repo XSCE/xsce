@@ -1,10 +1,16 @@
+- name: gui_static_wan
+  set_fact:
+    wan_ip: dhcp
+    gui_static_wan_ip: undefined
+  when: gui_static_wan is defined and gui_static_wan == "False"
+
 - name: Using GUI_STATIC info
   set_fact:
     wan_ip: "{{ gui_static_wan_ip }}"
     wan_netmask: "{{ gui_static_wan_netmask }}"
     wan_gateway: "{{ gui_static_wan_gateway }}"
     wan_nameserver: "{{ gui_static_wan_nameserver }}"
-  when: gui_static_wan_ip != "unset"
+  when: gui_static_wan_ip != "unset" and gui_static_wan_ip != "undefined" and gui_static_wan is defined 
 
 # OK try old gw
 - name: Has old gateway and no discovered gateway setting WAN
