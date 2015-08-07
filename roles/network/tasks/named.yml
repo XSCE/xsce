@@ -7,6 +7,10 @@
   tags:
     - download
 
+# or we have to change the serial number in the config files.
+- name: Stop named before copying files
+  service: name=named state=stopped 
+
 - name: Set folder permission
   file: path={{ item }}
         owner=named
