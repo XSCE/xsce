@@ -2,7 +2,7 @@
 # script to manage openvpn
 if [ ! -f "/etc/openvpn/xsce-vpn.conf" ]; then
   VPNCONFIG='party-line.conf'
-  VPNIP="10.8.0.1"
+  VPNIP={{ openvpn_server_virtual_ip }}
 else
   # expect the sourced file to set the above variables
   source /etc/openvpn/xsce-vpn.conf
