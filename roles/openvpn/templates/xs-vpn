@@ -1,8 +1,8 @@
 #!/bin/sh
 # script to manage openvpn
 if [ ! -f "/etc/openvpn/xsce-vpn.conf" ]; then
-  VPNCONFIG='roadwarrior-client.conf'
-  VPNIP="10.8.0.1"
+  VPNCONFIG='party-line.conf'
+  VPNIP={{ openvpn_server_virtual_ip }}
 else
   # expect the sourced file to set the above variables
   source /etc/openvpn/xsce-vpn.conf
