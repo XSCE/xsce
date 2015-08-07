@@ -10,6 +10,13 @@
               line="PEERDNS=no"
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
 
+- name: Turn on local nameserver
+  lineinfile: state=present
+              backrefs=yes
+              regexp="DNS1"
+              line="DNS1=127.0.0.1"
+              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+
 - name: Remove the UUID
   lineinfile: state=absent
               regexp="UUID"

@@ -52,7 +52,7 @@
   set_fact:
     dansguardian_enabled: False
     squid_enabled: False
-    named_enabled: False
+    named_enabled: True
     dhcpd_enabled: False
     wondershaper_enabled: False
     xsce_network_mode: "Appliance"
