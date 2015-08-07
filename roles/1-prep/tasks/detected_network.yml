@@ -3,10 +3,11 @@
   register: prior_domain
   ignore_errors: True
 
+# above always registers
 - name: Checking for prior domain name
   set_fact:
     xsce_domain: "{{ prior_domain.stdout }}"
-  when: prior_domain is defined and prior_domain.stdout != "lan"
+  when: prior_domain.stdout != "lan" and prior_domain.stdout != ""
 
 # DETECT -- gateway and wireless
 - name: Get a list of slaves from previous config
