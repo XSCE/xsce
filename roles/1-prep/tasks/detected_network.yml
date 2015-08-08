@@ -6,8 +6,18 @@
 # above always registers
 - name: Checking for prior domain name
   set_fact:
-    xsce_domain: "{{ prior_domain.stdout }}"
-  when: prior_domain.stdout != "lan" and prior_domain.stdout != ""
+    old_domain: "{{ prior_domain.stdout }}"
+  when: prior_domain.stdout != ""
+
+- name: Setting prior domain name
+  set_fact:
+    xsce_domain: "{{ old_domain }}"
+  when: old_domain != "" and xsce_domain == ""
+
+- name: Setting default XSCE domain name
+  set_fact:
+    xsce_domain: "lan"
+  when: xsce_domain == ""
 
 # DETECT -- gateway and wireless
 - name: Get a list of slaves from previous config
