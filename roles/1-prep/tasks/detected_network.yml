@@ -12,12 +12,12 @@
 - name: Setting prior domain name
   set_fact:
     xsce_domain: "{{ old_domain }}"
-  when: old_domain != "" and xsce_domain == ""
+  when: old_domain != "" and xsce_domain == "none"
 
 - name: Setting default XSCE domain name
   set_fact:
     xsce_domain: "lan"
-  when: xsce_domain == ""
+  when: xsce_domain == "none"
 
 # DETECT -- gateway and wireless
 - name: Get a list of slaves from previous config
