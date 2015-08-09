@@ -147,6 +147,12 @@
   tags:
     - network
 
+#pre-populates xsce_domain correctly
+- name: Restart xsce-cmdsrv service
+  service: name=xsce-cmdsrv
+           state=restarted
+  when: not installing and not xsce_prepped
+
 - include: restart.yml
   when: not installing
   tags:
