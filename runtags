@@ -26,6 +26,7 @@ do
   if [ "$tag" == "prep" ]
   then
     found="Y"
+  fi
   if [ "$tag" == "network" ]
   then
     restart="Y"
