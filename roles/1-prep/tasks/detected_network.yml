@@ -13,7 +13,7 @@
  name: Setting prior domain name
   set_fact:
     xsce_domain: "{{ old_domain }}"
-  when: old_domain != "" and xsce_domain == "none"
+  when: old_domain != "none" and xsce_domain == "none"
 
 # First pass and no user override
 - name: Setting default XSCE domain name
