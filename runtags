@@ -19,12 +19,16 @@ fi
 tags=$(echo $1 | tr "," "\n")
 
 found="N"
+restart="N"
 
 for tag in $tags
 do
   if [ "$tag" == "prep" ]
   then
     found="Y"
+  if [ "$tag" == "network" ]
+  then
+    restart="Y"
   fi
 
 done
@@ -47,3 +51,8 @@ if [ $# -ne 1 ]; then
 fi
 export ANSIBLE_LOG_PATH="xsce-debug.log"
 ansible-playbook -i ansible_hosts xsce.yml --connection=local --tags="""$taglist"""
+if [ "$restart" == "N" ]
+then
+    echo "Syncing xsce-cmdsrv"
+    systemctl -q is-enabled xsce-cmdsrv && systemctl restart xsce-cmdsrv
+fi
