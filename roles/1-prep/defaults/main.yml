@@ -2,6 +2,7 @@
 installing: False
 
 #Set defaults for discovery process
+old_domain: "none"
 discovered_wan_iface: "none"
 discovered_lan_iface: "none"
 discovered_wireless_iface: "none"
