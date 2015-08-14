@@ -109,6 +109,11 @@
 <?php hard_link("/content", "Browse Other Content", "This is the place for local downloads."); ?>
 -->
 <BR><B> Enjoy Exploring & Building Your Library! &nbsp; <I>volunteer@unleashkids.org</I></B>
+<BR><BR>
+
+<?php require 'incl/footer.php'; ?>
+
+<BR>
 </div><!-- #main -->
 </div><!-- #wrapper -->
 </BODY>
