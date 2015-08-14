@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# if not the first run, repo location is here
+
+if [ -f /etc/xsce/xsce.env ]
+then
+  . /etc/xsce/xsce.env
+  cd $XSCE_DIR
+fi
+
+if [ ! -f xsce.yml ]
+then
+ echo "XSCE Playbook not found."
+ echo "Please run this command from the top level of the git repo."
+ echo "Exiting."
+ exit
+fi
+
+PLAYBOOK="install-init.yml"
+INVENTORY="ansible_hosts"
+
+export ANSIBLE_LOG_PATH="xsce-install.log"
+ansible-playbook -i $INVENTORY $PLAYBOOK --connection=local
