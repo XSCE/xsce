@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# copy var files to /etc/xsce for subsequent use
+
+./install-init
+
 # if not the first run, repo location is here
 
 if [ -f /etc/xsce/xsce.env ]

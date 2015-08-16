@@ -1,6 +1,10 @@
 #!/bin/bash
 
-# if not the first run repo, location is here
+# copy var files to /etc/xsce for subsequent use
+
+./install-init
+
+# if not the first run, repo location is here
 
 if [ -f /etc/xsce/xsce.env ]
 then
@@ -27,7 +31,7 @@ then
 fi
 
 export ANSIBLE_LOG_PATH="xsce-install.log"
-ansible-playbook -i $INVENTORY $PLAYBOOK --connection=local 
+ansible-playbook -i $INVENTORY $PLAYBOOK --connection=local
 
 if [ -f /etc/selinux/config ]
 then

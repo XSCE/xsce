@@ -4,7 +4,8 @@
 
   vars_files:
   - vars/default_vars.yml
-  - vars/local_vars.yml
+  - /etc/xsce/local_vars.yml
+  - /etc/xsce/config_vars.yml
 
   roles:
       - { role: 0-once, tags: ['once','platform','base'] }
