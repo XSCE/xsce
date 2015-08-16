@@ -6,8 +6,23 @@
 # above always registers
 - name: Checking for prior domain name
   set_fact:
-    xsce_domain: "{{ prior_domain.stdout }}"
-  when: prior_domain.stdout != "lan" and prior_domain.stdout != ""
+    old_domain: "{{ prior_domain.stdout }}"
+  when: prior_domain.stdout != ""
+
+# First pass and no user override in local_vars
+- name: Setting default XSCE domain name
+  set_fact:
+    xsce_domain: "lan"
+  when: old_domain == "none" and xsce_domain == "none"
+
+# ok user didn't override default in local_vars or config_vars
+# and xs_domain_name exists use it (install-console complete)
+- name: Setting prior domain name
+  set_fact:
+    xsce_domain: "{{ old_domain }}"
+  when: old_domain != "none" and xsce_domain == "none"
+
+# xsce_domain passed from local_vars or config_vars carries on.
 
 # DETECT -- gateway and wireless
 - name: Get a list of slaves from previous config
@@ -194,6 +209,8 @@
             option='{{ item.option }}'
             value='{{ item.value }}'
   with_items:
+  - option: 'domain_name'
+    value: '{{ xsce_domain }}'
   - option: 'detected_gateway'
     value: '{{ discovered_wan_iface }}'
   - option: 'prior_gateway'
