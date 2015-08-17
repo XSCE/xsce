@@ -31,12 +31,12 @@
 - name: Enable sugar-stats service
   service: name=sugar-stats-server
            enabled=yes
-  when: sugar_stats_enabaled
+  when: sugar_stats_enabled
           
 - name: Disable sugar-stats service
   service: name=sugar-stats-server
            enabled=no
-  when: not sugar_stats_enabaled
+  when: not sugar_stats_enabled
           
 - include: statistics-consolidation.yml 
 
