@@ -1,5 +1,5 @@
 #!/bin/bash
-PLAYBOOK="xsce.yml"
+PLAYBOOK="xsce-from-console.yml"
 INVENTORY="ansible_hosts"
 
 # if not the first run, repo location is here
@@ -18,7 +18,7 @@ then
 fi
 
 # copy var files to /etc/xsce for subsequent use
-if [ ! -f /etc/xsce/config_vars.yml ]
+if [ ! -f /.xsce-prepped ]
 then
   ./install-console
 fi
