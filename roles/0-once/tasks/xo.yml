@@ -50,7 +50,7 @@
   with_items:
      - { option: 'lcp-echo-failure', value: '5' }
      - { option: 'lcp-echo-interval', value: '30' }
-
+  ignore_errors: True
 - name: Create bigger rwtab
   lineinfile: backup=yes
               dest=/etc/sysconfig/readonly-root
