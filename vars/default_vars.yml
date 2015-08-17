@@ -202,7 +202,7 @@ kalite_cron_enabled: False
 
 # sugar-stats
 sugar-stats_install: True
-sugar-stats_enabled: True
+sugar-stats_enabled: False
 
 # ajenti
 ajenti_install: True
