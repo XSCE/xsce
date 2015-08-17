@@ -27,6 +27,13 @@
               regexp="NAME"
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
 
+- name: Ensure macaddress is present 
+  lineinfile: state=present
+              backrefs=yes
+              regexp="HWADDR"
+              line="HWADDR="{{ hostvars[inventory_hostname]['ansible_' + xsce_wan_iface]['macaddress'] }}"
+              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+
 - name: add marker
   lineinfile: state=present
               line="# Modified by XSCE"
