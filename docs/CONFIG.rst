@@ -31,11 +31,13 @@ Overriding Ansible Variables
 Overview
 ========
 
-In general as of Release 5.0 you can change the value of variables by editing
+In general as of Release 6.0 you can change the value of variables by copying
 
-  vars/default_vars.yml  
+vars/default_vars.yml to vars/local_vars.yml and making your changes there.
 
-In the future there will be an easier method
+Note: vars/local_vars.yml is only used during the initial install, after the first
+pass you should be editing /etc/xsce/local_vars.yml to effect changes or use the 
+gui console. 
 
 Some roles also have a README file that explains how the variables for that role
 work.
