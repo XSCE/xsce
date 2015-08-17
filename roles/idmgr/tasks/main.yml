@@ -78,6 +78,6 @@
     - option: name
       value: idmgr
     - option: description
-      value: "Idmgr is an automatic identity manager for XO clients which enables automatic backup"
+      value: '"Idmgr is an automatic identity manager for XO clients which enables automatic backup"'
     - option: enabled
       value: "{{ xo_services_enabled }}"

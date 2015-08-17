@@ -26,5 +26,17 @@
   service: name=munin-node
            enabled=yes
 
-
-
+- name: Add munin to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=munin
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: munin
+    - option: description
+      value: '"Munin is a networked resource monitoring tool that can help analyze resource trends and \"what just happened to kill our performance?\" problems.`"'
+    - option: installed
+      value: "{{ munin_install }}"
+    - option: enabled
+      value: "{{ munin_enabled }}"

@@ -84,7 +84,7 @@
     - option: name
       value: Moodle
     - option: description
-      value: "Access the Moodle learning management system."
+      value: '"Access the Moodle learning management system."'
     - option: path
       value: /moodle
     - option: enabled

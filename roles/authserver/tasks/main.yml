@@ -64,9 +64,9 @@
     - option: name
       value: XS-authserver
     - option: description
-      value: 'xs-authserver implements a seamless web authentication service
+      value: '"xs-authserver implements a seamless web authentication service
              using XO laptop registration capabilities.  It is heavily inspired
-             by the Moodle OLPC-XS authentication plugin'
+             by the Moodle OLPC-XS authentication plugin"'
     - option: port
       value: 5000
     - option: path

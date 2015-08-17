@@ -85,3 +85,18 @@
   -d {{ xovis_backup_dir }}
   --deployment {{ xovis_deployment_name }}
   --server http://{{ xovis_db_login }}@{{ xovis_target_host }}"
+
+- name: Add xovis to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=xovis
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: xovis
+    - option: description
+      value: '"XOVis - Analytics and Visualization for Sugar and OLPC"'
+    - option: installed
+      value: "{{ xovis_install }}"
+    - option: enabled
+      value: "{{ xovis_enabled }}"

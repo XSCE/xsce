@@ -41,6 +41,6 @@
     - option: name
       value: monit
     - option: description
-      value: "Monit is a background service monitor which can correct problems, send email, restart services"
+      value: '"Monit is a background service monitor which can correct problems, send email, restart services"'
     - option: enabled
       value: "{{ monit_enabled }}"

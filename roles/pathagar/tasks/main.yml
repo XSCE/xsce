@@ -162,6 +162,6 @@
     - option: name
       value: pathagar
     - option: description
-      value: Pathagar is a simple bookserver serving OPDS feeds
+      value: '"Pathagar is a simple bookserver serving OPDS feeds"'
     - option: path
       value: /books
