@@ -201,8 +201,8 @@ kalite_cron_enabled: False
 # 8-MGMT-TOOLS
 
 # sugar-stats
-sugar-stats_install: True
-sugar-stats_enabled: False
+sugar_stats_install: True
+sugar_stats_enabled: False
 
 # ajenti
 ajenti_install: True
