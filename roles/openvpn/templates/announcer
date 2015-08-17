@@ -20,5 +20,5 @@ fi
 source /etc/init.d/functions
 SERVER=/usr/bin/ncat
 PID_FILE=/var/run/openvpn/announce.pid
-
+HANDLE=${HANDLE// /_}
 daemon --pidfile=${PID_FILE} $SERVER "-l -k -p1705 --exec \"/usr/bin/echo $(printf 'HANDLE = %s|UUID = %s|' $HANDLE $UUID)\"" &

@@ -1,6 +1,10 @@
 #!/bin/bash
 
-# if not the first, run repo location is here
+# copy var files to /etc/xsce for subsequent use
+
+./install-init
+
+# if not the first run, repo location is here
 
 if [ -f /etc/xsce/xsce.env ]
 then
@@ -24,7 +28,7 @@ echo "Running local playbooks! "
 XSDOMAIN=""
 
 # Pass in Existing Domain
-if [ -f /etc/sysconfig/xs_domain_name ] 
+if [ -f /etc/sysconfig/xs_domain_name ]
 then
  XSDOMAIN=`cat /etc/sysconfig/xs_domain_name`
 fi
@@ -40,10 +44,10 @@ if [ x"$XSDOMAIN" != x ]
 then
  ARGS="--extra-vars '{\"xsce_domain\":\"$XSDOMAIN\"}'"
 else
- ARGS="" 
+ ARGS=""
 fi
 
 export ANSIBLE_LOG_PATH="xsce-install.log"
 ansible -m setup -i $INVENTORY localhost --connection=local >> /dev/null
 
-ansible-playbook -i $INVENTORY $PLAYBOOK ${ARGS} --connection=local 
+ansible-playbook -i $INVENTORY $PLAYBOOK ${ARGS} --connection=local

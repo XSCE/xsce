@@ -1,0 +1,49 @@
+---
+- hosts: all
+  sudo: yes
+
+# The var files read or included here are not needed, but might be in the future
+
+  vars_files:
+  - vars/default_vars.yml
+
+  tasks:
+
+  - include_vars: "{{ item }}"
+    with_first_found:
+     - /etc/xsce/local_vars.yml
+     - vars/local_vars.yml
+
+  - name: Create /etc/xsce
+    file: path=/etc/xsce
+          owner=root
+          group=root
+          mode=0755
+          state=directory
+
+  - name: See if default config_vars.yml exists
+    stat: path=/etc/xsce/config_vars.yml
+    register: config_vars
+
+  - name: Install default config_vars.yml
+    template: src=roles/xsce-admin/templates/cmdsrv/config_vars.yml
+              dest=/etc/xsce/config_vars.yml
+              owner=root
+              group=root
+              mode=0644
+    when: config_vars.stat.exists == false
+
+  - name: See if default local_vars.yml exists
+    stat: path=/etc/xsce/local_vars.yml
+    register: local_vars
+
+  - name: Install default local_vars.yml
+    copy: src=vars/local_vars.yml
+          dest=/etc/xsce/local_vars.yml
+          owner=root
+          group=root
+          mode=0644
+    when: local_vars.stat.exists == false
+
+  - name: Install Initionalization Complete
+    command: echo Install Initionalization Complete

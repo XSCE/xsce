@@ -46,12 +46,14 @@
   stat: path=/etc/openvpn/xsce-vpn.conf
   register: stat
 
-- name: start the openvpn tunnel at boot time
-  service: name=openvpn@xscenet
-           enabled=yes
-           state=started
-  when:
-            openvpn_enabled and not stat.exists is defined
+# note that ansible does not currently handle @ in a service name
+- name:  enable the openvpn tunnel at boot time
+  shell: systemctl enable openvpn@xscenet.service
+  when:  openvpn_enabled and not stat.exists is defined
+
+- name:  start the openvpn tunnel now
+  shell: systemctl start openvpn@xscenet.service
+  when:  openvpn_enabled and not stat.exists is defined
 
 - name: make openvpn connection automatic
   lineinfile: dest=/etc/crontab
@@ -67,11 +69,9 @@
             not openvpn_enabled or not openvpn_cron_enabled
 
 
-- name: stop starting the openvpn tunnel at boot time
-  service: name=openvpn@xscenet
-           enabled=no 
-  when:
-            not openvpn_enabled
+- name:    stop starting the openvpn tunnel at boot time
+  shell:   systemctl disable openvpn@xscenet.service
+  when:    not openvpn_enabled
 
 - name: Add openvpn to service list
   ini_file: dest='{{ service_filelist }}'
