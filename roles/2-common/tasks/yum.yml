@@ -32,8 +32,6 @@
    - wpa_supplicant
    - wget
    - openssl   #FC 18 does not supply, but pear requires
-   - exfat-utils
-   - fuse-exfat
   tags:
     - download
 
@@ -49,3 +47,6 @@
   tags:
     - download
 
+- name: Install optional exFAT packages for CentOS
+  shell: yum --enablerepo=li-nux-ro install exfat-utils fuse-exfat
+  when: exFAT_enabled == "True" and ansible_distribution == "CentOS"
