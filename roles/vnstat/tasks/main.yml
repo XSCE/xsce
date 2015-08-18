@@ -23,3 +23,18 @@
 
 - name: start vnstat daemon via systemd
   service: name=vnstat enabled=yes state=started
+
+- name: Add vnstat to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=vnstat
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: vnstat
+    - option: description
+      value: '"vnStat is a console-based network traffic monitor for Linux and BSD that keeps a log of network traffic for the selected interface(s)."'
+    - option: installed
+      value: "{{ vnstat_install }}"
+    - option: enabled
+      value: "{{ vnstat_enabled }}"
