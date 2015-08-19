@@ -4,3 +4,6 @@
   with_items:
    - mtd-utils
 
+- name: Install optional exFAT packages for Fedora
+  shell: yum --enablerepo=rpmfusion-free-updates install exfat-utils fuse-exfat
+  when: exFAT_enabled == "True"
