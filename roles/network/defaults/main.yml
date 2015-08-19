@@ -4,3 +4,6 @@ gui_wan_iface: "unset"
 gui_static_wan_ip: "unset"
 wondershaper_dspeed: "4096"
 wondershaper_upspeed: "1024"
+ssid: "XSCE"
+wifi_mode: g
+channel: 6

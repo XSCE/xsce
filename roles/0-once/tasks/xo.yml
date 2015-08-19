@@ -40,6 +40,10 @@
             option=plugins
             value=ifcfg-rh,keyfile
 
+- name: check for modem config file
+  stat: path=/etc/NetworkManager/system-connections/"Sugar Modem Connection"
+  register: config
+
 - name: Change failure and interval settings for modem connection
   ini_file: dest=/etc/NetworkManager/system-connections/"Sugar Modem Connection"
             section=ppp
@@ -50,6 +54,7 @@
   with_items:
      - { option: 'lcp-echo-failure', value: '5' }
      - { option: 'lcp-echo-interval', value: '30' }
+  when: config.stat.exists
 
 - name: Create bigger rwtab
   lineinfile: backup=yes

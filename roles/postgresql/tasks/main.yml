@@ -48,3 +48,18 @@
   service: name=postgresql-xs
            enabled=yes
   when: postgresql_enabled
+
+- name: Add postgresql to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=postgresql
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: postgresql
+    - option: description
+      value: '"PostgreSQL is a powerful, open source object-relational database system."'
+    - option: installed
+      value: "{{ postgresql_install }}"
+    - option: enabled
+      value: "{{ postgresql_enabled }}"
