@@ -6,3 +6,4 @@ wondershaper_dspeed: "4096"
 wondershaper_upspeed: "1024"
 ssid: "XSCE"
 wifi_mode: g
+channel: 6
