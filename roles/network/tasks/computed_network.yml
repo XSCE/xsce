@@ -12,13 +12,15 @@
     wan_nameserver: "{{ gui_static_wan_nameserver }}"
   when: gui_static_wan_ip != "unset" and gui_static_wan_ip != "undefined" and gui_static_wan is defined 
 
-# OK try old gw
+# OK try old gw this is a best guess based on what's in /etc/sysconfig/xs_wan_device's last state
+# intended to provide a seed value to display in the GUI when no gateway is present but we had one.
 - name: Has old gateway and no discovered gateway setting WAN
   set_fact:
     gui_wan_iface: "{{ had_gw }}"
   when: user_wan_iface == "auto" and had_gw != "none" and discovered_wan_iface == "none"
 
 # need to add this field in the GUI
+# we need to have an interface name for ifcfg-WAN to be able to change gateway the DEVICE from the gui.
 - name: Using GUI_WAN info
   set_fact:
     user_wan_iface: "{{ gui_wan_iface }}"
@@ -42,7 +44,7 @@
     user_lan_iface: "none"
   when: 'not xsce_lan_enabled'
 
-# gui wants Applience
+# gui wants Appliance
 - name: Setting GUI wants Appliance
   set_fact:
     user_lan_iface: "none"
@@ -62,7 +64,7 @@
     dhcpd_enabled: False
     wondershaper_enabled: False
     xsce_network_mode: "Appliance"
-  when: xsce_lan_iface == "none" or user_lan_iface == "none" or xsce_lan_enabled == False
+  when: xsce_lan_iface == "none" or user_lan_iface == "none"
 
 - name: LAN configured - LanController mode
   set_fact:
@@ -72,7 +74,7 @@
     squid_enabled: False
     wondershaper_enabled: False
     xsce_network_mode: "LanController"
-  when: xsce_lan_iface != "" and xsce_wan_iface == "none" and xsce_lan_enabled == True
+  when: xsce_lan_iface != "" and xsce_wan_iface == "none"
 
 - name: LAN configured - Gateway mode
   set_fact:
