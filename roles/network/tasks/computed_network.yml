@@ -42,6 +42,12 @@
     user_lan_iface: "none"
   when: 'not xsce_lan_enabled'
 
+# gui wants Applience
+- name: Setting GUI wants Appliance
+  set_fact:
+    user_lan_iface: "none"
+  when: gui_desired_network_role is defined and gui_desired_network_role == "Appliance"
+
 # override with user_lan_iface setting if no longer in auto
 - name: Setting user LAN fact
   set_fact:
