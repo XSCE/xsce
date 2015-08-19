@@ -88,11 +88,3 @@
      kiwix_src_file: "kiwix-server-0.9-linux-armv5tejl.tar.bz2"
      kiwix_src_bin_only: True
   when: ansible_machine == "armv7l"
-
-- name: Disable some install routines for CentOS
-  set_fact:
-    sugar-stats_install: False
-    sugar-stats_enabled: False
-    ajenti_install: False
-    ajenti_enabled: False
-  when: ansible_distribution == "CentOS"
