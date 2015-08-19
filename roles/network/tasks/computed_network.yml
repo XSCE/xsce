@@ -12,13 +12,6 @@
     wan_nameserver: "{{ gui_static_wan_nameserver }}"
   when: gui_static_wan_ip != "unset" and gui_static_wan_ip != "undefined" and gui_static_wan is defined 
 
-# OK try old gw this is a best guess based on what's in /etc/sysconfig/xs_wan_device's last state
-# intended to provide a seed value to display in the GUI when no gateway is present but we had one.
-- name: Has old gateway and no discovered gateway setting WAN
-  set_fact:
-    gui_wan_iface: "{{ had_gw }}"
-  when: user_wan_iface == "auto" and had_gw != "none" and discovered_wan_iface == "none"
-
 # need to add this field in the GUI
 # we need to have an interface name for ifcfg-WAN to be able to change gateway the DEVICE from the gui.
 - name: Using GUI_WAN info
