@@ -1,5 +1,5 @@
 - name: Rename supplied gateway ifcfg file to WAN if present
-  shell: mv {{ ifcfg_gw.stdout }} /etc/sysconfig/network-scripts/ifcfg-WAN
+  shell: mv {{ has_ifcfg_gw }} /etc/sysconfig/network-scripts/ifcfg-WAN
   ignore_errors: True
   changed_when: False
 
