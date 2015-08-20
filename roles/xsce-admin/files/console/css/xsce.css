@@ -18,7 +18,8 @@ margin-top: 1em;
 }
 
 .action-buttons button {
-	width:100%;
+	width: 14.5em;
+	text-align: left;
 	margin-bottom: 1em;
 }
 
