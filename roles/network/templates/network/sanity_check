@@ -1,0 +1,67 @@
+#!/bin/bash
+# verify that the wan adapter has not moved
+NEED_NET_CONFIG=
+WAN_NAME=`cat /etc/sysconfig/xs_wan_device`
+WAN_OK=0 # A 0 signifies TRUE
+
+# check if this device currently exists
+ifconfig | grep $WAN_NAME > /dev/null
+IFCONFIG=$?
+
+# see if current default route and sysconfig are in sync
+DEFAULT=`ip route | grep default | cut -d " " -f 5`
+if [ ! -z "$WAN_NAME" ]; then
+   # check if current gateway and sysconfig agree
+   if [ "$WAN_NAME" != "$DEFAULT" ]; then
+      WANOK=1
+   fi
+else
+   if [ ! -z "$DEFAULT" ]; then
+      # NetworkManager tends to attach dhclient to unknown adapters
+      # But XSCE wants to have ifcfg files for all that are known
+      WANOK=1
+   fi
+fi
+
+grep $WAN_NAME /etc/sysconfig/network-scripts/ifcfg-WAN
+# returns 0 if ifcfg and sysconfig/xs_wan_device files are in sync
+
+# if everything is consistent, we're done
+if [[ $? -eq 0 && $IFCONFIG -eq 0 && $WANOK -eq 0 ]]; then 
+   exit 0
+fi
+
+HWADDR=`grep -A 2 $WAN_NAME /etc/sysconfig/network-scripts/ifcfg-WAN | grep HWADDR | cut -d"\"" -f2`
+# if this MAC has been assigned a new adapter name, compensate for USB port swap
+if [ -z $HWADDR ]; then
+  # perhaps ifcfg file does not exist, or is out of sync with xs_wan_device
+  NEED_NET_CONFIG=true
+else
+  # HWADDR exists in the ifcfg file pointed to by etc/sysconfig/xs_wan_device
+  # find out if this hwaddr currently is assigned the same name
+  CURRENT_NAME=`ifconfig | grep -B 3 ${HWADDR} | grep mtu | cut -d : -f 1`
+
+  if [[ "$CURRENT_NAME" != "$WAN_NAME" ]]; then
+     # the adapter that was the wan port, has a new adapter name, so change ifcfg_WAN
+     sed -i -e 's/^DEVICE.*$/DEVICE="$CURRENT_NAME"/' /etc/systemconfig/network-scripts/ifcfg-WAN
+     NEED_NET_CONFIG=true
+  fi
+fi
+if [ "$NEED_NET_CONFIG" == "true" ]; then
+  cd /opt/schoolserver/xsce
+  ./runtags network
+fi
+	
+
+
+
+
+
+
+
+
+
+
+
+
+# vim: ts=2 sw=2 expandtab sts=2
