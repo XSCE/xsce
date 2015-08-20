@@ -2,7 +2,7 @@
 name=RPM Fusion for Fedora $releasever - Free - Updates
 #baseurl=http://download1.rpmfusion.org/free/fedora/updates/$releasever/$basearch/
 mirrorlist=http://mirrors.rpmfusion.org/mirrorlist?repo=free-fedora-updates-released-$releasever&arch=$basearch
-enabled=1
+enabled=0
 gpgcheck=0
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion-free-fedora-$releasever
 

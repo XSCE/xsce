@@ -26,6 +26,11 @@
      no_network: True
   when: xsce_preload == "True"
 
+- name: Set exFAT enabled for XOs
+  set_fact:
+     exFAT_enabled: True
+  when: xo_model != "none"
+
 - name: add version section
   ini_file: dest='{{ xsce_config_file }}'
             section=runtime
@@ -88,11 +93,3 @@
      kiwix_src_file: "kiwix-server-0.9-linux-armv5tejl.tar.bz2"
      kiwix_src_bin_only: True
   when: ansible_machine == "armv7l"
-
-- name: Disable some install routines for CentOS
-  set_fact:
-    sugar-stats_install: False
-    sugar-stats_enabled: False
-    ajenti_install: False
-    ajenti_enabled: False
-  when: ansible_distribution == "CentOS"

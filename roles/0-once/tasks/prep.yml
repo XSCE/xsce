@@ -19,13 +19,6 @@
             mode=0666
   when:     ansible_distribution == "Fedora"
 
-- name: Install proper repo -- for exfat
-  template: dest=/etc/yum.repos.d/li.nux.ro.repo
-            src=li.nux.ro.repo
-            owner=root
-            mode=0666
-  when:     ansible_distribution == "CentOS"
-
 - name: Create /etc/xsce
   file: path=/etc/xsce
         owner=root

@@ -24,10 +24,13 @@
   with_items:
     - "{{ ifcfg_files.stdout_lines }}"
 
-# insert gateway auto detection here
-# create new fact for wanted operation ??? = Gateway
-# - include: redetect.yml
-#   when: discovered_wan_iface == "none" and user_wan_iface == "auto" and ??? = "Gateway"
+# when gui_wan_iface is available and when set becomes user_wan_iface. Using "auto" 
+# in the input box for gui_wan_iface or a "use_autodect" check box could be used to 
+# kick off the auto detection otherwise use supplied data directly, avoiding the
+# messy future gateway auto detection here.
+
+# - include: redetect.yml  ## yet to come but had_gw is the first one to test. 
+#   when: discovered_wan_iface == "none" and user_wan_iface == "auto" and gui_desired_network_role is defined and gui_desired_network_role == "Gateway"
 
 # create ifcfg-WAN if missing
 # if we get here we have gateway but no ifcfg file

@@ -60,6 +60,7 @@ adm_cons_force_ssl: False
 adm_cons_allow_downloads: False
 
 #intended for developers
+exFAT_enabled: False
 user_wan_iface: auto
 user_lan_iface: auto
 wan_ip: dhcp
