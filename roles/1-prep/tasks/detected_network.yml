@@ -64,6 +64,11 @@
     device_gw: "{{ prior_gw.stdout }}"
   when: prior_gw is defined and prior_gw.stdout != ""
 
+- name: Use current active gateway for device test
+   set_fact:
+    device_gw: {{ discovered_wan_iface }}
+  when: discovered_wan_iface != "none" 
+
 - name: Find gateway config based on device
   shell: "egrep -rn {{ device_gw }} /etc/sysconfig/network-scripts/ifcfg* | gawk -F ':' '{print $1}'| head -n 1"  
   register: ifcfg_gw_device
@@ -71,7 +76,7 @@
   changed_when: False
   when: device_gw != "none" and has_WAN == "False"
 
-- name: Setting has_ifcfg_gw based on deviceif found
+- name: Setting has_ifcfg_gw based on device if found
   set_fact:
     has_ifcfg_gw: "{{ ifcfg_gw_device.stdout|trim }}"
   when: ifcfg_gw_device is defined and ifcfg_gw_device != ""
