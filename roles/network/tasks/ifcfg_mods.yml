@@ -20,7 +20,7 @@
 - name: Now delete all non-gateway ifcfg files
   shell: "rm -f {{ item }} "
   ignore_errors: True
-  when: item|trim != discovered_wan_iface and item|trim != had_gw
+  when: item|trim != device_gw
   with_items:
     - "{{ ifcfg_files.stdout_lines }}"
 
