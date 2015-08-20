@@ -65,12 +65,12 @@
   when: prior_gw is defined and prior_gw.stdout != ""
 
 - name: Use current active gateway for device test
-   set_fact:
-    device_gw: {{ discovered_wan_iface }}
-  when: discovered_wan_iface != "none" 
+  set_fact:
+    device_gw: "{{ discovered_wan_iface }}"
+  when: discovered_wan_iface != "none"
 
 - name: Find gateway config based on device
-  shell: "egrep -rn {{ device_gw }} /etc/sysconfig/network-scripts/ifcfg* | gawk -F ':' '{print $1}'| head -n 1"  
+  shell: "egrep -rn {{ device_gw }} /etc/sysconfig/network-scripts/ifcfg* | gawk -F ':' '{print $1}'| head -n 1"
   register: ifcfg_gw_device
   ignore_errors: True
   changed_when: False
@@ -114,7 +114,7 @@
 
 # LAN - pick non WAN's
 - name: Create list of  LAN (non wan) ifaces
-  shell: "/sbin/ip link show | grep -v -e wwlan -e ppp -e lo -e br0: -e tun -e {{ had_gw }} -e {{ xsce_wan_iface }}| grep mtu | gawk -F: '{print $2}' "
+  shell: "/sbin/ip link show | grep -v -e wwlan -e ppp -e lo -e br0: -e tun -e {{ device_gw }} | grep mtu | gawk -F: '{print $2}' "
   register: lan_list_result
   ignore_errors: True
   changed_when: false
@@ -129,7 +129,7 @@
       - "{{ lan_list_result.stdout_lines }}"
 
 - name: Count LAN ifaces
-  shell: "/sbin/ip link show | grep -v  -e wwlan -e ppp -e lo -e br0: -e tun -e {{ had_gw }} -e {{ xsce_wan_iface }} | grep mtu | wc | gawk '{print $1}'"
+  shell: "/sbin/ip link show | grep -v  -e wwlan -e ppp -e lo -e br0: -e tun -e {{ device_gw }} | grep mtu | wc | gawk '{print $1}'"
   register: num_lan_interfaces_result
   ignore_errors: True
   changed_when: false
@@ -197,8 +197,8 @@
 # intended to provide a seed value to display in the GUI when no gateway is present but we had one.
 - name: Has old gateway and no discovered gateway setting WAN
   set_fact:
-    gui_wan_iface: "{{ had_gw }}"
-  when: user_wan_iface == "auto" and had_gw != "none" and discovered_wan_iface == "none"
+    gui_wan_iface: "{{ device_gw }}"
+  when: user_wan_iface == "auto" and device_gw != "none" and discovered_wan_iface == "none"
 
 - name: Add location section to config file
   ini_file: dest='{{ xsce_config_file }}'
@@ -209,7 +209,7 @@
   - option: 'detected_gateway'
     value: '{{ discovered_wan_iface }}'
   - option: 'prior_gateway'
-    value: '{{ had_gw }}'
+    value: '{{ device_gw }}'
   - option: 'num_lan_interfaces'
     value: '{{ num_lan_interfaces }}'
   - option: 'wireless_list_1'
