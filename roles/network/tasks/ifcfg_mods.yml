@@ -37,13 +37,6 @@
 - include: create_ifcfg.yml
   when: xsce_wan_iface != "none" and has_WAN == "False" and has_ifcfg_gw == "none"
 
-# handles git pull after first write of ifcfg-WAN to change the name
-- name: Fix the NM name
-  lineinfile: state=present
-              line="NAME=xsce-WAN"
-              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
-  when: has_WAN == "True"
-
 - name: Configuring LAN interface as xsce_lan_iface
   template: src=network/ifcfg.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-LAN
@@ -64,11 +57,18 @@
   tags:
     - network
 
+# handles git pull after first write of ifcfg-WAN to change the name
+- name: Fix the NM name
+  lineinfile: state=present
+              line="NAME=xsce-WAN"
+              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+  when: has_WAN == "True"
+
+- include: enable_wan.yml
+  when: not installing
+
 # monitor-connection-files defaults to no with F21, F18-F20 defaults to yes
 - name: Re-read network config files
   shell: 'nmcli con reload'
   ignore_errors: yes
   when: mysql_service != "mysqld" and not installing
-
-- include: enable_wan.yml
-  when: not installing
