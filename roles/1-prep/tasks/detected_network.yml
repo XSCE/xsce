@@ -55,18 +55,21 @@
     device_gw: "{{ discovered_wan_iface }}"
   when: discovered_wan_iface != "none" and xsce_wan_iface == "none"
 
-# returns path
+# returns list of paths
 - name: Find gateway config based on device
-  shell: "egrep -rn {{ device_gw }} /etc/sysconfig/network-scripts/ifcfg* | gawk -F ':' '{print $1}'| head -n 1"
+  shell: "egrep -rn {{ device_gw }} /etc/sysconfig/network-scripts/ifcfg* | gawk -F ':' '{print $1}'"
   register: ifcfg_gw_device
   ignore_errors: True
   changed_when: False
   when: device_gw != "none"
 
+# last match wins
 - name: Setting has_ifcfg_gw based on device if found
   set_fact:
     has_ifcfg_gw: "{{ ifcfg_gw_device.stdout|trim }}"
-  when: ifcfg_gw_device is defined and ifcfg_gw_device.stdout != "" and has_WAN == "False"
+  when: ifcfg_gw_device is defined and item|trim != "" and item|trim != "/etc/sysconfig/network-scripts/ifcfg-LAN"
+  with_items:
+      - "{{ ifcfg_gw_device.stdout_lines }}"
 
 # returns path
 - name: Find active gateway config based on macaddress
