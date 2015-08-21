@@ -30,7 +30,7 @@
 # the change over might be a little bumpy ATM. 
 - name: Setting GUI wants LanController
   set_fact:
-    had_gw: "none"
+    device_gw: "none"
     user_wan_iface: "none"
   when: gui_desired_network_role is defined and gui_desired_network_role == "LanController"
 
