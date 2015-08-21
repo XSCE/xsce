@@ -9,12 +9,33 @@
     xsce_domain: "{{ prior_domain.stdout }}"
   when: prior_domain.stdout != "lan" and prior_domain.stdout != ""
 
+- name: xs_wan_device
+  shell: "cat /etc/sysconfig/xs_wan_device"
+  register: prior_gw
+  ignore_errors: True
+
+- name: Checking for old device gateway interface for device test
+  set_fact:
+    device_gw: "{{ prior_gw.stdout }}"
+  when: prior_gw is defined and prior_gw.stdout != ""
+
+- name: Checking for ifcfg-WAN file
+  stat: path=/etc/sysconfig/network-scripts/ifcfg-WAN
+  register: has_ifcfg_WAN
+
+- name: Setting has_WAN
+  set_fact:
+    has_WAN: "True"
+  when: has_ifcfg_WAN.stat.exists
+
+# unused
 # DETECT -- gateway and wireless
 - name: Get a list of slaves from previous config
   shell: "egrep -rn BRIDGE=br0 /etc/sysconfig/network-scripts | gawk -F'[-:]' '{print $3}'"
   register: ifcfg_slaves
   ignore_errors: True
   changed_when: False
+# 
 
 - name: Get a list of ifcfg files to delete
   shell: "ls -1 /etc/sysconfig/network-scripts/ifcfg-* | grep -v -e ifcfg-lo  -e ifcfg-WAN"
@@ -31,44 +52,10 @@
 - name: Setting wan if detected
   set_fact:
     xsce_wan_iface: "{{ discovered_wan_iface }}"
+    device_gw: "{{ discovered_wan_iface }}"
   when: discovered_wan_iface != "none" and xsce_wan_iface == "none"
 
-- name: Find active gateway config based on macaddress
-  shell: "egrep -irn {{ ansible_default_ipv4.macaddress }} /etc/sysconfig/network-scripts/ifcfg* | gawk -F ':' '{print $1}' | head -n 1"  
-  register: ifcfg_gw_mac
-  ignore_errors: True
-  changed_when: False
-  when: 'ansible_default_ipv4.gateway is defined'
-
-- name: Set has_ifcfg_gw based on on macaddress if found
-  set_fact:
-    has_ifcfg_gw: "{{ ifcfg_gw_mac.stdout|trim }}"
-  when: ifcfg_gw_mac is defined and ifcfg_gw_mac.stdout != ""
-
-- name: Checking for ifcfg-WAN file
-  stat: path=/etc/sysconfig/network-scripts/ifcfg-WAN
-  register: has_ifcfg_WAN
-
-- name: Setting has_WAN
-  set_fact:
-    has_WAN: "True"
-  when: has_ifcfg_WAN.stat.exists
-
-- name: xs_wan_device
-  shell: "cat /etc/sysconfig/xs_wan_device"
-  register: prior_gw
-  ignore_errors: True
-
-- name: Checking for old device gateway interface for device test
-  set_fact:
-    device_gw: "{{ prior_gw.stdout }}"
-  when: prior_gw is defined and prior_gw.stdout != ""
-
-- name: Use current active gateway for device test
-  set_fact:
-    device_gw: "{{ discovered_wan_iface }}"
-  when: discovered_wan_iface != "none"
-
+# returns path
 - name: Find gateway config based on device
   shell: "egrep -rn {{ device_gw }} /etc/sysconfig/network-scripts/ifcfg* | gawk -F ':' '{print $1}'| head -n 1"
   register: ifcfg_gw_device
@@ -80,6 +67,19 @@
   set_fact:
     has_ifcfg_gw: "{{ ifcfg_gw_device.stdout|trim }}"
   when: ifcfg_gw_device is defined and ifcfg_gw_device != "" and has_WAN == "False"
+
+# returns path
+- name: Find active gateway config based on macaddress
+  shell: "egrep -irn {{ ansible_default_ipv4.macaddress }} /etc/sysconfig/network-scripts/ifcfg* | gawk -F ':' '{print $1}' | head -n 1"  
+  register: ifcfg_gw_mac
+  ignore_errors: True
+  changed_when: False
+  when: 'ansible_default_ipv4.gateway is defined'
+
+- name: Set has_ifcfg_gw based on on macaddress if found
+  set_fact:
+    has_ifcfg_gw: "{{ ifcfg_gw_mac.stdout|trim }}"
+  when: ifcfg_gw_mac is defined and ifcfg_gw_mac.stdout != ""
 
 # WIRELESS -- if any wireless is detected as gateway, it becomes WAN
 - name: Look for any wireless interfaces
