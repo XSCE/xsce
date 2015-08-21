@@ -66,7 +66,7 @@
 - name: Setting has_ifcfg_gw based on device if found
   set_fact:
     has_ifcfg_gw: "{{ ifcfg_gw_device.stdout|trim }}"
-  when: ifcfg_gw_device is defined and ifcfg_gw_device != "" and has_WAN == "False"
+  when: ifcfg_gw_device is defined and ifcfg_gw_device.stdout != "" and has_WAN == "False"
 
 # returns path
 - name: Find active gateway config based on macaddress
