@@ -74,12 +74,12 @@
   register: ifcfg_gw_device
   ignore_errors: True
   changed_when: False
-  when: device_gw != "none" and has_WAN == "False"
+  when: device_gw != "none"
 
 - name: Setting has_ifcfg_gw based on device if found
   set_fact:
     has_ifcfg_gw: "{{ ifcfg_gw_device.stdout|trim }}"
-  when: ifcfg_gw_device is defined and ifcfg_gw_device != ""
+  when: ifcfg_gw_device is defined and ifcfg_gw_device != "" and has_WAN == "False"
 
 # WIRELESS -- if any wireless is detected as gateway, it becomes WAN
 - name: Look for any wireless interfaces
