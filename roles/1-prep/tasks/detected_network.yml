@@ -66,7 +66,7 @@
 # last match wins
 - name: Setting has_ifcfg_gw based on device if found
   set_fact:
-    has_ifcfg_gw: "{{ ifcfg_gw_device.stdout|trim }}"
+    has_ifcfg_gw: "{{ item|trim }}"
   when: ifcfg_gw_device is defined and item|trim != "" and item|trim != "/etc/sysconfig/network-scripts/ifcfg-LAN"
   with_items:
       - "{{ ifcfg_gw_device.stdout_lines }}"
