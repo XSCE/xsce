@@ -25,6 +25,15 @@
     user_wan_iface: "none"
   when: 'not xsce_wan_enabled'
 
+# gui wants LanController # keeps ifcfg-WAN but onboot=no
+# Note for macaddr4 had_gw becomes gw_device
+# the change over might be a little bumpy ATM. 
+- name: Setting GUI wants LanController
+  set_fact:
+    device_gw: "none"
+    user_wan_iface: "none"
+  when: gui_desired_network_role is defined and gui_desired_network_role == "LanController"
+
 # override with user_wan_iface setting if no longer in auto
 - name: setting user WAN fact
   set_fact:
@@ -37,11 +46,18 @@
     user_lan_iface: "none"
   when: 'not xsce_lan_enabled'
 
-# gui wants Appliance
+# gui wants Appliance Note: could of used xsce_lan_enabled false
 - name: Setting GUI wants Appliance
   set_fact:
     user_lan_iface: "none"
   when: gui_desired_network_role is defined and gui_desired_network_role == "Appliance"
+
+# gui wants Gateway
+- name: Setting GUI wants and has active Gateway
+  set_fact:
+    user_lan_iface: "auto"
+    user_wan_iface: "{{ discovered_wan_iface }}"
+  when: gui_desired_network_role is defined and gui_desired_network_role == "Gateway" and discovered_wan_iface != "none" 
 
 # override with user_lan_iface setting if no longer in auto
 - name: Setting user LAN fact
