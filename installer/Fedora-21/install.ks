@@ -67,8 +67,9 @@ echo "path is $PATH"
 mkdir -p /opt/schoolserver
 cd /opt/schoolserver
 
-git clone --depth 1 --branch stable https://github.com/XSCE/xsce 
-#git clone --depth 1 --branch F21net https://github.com/jvonau/xsce
+$ switch this to release branch or stable once it's updated. 
+#git clone --depth 1 --branch stable https://github.com/XSCE/xsce 
+git clone --depth 1 --branch master https://github.com/XSCE/xsce 
 
 cd xsce
 
@@ -84,7 +85,7 @@ EOF
 touch /.preload
 
 # Don't start services while in the chroot
-cat > /opt/schoolserver/xsce/vars/local_vars.yml << EOF
+cat > /etc/xsce/local_vars.yml << EOF
 installing: True
 EOF
 
@@ -92,6 +93,7 @@ EOF
 
 # get rid of custom local_vars
 git reset --hard
+rm /etc/xsce/local_vars.yml
 
 # run install-console on first boot
 cat > /etc/rc.d/init.d/xsce-prep << EOF
