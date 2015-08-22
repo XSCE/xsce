@@ -1,4 +1,4 @@
-alter.sh uses livecd-iso-to-disk behind the curtain, which accepts the options below.  
+alter.sh uses livecd-iso-to-disk behind the curtain, which accepts the options below.
 
     livecd-iso-to-disk [--help] [--noverify] [--format] [--msdos] [--reset-mbr]
                        [--efi] [--skipcopy] [--force] [--xo] [--xo-no-home]
@@ -18,9 +18,9 @@ This presets some options for livecd-iso-to-disk namely the kickstart file to us
 
 "yum install livecd-tools" to install livecd-iso-to-disk.
 
-Download F21 netinstall or DVD iso if you don't already have them 
+Download F21 netinstall or DVD iso if you don't already have them
 
-I would not bother using the DVD.iso, would need to be updated after install while 
+I would not bother using the DVD.iso, would need to be updated after install while
 the netinstall will be fully updated out of the box.
 
 then:
@@ -39,5 +39,5 @@ Once the usbdisk is written the install could be further customized in the kicks
 but ask about that before editing.
 
 Once rebooted you should have the same as what ./install-console did for you. Any further 'VARS'
-edits should be done in /etc/xsce/local_vars.yml
+edits should be done in /opt/schoolserver/xsce/vars/local_vars.yml
 
