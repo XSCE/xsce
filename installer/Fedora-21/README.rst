@@ -38,6 +38,5 @@ for legacy boot support
 Once the usbdisk is written the install could be further customized in the kickstart file
 but ask about that before editing.
 
-Once rebooted you should have the same as what ./install-console did for you. Any further 'VARS'
-edits should be done in /opt/schoolserver/xsce/vars/local_vars.yml
+Once rebooted you should have the same as what ./install-console did for you.
 
