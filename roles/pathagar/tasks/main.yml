@@ -59,8 +59,15 @@
     - Django==1.4.5
     - django-tagging==0.3.1
     - django-sendfile==0.3.6
-    - django-taggit==0.10
     - lxml==3.4.4
+
+- name: Install pathagar requirements in a virtualenv
+  pip: name={{ item }}
+       extra_args="--use-wheel --no-index --find-links=file://{{ pip_packages_dir }}"
+       virtualenv={{ pathagar_venv }}
+       virtualenv_site_packages=yes
+  with_items:
+    - django-taggit==0.10
 
 - name: Create pathagar postgresql user
   postgresql_user: name={{ pathagar_db_user }}
