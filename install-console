@@ -1,9 +1,8 @@
 #!/bin/bash
-
-# copy var files to /etc/xsce for subsequent use
-
-./install-init
-
+PLAYBOOK="xsce-base.yml"
+INVENTORY="ansible_hosts"
+SELINUX_BEFORE=""
+SELINUX_AFTER=""
 # if not the first run, repo location is here
 
 if [ -f /etc/xsce/xsce.env ]
@@ -12,7 +11,7 @@ then
   cd $XSCE_DIR
 fi
 
-if [ ! -f xsce.yml ]
+if [ ! -f $PLAYBOOK ]
 then
  echo "XSCE Playbook not found."
  echo "Please run this command from the top level of the git repo."
@@ -20,10 +19,11 @@ then
  exit
 fi
 
-PLAYBOOK="xsce-base.yml"
-INVENTORY="ansible_hosts"
-SELINUX_BEFORE=""
-SELINUX_AFTER=""
+# copy var files to /etc/xsce for subsequent use
+if [ ! -f /etc/xsce/config_vars.yml ]
+then
+  ./install-init
+fi
 
 if [ -f /etc/selinux/config ]
 then
@@ -39,6 +39,5 @@ then
 fi
 
 if [ "$SELINUX_BEFORE" != "$SELINUX_AFTER" ]; then
-  echo "Rebooting ..."
-  reboot
+  echo "You should reboot now."
 fi

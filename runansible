@@ -1,18 +1,15 @@
 #!/bin/bash
-
-# copy var files to /etc/xsce for subsequent use
-
-./install-init
+PLAYBOOK="xsce-from-console.yml"
+INVENTORY="ansible_hosts"
 
 # if not the first run, repo location is here
-
 if [ -f /etc/xsce/xsce.env ]
 then
   . /etc/xsce/xsce.env
   cd $XSCE_DIR
 fi
 
-if [ ! -f xsce.yml ]
+if [ ! -f $PLAYBOOK ]
 then
  echo "XSCE Playbook not found."
  echo "Please run this command from the top level of the git repo."
@@ -20,12 +17,15 @@ then
  exit
 fi
 
-PLAYBOOK="xsce.yml"
-INVENTORY="ansible_hosts"
-CWD=`pwd`
-echo "Running local playbooks! "
+# copy var files to /etc/xsce for subsequent use
+if [ ! -f /.xsce-prepped ]
+then
+  ./install-console
+fi
 
 XSDOMAIN=""
+CWD=`pwd`
+echo "Running local playbooks! "
 
 # Pass in Existing Domain
 if [ -f /etc/sysconfig/xs_domain_name ]

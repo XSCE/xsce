@@ -26,6 +26,18 @@
         mode=0755
         state=directory
 
+- name: See if default config_vars.yml exists
+  stat: path=/etc/xsce/config_vars.yml
+  register: config_vars
+
+- name: Install default config_vars.yml
+  template: src=config_vars.yml
+            dest=/etc/xsce/config_vars.yml
+            owner=root
+            group=root
+            mode=0644
+  when: config_vars.stat.exists == false
+
 # this script can be sourced to get xsce location
 - name: Create xsce.env file
   template: src=xsce.env.j2

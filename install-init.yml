@@ -14,23 +14,11 @@
      - /etc/xsce/local_vars.yml
      - vars/local_vars.yml
 
-  - name: Create /etc/xsce
-    file: path=/etc/xsce
-          owner=root
-          group=root
-          mode=0755
-          state=directory
-
   - name: See if default config_vars.yml exists
     stat: path=/etc/xsce/config_vars.yml
     register: config_vars
 
-  - name: Install default config_vars.yml
-    template: src=roles/xsce-admin/templates/cmdsrv/config_vars.yml
-              dest=/etc/xsce/config_vars.yml
-              owner=root
-              group=root
-              mode=0644
+  - include: roles/0-once/tasks/main.yml
     when: config_vars.stat.exists == false
 
   - name: See if default local_vars.yml exists

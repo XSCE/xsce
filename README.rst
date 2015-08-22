@@ -26,8 +26,8 @@ Installation procedures are in the process of being reworked to include:
 
 To manually install and experiment with these changes please do the following:
 
-* Install a minimal version of Fedora 21
-* Login using ssh as root
+* Install a minimal version of Fedora 21 or CentOS 7
+* Login using ssh as root or su at the command line
 * Issue the following commands:
 * 'yum -y install git ansible'
 * 'mkdir /opt/schoolserver'
