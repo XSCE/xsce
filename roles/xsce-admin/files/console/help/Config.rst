@@ -14,7 +14,7 @@ You will not usually need to touch these, but they are here in case you do and a
 
 ### Hostname and Domain Name
 
-The hostname needs to be schoolserver and cannot be changed.  The domain name can be changed, but you would normally only do this to fit into a larger networking environment.
+Both hostname and domain name can be changed, but you would normally only do this to fit into a larger networking environment.
 
 The most important parameter is the **Role of the Server** in your network.  The server can play one of three roles
 

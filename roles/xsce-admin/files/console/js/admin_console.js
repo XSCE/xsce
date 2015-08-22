@@ -279,6 +279,34 @@ function button_feedback(id, grey_out) {
 
 // Field Validations
 
+function xsce_hostnameVal()
+{
+  //alert ("in xsce_hostnameVal");
+  xsce_hostname = $("#xsce_hostname").val();
+  consoleLog(xsce_hostname);
+  if (xsce_hostname == ""){
+    alert ("Host Name can not be blank.");
+    $("#xsce_hostname").val(config_vars['xsce_hostname'])
+    setTimeout(function () {
+      $("#xsce_hostname").focus(); // hack for IE
+    }, 100);
+    return false;
+  }
+  // regex must match to be valid
+  //var hostRegex = new RegExp("^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*))$");
+  var hostRegex = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*))$/;
+  if (! hostRegex.test(xsce_hostname)) {
+    alert ("Host Name can only have letters, numbers, and dashes and may not start with a dash.");
+    //$("#xsce_hostname").val(config_vars['xsce_domain'])
+    setTimeout(function () {
+      $("#xsce_hostname").focus(); // hack for IE
+    }, 100);
+    return false
+  }
+
+  return true;
+}
+
 function xsce_domainVal()
 {
   //alert ("in xsce_domainVal");
@@ -305,7 +333,6 @@ function xsce_domainVal()
 
   return true;
 }
-
 function gui_static_wanVal()
 {
   // we come here if the checkbox was clicked
@@ -978,7 +1005,7 @@ function procJobStat(data)
     $(this).scrollTop(this.scrollHeight);
   });
   today = new Date();
-  $( "#statusJobsRefreshTime" ).html("Last Refreshed: <b>" + today + "</b>");
+  $( "#statusJobsRefreshTime" ).html("Last Refreshed: <b>" + today.toLocaleString() + "</b>");
 }
 
 function cancelJob(job_id)

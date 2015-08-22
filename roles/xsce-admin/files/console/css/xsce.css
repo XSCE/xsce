@@ -12,13 +12,14 @@ font-size: medium;
 }
 
 .action-buttons {
-width: 70%;
+/* width: 70%; */
 margin-bottom: 1.5em;
 margin-top: 1em;
 }
 
 .action-buttons button {
-	width:100%;
+	width: 14.5em;
+	text-align: left;
 	margin-bottom: 1em;
 }
 
