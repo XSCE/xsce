@@ -34,6 +34,13 @@
     user_wan_iface: "none"
   when: gui_desired_network_role is defined and gui_desired_network_role == "LanController"
 
+# single interface vars/ users would need to set xsce_wan_enabled False and set 
+# user_lan_iface = <device> for the same effect.
+- name: Setting user_lan_iface for LanController for single interface
+  set_fact:
+     user_lan_iface: "{{ discovered_wan_iface }}" 
+  when: discovered_wan_iface != "none" and num_lan_interfaces == "0" and gui_desired_network_role is defined and gui_desired_network_role == "LanController"
+
 # override with user_wan_iface setting if no longer in auto
 - name: setting user WAN fact
   set_fact:
