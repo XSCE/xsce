@@ -174,12 +174,12 @@
 - name: No LAN configured - Appliance mode
   set_fact:
     xsce_network_mode: "Appliance"
-  when: xsce_lan_iface == "none" or user_lan_iface == "none" or xsce_lan_enabled == False
+  when: xsce_lan_iface == "none"
 
 - name: LAN configured - LanController mode
   set_fact:
     xsce_network_mode: "LanController"
-  when: xsce_lan_iface != "" and xsce_wan_iface == "none" and xsce_lan_enabled == True
+  when: xsce_lan_iface != "" and xsce_wan_iface == "none"
 
 - name: LAN configured - Gateway mode
   set_fact:
