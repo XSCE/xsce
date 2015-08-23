@@ -24,7 +24,8 @@
   with_items:
     - "{{ ifcfg_files.stdout_lines }}"
 
-## yet to come but device_gw is the first one to test. 
+## yet to come but device_gw is the first one to test.
+## vars/ users should set user_wan_iface to avoid messy redetect 
 #- include: redetect.yml  
 #  when: discovered_wan_iface == "none" and user_wan_iface == "auto"
 

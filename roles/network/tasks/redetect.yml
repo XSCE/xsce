@@ -1,0 +1,11 @@
+# Well if we got here something changed with the gateway and ifcfg-WAN maybe no longer accurate.
+# Note if DEVICE= is any ifcfg files the listed DEVICE becomes bound to the NAME in the ifcfg file. 
+# With the LAN file out of the way we can try the interfaces one by one starting with device_gw.
+
+- name: Trying dhcp on device_gw
+  shell: nmcli device connect "{{ device_gw }}"
+  register: dhcp1
+  ignore_errors: yes
+  when: device_gw != "none" and discovered_wan_iface == "none"
+
+### wip but wanted to have this file in git but disabled.
