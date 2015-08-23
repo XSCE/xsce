@@ -1,9 +1,9 @@
+# The preferred method of disabling the LAN would be to set xsce_lan_enabled:
+# False before getting here but we are here...
 # Well if we got here something changed with the gateway and ifcfg-WAN maybe 
 # no longer accurate. Note if DEVICE= is any ifcfg files the listed DEVICE 
 # becomes bound to the NAME in the ifcfg file. With the LAN files out of the 
 # way we can try the interfaces one by one starting with device_gw.
-# The preferred method of disabling the LAN would be to set xsce_lan_enabled:
-# False before getting here but we are here...
 
 # Setting up three way conditions with the results
 # skipped|changed|failed
@@ -19,10 +19,33 @@
 
 # OK the nic's ifcfg matches what was last found  
 - name: Got an ip from dhcp-WAN finding DEVICE
-  shell: sleep 2 | ip route | awk '{pront $3}'
+  shell: sleep 2 | ip route | awk '{print $3}'
   register: dhcp_WAN_device
   when: dhcp-WAN is defined and dhcp-WAN|changed
 
+- name: Now setting xsce_wan_iface
   set_fact: 
-     xsce_wan_iface: "{{ gui_wan_iface }}"
-  when: dhcp-WAN_device is defined and dhcp-WAN_device != ""
+     xsce_wan_iface: "{{ dhcp-WAN_device.stdout }}"
+     dhcp_good: True
+  when: dhcp-WAN_device.stdout is defined and dhcp-WAN_device.stdout != ""
+
+### end of easy test...
+
+# so we need to know the raw interfaces names and count
+- name: interface list
+  shell: ls /sys/class/net | grep -v -e lo
+  register: adapter_list
+
+- name: interface count
+  shell: ls /sys/class/net | grep -v -e lo | wc | awk '{print $1}'
+  register: adapter_count
+
+### keep at end
+### If dhcp fails the single interface will become LAN again because we didn't prevent the creation
+# Now disable LAN if single interface
+- name: Single interface forcing LAN disabled.
+  set_fact:
+     xsce_lan_iface: "none"
+  when: dhcp_good is defined and dhcp_good == "True" and adapter_count.stdout == "1"
+
+
