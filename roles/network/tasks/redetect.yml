@@ -1,11 +1,28 @@
-# Well if we got here something changed with the gateway and ifcfg-WAN maybe no longer accurate.
-# Note if DEVICE= is any ifcfg files the listed DEVICE becomes bound to the NAME in the ifcfg file. 
-# With the LAN file out of the way we can try the interfaces one by one starting with device_gw.
+# Well if we got here something changed with the gateway and ifcfg-WAN maybe 
+# no longer accurate. Note if DEVICE= is any ifcfg files the listed DEVICE 
+# becomes bound to the NAME in the ifcfg file. With the LAN files out of the 
+# way we can try the interfaces one by one starting with device_gw.
+# The preferred method of disabling the LAN would be to set xsce_lan_enabled:
+# False before getting here but we are here...
 
-- name: Trying dhcp on device_gw
-  shell: nmcli device connect "{{ device_gw }}"
-  register: dhcp1
+# Setting up three way conditions with the results
+# skipped|changed|failed
+# failure results in blowing away the ifcfg-WAN so lets make sure...  
+
+# We only got here by way of no detected gateway, lets see if we can pick-up 
+# transient change like cable issues.  
+- name: Trying ifcfg-WAN first
+  shell: nmcli conn up id xsce-WAN
+  register: dhcp_WAN_results
   ignore_errors: yes
-  when: device_gw != "none" and discovered_wan_iface == "none"
+  when: has_WAN == "True"
 
-### wip but wanted to have this file in git but disabled.
+# OK the nic's ifcfg matches what was last found  
+- name: Got an ip from dhcp-WAN finding DEVICE
+  shell: sleep 2 | ip route | awk '{pront $3}'
+  register: dhcp_WAN_device
+  when: dhcp-WAN is defined and dhcp-WAN|changed
+
+  set_fact: 
+     xsce_wan_iface: "{{ gui_wan_iface }}"
+  when: dhcp-WAN_device is defined and dhcp-WAN_device != ""
