@@ -502,7 +502,8 @@ def cmd_proc_thread(worker_data_url, worker_control_url, context=None):
             tprint('sending message server received from client to worker %s id %s' % (cmd_msg, ident))
             cmd_resp = cmd_handler(cmd_msg)
             #print cmd_resp
-            data_socket.send_multipart([ident, cmd_resp])
+            # 8/23/2015 added .encode() to response as list_library was giving unicode errors
+            data_socket.send_multipart([ident, cmd_resp.encode()])
         if control_socket in sockets:
             ctl_msg = control_socket.recv()
             tprint('got ctl msg %s in worker' % ctl_msg)
@@ -524,7 +525,7 @@ def cmd_handler(cmd_msg):
 
     avail_cmds = {
         "TEST": do_test,
-        "LIST": list_library,
+        "LIST-LIBR": list_library,
         "WGET": wget_file,
         "GET-ANS": get_ans_facts,
         "GET-ANS-TAGS": get_ans_tags,
@@ -546,6 +547,7 @@ def cmd_handler(cmd_msg):
         "INST-ZIMS": install_zims,
         "GET-RACHEL-STAT": get_rachel_stat,
         "INST-RACHEL": install_rachel,
+        "DEL-DOWNLOADS": del_downloads,
         "RESTART-KIWIX": restart_kiwix,
         "REBOOT": reboot_server,
         "POWEROFF": poweroff_server
@@ -610,9 +612,70 @@ def do_test(cmd_info):
     return (resp)
 
 def list_library(cmd_info):
-    resp = subprocess.check_output(["scripts/list_libr.sh"])
-    json_resp = json_array("library_list", resp)
+    target_dir = "/library/"
+    if 'cmd_args' in cmd_info:
+        target_dir += cmd_info['cmd_args']['sub_dir']
+
+    cmdstr = "/usr/bin/du -ah " + target_dir
+    outp = subproc_cmd(cmdstr)
+    library_list = []
+
+    try:
+        file_list = outp.split('\n')
+
+        for file in file_list:
+            if file == "":
+                continue
+
+            tmp_arr = file.split("\t")
+            if tmp_arr[1] == target_dir:
+                continue
+
+            size = tmp_arr[0]
+            filename = tmp_arr[1].split("/")[-1]
+            file_attr = {}
+            file_attr['size'] = size
+            file_attr['filename'] = filename
+            library_list.append(file_attr)
+
+        str_json = json.dumps(library_list)
+
+        json_resp = '{ "' + target_dir + '":' + str_json + '}'
+        #print json_resp
+
+    except StandardError:
+        json_resp = cmd_error()
+
     return (json_resp)
+
+def del_downloads(cmd_info):
+    target_dir = "/library/downloads/"
+    if 'cmd_args' in cmd_info:
+        target_dir += cmd_info['cmd_args']['sub_dir']
+    else:
+        return cmd_malformed(cmd_info['cmd'])
+
+    if 'cmd_args' in cmd_info:
+        file_list = cmd_info['cmd_args']['file_list']
+    else:
+        return cmd_malformed(cmd_info['cmd'])
+
+    cmdstr = "/usr/bin/rm " + target_dir + "/"
+
+    for file in file_list:
+        try:
+            outp = subproc_cmd(cmdstr + file)
+        except:
+            # ignore for now
+            pass
+
+    resp = cmd_success(cmd_info['cmd'])
+    return (resp)
+
+def subproc_cmd(cmdstr):
+    args = shlex.split(cmdstr)
+    outp = subprocess.check_output(args)
+    return (outp)
 
 def wget_file(cmd_info):
     resp = cmd_info['cmd'] + " done."

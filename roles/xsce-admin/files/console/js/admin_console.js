@@ -90,6 +90,7 @@ $("#Test-CMD").click(function(){
 });
 
 $("#List-CMD").click(function(){
+	// xsce-cmdsrv-ctl LIST-LIBR '{"sub_dir":"downloads/zims"}'
   sendCmdSrvCmd("LIST", listCmdHandler);
 });
 
