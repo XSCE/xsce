@@ -12,7 +12,6 @@
     wan_nameserver: "{{ gui_static_wan_nameserver }}"
   when: gui_static_wan_ip != "unset" and gui_static_wan_ip != "undefined" and gui_static_wan is defined 
 
-# need to add this field in the GUI
 # we need to have an interface name for ifcfg-WAN to be able to change gateway the DEVICE from the gui.
 - name: Using GUI_WAN info
   set_fact:
@@ -26,7 +25,6 @@
   when: 'not xsce_wan_enabled'
 
 # gui wants LanController # keeps ifcfg-WAN but onboot=no
-# Note for macaddr4 had_gw becomes gw_device
 # the change over might be a little bumpy ATM. 
 - name: Setting GUI wants LanController
   set_fact:
@@ -34,8 +32,10 @@
     user_wan_iface: "none"
   when: gui_desired_network_role is defined and gui_desired_network_role == "LanController"
 
-# single interface vars/ users would need to set xsce_wan_enabled False and set 
-# user_lan_iface = <device> for the same effect.
+# device_gw is used with the LAN detection and LAN's ifcfg file deletion.
+# single interface vars/ users would need to set xsce_wan_enabled False as above, to disable the WAN,
+# and set user_lan_iface = <device> to suppress the auto detection for the same effect.
+
 - name: Setting user_lan_iface for LanController for single interface
   set_fact:
      user_lan_iface: "{{ discovered_wan_iface }}" 
