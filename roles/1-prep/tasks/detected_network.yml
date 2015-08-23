@@ -67,7 +67,7 @@
 - name: Setting has_ifcfg_gw based on device if found
   set_fact:
     has_ifcfg_gw: "{{ item|trim }}"
-  when: ifcfg_gw_device is defined and item|trim != "" and item|trim != "/etc/sysconfig/network-scripts/ifcfg-LAN"
+  when: ifcfg_gw_device.stdout_lines is defined and item|trim != "" and item|trim != "/etc/sysconfig/network-scripts/ifcfg-LAN"
   with_items:
       - "{{ ifcfg_gw_device.stdout_lines }}"
 
@@ -174,12 +174,12 @@
 - name: No LAN configured - Appliance mode
   set_fact:
     xsce_network_mode: "Appliance"
-  when: xsce_lan_iface == "none" or user_lan_iface == "none" or xsce_lan_enabled == False
+  when: xsce_lan_iface == "none"
 
 - name: LAN configured - LanController mode
   set_fact:
     xsce_network_mode: "LanController"
-  when: xsce_lan_iface != "" and xsce_wan_iface == "none" and xsce_lan_enabled == True
+  when: xsce_lan_iface != "" and xsce_wan_iface == "none"
 
 - name: LAN configured - Gateway mode
   set_fact:
