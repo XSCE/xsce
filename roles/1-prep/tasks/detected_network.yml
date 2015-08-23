@@ -26,7 +26,7 @@
 - name: Setting has_WAN
   set_fact:
     has_WAN: "True"
-  when: has_ifcfg_WAN.stat.exists
+  when: has_ifcfg_WAN.stat.exists is defined and has_ifcfg_WAN.stat.exists
 
 # unused
 # DETECT -- gateway and wireless
@@ -67,7 +67,7 @@
 - name: Setting has_ifcfg_gw based on device if found
   set_fact:
     has_ifcfg_gw: "{{ item|trim }}"
-  when: ifcfg_gw_device is defined and item|trim != "" and item|trim != "/etc/sysconfig/network-scripts/ifcfg-LAN"
+  when: ifcfg_gw_device.stdout_lines is defined and item|trim != "" and item|trim != "/etc/sysconfig/network-scripts/ifcfg-LAN"
   with_items:
       - "{{ ifcfg_gw_device.stdout_lines }}"
 
