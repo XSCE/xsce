@@ -4,12 +4,12 @@
   ignore_errors: yes
   when: xsce_wireless_lan_iface != "none"
 
-# Disconnects the slaves quickly, deletes the bridge
+# Disconnects the slaves quickly
 - name: Stop the LAN/Bridge on F21
-  shell: nmcli con delete xsce-LAN
+  shell: nmcli con down xsce-LAN
   ignore_errors: True
   changed_when: False
-  when: ansible_distribution_version >= "21" and xsce_lan_iface == "none"
+  when: xsce_lan_iface == "none"
 
 # move gateway if not WAN
 # might have wifi info if wireless is used as uplink.
