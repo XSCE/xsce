@@ -144,7 +144,7 @@
     - network
 
 - include: computed_services.yml
-   tags:
+  tags:
     - network
  
 - include: enable_services.yml
