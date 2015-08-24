@@ -65,7 +65,22 @@
   set_fact:
     user_lan_iface: "auto"
     user_wan_iface: "{{ discovered_wan_iface }}"
-  when: gui_desired_network_role is defined and gui_desired_network_role == "Gateway" and discovered_wan_iface != "none" 
+  when: gui_desired_network_role is defined and gui_desired_network_role == "Gateway" and discovered_wan_iface != "none"
+
+- name: No LAN configured - Appliance mode
+  set_fact:
+    xsce_network_mode: "Appliance"
+  when: xsce_lan_iface == "none"
+
+- name: LAN configured - LanController mode
+  set_fact:
+    xsce_network_mode: "LanController"
+  when: xsce_lan_iface != "" and xsce_wan_iface == "none"
+
+- name: LAN configured - Gateway mode
+  set_fact:
+    xsce_network_mode: "Gateway"
+  when: xsce_lan_iface != "none" and xsce_wan_iface != "none"
 
 # override with user_lan_iface setting if no longer in auto
 - name: Setting user LAN fact
@@ -90,3 +105,5 @@
     value: '{{ user_lan_iface }}'
   - option: 'computed_lan'
     value: '{{ xsce_lan_iface }}'
+  - option: 'xsce_network_mode'
+    value: '{{ xsce_network_mode }}'
