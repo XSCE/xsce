@@ -12,6 +12,7 @@
     wan_nameserver: "{{ gui_static_wan_nameserver }}"
   when: gui_static_wan_ip != "unset" and gui_static_wan_ip != "undefined" and gui_static_wan is defined 
 
+# Comment this out and un-comment include: redetect.ym in ifcfg_mods.yml
 # we need to have an interface name for ifcfg-WAN to be able to change gateway the DEVICE from the gui.
 - name: Using GUI_WAN info
   set_fact:

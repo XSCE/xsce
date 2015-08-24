@@ -23,6 +23,7 @@
   with_items:
     - "{{ ifcfg_files.stdout_lines }}"
 
+# comment out Using GUI_WAN info and un-comment below
 ## yet to come but device_gw is the first one to test.
 ## vars/ users should set user_wan_iface to avoid messy redetect 
 #- include: redetect.yml  
