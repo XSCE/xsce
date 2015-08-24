@@ -1,6 +1,11 @@
 - include: computed_network.yml
   tags:
     - network
+    - network-discover
+
+- include: display-discover.yml
+  tags:
+    - network-discover
 
 - name: Set hostname
   template: dest=/etc/hostname
