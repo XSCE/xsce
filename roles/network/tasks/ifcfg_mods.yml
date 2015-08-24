@@ -23,6 +23,7 @@
   with_items:
     - "{{ ifcfg_files.stdout_lines }}"
 
+# comment out Using GUI_WAN info and un-comment below
 ## yet to come but device_gw is the first one to test.
 ## vars/ users should set user_wan_iface to avoid messy redetect 
 #- include: redetect.yml  
@@ -53,21 +54,14 @@
   tags:
     - network
 
-# handles git pull after first write of ifcfg-WAN to change the name
-- name: Fix the NM name
-  lineinfile: state=present
-              line="NAME=xsce-WAN"
-              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
-  when: has_WAN == "True"
-
 - include: enable_wan.yml
   when: not installing
 
 # monitor-connection-files defaults to no with F21, F18-F20 defaults to yes
 - name: Re-read network config files
-  shell: 'nmcli con reload'
+  shell: nmcli con reload
   ignore_errors: yes
-  when: not installing
+  when: not installing and not no_NM_reload
 
 # test point, we should always have one with any kind of starting point 
 # no ifcfg = supply

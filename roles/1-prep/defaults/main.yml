@@ -1,6 +1,7 @@
 # These are defaults for routines, these entries should never be changed in this file.
 installing: False
 exFAT_enabled: False
+no_NM_reload: False
 
 #Set defaults for discovery process
 discovered_wan_iface: "none"
@@ -11,6 +12,7 @@ xsce_lan_iface: "none"
 xsce_wan_iface: "none"
 device_gw: "none"
 has_ifcfg_gw: "none"
+#coded as a string
 has_WAN: "False"
 
 
