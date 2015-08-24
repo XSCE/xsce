@@ -1,7 +1,7 @@
 # dhcpd service is restarted with NM dispatcher.d script
 - name: Stop dhcpd
   service: name=dhcpd
-           state-stopped
+           state=stopped
   when: not dhcpd_enabled
 
 - name: Stop named service
