@@ -1,0 +1,94 @@
+# The preferred method of disabling the LAN would be to set xsce_lan_enabled:
+# False before getting here but we are here...
+# Well if we got here something changed with the gateway and ifcfg-WAN maybe 
+# no longer accurate. Note if DEVICE= is any ifcfg files the listed DEVICE 
+# becomes bound to the NAME in the ifcfg file. With the LAN files out of the 
+# way we can try the interfaces one by one starting with device_gw.
+
+# Setting up three way conditions with the results
+# skipped|changed|failed
+# failure results in blowing away the ifcfg-WAN so lets make sure...  
+
+# We only got here by way of no detected gateway, lets see if we can pick-up 
+# transient change like cable issues.  
+- name: Trying ifcfg-WAN first
+  shell: nmcli conn up id xsce-WAN
+  register: dhcp_WAN
+  ignore_errors: yes
+  when: has_WAN == "True"
+
+# OK the nic's ifcfg matches what was last found  
+- name: Got an ip from dhcp-WAN finding DEVICE
+  shell: "sleep 2 | ip route | grep default | awk '{print $5}'"
+  register: dhcp_WAN_results
+  when: dhcp_WAN is defined and dhcp_WAN|changed
+
+- name: Now setting xsce_wan_iface via ifcfg-WAN
+  set_fact: 
+     xsce_wan_iface: "{{ dhcp_WAN_results.stdout }}"
+     dhcp_good: True
+  when: dhcp_WAN_results.stdout is defined and dhcp_WAN_results.stdout != ""
+
+### end of easy test...
+- name: BAD ifcfg-WAN
+  debug: msg="BAD WAN"
+  when: dhcp_WAN is defined and dhcp_WAN|failed
+
+- name: interface list
+  shell: ls /sys/class/net | grep -v -e lo
+  register: adapter_list
+- debug: msg="{{adapter_list}}"
+- pause
+
+- name: No ifcfg-WAN response
+  debug: msg="NO WAN response"
+  when: not dhcp_WAN is defined
+
+- name: No ifcfg-WAN known
+  debug: msg="NO WAN known"
+  when: has_WAN == "False"
+- pause: 
+
+# we should never here on a first pass with the other two methods
+
+# so we need to know the raw interfaces names and count
+# working on this ansible_interfaces maybe?
+- name: Try dhcp one by one
+  shell: 'nmcli d connect "{{ item|trim  }}"'
+  when: item|trim != discovered_wireless_iface and has_WAN == "False"
+  with_items:
+      - "{{ lan_list_result.stdout_lines }}"
+
+- name: Checking for gateway 
+  shell: "sleep 5 | ip route | grep default | awk '{print $5}'"
+  register: dhcp_1BY1_results
+  when: has_WAN == "False"
+
+# We have the DEVICE?
+- name: Now setting xsce_wan_iface via nmcli
+  set_fact: 
+     xsce_wan_iface: "{{ dhcp_1BY1_results.stdout }}"
+     dhcp_good: True
+  when: dhcp_1BY1_results.stdout is defined and dhcp_1BY1_results.stdout != "" has_WAN == "False"
+
+# Write the file with create_ifcfg.yml 
+- name: Now disconnect via nmcli
+  shell: 'nmcli d disconnect "{{ item|trim  }}"'
+  when: item|trim != discovered_wireless_iface and has_WAN == "False"
+  with_items:
+      - "{{ lan_list_result.stdout_lines }}"
+
+# so this works
+- name: interface count
+  shell: "ls /sys/class/net | grep -v -e lo | wc | awk '{print $1}'"
+  register: adapter_count
+
+### keep at end and this too.
+### If dhcp fails the single interface will become LAN again because we didn't prevent the creation
+# Now disable LAN if single interface
+- name: Single interface forcing LAN disabled.
+  set_fact:
+     xsce_lan_iface: "none"
+  when: dhcp_good is defined and dhcp_good == "True" and adapter_count.stdout == "1"
+- pause:
+

@@ -98,7 +98,7 @@
       ini_file: dest='{{ service_filelist }}'
                     section=mysql
                     option='{{ item.option }}'
-                    value='"{{ item.value }}"'
+                    value='{{ item.value }}'
       with_items:
             - option: name
               value: mysql-database

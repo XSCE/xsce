@@ -1,5 +1,5 @@
 - name: Rename supplied gateway ifcfg file to WAN if present
-  shell: mv {{ ifcfg_gw.stdout }} /etc/sysconfig/network-scripts/ifcfg-WAN
+  shell: mv {{ has_ifcfg_gw }} /etc/sysconfig/network-scripts/ifcfg-WAN
   ignore_errors: True
   changed_when: False
 
@@ -25,6 +25,17 @@
 - name: Remove the NAME
   lineinfile: state=absent
               regexp="NAME"
+              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+
+- name: Fix the NM name
+  lineinfile: state=present
+              line="NAME=xsce-WAN"
+              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+
+# testpoint - quoting and present
+- name: Fix the DEVICE
+  lineinfile: state=present
+              line='DEVICE="{{ discovered_wan_iface }}"'
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
 
 - name: add marker

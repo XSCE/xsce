@@ -4,7 +4,7 @@
 
   vars_files:
   - vars/default_vars.yml
-  - /etc/xsce/local_vars.yml
+  - vars/local_vars.yml
   - /etc/xsce/config_vars.yml
 
   roles:

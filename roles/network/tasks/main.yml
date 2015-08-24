@@ -1,6 +1,11 @@
 - include: computed_network.yml
   tags:
     - network
+    - network-discover
+
+- include: display-discover.yml
+  tags:
+    - network-discover
 
 - name: Set hostname
   template: dest=/etc/hostname
@@ -124,10 +129,6 @@
   tags:
     - network
 
-- include: enable_services.yml
-  tags:
-    - network
-
 - name: ask systemd to reread the unit files, picks up changes done
   shell: systemctl daemon-reload
   when: not installing
@@ -144,6 +145,14 @@
   with_items:
     - xs_wan_device
     - xs_lan_device
+  tags:
+    - network
+
+- include: computed_services.yml
+  tags:
+    - network
+ 
+- include: enable_services.yml
   tags:
     - network
 

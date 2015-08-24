@@ -14,7 +14,7 @@ You will not usually need to touch these, but they are here in case you do and a
 
 ### Hostname and Domain Name
 
-The hostname needs to be schoolserver and cannot be changed.  The domain name can be changed, but you would normally only do this to fit into a larger networking environment.
+Both hostname and domain name can be changed, but you would normally only do this to fit into a larger networking environment.
 
 The most important parameter is the **Role of the Server** in your network.  The server can play one of three roles
 
@@ -144,7 +144,9 @@ The options below are intended for administrators and people who may help with o
 
 * **AWStats** graphs statistics on web server usage.
 
-* **Open VPN** allows a secure connection between servers over the Internet for remote maintenance.
+* **Open VPN** allows a secure connection between servers over the Internet for remote maintenance. You can access via a terminal or a web browser.
+
+* **Team Viewer** TeamViewer provides a secure connection for Remote Support and Online Meetings. You can access the server with a graphical user interface and do file transfers.
 
 Edit Permitted URLs
 -------------------
