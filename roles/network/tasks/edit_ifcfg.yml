@@ -27,6 +27,17 @@
               regexp="NAME"
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
 
+- name: Fix the NM name
+  lineinfile: state=present
+              line="NAME=xsce-WAN"
+              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+
+# testpoint - quoting and present
+- name: Fix the DEVICE
+  lineinfile: state=present
+              line='DEVICE="{{ discovered_wan_iface }}"'
+              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+
 - name: add marker
   lineinfile: state=present
               line="# Modified by XSCE"

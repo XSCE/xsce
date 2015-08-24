@@ -53,13 +53,6 @@
   tags:
     - network
 
-# handles git pull after first write of ifcfg-WAN to change the name
-- name: Fix the NM name
-  lineinfile: state=present
-              line="NAME=xsce-WAN"
-              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
-  when: has_WAN == "True"
-
 - include: enable_wan.yml
   when: not installing
 
