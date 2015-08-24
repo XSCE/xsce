@@ -90,6 +90,3 @@
     value: '{{ user_lan_iface }}'
   - option: 'computed_lan'
     value: '{{ xsce_lan_iface }}'
-  - option: 'xsce_network_mode_applied'
-    value: '{{ xsce_network_mode }}'
-
