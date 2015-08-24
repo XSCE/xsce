@@ -171,21 +171,6 @@
     xsce_lan_iface: br0
   when: xsce_wireless_lan_iface != "none"
 
-- name: No LAN configured - Appliance mode
-  set_fact:
-    xsce_network_mode: "Appliance"
-  when: xsce_lan_iface == "none"
-
-- name: LAN configured - LanController mode
-  set_fact:
-    xsce_network_mode: "LanController"
-  when: xsce_lan_iface != "" and xsce_wan_iface == "none"
-
-- name: LAN configured - Gateway mode
-  set_fact:
-    xsce_network_mode: "Gateway"
-  when: 'xsce_lan_iface != "none" and xsce_wan_iface != "none"'
-
 - name: Set port 80 for Admin Console
   set_fact:
     gui_port: 80
@@ -225,5 +210,3 @@
     value: '{{ xsce_wireless_lan_iface }}'
   - option: 'detected_lan'
     value: '{{ discovered_lan_iface }}'
-  - option: 'xsce_network_mode'
-    value: '{{ xsce_network_mode }}'
