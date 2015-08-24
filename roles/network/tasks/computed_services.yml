@@ -24,24 +24,3 @@
     dhcpd_enabled: True
     xsce_network_mode: "Gateway"
   when: 'xsce_lan_iface != "none" and xsce_wan_iface != "none"'
-
-- name: Add location section to config file
-  ini_file: dest='{{ xsce_config_file }}'
-            section=network
-            option='{{ item.option }}'
-            value='{{ item.value }}'
-  with_items:
-  - option: 'wan_enabled'
-    value: '{{ xsce_wan_enabled }}'
-  - option: 'user_gateway'
-    value: '{{ user_wan_iface }}'
-  - option: 'computed_gateway'
-    value: '{{ xsce_wan_iface }}'
-  - option: 'lan_enabled'
-    value: '{{ xsce_lan_enabled }}'
-  - option: 'user_lan'
-    value: '{{ user_lan_iface }}'
-  - option: 'computed_lan'
-    value: '{{ xsce_lan_iface }}'
-  - option: 'xsce_network_mode_applied'
-    value: '{{ xsce_network_mode }}'
