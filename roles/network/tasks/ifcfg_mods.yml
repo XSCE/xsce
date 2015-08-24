@@ -59,9 +59,9 @@
 
 # monitor-connection-files defaults to no with F21, F18-F20 defaults to yes
 - name: Re-read network config files
-  shell: 'nmcli con reload'
+  shell: nmcli con reload
   ignore_errors: yes
-  when: not installing and no_NM_reload == "False"
+  when: not installing and not no_NM_reload
 
 # test point, we should always have one with any kind of starting point 
 # no ifcfg = supply
