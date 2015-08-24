@@ -13,34 +13,48 @@
 # transient change like cable issues.  
 - name: Trying ifcfg-WAN first
   shell: nmcli conn up id xsce-WAN
-  register: dhcp_WAN_results
+  register: dhcp_WAN
   ignore_errors: yes
   when: has_WAN == "True"
 
 # OK the nic's ifcfg matches what was last found  
 - name: Got an ip from dhcp-WAN finding DEVICE
-  shell: sleep 2 | ip route | awk '{print $3}'
-  register: dhcp_WAN_device
-  when: dhcp-WAN is defined and dhcp-WAN|changed
+  shell: sleep 2 | ip route | grep default | awk '{print $5}'
+  register: dhcp_WAN_results
+  when: dhcp_WAN is defined and dhcp_WAN|changed
 
 - name: Now setting xsce_wan_iface
   set_fact: 
-     xsce_wan_iface: "{{ dhcp-WAN_device.stdout }}"
+     xsce_wan_iface: "{{ dhcp_WAN_results.stdout }}"
      dhcp_good: True
-  when: dhcp-WAN_device.stdout is defined and dhcp-WAN_device.stdout != ""
+  when: dhcp_WAN_results.stdout is defined and dhcp_WAN_results.stdout != ""
 
 ### end of easy test...
+- name: BAD ifcfg-WAN
+  debug: msg="BAD WAN"
+  when: dhcp_WAN is defined and dhcp_WAN|failed
+
+- name: No ifcfg-WAN response
+  debug: msg="NO WAN response"
+  when: not dhcp_WAN is defined
+
+- name: No ifcfg-WAN known
+  debug: msg="NO WAN known"
+  when: has_WAN == "False"
 
 # so we need to know the raw interfaces names and count
+# working on this ansible_interfaces maybe?
 - name: interface list
   shell: ls /sys/class/net | grep -v -e lo
   register: adapter_list
+  debug: msg="{{adapter_list}}"
 
+# so this works
 - name: interface count
   shell: ls /sys/class/net | grep -v -e lo | wc | awk '{print $1}'
   register: adapter_count
 
-### keep at end
+### keep at end and this too.
 ### If dhcp fails the single interface will become LAN again because we didn't prevent the creation
 # Now disable LAN if single interface
 - name: Single interface forcing LAN disabled.
