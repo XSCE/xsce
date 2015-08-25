@@ -67,15 +67,30 @@
   register: dhcp_1BY1_results
   when: has_WAN == "False"
 
-# use create_ifcfg.yml or edit_ifcfg next based on present of ifcfg-DEVICE 
-# just have to set has_ifcfg
-
 # We have the DEVICE?
 - name: Now setting xsce_wan_iface via nmcli
   set_fact: 
      xsce_wan_iface: "{{ dhcp_1BY1_results.stdout }}"
      dhcp_good: True
   when: dhcp_1BY1_results.stdout is defined and dhcp_1BY1_results.stdout != "" and has_WAN == "False"
+
+# the default of none results in using create_ifcfg.yml or edit_ifcfg next 
+# based on present of ifcfg-DEVICE just have to set has_ifcfg_gw to replace 
+# what was in detected in 1-prep 
+
+- name: Find gateway config based on device
+  shell: "egrep -rn {{ xsce_wan_iface }} /etc/sysconfig/network-scripts/ifcfg* | gawk -F ':' '{print $1}'"
+  register: ifcfg_dhcp_device
+  ignore_errors: True
+  changed_when: False
+  when: dhcp_good
+
+- name: Setting has_ifcfg_gw based on device if found
+  set_fact:
+    has_ifcfg_gw: "{{ item|trim }}"
+  when: ifcfg_dhcp_device.stdout_lines is defined and item|trim != ""
+  with_items:
+      - "{{ ifcfg_dhcp_device.stdout_lines }}"
 
 # depending on if a plugin for NM, we might have to handle 
 # taredown differently with 'c delete' and with 'd disconnect'
