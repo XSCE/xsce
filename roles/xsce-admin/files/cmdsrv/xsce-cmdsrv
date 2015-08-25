@@ -625,6 +625,10 @@ def list_library(cmd_info):
 
     cmdstr = "/usr/bin/du -ah " + target_dir
 
+    if not os.path.exists(target_dir):
+        resp = cmd_error(cmd='LIST-LIBR', msg='Path not Found.')
+        return (resp)
+
     try:
         outp = subproc_cmd(cmdstr)
         file_arr = outp.split('\n')
