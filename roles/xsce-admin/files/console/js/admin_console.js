@@ -21,6 +21,8 @@ var rachelStat = {}; // installed, enabled and whether content is installed and 
 var zimsInstalled = []; // list of zims already installed
 var zimsScheduled = []; // list of zims being installed (wip)
 
+var downloadedFiles = {};
+
 var langNames = []; // iso code, local name and English name for languages for which we have zims sorted by English name for language
 var topNames = ["ara","eng","spa","fra","hin","por"]; // languages for top language menu
 var defaultLang = "eng";
@@ -196,6 +198,16 @@ $("#DOWNLOAD-RACHEL").click(function(){
 	}
   sendCmdSrvCmd("INST-RACHEL", genericCmdHandler, "DOWNLOAD-RACHEL");
   alert ("RACHEL scheduled to be downloaded and installed.\n\nPlease view Utilities->Display Job Status to see the results.");
+});
+
+$("#DEL-DOWNLOADS").click(function(){
+	var r = confirm("Press OK to Delete Checked Files");
+  if (r != true)
+    return;
+	button_feedback("#DEL-DOWNLOADS", true);
+  delDownloadedFiles();
+  getDownloadList();
+  button_feedback("#DEL-DOWNLOADS", false);
 });
 
 // Util Buttons
@@ -940,6 +952,69 @@ function procRachelStat(data) {
   	$("#rachelModules").hide();
 }
 
+function getDownloadList(){
+	var zimCmd = 'LIST-LIBR {"sub_dir":"downloads/zims"}';
+	var rachelCmd = 'LIST-LIBR {"sub_dir":"downloads/rachel"}';
+	setDnldDiskSpace();
+	$.when(sendCmdSrvCmd(zimCmd, procDnldZimList), sendCmdSrvCmd(rachelCmd, procDnldRachelList)).done(procDnldList);
+
+  return true;
+}
+
+function procDnldZimList(data){
+	downloadedFiles['zims'] = data;
+}
+
+function procDnldRachelList(data){
+	downloadedFiles['rachel'] = data;
+}
+
+function procDnldList(){
+
+  $("#downloadedFilesRachel").html(calcDnldListHtml(downloadedFiles.rachel.file_list));
+  $("#downloadedFilesZims").html(calcDnldListHtml(downloadedFiles.zims.file_list));
+
+}
+
+function calcDnldListHtml(list) {
+	var html = "";
+	list.forEach(function(entry) {
+    console.log(entry);
+    html += '<tr>';
+    html += "<td>" + entry['filename'] + "</td>";
+    html += "<td>" + entry['size'] + "</td>";
+    html +=  '<td><input type="checkbox" name="' + entry['filename'] + '" id="' + entry['filename'] + '">' + "</td>";
+    html +=  '</tr>';
+  });
+  return html;
+}
+
+function delDownloadedFiles() {
+
+	delDownloadedFileList("downloadedFilesRachel", "rachel");
+	delDownloadedFileList("downloadedFilesZims", "zims");
+}
+
+function delDownloadedFileList(id, sub_dir) {
+  var delArgs = {}
+	var fileList = [];
+  $("#" + id + " input").each(function() {
+    if (this.type == "checkbox") {
+      if (this.checked)
+      fileList.push(this.name);
+    }
+  });
+
+  if (fileList.length == 0)
+    return;
+
+  delArgs['sub_dir'] = sub_dir;
+  delArgs['file_list'] = fileList;
+
+  var delCmd = 'DEL-DOWNLOADS ' + JSON.stringify(delArgs);
+  sendCmdSrvCmd(delCmd, genericCmdHandler);
+}
+
 // Util functions
 
 function getJobStat()
@@ -1137,6 +1212,8 @@ function procSysStorage()
 function setZimDiskSpace(){
   var html = calcLibraryDiskSpace();
 
+  html += "Total Space Required: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+
   html += "<b>" + readableSize(sysStorage.zims_selected_size) + "</b>"
   $( "#zimDiskSpace" ).html(html);
 }
@@ -1144,8 +1221,15 @@ function setZimDiskSpace(){
 function setRachelDiskSpace(){
   var html = calcLibraryDiskSpace();
 
+  html += "Total Space Required: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+
   html += "<b>" + "23G (X 2 for Download)" + "</b>"
   $( "#rachelDiskSpace" ).html(html);
+}
+
+function setDnldDiskSpace() {
+	var html = calcLibraryDiskSpace();
+	$( "#dnldDiskSpace" ).html(html);
 }
 
 function calcLibraryDiskSpace(){
@@ -1160,7 +1244,6 @@ function calcLibraryDiskSpace(){
 
     html += readableSize(avail_in_megs * 1024) + "</b><BR>";
 
-    html += "Total Space Required: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
     return html;
 }
 
