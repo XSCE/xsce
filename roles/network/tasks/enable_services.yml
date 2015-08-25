@@ -124,4 +124,5 @@
             option='{{ item.option }}'
             value='{{ item.value }}'
   with_items:
+    - option: enabled
       value: "{{ wondershaper_enabled }}"
