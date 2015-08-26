@@ -19,10 +19,10 @@ index fd0b485..9938177 100644
  - name: Checking xsce_wan_enabled
 
 diff --git a/roles/network/tasks/ifcfg_mods.yml b/roles/network/tasks/ifcfg_mods.yml
-index 57c1338..72bb566 100644
+index b3c78fa..7c7aab9 100644
 --- a/roles/network/tasks/ifcfg_mods.yml
 +++ b/roles/network/tasks/ifcfg_mods.yml
-@@ -26,14 +26,19 @@
+@@ -20,8 +20,8 @@
  # comment out Using GUI_WAN info and un-comment below
  ## yet to come but device_gw is the first one to test.
  ## vars/ users should set user_wan_iface to avoid messy redetect 
@@ -31,18 +31,6 @@ index 57c1338..72bb566 100644
 +- include: redetect.yml  
 +  when: discovered_wan_iface == "none" and user_wan_iface == "auto"
  
- # create ifcfg-WAN if missing
- # if we get here we have gateway but no ifcfg file
- - include: create_ifcfg.yml
-   when: xsce_wan_iface != "none" and has_WAN == "False" and has_ifcfg_gw == "none"
- 
-+- debug: msg="{{ xsce_wan_iface }}"
-+- debug: msg="{{ has_WAN }}"
-+- debug: msg="{{ has_ifcfg_gw }}"
-+- pause:
-+
- - name: Configuring LAN interface as xsce_lan_iface
-   template: src=network/ifcfg.j2
-             dest=/etc/sysconfig/network-scripts/ifcfg-LAN
-
+ # move gateway if not WAN
+ # might have wifi info if wireless is used as uplink.
 
