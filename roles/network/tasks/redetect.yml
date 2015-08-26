@@ -52,7 +52,7 @@
   shell: nmcli conn up id xsce-WAN
   register: dhcp_WAN
   ignore_errors: yes
-  when: has_WAN == "True"
+  when: has_WAN
 
 - name: BAD ifcfg-WAN
   debug: msg="BAD WAN"
@@ -69,7 +69,7 @@
 
 - name: Setting no ifcfg-WAN
   set_fact:
-      has_WAN "False"
+      has_WAN: False
   when: dhcp_WAN is defined and dhcp_WAN|failed and not has_wifi_gw is defined
 # end WAN deletion
 
@@ -86,12 +86,12 @@
 
 - name: No ifcfg-WAN known
   debug: msg="NO WAN known"
-  when: has_WAN == "False"
+  when: not has_WAN
 
 # discovered_wireless_iface might need work
 - name: Try dhcp on all wired devices 
   shell: nmcli d connect "{{ item|trim }}"
-  when: item|trim != discovered_wireless_iface and has_WAN == "False"
+  when: item|trim != discovered_wireless_iface and not has_WAN
   with_items:
       - "{{ adapter_list.stdout_lines }}"
 
@@ -99,14 +99,14 @@
 - name: Checking for gateway
   shell: sleep 5 | ip route | grep default | awk '{print $5}'
   register: dhcp_1BY1_results
-  when: has_WAN == "False"
+  when: not has_WAN
 
 # We have the DEVICE?
 - name: Now setting xsce_wan_iface via nmcli
   set_fact: 
      xsce_wan_iface: "{{ dhcp_1BY1_results.stdout }}"
      dhcp_good: True
-  when: dhcp_1BY1_results.stdout is defined and dhcp_1BY1_results.stdout != "" and has_WAN == "False"
+  when: dhcp_1BY1_results.stdout is defined and dhcp_1BY1_results.stdout != "" and not has_WAN
 
 # the default of none results in using create_ifcfg.yml or edit_ifcfg next 
 # based on present of ifcfg-DEVICE just have to set has_ifcfg_gw to replace 
@@ -133,7 +133,7 @@
 #- name: Now delete the ifcfg via nmcli
 #  shell: nmcli d disconnect "{{ xsce_wan_iface }}"
 #  ignore_errors: yes
-#  when: has_WAN == "False" and has_ifcfg_gw != "none"
+#  when: not has_WAN and has_ifcfg_gw != "none"
 
 ### keep at end.
 ### If dhcp fails the single interface will become LAN again because we didn't prevent the creation

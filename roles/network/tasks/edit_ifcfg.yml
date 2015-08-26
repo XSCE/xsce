@@ -47,6 +47,6 @@
               line="# Modified by XSCE"
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
 
-- name: Now setting has_WAN after moving file
+- name: Now setting ifcfg-WAN True after moving file
   set_fact:
-    has_WAN: "True"
+    has_WAN: True

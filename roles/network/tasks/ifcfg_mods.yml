@@ -31,7 +31,7 @@
 # create ifcfg-WAN if missing
 # if we get here we have gateway but no ifcfg file
 - include: create_ifcfg.yml
-  when: xsce_wan_iface != "none" and has_WAN == "False" and has_ifcfg_gw == "none"
+  when: xsce_wan_iface != "none" and not has_WAN and has_ifcfg_gw == "none"
 
 - name: Configuring LAN interface as xsce_lan_iface
   template: src=network/ifcfg.j2
@@ -69,7 +69,7 @@
 
 - name: Enabling pre-existing ifcfg-WAN file
   shell: nmcli conn up id xsce-WAN
-  when: has_WAN  == "True" and xsce_wan_iface != "none" and not installing
+  when: has_WAN and xsce_wan_iface != "none" and not installing
 
 - name: Enabling ifcfg-LAN file
   shell: nmcli conn up id xsce-LAN

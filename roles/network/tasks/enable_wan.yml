@@ -4,7 +4,7 @@
               regexp='ONBOOT'
               line='ONBOOT="no"'
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
-  when: has_WAN == "True" and xsce_wan_iface == "none"
+  when: has_WAN and xsce_wan_iface == "none"
 
 #testpoint Need to ensure we have only one entry
 - name: Ensure macaddress is present 
@@ -13,7 +13,7 @@
               regexp='HWADDR'
               line='HWADDR="{{ hostvars[inventory_hostname]['ansible_' + xsce_wan_iface]['macaddress'] }}"'
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
-  when: has_WAN == "True" and xsce_wan_iface != "none"
+  when: has_WAN and xsce_wan_iface != "none"
 
 - name: Turn on ONBOOT for WAN on reboot if enabled
   lineinfile: state=present
@@ -21,4 +21,4 @@
               regexp="ONBOOT"
               line="ONBOOT=yes"
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
-  when: has_WAN  == "True" and xsce_wan_iface != "none"
+  when: has_WAN and xsce_wan_iface != "none"
