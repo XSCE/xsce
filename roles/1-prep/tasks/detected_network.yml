@@ -23,9 +23,9 @@
   stat: path=/etc/sysconfig/network-scripts/ifcfg-WAN
   register: has_ifcfg_WAN
 
-- name: Setting has_WAN
+- name: Setting ifcfg-WAN True
   set_fact:
-    has_WAN: "True"
+    has_WAN: True
   when: has_ifcfg_WAN.stat.exists
 
 # unused
@@ -36,12 +36,6 @@
   ignore_errors: True
   changed_when: False
 # 
-
-- name: Get a list of ifcfg files to delete
-  shell: "ls -1 /etc/sysconfig/network-scripts/ifcfg-* | grep -v -e ifcfg-lo  -e ifcfg-WAN"
-  register: ifcfg_files
-  ignore_errors: True
-  changed_when: False
 
 # Discover  do we have a gateway? -- if ansible detects gateway, becomes WAN candidate
 - name: Finding gateway
@@ -154,6 +148,12 @@
   set_fact:
        xsce_wireless_lan_iface: "{{ discovered_wireless_iface }}"
   when: discovered_wireless_iface != "none" and discovered_wireless_iface != xsce_wan_iface
+
+- name: Get a list of ifcfg files to delete
+  shell: "ls -1 /etc/sysconfig/network-scripts/ifcfg-* | grep -v -e ifcfg-lo  -e ifcfg-WAN"
+  register: ifcfg_files
+  changed_when: False
+  when: num_lan_interfaces >= "1" or xsce_wireless_lan_iface != "none"
 
 # use value only if present
 - name: Setting detected lan
