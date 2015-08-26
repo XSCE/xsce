@@ -29,7 +29,8 @@
             section=kalite
             option='{{ item.option }}'
             value='{{ item.value }}'
-    - option: enabled
-      value: "{{ kalite_enabled }}"
-    - option: cron_enabled
-      value: "{{ kalite_cron_enabled }}"
+  with_items:
+    - option: 'enabled'
+      value: '{{ kalite_enabled }}'
+    - option: 'cron_enabled'
+      value: '{{ kalite_cron_enabled }}'
