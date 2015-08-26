@@ -19,6 +19,12 @@
   tags:
     - download
 
+- name: Install X Windows on CentOS
+  shell: yum groupinstall -y "Server with GUI" 
+  when: not {{ use_cache }} and not {{ no_network }} and ansible_distribution == "CentOS"
+  tags:
+    - download
+
 - name: Get the teamviewer software 
   get_url: url="{{ teamviewer_url }}/{{ teamviewer_rpm_file }}"  dest="{{ downloads_dir}}/{{ teamviewer_rpm_file }}"
   when: not {{ use_cache }} and not {{ no_network }}
