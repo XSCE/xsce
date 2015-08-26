@@ -14,7 +14,7 @@
     - lsb
   tags:
     - download
-  when: ansible_distribution == CentOS
+  when: ansible_distribution == "CentOS"
 
 - name: Download the latest kalite repo
   git: repo={{ kalite_repo_url }}
