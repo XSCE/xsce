@@ -87,6 +87,18 @@ Particular content items can be removed from the RACHEL menu (but not from the s
 
 Make sure that the **RACHEL** service is enabled under **Configure** - **Services Enabled**.  The content can be downloaded if it is not enabled, but will only be visible to students after RACHEL has been enabled.
 
+Remove Downloaded Files
+-----------------------
+
+By installing Zim files or RACHEL you are downloading large files from the internet.  These are not removed in case there is a problem and the installed needs to be rerun.
+
+After you are sure that everything has been installed successfully you can remove some or all of these files to free up space on the disk.
+
+Here is how to verify that an item has been installed:
+
+* Look at the installation page and ensure that the item is marked as installed.
+* Look at the School Server menu to see it the item is accessible and brings up content.
+
 Actions
 -------
 

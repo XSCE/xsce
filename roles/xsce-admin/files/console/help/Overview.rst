@@ -27,6 +27,7 @@ Install Content
 * Get Zim Files from Kiwix
 * Download Khan Academy Videos
 * Get RACHEL
+* Remove Downloaded Files
 
 Utilities
 ---------
@@ -38,3 +39,5 @@ Utilities
 * Display System Storage
 * Perform Internet Speed Test
 * Run Ansible by Tag
+* Reboot Server
+* Power Off Server

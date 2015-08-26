@@ -502,7 +502,8 @@ def cmd_proc_thread(worker_data_url, worker_control_url, context=None):
             tprint('sending message server received from client to worker %s id %s' % (cmd_msg, ident))
             cmd_resp = cmd_handler(cmd_msg)
             #print cmd_resp
-            data_socket.send_multipart([ident, cmd_resp])
+            # 8/23/2015 added .encode() to response as list_library was giving unicode errors
+            data_socket.send_multipart([ident, cmd_resp.encode()])
         if control_socket in sockets:
             ctl_msg = control_socket.recv()
             tprint('got ctl msg %s in worker' % ctl_msg)
@@ -524,7 +525,7 @@ def cmd_handler(cmd_msg):
 
     avail_cmds = {
         "TEST": do_test,
-        "LIST": list_library,
+        "LIST-LIBR": list_library,
         "WGET": wget_file,
         "GET-ANS": get_ans_facts,
         "GET-ANS-TAGS": get_ans_tags,
@@ -546,6 +547,7 @@ def cmd_handler(cmd_msg):
         "INST-ZIMS": install_zims,
         "GET-RACHEL-STAT": get_rachel_stat,
         "INST-RACHEL": install_rachel,
+        "DEL-DOWNLOADS": del_downloads,
         "RESTART-KIWIX": restart_kiwix,
         "REBOOT": reboot_server,
         "POWEROFF": poweroff_server
@@ -610,9 +612,90 @@ def do_test(cmd_info):
     return (resp)
 
 def list_library(cmd_info):
-    resp = subprocess.check_output(["scripts/list_libr.sh"])
-    json_resp = json_array("library_list", resp)
+    libr_list = {}
+    file_list = []
+    target_dir = "/library/"
+
+    try:
+        target_dir += cmd_info['cmd_args']['sub_dir']
+    except:
+        return cmd_malformed(cmd_info['cmd'])
+
+    libr_list['path'] = target_dir
+
+    cmdstr = "/usr/bin/du -ah " + target_dir
+
+    if not os.path.exists(target_dir):
+        resp = cmd_error(cmd='LIST-LIBR', msg='Path not Found.')
+        return (resp)
+
+    try:
+        outp = subproc_cmd(cmdstr)
+        file_arr = outp.split('\n')
+
+        for file in file_arr:
+            if file == "":
+                continue
+
+            tmp_arr = file.split("\t")
+            if tmp_arr[1] == target_dir:
+                continue
+
+            size = tmp_arr[0]
+            filename = tmp_arr[1].split("/")[-1]
+            file_attr = {}
+            file_attr['size'] = size
+            file_attr['filename'] = filename
+            file_list.append(file_attr)
+
+        libr_list['file_list'] = file_list
+        #str_json = json.dumps(library_list)
+
+        #json_resp = '{ "' + target_dir + '":' + str_json + '}'
+
+        json_resp = json.dumps(libr_list)
+
+        print json_resp
+
+    except:
+        return cmd_malformed(cmd_info['cmd'])
+
     return (json_resp)
+
+def del_downloads(cmd_info):
+    target_dir = "/library/downloads/"
+    error_flag = False
+    try:
+        target_dir += cmd_info['cmd_args']['sub_dir']
+        if '..' in cmd_info['cmd_args']['sub_dir']: # could be legit, but ../ and /.. are not
+            return cmd_malformed(cmd_info['cmd'])
+
+        file_list = cmd_info['cmd_args']['file_list']
+
+    except:
+        return cmd_malformed(cmd_info['cmd'])
+
+    cmdstr = "/usr/bin/rm " + target_dir + "/"
+
+    for file in file_list:
+        try:
+            outp = subproc_cmd(cmdstr + file)
+        except:
+            # ignore for now but report
+            error_flag = True
+            pass
+
+    if error_flag:
+        resp = cmd_success_msg(cmd_info['cmd'], "- Some errors occurred")
+    else:
+        resp = cmd_success(cmd_info['cmd'])
+
+    return (resp)
+
+def subproc_cmd(cmdstr):
+    args = shlex.split(cmdstr)
+    outp = subprocess.check_output(args)
+    return (outp)
 
 def wget_file(cmd_info):
     resp = cmd_info['cmd'] + " done."
@@ -1168,12 +1251,10 @@ def get_cmd_info_key(cmd_info, key):
        return None
 
 def cmd_success(cmd):
-   msg = 'Command ' + cmd
-   return (cmd_success_msg(cmd, msg))
+   return (cmd_success_msg(cmd, ""))
 
 def cmd_success_msg(cmd, msg):
-   return ('{"Success": "' + msg + '."}')
-
+   return ('{"Success": "' + cmd + " " + msg + '."}')
 
 def cmd_error(cmd="", msg="Internal Server Error processing Command"):
     return ('{"Error": "' + msg + ' ' + cmd + '."}')

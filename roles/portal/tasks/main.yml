@@ -71,6 +71,7 @@
             - xs-portal.conf
             - xs-portal-lang.inc
             - content_dir.conf
+            - xsce-home-page.conf
 
 
 - name: Install xs-portal service discovery

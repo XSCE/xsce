@@ -1,3 +1,3 @@
 #!/bin/sh
 
-ls -lav /library
+du -ah /library/$1
