@@ -14,10 +14,10 @@
 
 # Comment this out and un-comment include: redetect.ym in ifcfg_mods.yml
 # we need to have an interface name for ifcfg-WAN to be able to change gateway the DEVICE from the gui.
-- name: Using GUI_WAN info
-  set_fact:
-    user_wan_iface: "{{ gui_wan_iface }}"
-  when: gui_wan_iface != "unset"
+#- name: Using GUI_WAN info
+#  set_fact:
+#    user_wan_iface: "{{ gui_wan_iface }}"
+#  when: gui_wan_iface != "unset"
 
 # should make the GUI buttons the last call
 - name: Checking xsce_wan_enabled
