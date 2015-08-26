@@ -1,14 +1,13 @@
 - name: Stop the Access Point Hostapd program
   service: name=hostapd.service
            state=stopped
-  ignore_errors: yes
   when: xsce_wireless_lan_iface != "none"
 
 # Disconnects the slaves quickly
 - name: Stop the LAN/Bridge on F21
   shell: nmcli con delete id xsce-LAN
   changed_when: False
-  when: num_lan_interfaces != "0" and xsce_wireless_lan_iface != 0
+  when: num_lan_interfaces != "0" and xsce_wireless_lan_iface != "0"
 
 # clear all non WAN ifcfg files
 - name: Now delete all non-gateway ifcfg files
@@ -59,7 +58,6 @@
 # monitor-connection-files defaults to no with F21, F18-F20 defaults to yes
 - name: Re-read network config files
   shell: nmcli con reload
-  ignore_errors: yes
   when: not installing and not no_NM_reload
 
 # test point, we should always have one with any kind of starting point 
