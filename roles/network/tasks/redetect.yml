@@ -12,6 +12,16 @@
 # We only got here by way of no detected gateway, lets see if we can pick-up 
 # transient change like cable issues.  
 
+# so this works
+- name: interface count
+  shell: ls /sys/class/net | grep -v -e lo | wc | awk '{print $1}'
+  register: adapter_count
+
+# well if there ever was a point to tell the user thing are FUBAR this is it.
+#- name: We're hosed no work interfaces
+#  do some thing here
+#  when: adapter_count.stdout == "0"
+
 - name: BAD DHCP
   set_fact:
     dhcp_good: False
@@ -48,6 +58,7 @@
   debug: msg="BAD WAN"
   when: dhcp_WAN is defined and dhcp_WAN|failed
 
+# don't overwrite old backup for now.
 - name: Backing up ifcfg-WAN for wifi
   shell: mv {{ ifcfg_WAN_wifi }} /etc/sysconfig/network-scripts/ifcfg-WAN-wifi
   when: has_wifi_gw is defined and ifcfg_WAN_wifi != "/etc/sysconfig/network-scripts/ifcfg-WAN-wifi"
@@ -56,10 +67,10 @@
   shell: rm -f /etc/sysconfig/network-scripts/ifcfg-WAN
   when: dhcp_WAN is defined and dhcp_WAN|failed and not has_wifi_gw is defined
 
-- name: Setting up for auto testing
+- name: Setting no ifcfg-WAN
   set_fact:
       has_WAN "False"
-  when: dhcp_WAN is defined and dhcp_WAN|failed
+  when: dhcp_WAN is defined and dhcp_WAN|failed and not has_wifi_gw is defined
 # end WAN deletion
 
 # we should never get here on a first pass with the other two methods in play
@@ -108,10 +119,6 @@
   changed_when: False
   when: dhcp_good
 
-# depending on if a plugin for NM, we might have to handle 
-# taredown differently with 'c delete' and with 'd disconnect'
-# - with delete the file is gone - with disconnect the file is around 
-
 - name: Setting has_ifcfg_gw based on device if found
   set_fact:
     has_ifcfg_gw: "{{ item|trim }}"
@@ -119,21 +126,14 @@
   with_items:
       - "{{ ifcfg_dhcp_device.stdout_lines }}"
 
+# depending on if a plugin for NM, we might have to handle
+# taredown differently with 'c delete' and with 'd disconnect'
+# - with delete the file is gone - with disconnect the file is around
 # We'll see 
 #- name: Now delete the ifcfg via nmcli
 #  shell: nmcli d disconnect "{{ xsce_wan_iface }}"
 #  ignore_errors: yes
 #  when: has_WAN == "False" and has_ifcfg_gw != "none"
-
-# so this works
-- name: interface count
-  shell: ls /sys/class/net | grep -v -e lo | wc | awk '{print $1}'
-  register: adapter_count
-
-# well if there ever was a point to tell the user thing are FUBAR this is it.
-#- name: We're hosed no work interfaces
-#  do some thing here. 
-#  when: adapter_count.stdout == "0"
 
 ### keep at end.
 ### If dhcp fails the single interface will become LAN again because we didn't prevent the creation
@@ -141,14 +141,13 @@
 - name: DHCP found on Single interface forcing LAN disabled.
   set_fact:
      xsce_lan_iface: "none"
-  when: dhcp_good is defined and adapter_count.stdout == "1"
+  when: dhcp_good  and adapter_count.stdout == "1"
 
 ##- name: Release NM's hold on the wifi
 #  
-#  when: ifcfg_WAN_wifi is defined and ifcfg_WAN_wifi == "/etc/sysconfig/network-scripts/ifcfg-WAN-wifi" and dhcp_good is defined
+#  when: ifcfg_WAN_wifi is defined and ifcfg_WAN_wifi == "/etc/sysconfig/network-scripts/ifcfg-WAN-wifi" and dhcp_good
 
 # might just be out of range no change with no dhcp lease
 - name: Restoring old wifi config gatway not found 
-  shell: mv -f {{ ifcfg_WAN_wifi }} /etc/sysconfig/network-scripts/ifcfg-WAN
-  when: ifcfg_WAN_wifi is defined and ifcfg_WAN_wifi == "/etc/sysconfig/network-scripts/ifcfg-WAN-wifi" and not dhcp_good is defined
-
+  shell: mv -f "{{ ifcfg_WAN_wifi }}" /etc/sysconfig/network-scripts/ifcfg-WAN
+  when: ifcfg_WAN_wifi is defined and ifcfg_WAN_wifi == "/etc/sysconfig/network-scripts/ifcfg-WAN-wifi" and dhcp_good
