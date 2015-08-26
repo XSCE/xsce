@@ -23,3 +23,13 @@
            enabled=yes
            state=started
   when: kalite_cron_enabled
+
+- name: Add kalite to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=kalite
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+    - option: enabled
+      value: "{{ kalite_enabled }}"
+    - option: cron_enabled
+      value: "{{ kalite_cron_enabled }}"

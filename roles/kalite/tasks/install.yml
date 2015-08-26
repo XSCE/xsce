@@ -12,7 +12,7 @@
        dest={{ downloads_dir }}/ka-lite
        depth=1
        version="0.13.x"
-  when: not {{ use_cache }}
+  when: not {{ use_cache }} and not kalite_installed.stat.exists == True
   tags:
     - download2
 
@@ -57,6 +57,23 @@
             owner={{ kalite_user }}
             group={{ kalite_user }}
             mode=644
+
+- name: Add kalite to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=kalite
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: kalite
+    - option: description
+      value: '"KA-Lite is a server to present Khan Academy videos offline and to download them."'
+    - option: path
+      value: "{{ kalite_root }}"
+    - option: server_name
+      value: "{{ kalite_server_name }}"
+    - option: port
+      value: "{{ kalite_server_port }}"
 
 - name: Run the install using kalite manage
   command: "/usr/bin/su {{ kalite_user }} -c '{{ kalite_root }}/bin/kalite manage setup --username={{ kalite_user }} --password={{ kalite_password }} --noinput'"
