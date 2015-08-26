@@ -1,8 +1,8 @@
 - name: Turn off ONBOOT for WAN on reboot if disabled
   lineinfile: state=present
               backrefs=yes
-              regexp="ONBOOT"
-              line="ONBOOT=no"
+              regexp='ONBOOT'
+              line='ONBOOT="no"'
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
   when: has_WAN == "True" and xsce_wan_iface == "none"
 
@@ -10,8 +10,8 @@
 - name: Ensure macaddress is present 
   lineinfile: state=present
               backrefs=yes
-              regexp="HWADDR"
-              line="HWADDR={{ hostvars[inventory_hostname]['ansible_' + xsce_wan_iface]['macaddress'] }}"
+              regexp='HWADDR'
+              line='HWADDR="{{ hostvars[inventory_hostname]['ansible_' + xsce_wan_iface]['macaddress'] }}"'
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
   when: has_WAN == "True" and xsce_wan_iface != "none"
 
