@@ -6,13 +6,7 @@
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
   when: has_WAN == "True" and xsce_wan_iface == "none"
 
-- name: Disable WAN for session if disabled
-  shell: nmcli con down id xsce-WAN 
-  ignore_errors: yes
-  when: has_WAN  == "True" and xsce_wan_iface == "none"
-
 #testpoint Need to ensure we have only one entry
-# or test not using macaddress at all.
 - name: Ensure macaddress is present 
   lineinfile: state=present
               backrefs=yes
