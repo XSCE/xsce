@@ -160,7 +160,7 @@
 - name: DHCP found on Single interface forcing LAN disabled.
   set_fact:
      xsce_lan_iface: "none"
-  when: dhcp_good  and adapter_count.stdout == "1"
+  when: dhcp_good  and adapter_count.stdout|int == "1"
 
 ##- name: Release NM's hold on the wifi
 #  
