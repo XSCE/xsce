@@ -1,9 +1,16 @@
-- name: gui_static_wan
+- name: gui-static-wan
   set_fact:
     wan_ip: dhcp
     gui_static_wan_ip: undefined
   when: gui_static_wan is defined and gui_static_wan == "False"
 
+# make it so number 2
+- name: Gui wants single wired interface as static or dhcp gateway
+  set_fact: 
+     gui_wan_iface: "{{ discovered_lan_iface }}"
+  when: num_lan_interfaces == "1" and gui_desired_network_role is defined and gui_desired_network_role != "LanController"
+
+# figure out more than one interfaces in detect.
 - name: Using GUI_STATIC info
   set_fact:
     wan_ip: "{{ gui_static_wan_ip }}"
@@ -14,10 +21,11 @@
 
 # Comment this out and un-comment include: redetect.ym in ifcfg_mods.yml
 # we need to have an interface name for ifcfg-WAN to be able to change gateway the DEVICE from the gui.
+# Thanks to George for proving my point about knowing what device to switch to. 
 #- name: Using GUI_WAN info
-#  set_fact:
-#    user_wan_iface: "{{ gui_wan_iface }}"
-#  when: gui_wan_iface != "unset"
+   set_fact:
+     user_wan_iface: "{{ gui_wan_iface }}"
+   when: gui_wan_iface != "unset"
 
 # should make the GUI buttons the last call
 - name: Checking xsce_wan_enabled
