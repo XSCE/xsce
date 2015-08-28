@@ -12,16 +12,6 @@
 # We only got here by way of no detected gateway, lets see if we can pick-up 
 # transient change like cable issues.  
 
-# so this works
-- name: interface count
-  shell: ls /sys/class/net | grep -v -e lo | wc | awk '{print $1}'
-  register: adapter_count
-
-# well if there ever was a point to tell the user thing are FUBAR this is it.
-#- name: We're hosed no work interfaces
-#  do some thing here
-#  when: adapter_count.stdout == "0"
-
 - name: BAD DHCP
   set_fact:
     dhcp_good: False
@@ -91,7 +81,7 @@
 # discovered_wireless_iface might need work
 - name: Try dhcp on all wired devices 
   shell: nmcli d connect "{{ item|trim }}"
-  when: item|trim != discovered_wireless_iface and not has_WAN
+  when: item|trim != discovered_wireless_iface and item|trim != xsce_wireless_lan_iface and not has_WAN
   with_items:
       - "{{ adapter_list.stdout_lines }}"
 
@@ -126,6 +116,33 @@
   with_items:
       - "{{ ifcfg_dhcp_device.stdout_lines }}"
 
+# vars users should of declared user_wan_iface so we would not have to hunt
+# lets start with the last known gateway device_gw
+#- name: Trying last known gateway first
+#  set_fact:
+#    xsce_wan_iface: "{{ device_gw }}"
+#    has_WAN: True
+#  when: discovered_wireless_iface != device_gw and xsce_wireless_lan_iface != device_gw and and device_gw != "none" and gui_wan_iface == "unset" and num_lan_interfaces_result == "2"
+
+# last match wins
+#- name: Best guess gone next 
+#  set_fact: "{{ item|trim }}"
+#   when: item|trim != discovered_wireless_iface and item|trim != xsce_wireless_lan_iface and item|trim != device_gw and gui_wan_iface == "unset" and num_lan_interfaces_result == "2"
+#  with_items:
+#      - "{{ adapter_list.stdout_lines }}"
+
+# use wan_* for static info
+#- include: create_ifcfg.yml
+#  when: xsce_wan_iface != "none" and and not has_WAN and has_ifcfg_gw == "none" and gui_static_wan_ip != "unset" and gui_static_wan_ip != "undefined" and gui_static_wan is defined 
+
+#- include: enable_wan.yml
+#  when: gui_static_wan_ip != "unset" and gui_static_wan_ip != "undefined" and gui_static_wan is defined
+
+#- name: ping test 1
+#  shell: ping -c 5 "{{ gui_static_wan_gateway }}" | grep -q icmp_req
+#  register: ping_results_1
+#  when: gui_static_wan_ip != "unset" and gui_static_wan_ip != "undefined" and gui_static_wan is defined
+
 # depending on if a plugin for NM, we might have to handle
 # taredown differently with 'c delete' and with 'd disconnect'
 # - with delete the file is gone - with disconnect the file is around
@@ -134,6 +151,8 @@
 #  shell: nmcli d disconnect "{{ xsce_wan_iface }}"
 #  ignore_errors: yes
 #  when: not has_WAN and has_ifcfg_gw != "none"
+
+#  when: ping_results_1.stdout|int == "1" 
 
 ### keep at end.
 ### If dhcp fails the single interface will become LAN again because we didn't prevent the creation

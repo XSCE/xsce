@@ -96,6 +96,25 @@
   set_fact:
     xsce_lan_iface: "{{ user_lan_iface }}"
   when: 'user_lan_iface != "auto"'
+
+# so this works
+- name: interface count
+  shell: ls /sys/class/net | grep -v -e lo | wc | awk '{print $1}'
+  register: adapter_count
+
+# well if there ever was a point to tell the user thing are FUBAR this is it.
+- name: We're hosed no work interfaces
+  set_fact:  
+    xsce_network_mode: "No_network_found"
+  when: adapter_count.stdout == "0"
+
+# well if there ever was a point to tell the user thing are FUBAR this is it.
+- name: I'm not guessing declare gateway please
+  set_fact:
+    xsce_network_mode: "Undetectable_use_local_vars" 
+    xsce_wan_iface: "none"
+  when: adapter_count.stdout == "5" and device_gw == "none" and gui_wan_iface == "unset" and gui_static_wan is defined
+
 - name: Add location section to config file
   ini_file: dest='{{ xsce_config_file }}'
             section=network
