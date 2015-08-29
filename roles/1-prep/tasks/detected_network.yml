@@ -20,7 +20,7 @@
   when: prior_gw is defined and prior_gw.stdout != ""
 
 - name: Checking for ifcfg-WAN file
-  stat: path=/etc/sysconfig/network-scripts/ifcfg-WAN_"{{device_gw}}"
+  stat: path=/etc/sysconfig/network-scripts/ifcfg-WAN
   register: has_ifcfg_WAN
 
 - name: Setting ifcfg-WAN True
