@@ -6,30 +6,27 @@
 - name: Turn off isp nameservers
   lineinfile: state=present
               backrefs=yes
-              regexp='PEERDNS'
+              regexp='^PEERDNS'
               line='PEERDNS="no"'
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
 
 - name: Turn on local nameserver
   lineinfile: state=present
               backrefs=yes
-              regexp='DNS1'
+              regexp='^DNS1'
               line='DNS1="127.0.0.1"'
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
 
 - name: Remove the UUID
   lineinfile: state=absent
-              regexp='UUID'
-              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
-
-- name: Remove the NAME
-  lineinfile: state=absent
-              regexp='NAME'
+              regexp='^UUID'
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
 
 - name: Fix the NM name
   lineinfile: state=present
-              line='NAME="xsce-WAN"'
+              backrefs=yes
+              regexp='^NAME'
+              line='NAME=WAN_"{{ xsce_wan_iface }}"'
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
 
 # testpoint - quoting and present
@@ -37,7 +34,7 @@
 - name: Fix the DEVICE
   lineinfile: state=present
               backrefs=yes
-              regexp='DEVICE'
+              regexp='^DEVICE'
               line='DEVICE="{{ xsce_wan_iface }}"'
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
   when: xsce_wan_iface != "none"
