@@ -1,3 +1,9 @@
+# static backout suppy new template file
+- name: undo gui-static-wan by requesting new template file
+  set_fact:
+     has_wan: False
+  when:  gui_static_wan is defined and gui_static_wan == "False" or gui_static_wan_ip != "unset"
+
 - name: gui-static-wan
   set_fact:
     wan_ip: dhcp
@@ -11,10 +17,11 @@
     wan_netmask: "{{ gui_static_wan_netmask }}"
     wan_gateway: "{{ gui_static_wan_gateway }}"
     wan_nameserver: "{{ gui_static_wan_nameserver }}"
-  when: gui_static_wan_ip != "unset" and gui_static_wan_ip != "undefined" and gui_static_wan is defined 
+  when: gui_static_wan_ip != "unset" and gui_static_wan_ip != "undefined" and gui_static_wan is defined
 
-# we need to have an interface name for ifcfg-WAN to be able to change gateway the DEVICE from the gui.
-# Thanks to George for proving my point about knowing what device to switch to. 
+# we need to have an interface name for ifcfg-WAN to be able to change gateway
+# the DEVICE from the gui. Thanks to George for proving my point about knowing
+# what device to switch to.
 #- name: Using GUI_WAN info
    set_fact:
      user_wan_iface: "{{ gui_wan_iface }}"
