@@ -2,7 +2,7 @@
 - name: undo gui-static-wan by requesting new template file
   set_fact:
      has_wan: False
-  when:  gui_static_wan is defined and gui_static_wan == "False" or gui_static_wan_ip != "unset"
+  when:  gui_static_wan is defined and gui_static_wan == "False" and gui_static_wan_ip is defined and gui_static_wan_ip != "unset"
 
 - name: gui-static-wan
   set_fact:
