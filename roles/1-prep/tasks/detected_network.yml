@@ -185,7 +185,7 @@
 # /etc/sysconfig/xs_wan_device's last state intended to
 # provide a seed value to display in the GUI when no
 # gateway is present but we had one.
--- name: Has old gateway and no discovered gateway setting WAN
+- name: Has old gateway and no discovered gateway setting WAN
   set_fact:
     gui_wan_iface: "{{ device_gw }}"
   when: user_wan_iface == "auto" and device_gw != "none" and discovered_wan_iface == "none"
