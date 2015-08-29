@@ -26,7 +26,7 @@
   lineinfile: state=present
               backrefs=yes
               regexp='^NAME'
-              line='NAME=WAN_"{{ xsce_wan_iface }}"'
+              line='NAME="WAN_{{ xsce_wan_iface }}"'
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
 
 # testpoint - quoting and present

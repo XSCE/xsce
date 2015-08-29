@@ -19,7 +19,7 @@
   lineinfile: state=present
               backrefs=yes
               regexp='^NAME'
-              line='NAME=WAN_"{{ xsce_wan_iface }}"'
+              line='NAME="WAN_{{ xsce_wan_iface }}"'
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
 
 - name: Turn on ONBOOT for WAN on reboot if enabled
