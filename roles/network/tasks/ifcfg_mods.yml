@@ -1,38 +1,36 @@
 - name: Stop the Access Point Hostapd program
   service: name=hostapd.service
            state=stopped
-  ignore_errors: yes
   when: xsce_wireless_lan_iface != "none"
 
 # Disconnects the slaves quickly
 - name: Stop the LAN/Bridge on F21
   shell: nmcli con delete id xsce-LAN
-  ignore_errors: True
   changed_when: False
-
-# move gateway if not WAN
-# might have wifi info if wireless is used as uplink.
-- include: edit_ifcfg.yml
-  when: has_ifcfg_gw != "none" and has_ifcfg_gw != "/etc/sysconfig/network-scripts/ifcfg-WAN"
+  when: num_lan_interfaces != "0" or xsce_wireless_lan_iface != "none"
 
 # clear all non WAN ifcfg files
 - name: Now delete all non-gateway ifcfg files
   shell: "rm -f {{ item }} "
-  ignore_errors: True
-  when: item|trim != device_gw
+  when: item|trim != device_gw and num_lan_interfaces != "0"
   with_items:
     - "{{ ifcfg_files.stdout_lines }}"
 
 # comment out Using GUI_WAN info and un-comment below
 ## yet to come but device_gw is the first one to test.
 ## vars/ users should set user_wan_iface to avoid messy redetect 
-#- include: redetect.yml  
-#  when: discovered_wan_iface == "none" and user_wan_iface == "auto"
+- include: redetect.yml  
+  when: discovered_wan_iface == "none" and user_wan_iface == "auto"
+
+# move gateway if not WAN
+# might have wifi info if wireless is used as uplink.
+- include: edit_ifcfg.yml
+  when: has_ifcfg_gw != "none" and has_ifcfg_gw != "/etc/sysconfig/network-scripts/ifcfg-WAN"
 
 # create ifcfg-WAN if missing
 # if we get here we have gateway but no ifcfg file
 - include: create_ifcfg.yml
-  when: xsce_wan_iface != "none" and has_WAN == "False" and has_ifcfg_gw == "none"
+  when: xsce_wan_iface != "none" and not has_WAN and has_ifcfg_gw == "none"
 
 - name: Configuring LAN interface as xsce_lan_iface
   template: src=network/ifcfg.j2
@@ -60,7 +58,6 @@
 # monitor-connection-files defaults to no with F21, F18-F20 defaults to yes
 - name: Re-read network config files
   shell: nmcli con reload
-  ignore_errors: yes
   when: not installing and not no_NM_reload
 
 # test point, we should always have one with any kind of starting point 
@@ -70,7 +67,7 @@
 
 - name: Enabling pre-existing ifcfg-WAN file
   shell: nmcli conn up id xsce-WAN
-  when: has_WAN  == "True" and xsce_wan_iface != "none" and not installing
+  when: has_WAN and xsce_wan_iface != "none" and not installing
 
 - name: Enabling ifcfg-LAN file
   shell: nmcli conn up id xsce-LAN

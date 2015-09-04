@@ -1,30 +1,31 @@
 - name: Turn off ONBOOT for WAN on reboot if disabled
   lineinfile: state=present
               backrefs=yes
-              regexp="ONBOOT"
-              line="ONBOOT=no"
+              regexp='^ONBOOT'
+              line='ONBOOT="no"'
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
-  when: has_WAN == "True" and xsce_wan_iface == "none"
-
-- name: Disable WAN for session if disabled
-  shell: nmcli con down id xsce-WAN 
-  ignore_errors: yes
-  when: has_WAN  == "True" and xsce_wan_iface == "none"
+  when: has_WAN and xsce_wan_iface == "none"
 
 #testpoint Need to ensure we have only one entry
-# or test not using macaddress at all.
-- name: Ensure macaddress is present 
+- name: Ensure macaddress is correct
   lineinfile: state=present
               backrefs=yes
-              regexp="HWADDR"
-              line="HWADDR={{ hostvars[inventory_hostname]['ansible_' + xsce_wan_iface]['macaddress'] }}"
+              regexp='^HWADDR'
+              line='HWADDR="{{ hostvars[inventory_hostname]['ansible_' + xsce_wan_iface]['macaddress'] }}"'
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
-  when: has_WAN == "True" and xsce_wan_iface != "none"
+  when: has_WAN and xsce_wan_iface != "none"
+
+- name: Fix the DEVICE
+  lineinfile: state=present
+              backrefs=yes
+              regexp='^NAME'
+              line='NAME="xsce-WAN"'
+              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
 
 - name: Turn on ONBOOT for WAN on reboot if enabled
   lineinfile: state=present
               backrefs=yes
-              regexp="ONBOOT"
+              regexp="^ONBOOT"
               line="ONBOOT=yes"
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
-  when: has_WAN  == "True" and xsce_wan_iface != "none"
+  when: has_WAN and xsce_wan_iface != "none"

@@ -33,3 +33,16 @@
         owner=root
         group=root
         state=link
+
+- name: Add wondershaper to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=wondershaper
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: wondershaper
+    - option: description
+      value: '"Wondershaper is a command line tool to set maximum transfer rates for network adapters"'
+    - option: enabled
+      value: "{{ wondershaper_enabled }}"

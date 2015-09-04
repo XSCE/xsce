@@ -7,6 +7,15 @@
   tags:
     - download
 
+- name: Install missing packages required for kalite startup
+  yum: name={{ item }}
+       state=installed
+  with_items:
+    - lsb
+  tags:
+    - download
+  when: not {{ use_cache }} and not {{ no_network }} and ansible_distribution == "CentOS"
+
 - name: Download the latest kalite repo
   git: repo={{ kalite_repo_url }}
        dest={{ downloads_dir }}/ka-lite

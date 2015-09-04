@@ -1,48 +1,49 @@
 - name: Rename supplied gateway ifcfg file to WAN if present
-  shell: mv {{ has_ifcfg_gw }} /etc/sysconfig/network-scripts/ifcfg-WAN
+  shell: mv "{{ has_ifcfg_gw }}" /etc/sysconfig/network-scripts/ifcfg-WAN
   ignore_errors: True
   changed_when: False
 
 - name: Turn off isp nameservers
   lineinfile: state=present
               backrefs=yes
-              regexp="PEERDNS"
-              line="PEERDNS=no"
+              regexp='^PEERDNS'
+              line='PEERDNS="no"'
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
 
 - name: Turn on local nameserver
   lineinfile: state=present
               backrefs=yes
-              regexp="DNS1"
-              line="DNS1=127.0.0.1"
+              regexp='^DNS1'
+              line='DNS1="127.0.0.1"'
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
 
 - name: Remove the UUID
   lineinfile: state=absent
-              regexp="UUID"
-              dest=/etc/sysconfig/network-scripts/ifcfg-WAN
-
-- name: Remove the NAME
-  lineinfile: state=absent
-              regexp="NAME"
+              regexp='^UUID'
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
 
 - name: Fix the NM name
   lineinfile: state=present
-              line="NAME=xsce-WAN"
+              backrefs=yes
+              regexp='^NAME'
+              line='NAME="xsce-WAN"'
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
 
 # testpoint - quoting and present
+# note DEVICE can change what is displayed via "ip and friends"
 - name: Fix the DEVICE
   lineinfile: state=present
-              line='DEVICE="{{ discovered_wan_iface }}"'
+              backrefs=yes
+              regexp='^DEVICE'
+              line='DEVICE="{{ xsce_wan_iface }}"'
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+  when: xsce_wan_iface != "none"
 
 - name: add marker
   lineinfile: state=present
               line="# Modified by XSCE"
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
 
-- name: Now setting has_WAN after moving file
+- name: Now setting ifcfg-WAN True after moving file
   set_fact:
-    has_WAN: "True"
+    has_WAN: True
