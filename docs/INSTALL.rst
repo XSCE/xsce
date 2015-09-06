@@ -55,7 +55,7 @@ There is information for how to copy a downloaded image onto a SD card at::
 
 The fully installed XSCE image is available at::
 
-   http://downloads.unleashkids.org/xscd/downloads/installer/rpi2
+   http://download.unleashkids.org/xsce/downloads/installer/rpi2
 
 XSCE On the XO 1.5, XO-1.75, or XO-4 laptop
 ------------------------------------------
