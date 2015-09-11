@@ -6,6 +6,7 @@
 - name: Create ifcfg-WAN if it does not exist
   template:   src=network/ifcfg-WAN.j2
               dest=/etc/sysconfig/network-scripts-ifcfg-WAN
+  when:       move_result != changed
 
 - name: Turn off isp nameservers
   lineinfile: state=present
