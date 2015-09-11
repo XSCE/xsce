@@ -1,4 +1,4 @@
-
+# Refers to where stage2 lives
 # Use CDROM installation media (if dvd is used)
 #cdrom
 
