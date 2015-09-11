@@ -1,4 +1,4 @@
-
+# Refers to where stage2 lives
 # Use CDROM installation media (if dvd is used)
 #cdrom
 
@@ -34,7 +34,7 @@ clearpart --none --initlabel
 # System services
 # services --enabled="chronyd"
 
-repo --name=epel-mirror mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=$basearch
+repo --name=epel-mirror --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=x86_64
 #repo --name=mirror --mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=fedora-$releasever&arch=$basearch
 #repo --name=updates2 --mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=updates-released-f$releasever&arch=$basearch
 
