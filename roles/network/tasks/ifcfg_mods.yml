@@ -6,6 +6,7 @@
 # Disconnects the slaves quickly
 - name: Stop the LAN/Bridge on F21
   shell: nmcli con delete id xsce-LAN
+  ignore_errors: True
   changed_when: False
   when: num_lan_interfaces != "0" or xsce_wireless_lan_iface != "none"
 
