@@ -154,7 +154,7 @@
   register: ifcfg_files
   changed_when: False
   ignore_errors: True
-  when: num_lan_interfaces >= "1" or xsce_wireless_lan_iface != "none"
+  when: num_lan_interfaces >= 1 or xsce_wireless_lan_iface != "none"
 
 # use value only if present
 - name: Setting detected lan
