@@ -223,6 +223,10 @@ watchdog:
   - postgresql
   - squid
 
+# teamviewer
+teamviewer_install: False
+teamviewer_enabled: False
+
 # vnstat
 vnstat_install: True
 vnstat_enabled: False
