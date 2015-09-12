@@ -8,7 +8,7 @@
   shell: nmcli con delete id xsce-LAN
   ignore_errors: True
   changed_when: False
-  when: num_lan_interfaces != "0" or xsce_wireless_lan_iface != "none"
+  when: xsce_prepped and (num_lan_interfaces != "0" or xsce_wireless_lan_iface != "none")
 
 # clear all non WAN ifcfg files
 # needs ignore_errors if xsce-LAN was deleted above
