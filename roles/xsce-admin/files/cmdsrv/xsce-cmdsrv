@@ -608,8 +608,11 @@ def cmd_handler(cmd_msg):
 
 def do_test(cmd_info):
 
-    resp = cmd_success("TEST")
-    return (resp)
+    #resp = cmd_success("TEST")
+    #return (resp)
+    outp = subprocess.check_output(["scripts/test.sh"])
+    json_outp = json_array("TEST",outp)
+    return (json_outp)
 
 def list_library(cmd_info):
     libr_list = {}
