@@ -91,12 +91,12 @@
 - name: Grap clean copy of xs-gen-iptables
   template: src={{ item.0 }}
             dest={{ item.1 }}
-            owner=root
-            group=root
-            mode=0755
+            owner='root'
+            group='root'
+            mode='0755'
   with_items:
-   - [ 'gateway/xs-gen-iptables', '/usr/bin/xs-gen-iptables' ]
-   - [ 'gateway/check-LAN', '/usr/bin/check-LAN' ]
+   - { 0: 'gateway/xs-gen-iptables', 1: '/usr/bin/xs-gen-iptables' }
+   - { 0: 'gateway/check-LAN', 1: '/usr/bin/check-LAN' }
 
 - name: Add squid to service list
   ini_file: dest='{{ service_filelist }}'
