@@ -174,7 +174,7 @@
   when: discovered_wireless_iface != "none" and discovered_wireless_iface != xsce_wan_iface
 
 - name: Get a list of ifcfg files to delete
-  shell: "ls -1 /etc/sysconfig/network-scripts/ifcfg-* | grep -v -e ifcfg-lo  -e ifcfg-WAN -e ap_device"
+  shell: "ls -1 /etc/sysconfig/network-scripts/ifcfg-* | grep -v -e ifcfg-lo  -e ifcfg-WAN -e {{ ap_device }}"
   register: ifcfg_files
   changed_when: False
   ignore_errors: True
