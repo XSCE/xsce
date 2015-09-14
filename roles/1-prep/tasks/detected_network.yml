@@ -78,6 +78,20 @@
     has_ifcfg_gw: "{{ ifcfg_gw_mac.stdout|trim }}"
   when: ifcfg_gw_mac is defined and ifcfg_gw_mac.stdout != ""
 
+# could use something else
+- name: Find wifi gateway config if present
+  shell: egrep -rn ESSID /etc/sysconfig/network-scripts/ifcfg* | gawk -F ':' '{print $1}'
+  register: ifcfg_WAN_wifi
+  ignore_errors: True
+
+#returns path
+- name: Setting has_wifi_gw based on ESSID if found
+  set_fact:
+    has_wifi_gw: "{{ item|trim }}"
+  when: ifcfg_WAN_wifi.changed and item|trim != ""
+  with_items:
+      - "{{ ifcfg_WAN_wifi.stdout_lines }}"
+
 # WIRELESS -- if any wireless is detected as gateway, it becomes WAN
 - name: Look for any wireless interfaces
   shell: "cat /proc/net/wireless | grep -v -e Inter -e face | gawk -F: '{print $1}' | head -n1"
