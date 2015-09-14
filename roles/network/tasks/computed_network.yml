@@ -2,9 +2,8 @@
 # ifcfg-WAN auto-creation/moving with XOs using NM/system-connections/
 - name: Setting XO has wifi gateway
   set_fact:
-     has_WAN: True
-     user_lan_iface: "{{ discovered_wan_iface }}"
-  when: discovered_wan_iface != "none" and xo_model != "none" 
+     user_wan_iface: "{{ discovered_wan_iface }}"
+  when: discovered_wan_iface != "none" and xo_model != "none" and has_ifcfg_gw == "none"
 
 # static backout suppy new template file
 - name: undo gui-static-wan by requesting new template file
