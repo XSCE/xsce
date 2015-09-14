@@ -80,7 +80,7 @@
 
 # could use something else
 - name: Find wifi gateway config if present
-  shell: egrep -rn ESSID /etc/sysconfig/network-scripts/ifcfg* | gawk -F ':' '{print $1}'
+  shell: egrep -rn ESSID /etc/sysconfig/network-scripts/ifcfg* | gawk -F ':' '{print $1}' | gawk -F '/' '{print $5}'
   register: ifcfg_WAN_wifi
   ignore_errors: True
 
@@ -91,6 +91,16 @@
   when: ifcfg_WAN_wifi.changed and item|trim != ""
   with_items:
       - "{{ ifcfg_WAN_wifi.stdout_lines }}"
+
+- name: Finding device for wifi AP gateway
+  shell: egrep -rn DEVICE /etc/sysconfig/network-scripts/{{ has_wifi_gw }} |  gawk -F '=' '{print $2}'
+  register: AP_device
+  when: has_wifi_gw != "none" and has_ifcfg_gw != "none"
+
+- name: Setting wifi device
+  set_fact:
+    ap_device: "{{ AP_device.stdout }}"
+  when: AP_device.stdout is defined and AP_device.stdout != ""
 
 # WIRELESS -- if any wireless is detected as gateway, it becomes WAN
 - name: Look for any wireless interfaces
@@ -125,7 +135,7 @@
 
 # LAN - pick non WAN's
 - name: Create list of  LAN (non wan) ifaces
-  shell: "/sbin/ip link show | grep -v -e wwlan -e ppp -e lo -e br0: -e tun -e {{ device_gw }} | grep mtu | gawk -F: '{print $2}' "
+  shell: "/sbin/ip link show | grep -v -e wwlan -e ppp -e lo -e br0: -e tun -e {{ device_gw }} -e {{ ap_device }}| grep mtu | gawk -F: '{print $2}' "
   register: lan_list_result
   ignore_errors: True
   changed_when: false
@@ -140,7 +150,7 @@
       - "{{ lan_list_result.stdout_lines }}"
 
 - name: Count LAN ifaces
-  shell: "/sbin/ip link show | grep -v  -e wwlan -e ppp -e lo -e br0: -e tun -e {{ device_gw }} | grep mtu | wc | gawk '{print $1}'"
+  shell: "/sbin/ip link show | grep -v  -e wwlan -e ppp -e lo -e br0: -e tun -e {{ device_gw }} -e {{ ap_device }}| grep mtu | wc | gawk '{print $1}'"
   register: num_lan_interfaces_result
   ignore_errors: True
   changed_when: false
@@ -164,7 +174,7 @@
   when: discovered_wireless_iface != "none" and discovered_wireless_iface != xsce_wan_iface
 
 - name: Get a list of ifcfg files to delete
-  shell: "ls -1 /etc/sysconfig/network-scripts/ifcfg-* | grep -v -e ifcfg-lo  -e ifcfg-WAN"
+  shell: "ls -1 /etc/sysconfig/network-scripts/ifcfg-* | grep -v -e ifcfg-lo  -e ifcfg-WAN -e ap_device"
   register: ifcfg_files
   changed_when: False
   ignore_errors: True

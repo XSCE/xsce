@@ -24,7 +24,7 @@
 # We should have the LAN torndown at this point. 
 
 - name: Finding connection name for wifi AP gateway first
-  shell: egrep -rn NAME {{ has_wifi_gw }} |  gawk -F '=' '{print $2}'
+  shell: egrep -rn NAME /etc/sysconfig/network-scripts/{{ has_wifi_gw }} |  gawk -F '=' '{print $2}'
   register: ap_name
   when: has_wifi_gw != "none" and has_ifcfg_gw != "none"
 
