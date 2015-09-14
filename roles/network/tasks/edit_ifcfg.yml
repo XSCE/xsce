@@ -1,5 +1,6 @@
 - name: Rename supplied gateway ifcfg file to WAN if present
   shell: mv "{{ has_ifcfg_gw }}" /etc/sysconfig/network-scripts/ifcfg-WAN
+  when: has_wifi_gw == "none"
 
 - name: Turn off isp nameservers
   lineinfile: state=present
@@ -20,12 +21,14 @@
               regexp='^UUID'
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
 
+# Leave wifi as is NAME=<AP> needs to match keyring name.
 - name: Fix the NM name
   lineinfile: state=present
               backrefs=yes
               regexp='^NAME'
               line='NAME="xsce-WAN"'
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+  when: has_wifi_gw == "none"
 
 # testpoint - quoting and present
 # note DEVICE can change what is displayed via "ip and friends"
