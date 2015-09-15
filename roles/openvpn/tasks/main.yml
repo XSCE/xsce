@@ -5,6 +5,7 @@
         state=present
   with_items:
         - openvpn
+        - nmap
   tags:
     - download
 
