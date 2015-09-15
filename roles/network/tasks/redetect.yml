@@ -23,6 +23,10 @@
 ### clear all connections first
 # We should have the LAN torndown at this point. 
 
+- name: No ifcfg-WAN known
+  debug: msg="NO WAN known"
+  when: not has_WAN
+
 - name: Finding connection name for wifi AP gateway first
   shell: egrep -rn NAME /etc/sysconfig/network-scripts/{{ has_wifi_gw }} |  gawk -F '=' '{print $2}'
   register: ap_name
@@ -39,24 +43,11 @@
   register: dhcp_wifi_results
   when: try_wifi is defined and try_wifi.changed
 
-# We have the DEVICE?
-- name: Now setting xsce_wan_iface based on wifi
-  set_fact: 
-     xsce_wan_iface: "{{ dhcp_wifi_results.stdout }}"
-     dhcp_good: True
-     has_WAN: True
-  when: dhcp_wifi_results.stdout is defined and dhcp_wifi_results.stdout != ""
-
-# overwrite old backup for now.
-#- name: Backing up ifcfg-WAN for wifi
-#  shell: mv {{ ifcfg_WAN_wifi }} /etc/sysconfig/network-scripts/ifcfg-WAN-wifi
-#  when: dhcp_wifi_results.stdout is defined and dhcp_wifi_results.stdout == "" and has_wifi_gw != "none"
-
 - name: Trying ifcfg-WAN second
   shell: nmcli conn up id xsce-WAN
   register: dhcp_WAN
   ignore_errors: yes
-  when: has_WAN and has_wifi_gw == "none"
+  when: has_WAN
 
 - name: BAD ifcfg-WAN
   debug: msg="BAD WAN"
@@ -71,13 +62,17 @@
       has_WAN: False
   when: dhcp_WAN is defined and dhcp_WAN|failed
 
+# We have the DEVICE?
+- name: Now setting xsce_wan_iface based on wifi
+  set_fact: 
+     xsce_wan_iface: "{{ dhcp_wifi_results.stdout }}"
+     dhcp_good: True
+     has_WAN: True
+  when: dhcp_wifi_results.stdout is defined and dhcp_wifi_results.stdout != ""
+
 - name: interface list
   shell: ls /sys/class/net | grep -v -e lo
   register: adapter_list
-
-- name: No ifcfg-WAN known
-  debug: msg="NO WAN known"
-  when: not has_WAN
 
 # discovered_wireless_iface might need work
 - name: Try dhcp on all wired devices 
@@ -99,10 +94,6 @@
      dhcp_good: True
   when: dhcp_1BY1_results.stdout is defined and dhcp_1BY1_results.stdout != "" and not has_WAN
 
-# the default of none results in using create_ifcfg.yml or edit_ifcfg next 
-# based on present of ifcfg-DEVICE just have to set has_ifcfg_gw to replace 
-# what was in detected in 1-prep 
-
 - name: Find gateway config based on device
   shell: egrep -rn {{ xsce_wan_iface }} /etc/sysconfig/network-scripts/ifcfg* | gawk -F ':' '{print $1}'
   register: ifcfg_dhcp_device
@@ -110,7 +101,7 @@
   changed_when: False
   when: dhcp_good
 
-- name: Setting has_ifcfg_gw based on device if found
+- name: Setting has ifcfg gw based on device if found
   set_fact:
     has_ifcfg_gw: "{{ item|trim }}"
   when: ifcfg_dhcp_device.stdout_lines is defined and item|trim != ""
@@ -125,11 +116,3 @@
      xsce_lan_iface: "none"
   when: dhcp_good  and adapter_count.stdout|int == "1"
 
-##- name: Release NM's hold on the wifi
-#  
-#  when: ifcfg_WAN_wifi is defined and ifcfg_WAN_wifi == "/etc/sysconfig/network-scripts/ifcfg-WAN-wifi" and dhcp_good
-
-# might just be out of range no change with no dhcp lease
-#- name: Restoring old wifi config gatway not found 
-#  shell: mv -f /etc/sysconfig/network-scripts/ifcfg-WAN-wifi "{{ ifcfg_WAN_wifi }}" 
-#  when: ifcfg_WAN_wifi is defined and ifcfg_WAN_wifi != "none" and not dhcp_good

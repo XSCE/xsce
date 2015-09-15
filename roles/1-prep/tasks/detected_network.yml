@@ -58,7 +58,7 @@
   when: device_gw != "none"
 
 # last match wins
-- name: Setting has_ifcfg_gw based on device if found
+- name: Setting has ifcfg gw based on device if found
   set_fact:
     has_ifcfg_gw: "{{ item|trim }}"
   when: ifcfg_gw_device.stdout_lines is defined and item|trim != "" and item|trim != "/etc/sysconfig/network-scripts/ifcfg-LAN"
@@ -73,7 +73,7 @@
   changed_when: False
   when: 'ansible_default_ipv4.gateway is defined'
 
-- name: Set has_ifcfg_gw based on on macaddress if found
+- name: Set has ifcfg gw based on on macaddress if found
   set_fact:
     has_ifcfg_gw: "{{ ifcfg_gw_mac.stdout|trim }}"
   when: ifcfg_gw_mac is defined and ifcfg_gw_mac.stdout != ""
@@ -84,7 +84,7 @@
   register: ifcfg_WAN_wifi
   ignore_errors: True
 
-#returns path
+#returns file name
 - name: Setting has_wifi_gw based on ESSID if found
   set_fact:
     has_wifi_gw: "{{ item|trim }}"
