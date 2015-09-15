@@ -29,15 +29,12 @@
     - download
 
 - name: Install iptables services
-  template: src={{ item.src }}
-            dest={{ item.dest }}
-            owner={{ item.owner }}
-            group={{ item.group }}
-            mode={{ item.mode }}
+  template: src={{ item.0 }}
+            dest={{ item.1 }}
+            owner='root'
+            group='root'
+            mode={{ item.2 }}
   with_items:
-   - src: 'gateway/iptables-config'
-     dest: '/etc/sysconfig/iptables-config'
-     owner: 'root'
-     group: 'root'
-     mode: '0644'
+   - { 0: 'gateway/iptables-config', 1: 'etc/sysconfig/iptables-config', 2: '0644' }
+   - { 0: 'gateway/check-LAN', 1: '/usr/bin/check-LAN', 2: '0755' }
 
