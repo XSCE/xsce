@@ -24,6 +24,8 @@ xsce_lan_iface: "none"
 xsce_wan_iface: "none"
 device_gw: "none"
 has_ifcfg_gw: "none"
+has_wifi_gw: "none"
+ap_device: "none"
 
 # WiFi
 ssid: XSCE
