@@ -12,7 +12,7 @@
 # We only got here by way of no detected gateway, lets see if we can pick-up 
 # transient change like cable issues.  
 
-- name: BAD DHCP
+- name: BAD DHCP defaults
   set_fact:
     dhcp_good: False
 
@@ -20,55 +20,56 @@
 - name: Disable dhcp server just because
   service: name=dhcpd state=stopped
 
-# could use something else
-- name: Find wifi gateway config if present
-  shell: egrep -rn ESSID /etc/sysconfig/network-scripts/ifcfg* | gawk -F ':' '{print $1}'
-  register: ifcfg_WAN_wifi
-  ignore_errors: True
-  changed_when: False
-
-#returns path
-- name: Setting has_wifi_gw based on ESSID if found
-  set_fact:
-    has_wifi_gw: "{{ item|trim }}"
-  when: ifcfg_WAN_wifi.stdout_lines is defined and item|trim != ""
-  with_items:
-      - "{{ ifcfg_WAN_wifi.stdout_lines }}"
-
 ### clear all connections first
 # We should have the LAN torndown at this point. 
 
-- name: Trying ifcfg-WAN first
+- name: Finding connection name for wifi AP gateway first
+  shell: egrep -rn NAME /etc/sysconfig/network-scripts/{{ has_wifi_gw }} |  gawk -F '=' '{print $2}'
+  register: ap_name
+  when: has_wifi_gw != "none" and has_ifcfg_gw != "none"
+
+- name: Trying wifi first
+  shell: nmcli conn up id {{ ap_name.stdout }}
+  register: try_wifi 
+  ignore_errors: yes
+  when: ap_name is defined and ap_named.changed
+
+- name: Checking for WiFi gateway
+  shell: sleep 5 | ip route | grep default | awk '{print $5}'
+  register: dhcp_wifi_results
+  when: try_wifi is defined and try_wifi.changed
+
+# We have the DEVICE?
+- name: Now setting xsce_wan_iface based on wifi
+  set_fact: 
+     xsce_wan_iface: "{{ dhcp_wifi_results.stdout }}"
+     dhcp_good: True
+     has_WAN: True
+  when: dhcp_wifi_results.stdout is defined and dhcp_wifi_results.stdout != ""
+
+# overwrite old backup for now.
+#- name: Backing up ifcfg-WAN for wifi
+#  shell: mv {{ ifcfg_WAN_wifi }} /etc/sysconfig/network-scripts/ifcfg-WAN-wifi
+#  when: dhcp_wifi_results.stdout is defined and dhcp_wifi_results.stdout == "" and has_wifi_gw != "none"
+
+- name: Trying ifcfg-WAN second
   shell: nmcli conn up id xsce-WAN
   register: dhcp_WAN
   ignore_errors: yes
-  when: has_WAN
+  when: has_WAN and has_wifi_gw == "none"
 
 - name: BAD ifcfg-WAN
   debug: msg="BAD WAN"
   when: dhcp_WAN is defined and dhcp_WAN|failed
 
-# don't overwrite old backup for now.
-- name: Backing up ifcfg-WAN for wifi
-  shell: mv {{ ifcfg_WAN_wifi }} /etc/sysconfig/network-scripts/ifcfg-WAN-wifi
-  when: has_wifi_gw is defined and ifcfg_WAN_wifi != "/etc/sysconfig/network-scripts/ifcfg-WAN-wifi"
-
 - name: Delete ifcfg-WAN
   shell: rm -f /etc/sysconfig/network-scripts/ifcfg-WAN
-  when: dhcp_WAN is defined and dhcp_WAN|failed and not has_wifi_gw is defined
+  when: dhcp_WAN is defined and dhcp_WAN|failed
 
 - name: Setting no ifcfg-WAN
   set_fact:
       has_WAN: False
-  when: dhcp_WAN is defined and dhcp_WAN|failed and not has_wifi_gw is defined
-# end WAN deletion
-
-# we should never get here on a first pass with the other two methods in play
-# but the file could get deleted so we need to know the raw interfaces names 
-# and count
-#- name: No ifcfg-WAN response
-#  debug: msg="NO WAN response"
-#  when: not dhcp_WAN is defined
+  when: dhcp_WAN is defined and dhcp_WAN|failed
 
 - name: interface list
   shell: ls /sys/class/net | grep -v -e lo
@@ -116,44 +117,6 @@
   with_items:
       - "{{ ifcfg_dhcp_device.stdout_lines }}"
 
-# vars users should of declared user_wan_iface so we would not have to hunt
-# lets start with the last known gateway device_gw
-#- name: Trying last known gateway first
-#  set_fact:
-#    xsce_wan_iface: "{{ device_gw }}"
-#    has_WAN: True
-#  when: discovered_wireless_iface != device_gw and xsce_wireless_lan_iface != device_gw and and device_gw != "none" and gui_wan_iface == "unset" and num_lan_interfaces_result == "2"
-
-# last match wins
-#- name: Best guess gone next 
-#  set_fact: "{{ item|trim }}"
-#   when: item|trim != discovered_wireless_iface and item|trim != xsce_wireless_lan_iface and item|trim != device_gw and gui_wan_iface == "unset" and num_lan_interfaces_result == "2"
-#  with_items:
-#      - "{{ adapter_list.stdout_lines }}"
-
-# use wan_* for static info
-#- include: create_ifcfg.yml
-#  when: xsce_wan_iface != "none" and and not has_WAN and has_ifcfg_gw == "none" and gui_static_wan_ip != "unset" and gui_static_wan_ip != "undefined" and gui_static_wan is defined 
-
-#- include: enable_wan.yml
-#  when: gui_static_wan_ip != "unset" and gui_static_wan_ip != "undefined" and gui_static_wan is defined
-
-#- name: ping test 1
-#  shell: ping -c 5 "{{ gui_static_wan_gateway }}" | grep -q icmp_req
-#  register: ping_results_1
-#  when: gui_static_wan_ip != "unset" and gui_static_wan_ip != "undefined" and gui_static_wan is defined
-
-# depending on if a plugin for NM, we might have to handle
-# taredown differently with 'c delete' and with 'd disconnect'
-# - with delete the file is gone - with disconnect the file is around
-# We'll see 
-#- name: Now delete the ifcfg via nmcli
-#  shell: nmcli d disconnect "{{ xsce_wan_iface }}"
-#  ignore_errors: yes
-#  when: not has_WAN and has_ifcfg_gw != "none"
-
-#  when: ping_results_1.stdout|int == "1" 
-
 ### keep at end.
 ### If dhcp fails the single interface will become LAN again because we didn't prevent the creation
 # Now disable LAN if single interface
@@ -167,6 +130,6 @@
 #  when: ifcfg_WAN_wifi is defined and ifcfg_WAN_wifi == "/etc/sysconfig/network-scripts/ifcfg-WAN-wifi" and dhcp_good
 
 # might just be out of range no change with no dhcp lease
-- name: Restoring old wifi config gatway not found 
-  shell: mv -f "{{ ifcfg_WAN_wifi }}" /etc/sysconfig/network-scripts/ifcfg-WAN
-  when: ifcfg_WAN_wifi is defined and ifcfg_WAN_wifi == "/etc/sysconfig/network-scripts/ifcfg-WAN-wifi" and dhcp_good
+#- name: Restoring old wifi config gatway not found 
+#  shell: mv -f /etc/sysconfig/network-scripts/ifcfg-WAN-wifi "{{ ifcfg_WAN_wifi }}" 
+#  when: ifcfg_WAN_wifi is defined and ifcfg_WAN_wifi != "none" and not dhcp_good
