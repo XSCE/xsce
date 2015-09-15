@@ -48,7 +48,7 @@
   shell: nmcli conn up id xsce-WAN
   register: dhcp_WAN
   ignore_errors: yes
-  when: has_WAN and has_wifi_gw == "none"
+  when: has_WAN
 
 - name: BAD ifcfg-WAN
   debug: msg="BAD WAN"
