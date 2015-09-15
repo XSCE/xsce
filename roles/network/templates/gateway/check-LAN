@@ -21,10 +21,10 @@ if [ -f /etc/sysconfig/xs_lan_device ]; then
         exit_clean
     else
         if [ "$LAN_DEVICE" = "br0" ]; then
-            SLAVES=`ls -1 /etc/sysconfig/network-scripts/ifcfg-* \
-            | grep -v -e ifcfg-lo  -e ifcfg-WAN -e ifcfg-LAN`
-            SLAVE_COUNT=`ls -1 /etc/sysconfig/network-scripts/ifcfg-* \
-            | grep -v -e ifcfg-lo  -e ifcfg-WAN -e ifcfg-LAN | wc | awk '{print $1}'`
+            SLAVES=`egrep -rn BRIDGE=br0 /etc/sysconfig/network-scripts/ifcfg-* \
+            | gawk -F'[-:]' '{print $3}'`
+            SLAVE_COUNT=`egrep -rn BRIDGE=br0 /etc/sysconfig/network-scripts/ifcfg-* \
+            | wc | awk '{print $1}'`
 
             logger "check-LAN: looking for $SLAVE_COUNT slaves"
 
