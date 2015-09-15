@@ -1,5 +1,6 @@
-# just lie about has_WAN with active gateway present on XOs to suppress
-# ifcfg-WAN auto-creation/moving with XOs using NM/system-connections/
+# just lie about active gateway present on XOs to suppress ifcfg-WAN
+# auto-creation/moving with XOs using NM/system-connections/ via keyfile.
+# ifcfg-rh acts on /etc/sys*/net*/ifcfg-* where we search for devices.
 - name: Setting XO has wifi gateway
   set_fact:
      user_wan_iface: "{{ discovered_wan_iface }}"
