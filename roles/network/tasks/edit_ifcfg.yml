@@ -46,3 +46,4 @@
 - name: Now setting ifcfg-WAN True after moving file
   set_fact:
     has_WAN: True
+  when: has_wifi_gw == "none"

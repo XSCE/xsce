@@ -67,7 +67,6 @@
   set_fact: 
      xsce_wan_iface: "{{ dhcp_wifi_results.stdout }}"
      dhcp_good: True
-     has_WAN: True
   when: dhcp_wifi_results.stdout is defined and dhcp_wifi_results.stdout != ""
 
 - name: interface list
@@ -77,7 +76,7 @@
 # discovered_wireless_iface might need work
 - name: Try dhcp on all wired devices 
   shell: nmcli d connect "{{ item|trim }}"
-  when: item|trim != discovered_wireless_iface and item|trim != xsce_wireless_lan_iface and not has_WAN
+  when: item|trim != discovered_wireless_iface and item|trim != xsce_wireless_lan_iface and not dhcp_good
   with_items:
       - "{{ adapter_list.stdout_lines }}"
 
@@ -85,7 +84,7 @@
 - name: Checking for gateway
   shell: sleep 5 | ip route | grep default | awk '{print $5}'
   register: dhcp_1BY1_results
-  when: not has_WAN
+  when: not has_WAN and not dhcp_good
 
 # We have the DEVICE?
 - name: Now setting xsce_wan_iface via nmcli

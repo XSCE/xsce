@@ -21,6 +21,7 @@
               regexp='^NAME'
               line='NAME="xsce-WAN"'
               dest=/etc/sysconfig/network-scripts/ifcfg-WAN
+  when: has_WAN and xsce_wan_iface != "none"
 
 - name: Turn on ONBOOT for WAN on reboot if enabled
   lineinfile: state=present
