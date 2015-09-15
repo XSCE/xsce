@@ -39,14 +39,6 @@
   register: dhcp_wifi_results
   when: try_wifi is defined and try_wifi.changed
 
-# We have the DEVICE?
-- name: Now setting xsce_wan_iface based on wifi
-  set_fact: 
-     xsce_wan_iface: "{{ dhcp_wifi_results.stdout }}"
-     dhcp_good: True
-     has_WAN: True
-  when: dhcp_wifi_results.stdout is defined and dhcp_wifi_results.stdout != ""
-
 # overwrite old backup for now.
 #- name: Backing up ifcfg-WAN for wifi
 #  shell: mv {{ ifcfg_WAN_wifi }} /etc/sysconfig/network-scripts/ifcfg-WAN-wifi
@@ -70,6 +62,14 @@
   set_fact:
       has_WAN: False
   when: dhcp_WAN is defined and dhcp_WAN|failed
+
+# We have the DEVICE?
+- name: Now setting xsce_wan_iface based on wifi
+  set_fact: 
+     xsce_wan_iface: "{{ dhcp_wifi_results.stdout }}"
+     dhcp_good: True
+     has_WAN: True
+  when: dhcp_wifi_results.stdout is defined and dhcp_wifi_results.stdout != ""
 
 - name: interface list
   shell: ls /sys/class/net | grep -v -e lo
@@ -110,7 +110,7 @@
   changed_when: False
   when: dhcp_good
 
-- name: Setting has_ifcfg_gw based on device if found
+- name: Setting has ifcfg gw based on device if found
   set_fact:
     has_ifcfg_gw: "{{ item|trim }}"
   when: ifcfg_dhcp_device.stdout_lines is defined and item|trim != ""
