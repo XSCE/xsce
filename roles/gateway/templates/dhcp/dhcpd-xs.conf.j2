@@ -8,6 +8,32 @@ option domain-name "{{ xsce_domain }}";
 option domain-name-servers      172.18.96.1;
 option ntp-servers		172.18.96.1;
 
+class "xo" {
+        match if substring(hardware,1,3)=00:17:c4
+              or substring(hardware,1,3)=20:7c:8f
+              or substring(hardware,1,3)=20:68:9d
+              or substring(hardware,1,3)=68:a3:c4
+              or substring(hardware,1,3)=74:de:2b
+              or substring(hardware,1,3)=9c:b7:0d
+              or substring(hardware,1,3)=44:6d:57
+              or substring(hardware,1,3)=74:e5:43
+              or substring(hardware,1,3)=20:68:9d
+              or substring(hardware,1,3)=20:16:d8
+              or substring(hardware,1,3)=2c:d0:5a
+              or substring(hardware,1,3)=24:fd:52
+              or substring(hardware,1,3)=48:d2:24
+              or substring(hardware,1,3)=a4:db:30
+              or substring(hardware,1,3)=40:f0:2f
+              or substring(hardware,1,3)=28:e3:47
+              or substring(hardware,1,3)=b8:ee:65
+              or substring(hardware,1,3)=18:cf:5e
+              or substring(hardware,1,3)=30:10:b3
+              or substring(hardware,1,3)=ac:b5:7d
+              or substring(hardware,1,3)=d0:53:49
+              or substring(hardware,1,3)=ac:e0:10
+              or substring(hardware,1,3)=b8:86:87;
+}
+
 subnet 172.18.96.0 netmask 255.255.224.0 {
 	option routers			172.18.96.1;
 	option subnet-mask		255.255.224.0;
@@ -15,7 +41,7 @@ subnet 172.18.96.0 netmask 255.255.224.0 {
 	# this is the whole range we have available - 8K addresses
 	# range                           172.18.96.2 172.18.127.254;
 	# instead, we'll save 510 addresses for later. 
-	range                           172.18.96.2 172.18.125.254;
+	# range                           172.18.96.2 172.18.125.254;
 	# the other /24s:
 	# -> 172.18.126.0/24 for static IP addresses
 	#    for printers, AP management consoles, etc.
@@ -24,6 +50,38 @@ subnet 172.18.96.0 netmask 255.255.224.0 {
 	
         # As this subnet is wired or wifi a/b/g, these lease 
 	#    times are on the long side
+	
+	# Rango para las XO
+	pool {
+		range 172.18.96.2 172.18.123.254;
+		allow members of "xo";
+	}
+	# Rango para dispositivos no XO
+	pool {
+		range 172.18.125.1 172.18.125.254;
+		deny members of "xo";
+	}
+	# Equipos con IP reservada por MAC
+	host tecra {
+		hardware ethernet 00:27:10:94:8e:44;
+		fixed-address 172.18.124.10;
+	}
+	# Equipos con IP reservada por MAC
+	host lenovox200 {
+	 	hardware ethernet 00:21:6a:0c:67:04;
+		fixed-address 172.18.124.20;
+	}
+	# Equipos con IP reservada por MAC
+	host samsungx {
+	 	hardware ethernet f4:09:d8:75:40:86;
+		fixed-address 172.18.124.30;
+	}
+	# Equipos con IP reservada por MAC
+	# host dispositivoX {
+	# 	hardware ethernet 00:00:00:ff:ff:ff;
+	#	fixed-address 172.18.124.40;
+	# }
+
 	default-lease-time 	10800;
 	max-lease-time 		21600;
 }

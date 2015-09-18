@@ -12,6 +12,13 @@
         mode=0755
         state=directory
 
+#- name: Change ssh port
+#  lineinfile: backup=yes
+#              dest=/etc/ssh/sshd_config
+#              regexp='^#Port 22'
+#              line='Port 8222'
+#              state=present
+
 - name: Disable root login with password 
   lineinfile: backup=yes
               dest=/etc/ssh/sshd_config
