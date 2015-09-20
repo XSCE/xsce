@@ -2,11 +2,26 @@
   shell: dnf install -y yum
   when: ansible_distribution == "Fedora" and ansible_distribution_version|int >= 22
 
+- name: Install yum packages
+  yum: name={{ item }}
+       state=present
+  with_items:
+   - yum-utils
+   - createrepo
+
+- name: Create local yum repo
+  shell: createrepo {{ yum_packages_dir }}
+
+- name: Install local repo file.
+  template: dest=/etc/yum.repos.d/xsce-local.repo
+            src=local.repo
+            owner=root
+            mode=0644
+
 - name: Install common packages
   yum: name={{ item }}
        state=present
   with_items:
-   - createrepo
    - acpid
    - mlocate
    - rsync
@@ -21,7 +36,6 @@
    - logrotate
    - xml-common
    - make
-   - yum-utils
    - tar
    - unzip
    - bzip2
