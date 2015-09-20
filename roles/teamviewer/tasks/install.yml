@@ -1,6 +1,4 @@
-
 # we need to install X11 and the xfce display manager
-
 - name: Install xfce group of packages
   shell: "yum groupinstall -y xfce"
   when: xo_model == "none" and not {{ use_cache }} and not {{ no_network }} and ansible_distribution_version <= "20"
@@ -31,7 +29,8 @@
   tags:
     - download
 
+# F22 has issues with yum localinstall exclude for now
 - name: Do the install of teamviewer, pulling in any required dependencies
   shell: "yum localinstall -y {{ downloads_dir }}/{{ teamviewer_rpm_file }}"
   when: teamviewer_install and not {{ use_cache }} and not {{ no_network }}
-           and xo_model == "none"
+           and xo_model == "none" and ansible_distribution_version <= "21"
