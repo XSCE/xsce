@@ -1,8 +1,7 @@
 #F22 has issues with yum localinstall exclude for now
 - name: Install Teamviewer if intel
   include: install.yml
-  when: ansible_architecture == "i386" or ansible_architecture == "x86_64" 
-            and teamviewer_install and ansible_distribution_version <= "21" 
+  when: teamviewer_install and ansible_distribution_version <= "21" 
 
 - name: Add teamviewer to service list
   ini_file: dest='{{ service_filelist }}'
