@@ -1,7 +1,9 @@
+# using no_NM_reload alias in meta to exclude F18
 - name: Install dependent packages
   yum: name={{ item }}
        state=installed
   with_items:
+    - python-selenium
     - python-psutil
     - expect
   tags:
