@@ -8,6 +8,8 @@
   with_items:
    - yum-utils
    - createrepo
+  tags:
+    - download
 
 - name: Create local yum repo
   shell: createrepo {{ yum_packages_dir }}
