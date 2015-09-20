@@ -3,32 +3,27 @@
            state=stopped
   when: xsce_wireless_lan_iface != "none"
 
-# Disconnects the slaves quickly
-- name: Stop the LAN/Bridge on F21
+- name: Stop the LAN/Bridge deleting xsce-LAN
   shell: nmcli con delete id xsce-LAN
   ignore_errors: True
   changed_when: False
   when: xsce_prepped and (num_lan_interfaces != "0" or xsce_wireless_lan_iface != "none")
 
-# clear all non WAN ifcfg files
-# needs ignore_errors if xsce-LAN was deleted above
-- name: Now delete all non-gateway ifcfg files
-  shell: "rm -f {{ item }} "
-  ignore_errors: True
-  when: item|trim != device_gw and num_lan_interfaces != "0"
-  with_items:
-    - "{{ ifcfg_files.stdout_lines }}"
-
-# comment out Using GUI_WAN info and un-comment below
-## yet to come but device_gw is the first one to test.
-## vars/ users should set user_wan_iface to avoid messy redetect 
-- include: redetect.yml  
-  when: discovered_wan_iface == "none" and user_wan_iface == "auto"
-
 # move gateway if not WAN
 # might have wifi info if wireless is used as uplink.
 - include: edit_ifcfg.yml
   when: has_ifcfg_gw != "none" and has_ifcfg_gw != "/etc/sysconfig/network-scripts/ifcfg-WAN"
+
+# clear all bridge ifcfg files
+- name: Now delete slave bridge ifcfg files
+  shell: rm -f /etc/sysconfig/network-scripts/ifcfg-"{{ item }}"
+  when: item|trim != device_gw and (num_lan_interfaces != "0" or xsce_wireless_lan_iface != "none")
+  with_items:
+    - "{{ ifcfg_slaves.stdout_lines }}"
+
+## vars/ users should set user_wan_iface to avoid messy redetect 
+- include: redetect.yml  
+  when: discovered_wan_iface == "none" and user_wan_iface == "auto"
 
 # create ifcfg-WAN if missing
 # if we get here we have gateway but no ifcfg file
