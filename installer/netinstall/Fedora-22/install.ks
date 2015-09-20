@@ -50,6 +50,9 @@ nano
 %end
 
 %post
+# make kickstart see ansible
+export PATH=/usr/bin:/usr/sbin:/sbin:/bin:$PATH
+
 mkdir /root/debug
 # ensure network cards are turned on
 NICs=`ls /etc/sysconfig/network-scripts/ifcfg-*` 
@@ -96,14 +99,9 @@ cd /opt/schoolserver/xsce/
 EOF
 
 # now make xsce-prep active
-/sbin/chmod 755 /etc/rc.d/init.d/xsce-prep
-/sbin/restorecon /etc/rc.d/init.d/xsce-prep
-/sbin/chkconfig --add xsce-prep
-
-
-# make kickstart see ansible
-export PATH=/usr/bin:/usr/sbin:/sbin:/bin:$PATH
-echo "path is $PATH"
+chmod 755 /etc/rc.d/init.d/xsce-prep
+restorecon /etc/rc.d/init.d/xsce-prep
+chkconfig --add xsce-prep
 
 # make the default install path and clone
 mkdir -p /opt/schoolserver
