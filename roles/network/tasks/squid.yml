@@ -76,6 +76,7 @@
   service: name=squid
            state=stopped
   ignore_errors: yes
+  when: not installing
 
 - name: Add squid to service list
   ini_file: dest='{{ service_filelist }}'
