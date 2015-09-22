@@ -9,13 +9,3 @@
 - name: Disable wpa_supplicant
   service: name=wpa_supplicant
            enabled=no
-
-- name: Mask wpa_supplicant
-  shell: 'systemctl mask wpa_supplicant'
-
-- name: Stop wpa_supplicant
-  service: name=wpa_supplicant
-           state=stopped
-  ignore_errors: yes
-  when: not installing
-
