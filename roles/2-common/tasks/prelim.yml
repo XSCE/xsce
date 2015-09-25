@@ -18,3 +18,7 @@
            enabled=yes
   with_items:
     - sshd
+
+- name: Set default Timezone
+  shell: ln -sf /usr/share/zoneinfo/{{ xsce_TZ }} /etc/localtime
+  when xsce_TZ is defined and xsce_TZ != ""
