@@ -67,10 +67,9 @@
 
 - name: Disable dansguardian
   service: name=dansguardian
-           enabled=yes
-           state=started
+           enabled=no
+           state=stopped
   when: "not dansguardian"
-
 
  
 - name: Create xs_httpcache flag
