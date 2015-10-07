@@ -9,6 +9,7 @@
     - python-devel
     - python-pip
     - zeromq3-devel
+    - cracklib-python
   tags:
     - download
 

@@ -28,6 +28,9 @@ import ConfigParser
 import re
 import urllib2
 import string
+import crypt
+import spwd
+import cracklib
 
 # Config Files
 xsce_config_file = "/etc/xsce/xsce.env"
@@ -550,7 +553,8 @@ def cmd_handler(cmd_msg):
         "DEL-DOWNLOADS": del_downloads,
         "RESTART-KIWIX": restart_kiwix,
         "REBOOT": reboot_server,
-        "POWEROFF": poweroff_server
+        "POWEROFF": poweroff_server,
+        "CHGPW": change_password
         }
 
     # Check for Duplicate Command
@@ -1112,6 +1116,83 @@ def poweroff_server(cmd_info):
     resp = cmd_success_msg(cmd_info['cmd'], 'Power Off Initiated')
     rc = subprocess.check_output(["/usr/sbin/shutdown", "-P", "-t","5"])
     return (resp)
+
+def change_password(cmd_info):
+    print cmd_info['cmd_args']
+    try:
+        user = cmd_info['cmd_args']['user']
+        oldpasswd = cmd_info['cmd_args']['oldpasswd']
+        newpasswd = cmd_info['cmd_args']['newpasswd']
+    except:
+        return cmd_malformed(cmd_info['cmd'])
+
+    # Prevent shell injection on arguments - will disallow some legal characters from password
+    # Assume this is not needed as shell is false on call to chpasswd
+    #for key in cmd_info['cmd_args']:
+    #    match = re.search('[ ;,|<>()`=&\r\n]', cmd_info['cmd_args'][key])
+    #    if match != None:
+    #        return cmd_malformed(cmd_info['cmd'])
+
+    # May not set root password
+    if user == "root":
+        resp = cmd_error(cmd=cmd_info['cmd'], msg='May not change root password.')
+        return resp
+
+    # see if user exists
+    try:
+        spwddb = spwd.getspnam(user)
+    except:
+        resp = cmd_error(cmd=cmd_info['cmd'], msg='User not found or system error.')
+        return resp
+
+    # check old password - N.B. allows password guessing
+    readpasswd = spwddb[1]
+    pwparts = readpasswd.split('$')
+    salt = '$' + pwparts[1] + '$' +  pwparts[2] +'$'
+    calcpasswd = crypt.crypt(oldpasswd, salt)
+
+    if calcpasswd != readpasswd:
+        resp = cmd_error(cmd=cmd_info['cmd'], msg='Old Password Incorrect.')
+        return resp
+
+    # check password for valid characters and min length of 8 - need better regex as all characters are legal
+    #match = re.search('^[A-Za-z0-9#$+*]{8,}$', newpasswd)
+    #if match != None:
+    #    resp = cmd_error(cmd=cmd_info['cmd'], msg='Illegal Characters in Password.')
+    #    return resp
+
+    # check password strength
+    is_valid, message = isStrongPassword(newpasswd)
+    if not is_valid:
+        resp = cmd_error(cmd=cmd_info['cmd'], msg='Password Strength: ' + message)
+        return resp
+
+    # create new password hash
+    newhash = crypt.crypt(newpasswd, salt)
+    pwinput = user + ':' + newhash + '\n'
+
+    # finally change password
+    p = subprocess.Popen(['chpasswd', '-e'], stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
+    out = p.communicate(input=pwinput)[0]
+    rc =  p.returncode
+
+    if rc != 0:
+        resp = cmd_error(cmd=cmd_info['cmd'], msg='System Error: Failure to change password')
+    else:
+        resp = cmd_success_msg(cmd=cmd_info['cmd'], msg='Password Changed')
+    return resp
+
+def isStrongPassword(password):
+    message = ""
+    is_valid = True
+
+    try:
+        cracklib.VeryFascistCheck(password)
+    except ValueError, e:
+        is_valid = False
+        message = e.message
+
+    return is_valid, message
 
 def request_job(cmd_info, job_command, cmd_step_no=1, depend_on_job_id=-1, has_dependent="N"):
     global jobs_requested
