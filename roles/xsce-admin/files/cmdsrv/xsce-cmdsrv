@@ -1109,12 +1109,12 @@ def restart_kiwix(cmd_info):
 
 def reboot_server(cmd_info):
     resp = cmd_success_msg(cmd_info['cmd'], 'Reboot Initiated')
-    rc = subprocess.check_output(["/usr/sbin/shutdown", "-r", "-t","5"])
+    outp = subprocess.Popen(["scripts/reboot.sh"])
     return (resp)
 
 def poweroff_server(cmd_info):
     resp = cmd_success_msg(cmd_info['cmd'], 'Power Off Initiated')
-    rc = subprocess.check_output(["/usr/sbin/shutdown", "-P", "-t","5"])
+    outp = subprocess.Popen(["scripts/poweroff.sh"])
     return (resp)
 
 def change_password(cmd_info):
