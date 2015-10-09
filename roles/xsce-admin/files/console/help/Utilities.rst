@@ -1,6 +1,14 @@
 XSCE Admin Console - Utilities
 ==============================
-The options on this menu server to monitor and diagnose problems on the School Server.
+The options on this menu serve to monitor and diagnose problems on the School Server and to maintain some core data.
+
+###Change Password
+
+Use this menu option to change the XSCE Admin Password.
+
+The password should be at least 8 characters in length and include a mix of Upper Case, Lower Case, Numbers, and Symbols.  The server will also impose restrictions based the use of simple patterns like 123 and some words.
+
+Please note that there is no way to recover this password without logging directly into the server and changing it as root.
 
 ###Display Job Status
 

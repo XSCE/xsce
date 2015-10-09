@@ -32,6 +32,7 @@ Install Content
 Utilities
 ---------
 
+* Change Password
 * Display Job Status
 * Display Ansible Facts
 * Display XSCE.INI File
