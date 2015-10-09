@@ -41,6 +41,7 @@ xsce_ini_file = "/etc/xsce/xsce.ini"
 # All of these variables will be read from config files and recomputed in init()
 xsce_git_path = "/root/xsce"
 xsce_base_path = "/opt/schoolserver"
+xsce_cmdsrv_dbname = "xsce_cmdsrv.0.2.db"
 
 cmdsrv_no_workers = 5
 cmdsrv_job_poll_sleep_interval = 1
@@ -49,9 +50,7 @@ cmdsrv_max_concurrent_jobs = 7
 # Derived Variables
 xsce_cmdsrv_path = xsce_base_path + "/xsce_cmdsrv"
 xsce_cmdsrv_pid_file = "/var/run/xsce-cmdsrv.pid"
-# 2nd version of db file
-xsce_cmdsrv_dbname = "/xsce_cmdsrv.0.2.db"
-xsce_cmdsrv_dbpath = xsce_cmdsrv_path + xsce_cmdsrv_dbname
+xsce_cmdsrv_dbpath = xsce_cmdsrv_path + "/" + xsce_cmdsrv_dbname
 
 # Constants - ToDo add to xsce_cmdsrv_config_file
 squid_whitelist = "/etc/squid/sites.whitelist.txt"
@@ -1717,7 +1716,7 @@ def app_config():
 
     xsce_cmdsrv_path = xsce_base_path + "/xsce_cmdsrv"
     xsce_cmdsrv_pid_file = "/var/run/xsce-cmdsrv.pid"
-    xsce_cmdsrv_dbpath = xsce_cmdsrv_path + xsce_cmdsrv_dbname
+    xsce_cmdsrv_dbpath = xsce_cmdsrv_path + "/" + xsce_cmdsrv_dbname
 
 def read_xsce_cmdsrv_conf_file():
     global cmdsrv_no_workers
