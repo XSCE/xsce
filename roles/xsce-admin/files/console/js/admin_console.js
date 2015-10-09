@@ -559,6 +559,33 @@ function initStaticWanVars() {
   }
 }
 
+function setConfigVars ()
+{
+  cmd_args = {}
+  //alert ("in setConfigVars");
+  $('#Configure input').each( function(){
+    if (this.type == "checkbox") {
+      if (this.checked)
+      config_vars[this.name] = true; // must be true not True
+      else
+        config_vars[this.name] = false;
+      }
+      if (this.type == "text")
+      config_vars[this.name] = $(this).val();
+      if (this.type == "radio"){
+        fieldName = this.name;
+        fieldName = "input[name=" + this.name + "]:checked"
+        //consoleLog(fieldName);
+        config_vars[this.name] = $(fieldName).val();
+      }
+    });
+    cmd_args['config_vars'] = config_vars;
+    cmd = "SET-CONF " + JSON.stringify(cmd_args);
+    sendCmdSrvCmd(cmd, genericCmdHandler);
+    alert ("Saving Configuration.");
+    return true;
+  }
+
 function changePassword ()
 {
 	if ($("#xsce_admin_new_password").val() != $("#xsce_admin_new_password2").val()){
