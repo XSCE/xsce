@@ -41,6 +41,7 @@ xsce_ini_file = "/etc/xsce/xsce.ini"
 # All of these variables will be read from config files and recomputed in init()
 xsce_git_path = "/root/xsce"
 xsce_base_path = "/opt/schoolserver"
+xsce_cmdsrv_dbname = "xsce_cmdsrv.0.2.db"
 
 cmdsrv_no_workers = 5
 cmdsrv_job_poll_sleep_interval = 1
@@ -49,9 +50,7 @@ cmdsrv_max_concurrent_jobs = 7
 # Derived Variables
 xsce_cmdsrv_path = xsce_base_path + "/xsce_cmdsrv"
 xsce_cmdsrv_pid_file = "/var/run/xsce-cmdsrv.pid"
-# 2nd version of db file
-xsce_cmdsrv_dbname = "/xsce_cmdsrv.0.2.db"
-xsce_cmdsrv_dbpath = xsce_cmdsrv_path + xsce_cmdsrv_dbname
+xsce_cmdsrv_dbpath = xsce_cmdsrv_path + "/" + xsce_cmdsrv_dbname
 
 # Constants - ToDo add to xsce_cmdsrv_config_file
 squid_whitelist = "/etc/squid/sites.whitelist.txt"
@@ -765,7 +764,6 @@ def get_storage_info(cmd_info):
             dev_info['desc'] = dev_attr[6]
             dev_info['blocks'] = []
             dev_blk = dev_blk[1:]
-            #print dev_blk
             dev_blk = [a for a in dev_blk if a not in ['\n']]
             for blk in dev_blk: # blocks can be free or partitioned
                 #print "blk is " + blk
@@ -805,18 +803,31 @@ def get_storage_info(cmd_info):
 
 def get_disk_info():
     system_disks = {}
+    # all this is because blkid can return /dev/block instead of /dev/sd*
+    outp = subprocess.check_output(["/usr/bin/ls","-l","/dev/disk/by-uuid/"])
+    str_array = outp.split('\n')
+    str_array = [a for a in str_array if a not in ['']]
+    part_list = {}
+    for item in str_array[1:]: # first item is total
+        item_arr = item.split(' ')
+        item_uuid = item_arr[-3]
+        item_dev = item_arr[-1]
+        dev_split = item_dev.split('/')
+        item_dev = dev_split[-1]
+        part_list[item_uuid] = item_dev
+
     outp = subprocess.check_output(["/usr/sbin/blkid"])
     str_array = outp.split('\n')
     str_array = [a for a in str_array if a not in ['']]
     for item in str_array:
         disk_info = {}
-        item_arr = item.split(': ')
-        dev = item_arr[0]
-        item_attr_arr = item_arr[1].split(' ')
-        for attr in item_attr_arr:
+        item_attr_arr = item.split(' ')
+        for attr in item_attr_arr[1:]:
             if attr != "":
                 kv = attr.split('=')
-                disk_info[kv[0]] = kv[1]
+                disk_info[kv[0]] = kv[1][1:-1] # strip off leading and trailing double quotes
+        dev = part_list[disk_info['UUID']]
+        dev = "/dev/" + dev
         outp2 = subprocess.check_output(["/usr/bin/df", dev, "-m"])
         str_array2 = outp2.split('\n')
         params = str_array2[1]
@@ -825,6 +836,7 @@ def get_disk_info():
         disk_info['size_in_megs'] = parm_arr[1]
         disk_info['avail_in_megs'] = parm_arr[3]
         disk_info['mount_point'] = parm_arr[5]
+        #print disk_info
         system_disks[dev] = disk_info
     return (system_disks)
 
@@ -1109,12 +1121,12 @@ def restart_kiwix(cmd_info):
 
 def reboot_server(cmd_info):
     resp = cmd_success_msg(cmd_info['cmd'], 'Reboot Initiated')
-    rc = subprocess.check_output(["/usr/sbin/shutdown", "-r", "-t","5"])
+    outp = subprocess.Popen(["scripts/reboot.sh"])
     return (resp)
 
 def poweroff_server(cmd_info):
     resp = cmd_success_msg(cmd_info['cmd'], 'Power Off Initiated')
-    rc = subprocess.check_output(["/usr/sbin/shutdown", "-P", "-t","5"])
+    outp = subprocess.Popen(["scripts/poweroff.sh"])
     return (resp)
 
 def change_password(cmd_info):
@@ -1164,7 +1176,7 @@ def change_password(cmd_info):
     # check password strength
     is_valid, message = isStrongPassword(newpasswd)
     if not is_valid:
-        resp = cmd_error(cmd=cmd_info['cmd'], msg='Password Strength: ' + message)
+        resp = cmd_error(cmd=cmd_info['cmd'], msg='Password Strength: ' + message + '.')
         return resp
 
     # create new password hash
@@ -1704,7 +1716,7 @@ def app_config():
 
     xsce_cmdsrv_path = xsce_base_path + "/xsce_cmdsrv"
     xsce_cmdsrv_pid_file = "/var/run/xsce-cmdsrv.pid"
-    xsce_cmdsrv_dbpath = xsce_cmdsrv_path + xsce_cmdsrv_dbname
+    xsce_cmdsrv_dbpath = xsce_cmdsrv_path + "/" + xsce_cmdsrv_dbname
 
 def read_xsce_cmdsrv_conf_file():
     global cmdsrv_no_workers
