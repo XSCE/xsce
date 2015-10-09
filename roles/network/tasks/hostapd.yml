@@ -42,6 +42,10 @@
         group=root
   when: wifi_id  ==  "tplink_WM725M" and xo_model == "XO-1.5"
 
+- name: copy  the firmware for tplink WM752M
+  copy: src=rtl8188eufw.bin dest=/lib/firmware/rtlwifi/
+  when: wifi_id  ==  "tplink_WM725M" 
+
 - name: Use a systemd unit file to start hostapd
   template: src=hostapd/hostapd.service.j2
             dest=/etc/systemd/system/hostapd.service
