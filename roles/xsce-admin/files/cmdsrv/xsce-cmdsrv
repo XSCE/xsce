@@ -1177,7 +1177,7 @@ def change_password(cmd_info):
     # check password strength
     is_valid, message = isStrongPassword(newpasswd)
     if not is_valid:
-        resp = cmd_error(cmd=cmd_info['cmd'], msg='Password Strength: ' + message)
+        resp = cmd_error(cmd=cmd_info['cmd'], msg='Password Strength: ' + message + '.')
         return resp
 
     # create new password hash

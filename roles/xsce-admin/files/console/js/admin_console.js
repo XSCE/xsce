@@ -212,6 +212,10 @@ $("#DEL-DOWNLOADS").click(function(){
 
 // Util Buttons
 
+$("#CHGPW").click(function(){
+	changePassword();
+});
+
 $("#JOB-STATUS-REFRESH").click(function(){
 	button_feedback("#JOB-STATUS-REFRESH", true);
   getJobStat();
@@ -555,33 +559,32 @@ function initStaticWanVars() {
   }
 }
 
-function setConfigVars ()
+function changePassword ()
 {
-  cmd_args = {}
-  //alert ("in setConfigVars");
-  $('#Configure input').each( function(){
-    if (this.type == "checkbox") {
-      if (this.checked)
-      config_vars[this.name] = true; // must be true not True
-      else
-        config_vars[this.name] = false;
-      }
-      if (this.type == "text")
-      config_vars[this.name] = $(this).val();
-      if (this.type == "radio"){
-        fieldName = this.name;
-        fieldName = "input[name=" + this.name + "]:checked"
-        //consoleLog(fieldName);
-        config_vars[this.name] = $(fieldName).val();
-      }
-    });
-    cmd_args['config_vars'] = config_vars;
-    cmd = "SET-CONF " + JSON.stringify(cmd_args);
-    sendCmdSrvCmd(cmd, genericCmdHandler);
-    alert ("Saving Configuration.");
-    return true;
-  }
+	if ($("#xsce_admin_new_password").val() != $("#xsce_admin_new_password2").val()){
+    	alert ("Invalid: New Password and Repeat New Password do NOT Match.");
+      setTimeout(function () {
+        $("#xsce_admin_new_password").focus(); // hack for IE
+      }, 100);
+      return false;
+    }
 
+  cmd_args = {}
+  cmd_args['user'] = $("#xsce_admin_user").val();
+  cmd_args['oldpasswd'] = $("#xsce_admin_old_password").val();
+  cmd_args['newpasswd'] = $("#xsce_admin_new_password").val();
+
+  cmd = "CHGPW " + JSON.stringify(cmd_args);
+  sendCmdSrvCmd(cmd, changePasswordSuccess, "CHGPW");
+  //alert ("Changing Password.");
+  return true;
+}
+
+function changePasswordSuccess ()
+{
+  alert ("Password Changed.");
+  return true;
+}
   function getXsceIni (data)
   {
     //alert ("in getXsceIni");
@@ -591,6 +594,9 @@ function setConfigVars ()
     var html = jstr.replace(/\n/g, "<br>").replace(/[ ]/g, "&nbsp;");
     $( "#xsceIni" ).html(html);
     //consoleLog(jqXHR);
+
+    // Set Password Fields
+    $( "#xsce_admin_user").val(xsce_ini['xsce-admin']['xsce_admin_user']);
     return true;
   }
   function getWhitelist (data)
@@ -1379,7 +1385,7 @@ function sendCmdSrvCmd(command, callback, buttonId, errCallback, cmdArgs) {
   //   buttonId - Optional ID of button to disable and re-enable
   //   errCallback - Optional function to call if return from cmdsrv has error object; not the same as an error in ajax
   //   cmdArgs - Optional arguments to original command for use by errCallback
-  //   TODO  - add assignmentVar to can assign variable before running callback
+  //   TODO  - add assignmentVar so can assign variable before running callback
   //alert ("in sendCmdSrvCmd(");
   //consoleLog ('buttonid = ' + buttonId);;
   if (buttonId === undefined)

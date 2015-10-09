@@ -463,7 +463,7 @@
 					<div class="tab-pane" id="Util"> <!-- Start Status Top Level Pane -->
 						<div class="row-fluid"> <!-- Status Top Level Header -->
 							<div class="col-md-9 col-md-offset-3">
-								<h1>School Server Status</h1>
+								<h1>School Server Utilities</h1>
 							</div>
 						</div> <!-- row-fluid -->
 						<div class="tabbable"> <!-- Start Status Sublevel Menu Items and Options -->
@@ -471,7 +471,8 @@
 								<div class="col-md-3 xsce-left-nav"> <!-- Start left column -->
 									<h2>Menu Options</h2>
 									<ul class="nav nav-pills nav-stacked"> <!-- Start Status Sub Level Menu -->
-										<li class="active"><a href="#utilJobs" call-after="getJobStat">Display Job Status</a></li>
+										<li class="active"><a href="#utilChgPW">Change Password</a></li>
+										<li><a href="#utilJobs" call-after="getJobStat">Display Job Status</a></li>
 										<li><a href="#utilsTools">Admin Tools</a></li>
 										<li><a href="#utilsAnsible">Display Ansible Facts</a></li>
 										<li><a href="#utilsXsceIni">Display XSCE.INI File</a></li>
@@ -488,7 +489,21 @@
 								</div> <!-- left column -->
 								<div class="col-md-9"> <!-- Start right column -->
 									<div class="tab-content"> <!-- Start Container for Sub Menu Options Panes -->
-										<div class="tab-pane active" id="utilJobs"> <!-- Start Status statusJobs Submenu Option Pane -->
+										<div class="tab-pane active" id="utilChgPW"> <!-- Start Change Password Pane -->
+											<h2>Change Password</h2>
+											<h3>XSCE Admin User</h3>
+											<!-- <p></p> -->
+											<form role="form" class="form-horizontal" id="utilChgPWForm">
+												<p><b>Please Note:</b> You should chose a password that is a mix of Upper Case, Lower Case, Numbers, and Symbols and is at least 8 Characters long.</p>
+
+												<div class="row"><label class="col-md-3">XSCE Admin User</label><div class="col-md-3"><input type="text" class="form-control" name="xsce_admin_user" id="xsce_admin_user" readonly></div></div>
+                        <div class="row"><label class="col-md-3">Old Password</label><div class="col-md-3"><input type="text" class="form-control" name="xsce_admin_old_password" id="xsce_admin_old_password"></div></div>
+                        <div class="row"><label class="col-md-3">New Password</label><div class="col-md-3"><input type="text" class="form-control" name="xsce_admin_new_password" id="xsce_admin_new_password"></div></div>
+                        <div class="row"><label class="col-md-3">Repeat New Password</label><div class="col-md-3"><input type="text" class="form-control" name="xsce_admin_new_password2" id="xsce_admin_new_password2"></div></div>
+											</form>
+											<button id="CHGPW" type="button" class="btn btn-lg btn-primary">Change Password</button>
+										</div> <!--  End Change Password Pane -->
+										<div class="tab-pane" id="utilJobs"> <!-- Start Status statusJobs Submenu Option Pane -->
 											<h2>Job Status</h2><br>
 											<div class="row">
   											<div class="col-sm-3"><button id="CANCEL-JOBS" type="button" class="btn btn-lg btn-primary">Cancel Checked Jobs</button></div>
