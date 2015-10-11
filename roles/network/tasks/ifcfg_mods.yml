@@ -69,6 +69,7 @@
 
 - name: Enabling ifcfg-LAN file
   shell: nmcli conn up id xsce-LAN
+  ignore_errors: True
   when: xsce_lan_iface != "none" and not installing
 # testpoint confirm with 'nmcli c show' 'brctl show'
 
