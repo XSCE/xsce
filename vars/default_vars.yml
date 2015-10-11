@@ -20,11 +20,6 @@ service_filelist: "{{ xsce_config_file }}"
 use_cache: False # force cache use even when online
 no_network: False  # use cache or error out if cache does not exist
 
-# The platform variable adapts install to specific hardware (raspberry pi=rpi2)
-platform: ""
-hostapd: ""
-wpa_supplicant: ""
-
 # Users and Passwords
 # obtain a password hash with - python -c 'import crypt; print crypt.crypt("<plaintext>", "$6$<salt>")'
 
@@ -58,6 +53,17 @@ ssh_port: 22
 gui_wan: True
 adm_cons_force_ssl: False
 adm_cons_allow_downloads: False
+
+# Internal Wifi Access Point
+# Values are used if there is an internal wifi adapter and hostapd is enabled
+# The platform variable adapts install to specific hardware (raspberry pi=rpi2)
+platform: ""
+hostapd: ""
+wpa_supplicant: ""
+hostapd_enabled: True
+host_ssid: "XSCE"
+host_wifi_mode: g
+host_channel: 6
 
 #intended for developers
 exFAT_enabled: False
