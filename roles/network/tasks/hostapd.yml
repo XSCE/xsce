@@ -44,7 +44,7 @@
 
 - name: copy  the firmware for tplink WM752M
   copy: src=rtl8188eufw.bin dest=/lib/firmware/rtlwifi/
-  when: wifi_id  ==  "tplink_WM725M" 
+  when: wifi_id  ==  "tplink_WM725M"
 
 - name: Use a systemd unit file to start hostapd
   template: src=hostapd/hostapd.service.j2
@@ -62,19 +62,19 @@
             owner=root
             group=root
             mode=0644
-  when: xsce_wireless_lan_iface != "none" 
+  when: xsce_wireless_lan_iface != "none"
 
 - name: Enable the Access Point Hostapd program
   service: enabled=yes
            name=hostapd.service
            state=restarted
-  when: xsce_wireless_lan_iface != "none" and xsce_network_mode != "Appliance" 
+  when: xsce_wireless_lan_iface != "none" and xsce_network_mode != "Appliance" and hostapd_enabled
 
 - name: Disable the Access Point Hostapd program
   service: enabled=no
            name=hostapd.service
            state=stopped
-  when: xsce_wireless_lan_iface == "none" or xsce_network_mode == "Appliance" 
+  when: xsce_wireless_lan_iface == "none" or xsce_network_mode == "Appliance" and not hostapd_enabled
 
 - name: Checking if slave is active waiting 10 seconds
   shell: "sleep {{ hostapd_wait }} | brctl show | grep {{ xsce_wireless_lan_iface }}"
@@ -86,6 +86,6 @@
 - name: Restart hostapd if slave is inactive
   service: name=hostapd.service
            state=restarted
-  when: xsce_lan_iface == "br0" and item|trim == "" 
+  when: xsce_lan_iface == "br0" and item|trim == ""
   with_items:
       - "{{ wifi_slave.stdout }}"
