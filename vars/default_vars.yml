@@ -57,9 +57,6 @@ adm_cons_allow_downloads: False
 # Internal Wifi Access Point
 # Values are used if there is an internal wifi adapter and hostapd is enabled
 # The platform variable adapts install to specific hardware (raspberry pi=rpi2)
-platform: ""
-hostapd: ""
-wpa_supplicant: ""
 hostapd_enabled: True
 host_ssid: "XSCE"
 host_wifi_mode: g
