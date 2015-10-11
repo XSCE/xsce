@@ -1464,7 +1464,8 @@ def init():
 
     # See if queue.db exists and create if not
     # Opening a connection creates if not exist
-    if not os.path.isfile(xsce_cmdsrv_dbpath):
+    statinfo = os.stat(xsce_cmdsrv_dbpath)
+    if statinfo.st_size == 0:
         conn = sqlite3.connect(xsce_cmdsrv_dbpath)
         conn.execute ("CREATE TABLE commands (cmd_msg text, create_datetime text)")
         conn.commit()
