@@ -16,6 +16,8 @@ You will not usually need to touch these, but they are here in case you do and a
 
 Both hostname and domain name can be changed, but you would normally only do this to fit into a larger networking environment.
 
+**Warning:** If you change the Host Name or Domain Name, you will need to refresh the browser after clicking Install Configured Options.
+
 The most important parameter is the **Role of the Server** in your network.  The server can play one of three roles
 
 ### Gateway
@@ -165,3 +167,5 @@ Saves all configuration variables so that they will be used when the follwing bu
 ### Install Configured Server Options
 
 **Warning:** This option will **Reconfigure your Server**. It runs the Ansible configuration software using all configuration variables that have been saved with the above button.
+
+You should refresh your browser after running this.
