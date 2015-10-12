@@ -16,6 +16,8 @@ You will not usually need to touch these, but they are here in case you do and a
 
 Both hostname and domain name can be changed, but you would normally only do this to fit into a larger networking environment.
 
+**Warning:** If you change the Host Name or Domain Name, you will need to refresh the browser after clicking Install Configured Options.
+
 The most important parameter is the **Role of the Server** in your network.  The server can play one of three roles
 
 ### Gateway
@@ -134,8 +136,6 @@ The options below are intended for administrators and people who may help with o
 
 * **Collect Statistics** on the use of Sugar Activities.
 
-* **Ajenti** - a web console for system administration.
-
 * **Monit** watches critical applications and restarts them if they fail.
 
 * **Munin** collects and graphs system-level statistics.
@@ -167,3 +167,5 @@ Saves all configuration variables so that they will be used when the follwing bu
 ### Install Configured Server Options
 
 **Warning:** This option will **Reconfigure your Server**. It runs the Ansible configuration software using all configuration variables that have been saved with the above button.
+
+You should refresh your browser after running this.

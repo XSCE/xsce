@@ -97,7 +97,7 @@
 									<div class="tab-content">
 										<div class="tab-pane active" id="confNetwork"> <!-- Start Configure Network Pane -->
 											<h2>Network Parameters</h2>
-											<!-- <p></p> -->
+											<p><b>WARNING:</b> If you change the Host Name or Domain Name, you will need to refresh the browser after clicking Install Configured Options.</p>
 											<form role="form" class="form-horizontal" id="confNetworkForm">
 												<div class="form-group">
 													<div class="col-sm-4"><label>Host Name</label><input type="text" class="form-control" name="xsce_hostname" id="xsce_hostname" onblur="return xsce_hostnameVal()"></div>
@@ -262,11 +262,7 @@
 														<input type="checkbox" name="sugar-stats_enabled" id="sugar-stats_enabled">Collect statistics on the use of Sugar Activities.
 													</label>
 												</div>
-												<div class="checkbox">
-													<label>
-														<input type="checkbox" name="ajenti_enabled" id="ajenti_enabled">Ajenti, a web console for system administration.
-													</label>
-												</div>
+												<!--  removed ajenti -->
 												<div class="checkbox">
 													<label>
 														<input type="checkbox" name="monit_enabled" id="monit_enabled">Monit watches critical applications and restarts them if they fail.
