@@ -134,8 +134,6 @@ The options below are intended for administrators and people who may help with o
 
 * **Collect Statistics** on the use of Sugar Activities.
 
-* **Ajenti** - a web console for system administration.
-
 * **Monit** watches critical applications and restarts them if they fail.
 
 * **Munin** collects and graphs system-level statistics.
