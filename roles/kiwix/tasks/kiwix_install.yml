@@ -8,8 +8,6 @@
     - "{{ xsce_zim_path }}"
     - "{{ kiwix_content_path }}"
     - "{{ xsce_zim_path }}/index"
-    - /library/downloads/zims
-    - /library/working/zims
 
 # we get a whole web server for intel but only the kiwix execs for arm
 

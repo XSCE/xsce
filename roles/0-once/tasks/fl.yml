@@ -26,12 +26,17 @@
         mode=0755
         state=directory
 
-- name: Create /library
-  file: path=/library
+- name: Create various library directories
+  file: path={{ item }}
         owner=root
         group=root
         mode=0755
         state=directory
+  with_items:
+    - /library/downloads/zims
+    - /library/downloads/rachel
+    - /library/working/zims
+    - /library/working/rachel
 
 - name: Create olpc-scripts directory
   file: path={{ item }}
