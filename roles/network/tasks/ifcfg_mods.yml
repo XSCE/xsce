@@ -21,14 +21,14 @@
   with_items:
     - "{{ ifcfg_slaves.stdout_lines }}"
 
-## vars/ users should set user_wan_iface to avoid messy redetect 
-- include: redetect.yml  
+## vars/ users should set user_wan_iface to avoid messy redetect
+- include: redetect.yml
   when: discovered_wan_iface == "none" and user_wan_iface == "auto"
 
 # create ifcfg-WAN if missing
 # if we get here we have gateway but no ifcfg file
 - include: create_ifcfg.yml
-  when: xsce_wan_iface != "none" and not has_WAN and has_ifcfg_gw == "none"
+  when: xsce_wan_iface != "none" and not has_WAN and has_ifcfg_gw == "none" and xo_model == "none"
 
 - name: Configuring LAN interface as xsce_lan_iface
   template: src=network/ifcfg.j2
@@ -58,7 +58,7 @@
   shell: nmcli con reload
   when: not installing and not no_NM_reload
 
-# test point, we should always have one with any kind of starting point 
+# test point, we should always have one with any kind of starting point
 # no ifcfg = supply
 # had but not WAN = rename and edit.
 # test point, confirm onboot=no is OK everywhere

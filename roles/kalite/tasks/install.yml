@@ -30,7 +30,7 @@
 
 - name: Run the install using kalite manage
   command: "/usr/bin/su {{ kalite_user }} -c '{{ kalite_root }}/bin/kalite manage setup --username={{ kalite_user }} --password={{ kalite_password }} --noinput'"
-  async: 300
+  async: 900
   poll: 10
 
 - name: Finish install by running kalite start

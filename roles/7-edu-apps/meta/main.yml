@@ -3,5 +3,5 @@ dependencies:
    - { role: iiab, tags: ['iiab','edu-apps'], when: iiab_install }
    - { role: pathagar, tags: ['pathagar','edu-apps'], when: pathagar_install }
    - { role: rachel, tags: ['rachel','edu-apps'], when: rachel_install }
-   - { role: kalite, tags: ['kalite','edu-apps'], when: kalite_install and not no_NM_reload }
+   - { role: kalite, tags: ['kalite','edu-apps'], when: kalite_install }
    - { role: kiwix, tags: ['kiwix','edu-apps'], when: kiwix_install }
