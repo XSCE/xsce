@@ -826,18 +826,19 @@ def get_disk_info():
             if attr != "":
                 kv = attr.split('=')
                 disk_info[kv[0]] = kv[1][1:-1] # strip off leading and trailing double quotes
-        dev = part_list[disk_info['UUID']]
-        dev = "/dev/" + dev
-        outp2 = subprocess.check_output(["/usr/bin/df", dev, "-m"])
-        str_array2 = outp2.split('\n')
-        params = str_array2[1]
-        parm_arr = params.split(' ')
-        parm_arr = [a for a in parm_arr if a not in ['']]
-        disk_info['size_in_megs'] = parm_arr[1]
-        disk_info['avail_in_megs'] = parm_arr[3]
-        disk_info['mount_point'] = parm_arr[5]
-        #print disk_info
-        system_disks[dev] = disk_info
+        if 'UUID' in disk_info:
+            dev = part_list[disk_info['UUID']]
+            dev = "/dev/" + dev
+            outp2 = subprocess.check_output(["/usr/bin/df", dev, "-m"])
+            str_array2 = outp2.split('\n')
+            params = str_array2[1]
+            parm_arr = params.split(' ')
+            parm_arr = [a for a in parm_arr if a not in ['']]
+            disk_info['size_in_megs'] = parm_arr[1]
+            disk_info['avail_in_megs'] = parm_arr[3]
+            disk_info['mount_point'] = parm_arr[5]
+            #print disk_info
+            system_disks[dev] = disk_info
     return (system_disks)
 
 def get_inet_speed(cmd_info):
