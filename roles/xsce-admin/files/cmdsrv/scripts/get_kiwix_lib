@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# Not currently used
+
 import xml.etree.ElementTree as ET
 import json
 import csv

@@ -1597,7 +1597,8 @@ def read_kiwix_catalog():
     global kiwix_catalog
 
     stream = open (kiwix_catalog_file,"r")
-    kiwix_catalog = json.load(stream)
+    kiwix_catalog_with_date = json.load(stream)
+    kiwix_catalog = kiwix_catalog_with_date['zims']
     stream.close()
 
 def get_incomplete_jobs():

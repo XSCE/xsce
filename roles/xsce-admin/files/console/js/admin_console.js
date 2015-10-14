@@ -1,6 +1,9 @@
 // admin_console.js
 // copyright 2015 Tim Moody
 
+var today = new Date();
+var dayInMs = 1000*60*60*24;
+
 var xsceContrDir = "/etc/xsce/";
 var consoleJsonDir = "/common/assets/";
 var ansibleFacts = {};
@@ -14,6 +17,7 @@ var zimCatalog = {}; // working composite catalog of kiwix, installed, and wip z
 var zimLangs = {}; // working list of iso codes in zimCatalog
 var zimGroups = {}; // zim ids grouped by language and category
 var kiwixCatalog = {}; // catalog of kiwix zims, read from file downloaded from kiwix.org
+var kiwixCatalogDate = new Date; // date of download, stored in json file
 var installedZimCat = {}; // catalog of installed, and wip zims
 
 var rachelStat = {}; // installed, enabled and whether content is installed and which is enabled
@@ -691,6 +695,7 @@ function changePasswordSuccess ()
   {
     command = "RESTART-KIWIX";
     sendCmdSrvCmd(command, genericCmdHandler);
+    alert ("Restarting Kiwix Server.");
     return true;
   }
 
@@ -709,6 +714,7 @@ function changePasswordSuccess ()
 
   function procKiwixCatalog() {
     readKiwixCatalog();
+    getZimStat();
     procZimCatalog();
     alert ("Kiwix Catalog has been downloaded.");
   }
@@ -825,7 +831,8 @@ function readKiwixCatalog() { // Reads kiwix catalog from file system as json
     dataType: 'json'
   })
   .done(function( data ) {
-    kiwixCatalog = data;
+  	kiwixCatalogDate = Date.parse(data['download_date']);
+  	kiwixCatalog = data['zims'];
     consoleLog(kiwixCatalog);
   })
   .fail(jsonErrhandler);
@@ -833,6 +840,12 @@ function readKiwixCatalog() { // Reads kiwix catalog from file system as json
   return resp;
 }
 
+function checkKiwixCatalogDate() {
+	today = new Date();
+	if (today - kiwixCatalogDate > 30 * dayInMs){
+		alert ("Kiwix Catalog is Older than 30 days.\n\nPlease click Refresh Kiwix Catalog in the menu.");
+	}
+}
 function procZimCatalog() {
   // Uses installedZimCat, kiwixCatalog, langCodes, and langGroups
   // Calculates zimCatalog, zimGroups, langNames, zimsInstalled, zimsScheduled
