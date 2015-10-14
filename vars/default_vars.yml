@@ -227,7 +227,7 @@ watchdog:
   - squid
 
 # teamviewer
-teamviewer_install: True
+teamviewer_install: False
 teamviewer_enabled: False
 
 # vnstat
