@@ -8,7 +8,9 @@ import base64
 import os.path
 import sys
 import urllib2
+import time
 
+zimCat = {}
 zims = {}
 
 zimCount = 0
@@ -84,8 +86,11 @@ for child in root:
       zimAttr['perma_ref'] = permaRef
       zims[id] = zimAttr
 
+zimCat['download_date'] = time.strftime("%Y-%m-%d.%H:%M:%S")
+zimCat['zims'] = zims
+
 with open(kiwix_catalog, 'w') as fp:
-    json.dump(zims, fp)
+    json.dump(zimCat, fp)
 
 sys.stdout.write("SUCCESS")
 sys.stdout.flush()
