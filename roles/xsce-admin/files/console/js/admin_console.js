@@ -1406,6 +1406,23 @@ function getHelp(arg)
   return true;
 }
 
+function showAboutSummary()
+{
+  //consoleLog("in showAboutSummary");
+  var html = '<table>';
+
+  html += '<tr><td ><b>Version:</b></td>';
+  html += '<td>' + xsce_ini.runtime.runtime_branch + '</td></tr>';
+  html += '<td><b>Date Installed:</b></td>';
+  html += '<td>' + xsce_ini.runtime.runtime_date + '</td></tr>';
+  html += '<td><b>Commit ID:</b></td>';
+  html += '<td>' + xsce_ini.runtime.runtime_commit + '</td></tr>';
+
+  html += "</tr></table>";
+
+  $( "#aboutSummaryText" ).html( html );
+}
+
 function formCommand(cmd_verb, args_name, args_obj)
 {
   cmd_args = {}
