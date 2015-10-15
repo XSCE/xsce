@@ -107,10 +107,18 @@ squid_enabled: True
 wondershaper_install: True
 wondershaper_enabled: False
 
-#Gateway and Filters
+# Gateway and Filters
 gw_squid_whitelist: False
 gw_block_https: False
 xsce_gateway_enabled: True
+
+# Home page
+xsce_home_url: /xs-portal
+
+# if they are installed xsce_home_url can also be:
+
+#xsce_home_url: /wordpress
+#xsce_home_url: /dokuwiki
 
 # 4-SERVER-OPTIONS
 
