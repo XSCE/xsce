@@ -1,0 +1,69 @@
+- name: Get the WordPress software
+  get_url: url="{{ xsce_download_url }}/{{ wordpress_src }}"  dest={{ downloads_dir}}/
+  when: not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download2
+
+- name: Copy it to permanent location /library
+  unarchive: src={{ downloads_dir}}/{{ wordpress_src }}  dest=/library
+
+- name: Rename /library/wordpress* to /library/wordpress
+  shell: if [ ! -d {{ wp_abs_path }} ]; then mv {{ wp_abs_path }}* {{ wp_abs_path }}; fi
+
+- name: Fetch random salts for WordPress config
+  local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/
+  register: "wp_salt"
+  sudo: no
+
+- name: Create mysql wordpress database
+  mysql_db: name={{ wp_db_name }}
+            state=present
+
+- name: Create mysql wordpress database user
+  mysql_user: name={{ wp_db_user }}
+              password={{ wp_db_user_password }}
+              priv={{ wp_db_name }}.*:ALL,GRANT
+              state=present
+
+- name: Copy WordPress config file
+  template: src=wp-config.php.j2
+            dest={{ wp_abs_path }}/wp-config.php
+
+- name: Copy WordPress httpd conf file
+  template: src=wordpress.conf.j2
+            dest=/etc/httpd/conf.d/wordpress.conf
+
+# ToDo change permissions
+
+- name: Remove httpd conf file if we are disabled
+  file: path=/etc/httpd/conf.d/wordpress.conf
+        state=absent
+  when: not wordpress_enabled
+
+- name: Restart apache, so it picks up the new aliases
+  service: name=httpd state=restarted
+
+- name: Add wordpress to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=wordpress
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: wordpress
+    - option: description
+      value: '"WordPress is a blog and web site management application."'
+    - option: wordpress_src
+      value: "{{ wordpress_src }}"
+    - option: wp_abs_path
+      value: "{{ wp_abs_path }}"
+    - option: wp_db_name
+      value: "{{ wp_db_name }}"
+    - option: wp_db_user
+      value: "{{ wp_db_user }}"
+    - option: wp_url
+      value: "{{ wp_url }}"
+    - option: wp_full_url
+      value: "{{ wp_full_url }}"
+    - option: wordpress_enabled
+      value: "{{ wordpress_enabled }}"
