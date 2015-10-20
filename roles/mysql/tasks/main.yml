@@ -103,7 +103,7 @@
             - option: name
               value: mysql-database
             - option: description
-              value: "mySQL is a widely used database service on the Internet which runs on many platforms, and is often offered and available at hosting Internet Service Providers"
+              value: '"mySQL is a widely used database service on the Internet which runs on many platforms, and is often offered and available at hosting Internet Service Providers"'
             - option: enabled
               value: "{{ mysql_enabled }}"
 
@@ -119,7 +119,7 @@
             - option: name
               value: phpMyAdmin
             - option: description
-              value: "phpMyAdmin is an interface with a mysql database written in php, and available to administer the database engine locally or across the network"
+              value: '"phpMyAdmin is an interface with a mysql database written in php, and available to administer the database engine locally or across the network"'
             - option: path
               value: /opt/phpmyadmin
 # TODO (maybe?) separately enable phpmyadmin in GUI (and disable the set fact above
