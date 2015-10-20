@@ -172,6 +172,10 @@ elgg_mysql_password: elgg4kids
 owncloud_install: True
 owncloud_enabled: False
 
+# WordPress
+wordpress_install: False
+wordpress_enabled: False
+
 # 7-EDU-APPS
 
 # Moodle
