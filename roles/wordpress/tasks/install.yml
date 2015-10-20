@@ -10,10 +10,12 @@
 - name: Rename /library/wordpress* to /library/wordpress
   shell: if [ ! -d {{ wp_abs_path }} ]; then mv {{ wp_abs_path }}* {{ wp_abs_path }}; fi
 
-- name: Fetch random salts for WordPress config
-  local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/
-  register: "wp_salt"
-  sudo: no
+- name: Fetch random salts for WordPress config into wp_keys.php file
+  uri: url="https://api.wordpress.org/secret-key/1.1/salt/"
+       method=GET
+       dest={{ wp_abs_path }}/wp_keys.php
+       creates:={{ wp_abs_path }}/wp_keys.php
+       return_content=yes
 
 - name: Create mysql wordpress database
   mysql_db: name={{ wp_db_name }}
