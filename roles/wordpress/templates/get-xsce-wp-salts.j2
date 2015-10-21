@@ -1,0 +1,17 @@
+#!/bin/bash
+# Get salt constants and write to wp-keys.php
+#
+# by Tim Moody tim@timmoody.com
+DEST=/library/wordpress/wp-keys.php
+DEFAULT=/library/wordpress/wp-keys-sample.php
+
+echo '<?php' > $DEST
+curl https://api.wordpress.org/secret-key/1.1/salt/ >> $DEST
+RC=$?
+
+# if the download of keys failed, revert to defaults
+if [  $RC -ne 0  ];then
+  cp  $DEFAULT $DEST
+else
+  echo '?>' >> $DEST
+fi

@@ -10,10 +10,28 @@
 - name: Rename /library/wordpress* to /library/wordpress
   shell: if [ ! -d {{ wp_abs_path }} ]; then mv {{ wp_abs_path }}* {{ wp_abs_path }}; fi
 
-- name: Fetch random salts for WordPress config
-  local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/
-  register: "wp_salt"
-  sudo: no
+- name: Copy wp salt values
+  copy: src=wp-keys-sample.php
+        dest={{ wp_abs_path }}/wp-keys-sample.php
+        owner=root
+        group=root
+        mode=0644
+
+# Fetch random salts for WordPress config into wp-keys.php file by generating script and running
+
+- name: Create wp salt script
+  template: src=get-xsce-wp-salts.j2
+            dest=/tmp/get-xsce-wp-salts
+            owner=root
+            group=root
+            mode=0700
+
+- name: Run wp salt script to create /library/wordpress/wp-keys.php
+  command: /tmp/get-xsce-wp-salts
+
+- name: Cleanup - remove wp salt script
+  file: path=/tmp/get-xsce-wp-salts
+        state=absent
 
 - name: Create mysql wordpress database
   mysql_db: name={{ wp_db_name }}
