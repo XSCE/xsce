@@ -46,10 +46,6 @@ define('DB_COLLATE', '');
  *
  * @since 2.6.0
  */
-
-include 'wp_keys.php';
-
-/*
 define('AUTH_KEY',         'put your unique phrase here');
 define('SECURE_AUTH_KEY',  'put your unique phrase here');
 define('LOGGED_IN_KEY',    'put your unique phrase here');
@@ -60,6 +56,10 @@ define('LOGGED_IN_SALT',   'put your unique phrase here');
 define('NONCE_SALT',       'put your unique phrase here');
 
 /**#@-*/
+
+/* The above defaults will be overridden with the include file if there was an internet connection to populate it */
+
+include 'wp-keys.php';
 
 /**
  * WordPress Database Table prefix.
