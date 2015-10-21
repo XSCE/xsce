@@ -10,12 +10,24 @@
 - name: Rename /library/wordpress* to /library/wordpress
   shell: if [ ! -d {{ wp_abs_path }} ]; then mv {{ wp_abs_path }}* {{ wp_abs_path }}; fi
 
+# First pass at permissions and ownership
+- name: Make apache owner and group
+  file: path={{ wp_abs_path }}
+        recurse=yes
+        owner=apache
+        group=apache
+        mode=0640
+        state=directory
+
+- name: Make directories 755 so can traverse
+  command: "/usr/bin/find {{ wp_abs_path }} -type d -exec chmod 755 {} +"
+
 - name: Copy wp salt values
-  copy: src=wp-keys-sample.php
-        dest={{ wp_abs_path }}/wp-keys-sample.php
+  copy: src=wp-keys.php.BAK
+        dest={{ wp_abs_path }}/wp-keys.php.BAK
         owner=root
-        group=root
-        mode=0644
+        group=apache
+        mode=0640
 
 # Fetch random salts for WordPress config into wp-keys.php file by generating script and running
 
@@ -46,12 +58,13 @@
 - name: Copy WordPress config file
   template: src=wp-config.php.j2
             dest={{ wp_abs_path }}/wp-config.php
+            owner=root
+            group=apache
+            mode=0640
 
 - name: Copy WordPress httpd conf file
   template: src=wordpress.conf.j2
             dest=/etc/httpd/conf.d/wordpress.conf
-
-# ToDo change permissions
 
 - name: Remove httpd conf file if we are disabled
   file: path=/etc/httpd/conf.d/wordpress.conf

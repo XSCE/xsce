@@ -3,15 +3,18 @@
 #
 # by Tim Moody tim@timmoody.com
 DEST=/library/wordpress/wp-keys.php
-DEFAULT=/library/wordpress/wp-keys-sample.php
+BACKUP=/library/wordpress/wp-keys.php.BAK
 
 echo '<?php' > $DEST
 curl https://api.wordpress.org/secret-key/1.1/salt/ >> $DEST
 RC=$?
 
-# if the download of keys failed, revert to defaults
+# if the download of keys failed, revert to previous version
 if [  $RC -ne 0  ];then
-  cp  $DEFAULT $DEST
+  cp  $BACKUP $DEST
 else
   echo '?>' >> $DEST
+  chown root:apache $DEST
+  chmod 640 $DEST
+  cp -f $DEST $BACKUP
 fi
