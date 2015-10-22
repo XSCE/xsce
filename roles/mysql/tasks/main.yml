@@ -82,17 +82,20 @@
     - name: Create a symbolic link to the folder of the current version phpmyadmin
       file: path=/opt/phpmyadmin src=phpMyAdmin-4.2.7.1-all-languages state=link
 
-    - name: Put the alias into Apache config
-      template: src=phpmyadmin.j2 dest=/etc/httpd/conf.d/phpmyadmin.conf
-      when: mysql_enabled
-
     - name: Copy the phpmyadmin config file into place
       template: src=config.inc.php dest=/opt/phpmyadmin/config.inc.php
-      when: mysql_enabled
 
     - name: Change the owner of the php tree to apache
       shell: "chown -R apache /opt/phpmyadmin"
-      when: mysql_enabled
+
+    - name: Put the alias into Apache config when enabled
+      template: src=phpmyadmin.j2 dest=/etc/httpd/conf.d/phpmyadmin.conf
+      when: phpmyadmin_enabled
+
+    - name: Remove the alias into Apache config when not enabled
+      file: dest=/etc/httpd/conf.d/phpmyadmin.conf
+            state=absent
+      when: not phpmyadmin_enabled
 
     - name: add mysql to service list
       ini_file: dest='{{ service_filelist }}'
