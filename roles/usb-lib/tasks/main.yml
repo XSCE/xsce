@@ -1,0 +1,59 @@
+- name: Copy mount file to usbmount when enabled
+  copy: src=mount.d/70-usb-library
+        dest=/etc/usbmount/mount.d
+        owner=root
+        group=root
+        mode=0751
+  when: usb_lib_enabled
+
+- name: Copy umount file to usbmount when enabled
+  copy: src=umount.d/70-usb-library
+        dest=/etc/usbmount/mount.d
+        owner=root
+        group=root
+        mode=0751
+  when: usb_lib_enabled
+
+- name: Remove mount file to usbmount when not enabled
+  file: path=/etc/usbmount/mount.d/70-usb-library
+        state=absent
+  when: not usb_lib_enabled
+
+- name: Remove umount file to usbmount when not enabled
+  file: path=/etc/usbmount/umount.d/70-usb-library
+        state=absent
+  when: not usb_lib_enabled
+
+# Patch Fedora 21+ so usbmount works
+# We can't undo this
+- name: Copy udevd service to /etc/systemd/system to modify
+  copy: src=/usr/lib/systemd/system/systemd-udevd.service
+        dest=/etc/systemd/system/systemd-udevd.service
+        owner=root
+        group=root
+        mode=0644
+  when: usb_lib_enabled
+
+- name: Change MountFlags from slave to shared
+  lineinfile: backup=yes
+              dest=/etc/systemd/system/systemd-udevd.service
+              regexp='^MountFlags'
+              line='MountFlags=shared'
+              state=present
+
+- name: Restart systemd-udevd.service
+  service: name=systemd-udevd
+           state=restarted
+
+- name: Add usb-lib to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=usb-lib
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: usb-lib
+    - option: description
+      value: '"usb-lib automounts a usb drive with and links to library content."'
+    - option: enabled
+      value: "{{ usb_lib_enabled }}"
