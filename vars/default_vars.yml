@@ -141,6 +141,10 @@ postgresql_enabled: False
 authserver_install: True
 authserver_enabled: True
 
+# usb-lib
+usb_lib_install: True
+usb_lib_enabled: True
+
 # 5-XO-SERVICES
 
 # ejabberd
