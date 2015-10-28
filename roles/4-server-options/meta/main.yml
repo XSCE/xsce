@@ -1,6 +1,6 @@
 dependencies:
     - { role: postgresql, tags: ['services','postgresql','base'], when: postgresql_install }
-    - { role: authserver,  tags: ['services','authserver','base'], when: authserver_install }  
+    - { role: authserver,  tags: ['services','authserver','base'], when: authserver_install }
     - { role: openvpn, tags: ['options','openvpn'], when: openvpn_install }
     - { role: samba, tags: ['services','samba','options'], when: samba_install }
-
+    - { role: usb-lib, tags: ['services','usb-lib','options'], when: usb_lib_install }
