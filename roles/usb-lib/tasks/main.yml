@@ -25,7 +25,12 @@
   when: not usb_lib_enabled
 
 # Patch Fedora 21+ so usbmount works
+# Set flag to True that was initialized to False in role defaults
 # We can't undo this
+
+- name: Set flag for doing the patch so all logic in one place
+  set_fact: udev_needs_patch=True
+  when: usb_lib_enabled and ansible_distribution_version >= "21"
 
 - name: Copy udevd service to /etc/systemd/system to modify
   copy: src=/usr/lib/systemd/system/systemd-udevd.service
@@ -33,20 +38,20 @@
         owner=root
         group=root
         mode=0644
-  when: usb_lib_enabled and ansible_distribution_version >= "21"
+  when: udev_needs_patch
 
 - name: Change MountFlags from slave to shared
-  lineinfile: backup=yes
+  lineinfile: backup=no
               dest=/etc/systemd/system/systemd-udevd.service
               regexp='^MountFlags'
               line='MountFlags=shared'
               state=present
-  when: usb_lib_enabled and ansible_distribution_version >= "21"
+  when: udev_needs_patch
 
 - name: Restart systemd-udevd.service
   service: name=systemd-udevd
            state=restarted
-  when: usb_lib_enabled and ansible_distribution_version >= "21"
+  when: udev_needs_patch
 
 - name: Add usb-lib to service list
   ini_file: dest='{{ service_filelist }}'
@@ -60,3 +65,5 @@
       value: '"usb-lib automounts a usb drive with and links to library content."'
     - option: enabled
       value: "{{ usb_lib_enabled }}"
+    - option: systemd-udevd-patched
+      value: "{{ udev_needs_patch }}"
