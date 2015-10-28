@@ -26,13 +26,14 @@
 
 # Patch Fedora 21+ so usbmount works
 # We can't undo this
+
 - name: Copy udevd service to /etc/systemd/system to modify
   copy: src=/usr/lib/systemd/system/systemd-udevd.service
         dest=/etc/systemd/system/systemd-udevd.service
         owner=root
         group=root
         mode=0644
-  when: usb_lib_enabled
+  when: usb_lib_enabled and ansible_distribution_version >= "21"
 
 - name: Change MountFlags from slave to shared
   lineinfile: backup=yes
@@ -40,10 +41,12 @@
               regexp='^MountFlags'
               line='MountFlags=shared'
               state=present
+  when: usb_lib_enabled and ansible_distribution_version >= "21"
 
 - name: Restart systemd-udevd.service
   service: name=systemd-udevd
            state=restarted
+  when: usb_lib_enabled and ansible_distribution_version >= "21"
 
 - name: Add usb-lib to service list
   ini_file: dest='{{ service_filelist }}'
