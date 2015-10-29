@@ -1,42 +1,49 @@
-- name: Create xsce-kalite user and password
-  user: name={{ kalite_user }}
-        password={{ kalite_password_hash }}
-        update_password=on_create
+# This is for an OS other than Fedora 18
 
-- name: Create kalite_root directory
-  file: path={{ kalite_root }}
-        owner=root
-        group=root
-        mode=0755
-        state=directory
+- name: Install missing packages required for kalite startup
+  yum: name={{ item }}
+       state=installed
+  with_items:
+    - lsb
+  tags:
+    - download
+  when: not {{ use_cache }} and not {{ no_network }} and ansible_distribution == "CentOS"
 
-- name: Copy the kalite repo into place
-  command: "rsync -at {{ downloads_dir }}/ka-lite/ {{ kalite_root }}"
+- name: Download kalite with pip
+  pip: name=ka-lite
+       extra_args="--download {{ pip_packages_dir }}"
+  when: not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download2
 
-- name: Make kalite_user owner
-  file: path={{ kalite_root }}
-        owner={{ kalite_user }}
-        group={{ kalite_user }}
-        recurse=yes
-        state=directory
+- name: Download khan assessments
+  get_url: url={{ khan_assessment_url }}
+           dest="{{ downloads_dir }}/khan_assessment.zip"
+           force=no
+           mode=0440
+  when: not {{ use_cache }} and not {{ no_network }} and khan_assessment_install
+  tags:
+    - download2
 
-# local_settings is deprecated
-- name: Copy local_settings file
-  template: src=local_settings.py.j2
-            dest="{{ kalite_root }}/kalite/local_settings.py"
-            owner={{ kalite_user }}
-            group={{ kalite_user }}
-            mode=644
+- name: Install kalite with pip
+  pip: name=ka-lite
+       extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
 
-- name: Run the install using kalite manage
-  command: "/usr/bin/su {{ kalite_user }} -c '{{ kalite_root }}/bin/kalite manage setup --username={{ kalite_user }} --password={{ kalite_password }} --noinput'"
-  async: 900
-  poll: 10
+- name: Default is to have cronserve started with kalite
+  set_fact:
+     job_scheduler_stanza: ""
 
-- name: Finish install by running kalite start
-  command: "/usr/bin/su {{ kalite_user }} -c '{{ kalite_root }}/bin/kalite start'"
-  async: 300
-  poll: 10
+- name: Add  --skip-job-scheduler to start if cronserve not enabled
+  set_fact:
+     job_scheduler_stanza: "--skip-job-scheduler "
+  when: not kalite_cron_enabled
 
-- name: Stop kalite server started in previous step because we use systemd
-  command: "/usr/bin/su {{ kalite_user }} -c '{{ kalite_root }}/bin/kalite stop'"
+- name: Create kalite service(s) and support scripts
+  template: backup=yes
+            src={{ item.src }}
+            dest={{ item.dest }}
+            owner=root
+            group=root
+            mode={{ item.mode }}
+  with_items:
+    - { src: 'kalite-serve.service.j2', dest: '/etc/systemd/system/kalite-serve.service', mode: '0644'}
