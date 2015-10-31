@@ -1,0 +1,20 @@
+# This is for an OS other than Fedora 18
+
+- name: Run the setup using kalite manage
+  command: "/usr/bin/kalite manage setup --username={{ kalite_admin_user }} --password={{ kalite_admin_password }} --noinput"
+  environment:
+     KALITE_HOME: "{{ kalite_root }}"
+  async: 900
+  poll: 10
+
+- name: Finish setup by running kalite start
+  command: "/usr/bin/kalite start"
+  environment:
+     KALITE_HOME: "{{ kalite_root }}"
+  async: 900
+  poll: 10
+
+- name: Stop kalite server started in previous step because we use systemd
+  command: "/usr/bin/kalite stop"
+  environment:
+     KALITE_HOME: "{{ kalite_root }}"

@@ -4,8 +4,9 @@ After=syslog.target network.target local-fs.target
 
 [Service]
 Type=forking
-PIDFile={{ kalite_root }}/kalite/runcherrypyserver.pid
-ExecStart=/usr/bin/su {{ kalite_user }} -c '/usr/bin/python {{ kalite_root }}/kalite/manage.py kaserve host=0.0.0.0 port={{ kalite_server_port }} daemonize=true production=true pidfile={{ kalite_root }}/kalite/runcherrypyserver.pid'
+Environment="KALITE_HOME={{ kalite_root }}"
+ExecStart=/usr/bin/kalite start {{ job_scheduler_stanza }}--port={{ kalite_server_port }}
+ExecStop=/usr/bin/kalite stop
 TimeoutStartSec=400
 
 [Install]

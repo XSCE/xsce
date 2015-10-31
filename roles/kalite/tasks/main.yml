@@ -1,62 +1,33 @@
 # Assume all XOs are F18 and nothing else is
 
-- name: Install dependent packages non-F18
-  yum: name={{ item }}
-       state=installed
-  with_items:
-    - python-selenium
-    - python-psutil
-    - expect
-  tags:
-    - download
-  when: xo_model == "none"
-
-- name: Install dependent packages F18
-  yum: name={{ item }}
-       state=installed
-  with_items:
-    - python-psutil
-    - expect
-  tags:
-    - download
+- include: install-f18.yml
   when: xo_model != "none"
-
-- name: Download dependent pip packages F18
-  pip: name=selenium
-       extra_args="--download {{ pip_packages_dir }}"
-  when: not {{ use_cache }} and not {{ no_network }} and xo_model != "none"
-  tags:
-    - download2
-
-- name: Install dependent pip packages F18
-  pip: name=selenium
-       extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
-  when: xo_model != "none"
-
-- name: Install missing packages required for kalite startup
-  yum: name={{ item }}
-       state=installed
-  with_items:
-    - lsb
-  tags:
-    - download
-  when: not {{ use_cache }} and not {{ no_network }} and ansible_distribution == "CentOS"
-
-- name: Download the latest kalite repo
-  git: repo={{ kalite_repo_url }}
-       dest={{ downloads_dir }}/ka-lite
-       depth=1
-       version="0.13.x"
-  when: not {{ use_cache }}
-  tags:
-    - download2
-
-- name: See if kalite is installed
-  stat: path="{{ kalite_root }}/kalite/database/data.sqlite"
-  register: kalite_installed
 
 - include: install.yml
-  when: not kalite_installed.stat.exists == True
+  when: xo_model == "none"
+
+- name: Calc kalite db file name
+  set_fact:
+     kalite_db_name: "{{ kalite_root }}/kalite/database/data.sqlite"
+  when: xo_model != "none"
+
+- name: Calc kalite db file name
+  set_fact:
+     kalite_db_name: "{{ kalite_root }}/database/data.sqlite"
+  when: xo_model == "none"
+
+- name: See if kalite is already configured
+  stat: path="{{ kalite_db_name }}"
+  register: kalite_installed
+
+- include: setup-f18.yml
+  when: not kalite_installed.stat.exists == True and xo_model != "none"
+
+- include: setup.yml
+  when: not kalite_installed.stat.exists == True and xo_model == "none"
+
+- include: assessment.yml
+  when: xo_model == "none"
 
 - include: enable.yml
 
@@ -80,3 +51,5 @@
       value: "{{ kalite_enabled }}"
     - option: cron_enabled
       value: "{{ kalite_cron_enabled }}"
+    - option: khan_assessment_install
+      value: "{{ khan_assessment_install }}"
