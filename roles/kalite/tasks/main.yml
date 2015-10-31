@@ -1,33 +1,33 @@
 # Assume all XOs are F18 and nothing else is
 
 - include: install-f18.yml
-  when: xo_model != "none"
+  when: is_F18
 
 - include: install.yml
-  when: xo_model == "none"
+  when: not is_F18
 
 - name: Calc kalite db file name
   set_fact:
      kalite_db_name: "{{ kalite_root }}/kalite/database/data.sqlite"
-  when: xo_model != "none"
+  when: is_F18
 
 - name: Calc kalite db file name
   set_fact:
      kalite_db_name: "{{ kalite_root }}/database/data.sqlite"
-  when: xo_model == "none"
+  when: not is_F18
 
 - name: See if kalite is already configured
   stat: path="{{ kalite_db_name }}"
   register: kalite_installed
 
 - include: setup-f18.yml
-  when: not kalite_installed.stat.exists == True and xo_model != "none"
+  when: not kalite_installed.stat.exists == True and is_F18
 
 - include: setup.yml
-  when: not kalite_installed.stat.exists == True and xo_model == "none"
+  when: not kalite_installed.stat.exists == True and not is_F18
 
 - include: assessment.yml
-  when: xo_model == "none"
+  when: not is_F18
 
 - include: enable.yml
 
