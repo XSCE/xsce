@@ -5,6 +5,7 @@ exFAT_enabled: False
 no_NM_reload: False
 has_WAN: False
 wireless_lan_present: False
+is_F18: False
 
 # Set default for discovered hardware
 driver_name: nl80211

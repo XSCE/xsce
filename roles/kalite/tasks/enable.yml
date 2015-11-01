@@ -21,10 +21,10 @@
   service: name=kalite-cron
            enabled=no
            state=stopped
-  when: not kalite_cron_enabled and xo_model != "none"
+  when: not kalite_cron_enabled and is_F18
 
 - name: Enable kalite cron server
   service: name=kalite-cron
            enabled=yes
            state=started
-  when: kalite_cron_enabled and xo_model != "none"
+  when: kalite_cron_enabled and is_F18
