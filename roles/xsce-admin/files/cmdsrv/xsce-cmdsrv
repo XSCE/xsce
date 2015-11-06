@@ -731,115 +731,114 @@ def get_mem_info(cmd_info):
 
 def get_storage_info(cmd_info):
     system_storage = []
-    system_disks = {}
-    system_disks = get_disk_info()
-    #print system_disks
-    #outp = subprocess.check_output(["scripts/get_all_free.sh"])
-    outp = subprocess.check_output(["scripts/get_stor_devs.sh"])
+    cmd = "lsblk -aP -o NAME,FSTYPE,TYPE,SIZE,MOUNTPOINT,LABEL,UUID,PARTLABEL,PARTUUID,MODEL"
+    cmd_args = shlex.split(cmd)
+    outp = subprocess.check_output(cmd_args)
     dev_arr = outp.split('\n')
-    #arr1 = outp.split(';\n\n\r') # trim off quit stuff at the end
-    #arr2 = arr1[0].split('BYT;\n') # split into devices
-    #dev_arr = arr2[1:]
-    for dev_str in dev_arr:
-        dev = dev_str.split(" ")[0]
-        try:
-            parts = subprocess.check_output(["parted", dev, "-ms", "print", "free"])
-        except subprocess.CalledProcessError as e:
-            #skip devices that cause problems
-            print e
-            pass
-        else:
-            blkstr = parts.split("BYT;\n")[1]
-            #print "blkstr is " +  blkstr
-            dev_info = {}
-            dev_blk = blkstr.split(';\n') # dev_blk[0] is the device itself, some can be free space
-            dev_char = dev_blk[0]
-            dev_attr = dev_char.split(':')
-            dev_info['device'] = dev_attr[0]
-            dev_info['size'] = dev_attr[1]
-            dev_info['type'] = dev_attr[2]
-            dev_info['log_sect_size'] = dev_attr[3]
-            dev_info['phys_sect_size'] = dev_attr[4]
-            dev_info['part_tbl'] = dev_attr[5]
-            dev_info['desc'] = dev_attr[6]
-            dev_info['blocks'] = []
-            dev_blk = dev_blk[1:]
-            dev_blk = [a for a in dev_blk if a not in ['\n']]
-            for blk in dev_blk: # blocks can be free or partitioned
-                #print "blk is " + blk
-                if blk == '':
-                    continue
-                blk_info = {}
-                blk_attr = blk.split(':')
-                blk_info['part_no'] = blk_attr[0] # is 1 for free
-                blk_info['start'] = blk_attr[1]
-                blk_info['end'] = blk_attr[2]
-                blk_info['size'] = blk_attr[3]
-                blk_info['type'] = blk_attr[4]
-                if blk_info['type'] == 'free':
-                    blk_info['part_dev'] = 'unallocated'
-                elif blk_info['type'] == '': # this is an extension partition, so ignore
-                    continue
-                else:
-                    # this is a kluge
-                    if "mmc" in dev_info['device']:
-                        blk_info['part_dev'] = dev_info['device'] + 'p' + blk_info['part_no']
-                    else:
-                        blk_info['part_dev'] = dev_info['device'] + blk_info['part_no']
-                    #print blk_info['part_dev']
-                    blk_info['part_prop'] = system_disks[blk_info['part_dev']]
-                if len(blk_attr) == 7:
-                    blk_info['flag'] = blk_attr[6]
-                else:
-                    blk_info['flag'] = ""
-                dev_info['blocks'].append(blk_info)
-            system_storage.append(dev_info)
+    system_storage_idx = -1
+    for item in dev_arr:
+        if len(item) == 0: # last element is blank
+            continue
 
-    #json_outp = json_array("system_storage", system_storage)
-    #resp = json.dumps(system_storage)
-    #resp = '{ "system_storage":' + json.dumps(system_storage) + '}'
+        item_attr = get_storage_info_str2dict(item)
+        if item_attr['TYPE'] == "disk":
+            cur_dev = '/dev/'+ item_attr['NAME']
+            dev_info = get_storage_info_parted(cur_dev)
+            dev_info['lsblk'] = item_attr
+            system_storage.append(dev_info)
+            system_storage_idx += 1
+        elif item_attr['TYPE'] == "part":
+            part_dev = '/dev/'+ item_attr['NAME']
+            # lsblk includes extended partition that holds other partition(s)
+            if item_attr['FSTYPE'] != "":
+                blkidx = system_storage[system_storage_idx]['index'][part_dev]
+                system_storage[system_storage_idx]['blocks'][blkidx]['lsblk'] = item_attr
+                part_prop = get_storage_info_df(part_dev)
+                system_storage[system_storage_idx]['blocks'][blkidx]['part_prop'] = part_prop
+                #print dev_info
+
     resp = json.dumps(system_storage)
     return (resp)
 
-def get_disk_info():
-    system_disks = {}
-    # all this is because blkid can return /dev/block instead of /dev/sd*
-    outp = subprocess.check_output(["/usr/bin/ls","-l","/dev/disk/by-uuid/"])
-    str_array = outp.split('\n')
-    str_array = [a for a in str_array if a not in ['']]
-    part_list = {}
-    for item in str_array[1:]: # first item is total
-        item_arr = item.split(' ')
-        item_uuid = item_arr[-3]
-        item_dev = item_arr[-1]
-        dev_split = item_dev.split('/')
-        item_dev = dev_split[-1]
-        part_list[item_uuid] = item_dev
+def get_storage_info_str2dict(str):
+    s2 = str.replace("=",'":')
+    s3 = s2.replace('" ', '","')
+    s4 = '{"' + s3 + '}'
+    sd = json.loads(s4)
+    return (sd)
 
-    outp = subprocess.check_output(["/usr/sbin/blkid"])
+def get_storage_info_parted(dev):
+    dev_info = {'device':dev, 'desc':'', 'log_sect_size':'', 'part_tbl':'', 'phys_sect_size':'', 'size':'', 'type':'', 'blocks':[]}
+    try:
+        parts = subprocess.check_output(["parted", dev, "-ms", "print", "free"])
+    except subprocess.CalledProcessError as e:
+        #skip devices that cause problems
+        pass
+    else:
+        blkstr = parts.split("BYT;\n")[1]
+        #print "blkstr is " +  blkstr
+        dev_info = {}
+        dev_blk = blkstr.split(';\n') # dev_blk[0] is the device itself, some can be free space
+        dev_char = dev_blk[0]
+        dev_attr = dev_char.split(':')
+        dev_info['device'] = dev_attr[0]
+        dev_info['size'] = dev_attr[1]
+        dev_info['type'] = dev_attr[2]
+        dev_info['log_sect_size'] = dev_attr[3]
+        dev_info['phys_sect_size'] = dev_attr[4]
+        dev_info['part_tbl'] = dev_attr[5]
+        dev_info['desc'] = dev_attr[6]
+        dev_info['blocks'] = []
+        dev_blk = dev_blk[1:]
+        dev_blk = [a for a in dev_blk if a not in ['\n']]
+        blk_idx = {}
+        blk_idx_num = 0
+        for blk in dev_blk: # blocks can be free or partitioned
+            #print "blk is " + blk
+            if blk == '':
+                continue
+            blk_info = {}
+            blk_attr = blk.split(':')
+            blk_info['part_no'] = blk_attr[0] # is 1 for free
+            blk_info['start'] = blk_attr[1]
+            blk_info['end'] = blk_attr[2]
+            blk_info['size'] = blk_attr[3]
+            blk_info['type'] = blk_attr[4]
+            if blk_info['type'] == 'free':
+                blk_info['part_dev'] = 'unallocated'
+            elif blk_info['type'] == '': # this is an extension partition, so ignore
+                continue
+            else:
+                # this is a kluge
+                if "mmc" in dev_info['device']:
+                    blk_info['part_dev'] = dev_info['device'] + 'p' + blk_info['part_no']
+                else:
+                    blk_info['part_dev'] = dev_info['device'] + blk_info['part_no']
+                #print blk_info['part_dev']
+
+            if len(blk_attr) == 7:
+                blk_info['flag'] = blk_attr[6]
+            else:
+                blk_info['flag'] = ""
+            dev_info['blocks'].append(blk_info)
+            if blk_info['part_dev'] != 'unallocated': # create an index to actual partitions in blocks array
+                blk_idx[blk_info['part_dev']] = blk_idx_num
+            blk_idx_num += 1
+        dev_info['index'] = blk_idx
+    return (dev_info)
+
+def get_storage_info_df(part_dev):
+    part_prop = {}
+    outp = subprocess.check_output(["/usr/bin/df", part_dev, "-m"])
     str_array = outp.split('\n')
-    str_array = [a for a in str_array if a not in ['']]
-    for item in str_array:
-        disk_info = {}
-        item_attr_arr = item.split(' ')
-        for attr in item_attr_arr[1:]:
-            if attr != "":
-                kv = attr.split('=')
-                disk_info[kv[0]] = kv[1][1:-1] # strip off leading and trailing double quotes
-        if 'UUID' in disk_info:
-            dev = part_list[disk_info['UUID']]
-            dev = "/dev/" + dev
-            outp2 = subprocess.check_output(["/usr/bin/df", dev, "-m"])
-            str_array2 = outp2.split('\n')
-            params = str_array2[1]
-            parm_arr = params.split(' ')
-            parm_arr = [a for a in parm_arr if a not in ['']]
-            disk_info['size_in_megs'] = parm_arr[1]
-            disk_info['avail_in_megs'] = parm_arr[3]
-            disk_info['mount_point'] = parm_arr[5]
-            #print disk_info
-            system_disks[dev] = disk_info
-    return (system_disks)
+    params = str_array[1]
+    parm_arr = params.split(' ')
+    parm_arr = [a for a in parm_arr if a not in ['']]
+    part_prop['size_in_megs'] = parm_arr[1]
+    part_prop['avail_in_megs'] = parm_arr[3]
+    part_prop['mount_point'] = parm_arr[5]
+    #print part_prop
+    return (part_prop)
 
 def get_inet_speed(cmd_info):
     outp = subprocess.check_output(["scripts/get_inet_speed"])
