@@ -125,7 +125,7 @@ xsce_home_url: /xs-portal
 # openvpn
 vpn_presence: unleashkids.org
 openvpn_server_port: 1194
-openvpn_cron_enabled: True
+openvpn_cron_enabled: False
 openvpn_install: True
 openvpn_enabled: False
 
