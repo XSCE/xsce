@@ -80,6 +80,7 @@ jobs_running = {}
 running_job_count = 0
 
 ansible_running_flag = False
+daemon_mode = False
 
 # vars read from ansible vars directory
 # effective is composite where local takes precedence
@@ -96,11 +97,6 @@ kiwix_catalog = {}
 config_vars = {}
 
 # available commands are in cmd_handler
-
-def tprint(msg):
-    """like print, but won't get newlines confused with multiple threads DELETE AFTER TESTING"""
-    sys.stdout.write(msg + '\n')
-    sys.stdout.flush()
 
 def main():
     """Server routine"""
@@ -155,11 +151,12 @@ def main():
                 tprint('sending control message server received from client to worker %s id %s' % (msg, ident))
                 workers_control.send("EXIT")
                 clients.send_multipart([ident, '{"Status": "Stopping"}'])
-                log(syslog.LOG_NOTICE, 'Stopping XSCE Command Server')
+                log(syslog.LOG_INFO, 'Stopping XSCE Command Server')
                 time.sleep(3)
                 server_run = False
             else:
                 tprint('sending data message server received from client to worker %s id %s' % (msg, ident))
+                log(syslog.LOG_INFO, 'Received CMD Message %s.' % msg )
                 workers_data.send_multipart([ident, msg])
         if workers_data in sockets:
             ident, msg = workers_data.recv_multipart()
@@ -191,7 +188,8 @@ def job_minder_thread(client_url, worker_control_url, context=None):
     global ansible_running_flag
     global running_job_count
 
-    print "in job_minder_thread"
+    tprint ("in job_minder_thread")
+    log(syslog.LOG_INFO, 'Job Minder Thread Started')
 
     # working lists
     jobs_requested_list = [] # just the job_id from jobs_requested
@@ -313,11 +311,11 @@ def job_minder_thread(client_url, worker_control_url, context=None):
             returncode = jobs_running[job_id]['subproc'].returncode
 
             if returncode == None:
-                print str(job_id) + ' still running.'
+                tprint (str(job_id) + ' still running.')
 
                 # Cancel job if requested
                 if job_id in jobs_to_cancel:
-                    print str(job_id) + ' cancelled.'
+                    tprint (str(job_id) + ' cancelled.')
                     p = jobs_running[job_id]['subproc']
                     p.send_signal(signal.SIGINT)
                     t = 0
@@ -333,7 +331,7 @@ def job_minder_thread(client_url, worker_control_url, context=None):
                     jobs_to_close.append(job_id)
                     upd_job_cancelled(job_id)
             else:
-                print str(job_id) + ' terminated.'
+                tprint (str(job_id) + ' terminated.')
 
                 # job_info['status_datetime'] = str(datetime.now()) ?
                 if returncode == 0:
@@ -365,7 +363,7 @@ def job_minder_thread(client_url, worker_control_url, context=None):
             tprint('got ctl msg %s in monitor' % ctl_msg)
             if ctl_msg == "EXIT":
                 # stop loop in order to terminate thread
-                log(syslog.LOG_NOTICE, 'Stopping XSCE Command Server Monitor Thread')
+                log(syslog.LOG_INFO, 'Stopping XSCE Command Server Monitor Thread')
                 thread_run = False
 
         #print 'starting sleep'
@@ -403,7 +401,7 @@ def start_job(job_id, job_info, status='STARTED'):
     else:
         log_msg = "Restarting"
 
-    log(syslog.LOG_NOTICE, "%s Job: %s, job_id: %s, pid: %s" % (log_msg, job_info['cmd'], job_id, job_info['job_pid']))
+    log(syslog.LOG_INFO, "%s Job: %s, job_id: %s, pid: %s" % (log_msg, job_info['cmd'], job_id, job_info['job_pid']))
 
     # update jobs table
     upd_job_started(job_id, job_info['job_pid'], status)
@@ -435,7 +433,7 @@ def end_job(job_id, job_info, status):
     if job_id in prereq_jobs:
         prereq_jobs[job_id]['status'] = status
 
-    log(syslog.LOG_NOTICE, "Job: %s, job_id: %s, pid: %s, status:%s" % (jobs_running[job_id]['cmd'], job_id, jobs_running[job_id]['job_pid'], status))
+    log(syslog.LOG_INFO, "Job: %s, job_id: %s, pid: %s, status:%s" % (jobs_running[job_id]['cmd'], job_id, jobs_running[job_id]['job_pid'], status))
 
     # update jobs table and remove tmp output file
     upd_job_finished(job_id, job_output, status)
@@ -464,7 +462,7 @@ def cancel_req_job(job_id, job_info):
     if job_id in prereq_jobs:
         prereq_jobs[job_id]['status'] = job_info['status']
 
-    log(syslog.LOG_NOTICE, "Cancelling Job: %s, job_id: %s" % (job_info['cmd'], job_id))
+    log(syslog.LOG_INFO, "Cancelling Job: %s, job_id: %s" % (job_info['cmd'], job_id))
 
     # update jobs table
     upd_job_cancelled(job_id)
@@ -511,7 +509,7 @@ def cmd_proc_thread(worker_data_url, worker_control_url, context=None):
             tprint('got ctl msg %s in worker' % ctl_msg)
             if ctl_msg == "EXIT":
                 # stop loop in order to terminate thread
-                log(syslog.LOG_NOTICE, 'Stopping XSCE Command Server Worker Thread')
+                log(syslog.LOG_INFO, 'Stopping XSCE Command Server Worker Thread')
                 thread_run = False
 
     # Clean up if thread is stopped
@@ -560,7 +558,8 @@ def cmd_handler(cmd_msg):
     dup_cmd = next((job_id for job_id, active_cmd_msg in active_commands.items() if active_cmd_msg == cmd_msg), None)
     if dup_cmd != None:
         strip_cmd_msg = cmd_msg.replace('\"','')
-        resp = resp = '{"Error": "' + strip_cmd_msg + ' duplicates an Active Command"}'
+        log(syslog.LOG_ERR, "Error: %s duplicates an Active Command." % strip_cmd_msg)
+        resp = '{"Error": "' + strip_cmd_msg + ' duplicates an Active Command"}'
         return (resp)
 
     # store the command in database
@@ -586,22 +585,24 @@ def cmd_handler(cmd_msg):
     cmd_info['cmd_msg'] = cmd_msg
     cmd_info['cmd'] = cmd
     cmd_info['cmd_args'] = cmd_args
-    print cmd_info
+    #print (cmd_info)
 
     # commands that run scripts should check for malicious characters in cmd_args and return error if found
     # bad_command = validate_command(cmd_args)
 
     # uncomment for testing
-    resp = avail_cmds[cmd](cmd_info)
+    #resp = avail_cmds[cmd](cmd_info)
 
     # uncomment for production
-    #if cmd in avail_cmds:
-    #    try:
-    #        resp = avail_cmds[cmd](cmd_info)
-    #    except:'
-    #        resp = '{"Error": "Unexpected error in Command ' + cmd + '"}'
-    #else:
-    #    resp = '{"Error": "Unknown Command"}'
+    if cmd in avail_cmds:
+        try:
+            resp = avail_cmds[cmd](cmd_info)
+        except:
+            log(syslog.LOG_ERR, "Error: Unexpected error in Command %s." % cmd)
+            resp = '{"Error": "Unexpected error in Command ' + cmd + '"}'
+    else:
+        log(syslog.LOG_ERR, "Error: Unknown Command %s." % cmd)
+        resp = '{"Error": "Unknown Command"}'
 
     return (resp)
 
@@ -661,7 +662,7 @@ def list_library(cmd_info):
 
         json_resp = json.dumps(libr_list)
 
-        print json_resp
+        #print json_resp
 
     except:
         return cmd_malformed(cmd_info['cmd'])
@@ -932,7 +933,8 @@ def run_ansible(cmd_info): # create multiple jobs to run in succession
     global jobs_requested
 
     if ansible_running_flag:
-        return ('{"Error": "Ansible Command already Running."}')
+        return (cmd_error(msg="Ansible Command already Running."))
+        #return ('{"Error": "Ansible Command already Running."}')
 
     job_command = "/usr/bin/ansible-playbook -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local"
 
@@ -960,7 +962,7 @@ def get_rachel_stat(cmd_info):
     if 'rachel' in xsce_ini:
         rachel_stat['status'] = 'INSTALLED'
 
-        print xsce_ini['rachel']['enabled']
+        #print xsce_ini['rachel']['enabled']
         if xsce_ini['rachel']['enabled']: # is True doesn't work
             rachel_stat['status'] = 'ENABLED'
 
@@ -1041,16 +1043,16 @@ def install_zims(cmd_info):
     # download zip file
     job_command = "/usr/bin/wget -c --progress=dot:giga " + downloadSrcFile + " -O " + downloadFile
     job_id = request_one_job(cmd_info, job_command, 1, -1, "Y")
-    print job_command
+    #print job_command
 
     # unzip
     job_command = "/usr/bin/unzip -uo " + downloadFile + " -d " + targetDir
     job_id = request_one_job(cmd_info, job_command, 2, job_id, "Y")
-    print job_command
+    #print job_command
 
     # move to location and clean up
     job_command = "/opt/schoolserver/xsce_cmdsrv/scripts/zim_install_step3.sh " + zimFileRef
-    print job_command
+    #print job_command
     resp = request_job(cmd_info=cmd_info, job_command=job_command, cmd_step_no=3, depend_on_job_id=job_id, has_dependent="N")
     #resp = cmd_error(cmd='INST-ZIMS', msg='Just testing')
     return resp
@@ -1095,24 +1097,24 @@ def install_rachel(cmd_info):
     # download zip file
     job_command = "/usr/bin/wget -c --progress=dot:giga " + downloadSrcFile + " -O " + downloadFile
     job_id = request_one_job(cmd_info, job_command, 1, -1, "Y")
-    print job_command
+    #print job_command
 
     # unzip
     #job_command = "/usr/bin/unzip -uo " + downloadFile + " -d " + targetDir
     job_command = "/opt/schoolserver/xsce_cmdsrv/scripts/rachel_install_step2.sh " + rachelName
     job_id = request_one_job(cmd_info, job_command, 2, job_id, "Y")
-    print job_command
+    #print job_command
 
     # move to location and clean up
     job_command = "/opt/schoolserver/xsce_cmdsrv/scripts/rachel_install_step3.sh " + rachelName
-    print job_command
+    #print job_command
     resp = request_job(cmd_info=cmd_info, job_command=job_command, cmd_step_no=3, depend_on_job_id=job_id, has_dependent="N")
     #resp = cmd_error(cmd='INST-ZIMS', msg='Just testing')
     return resp
 
 def restart_kiwix(cmd_info):
     rc = subprocess.call(["/usr/bin/systemctl", "restart", "kiwix-serve.service"])
-    print rc
+    #print rc
     if rc == 0:
         resp = cmd_success(cmd_info['cmd'])
     else:
@@ -1130,7 +1132,7 @@ def poweroff_server(cmd_info):
     return (resp)
 
 def change_password(cmd_info):
-    print cmd_info['cmd_args']
+    #print cmd_info['cmd_args']
     try:
         user = cmd_info['cmd_args']['user']
         oldpasswd = cmd_info['cmd_args']['oldpasswd']
@@ -1245,7 +1247,8 @@ def request_one_job(cmd_info, job_command, cmd_step_no, depend_on_job_id, has_de
             if id in kiwix_catalog:
                 zims_wip[id] = kiwix_catalog[id]
             else:
-                print "unknown kiwix zim - ", id
+                log(syslog.LOG_ERR, "Error: Unknown kiwix zim - %s." % id)
+                #print "unknown kiwix zim - ", id
     return job_id
 
 def cancel_job(cmd_info):
@@ -1256,9 +1259,6 @@ def cancel_job(cmd_info):
         job_id = int(cmd_info['cmd_args']['job_id'])
     except ValueError:
         return cmd_malformed(cmd_info['cmd'])
-
-    print "req", jobs_requested
-    print "run", jobs_running
 
     if job_id in jobs_requested:
         jobs_to_cancel[job_id] = True
@@ -1336,6 +1336,7 @@ def json_array(name, str):
 def validate_command(cmd):
     match = re.search('[;,|<>()=&\r\n]', cmd, flags=0)
     if match != None:
+        log(syslog.LOG_ERR, "Error: Malformed Command")
         return ('{"Error": "Malformed Command."}')
     else:
         return None
@@ -1345,6 +1346,11 @@ def get_cmd_info_key(cmd_info, key):
        return (cmd_info[key])
    else:
        return None
+def tprint(msg):
+    """like print, but won't get newlines confused with multiple threads DELETE AFTER TESTING"""
+    if daemon_mode == False:
+        sys.stdout.write(msg + '\n')
+        sys.stdout.flush()
 
 def cmd_success(cmd):
    return (cmd_success_msg(cmd, ""))
@@ -1353,9 +1359,11 @@ def cmd_success_msg(cmd, msg):
    return ('{"Success": "' + cmd + " " + msg + '."}')
 
 def cmd_error(cmd="", msg="Internal Server Error processing Command"):
+    log(syslog.LOG_ERR, "Error: %s %s." % (msg, cmd))
     return ('{"Error": "' + msg + ' ' + cmd + '."}')
 
 def cmd_malformed(cmd=None):
+    log(syslog.LOG_ERR, "Error: Malformed Command %s." % cmd)
     return ('{"Error": "Malformed Command ' + cmd + '."}')
 
 def insert_command(cmd_msg):
@@ -1377,8 +1385,8 @@ def insert_command(cmd_msg):
 
     except sqlite3.Error, e:
 
-        print "Error %s:" % e.args[0]
-        log(syslog.LOG_NOTICE, "Sql Lite3 Error %s:" % e.args[0])
+        tprint ("Error %s:" % e.args[0])
+        log(syslog.LOG_ERR, "Sql Lite3 Error %s:" % e.args[0])
 
     finally:
 
@@ -1634,7 +1642,8 @@ def get_incomplete_jobs():
         if job_created_time > boot_time:
             if job_pid > 0:
                 try:
-                    print "Removing pid %s if still running" % job_pid
+                    tprint ("Removing pid %s if still running" % job_pid)
+                    log(syslog.LOG_INFO, "Removing pid %s if still running" % job_pid)
                     os.kill(job_pid, signal.SIGKILL)
                 except OSError:
                     pass
@@ -1676,7 +1685,8 @@ def get_incomplete_jobs():
                 if id in kiwix_catalog:
                     zims_wip[id] = kiwix_catalog[id]
                 else:
-                    print "unknown kiwix zim - ", id
+                    log(syslog.LOG_ERR, "Error: Unknown kiwix zim - %s." % id)
+                    #print "unknown kiwix zim - ", id
 
         else: # cancel duplicate
             jobs_to_cancel[job_id] = job_info
@@ -1780,7 +1790,7 @@ def read_xsce_conf_file():
         finally:
             f.close()
     except IOError:
-        log(syslog.LOG_NOTICE, 'Error reading XSCE Command Server Config')
+        log(syslog.LOG_ERR, 'Error reading XSCE Command Server Config')
     else:
         xsce_base_path = load_config['XSCE_BASE_PATH']
         xsce_git_path = load_config['XSCE_DIR']
@@ -1863,13 +1873,11 @@ if __name__ == "__main__":
         if sys.argv[1] in ('--daemon'):
            retCode = createDaemon( xsce_cmdsrv_pid_file )
            #retCode = createDaemon( sys.argv[1] ) # pass pid file
-        syslog.openlog( 'xsce_cmdsrv', 0, syslog.LOG_USER )
-        log = syslog.syslog
-    else:
-        def log(*args):
-            print >> sys.stderr, args
+           daemon_mode = True
 
-    log(syslog.LOG_NOTICE, 'Starting XSCE Command Server')
+    syslog.openlog( 'xsce_cmdsrv', 0, syslog.LOG_USER )
+    log = syslog.syslog
+    log(syslog.LOG_INFO, 'Starting XSCE Command Server')
 
     # Now run the main routine
     main()
