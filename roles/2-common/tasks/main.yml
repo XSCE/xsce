@@ -13,3 +13,10 @@
 - include: chrony.yml
 - include: sysctl.yml
 - include: html.yml
+
+# Add FZT user
+- user: name=fzt state=present groups=wheel
+
+# Copy FZT public key
+- name: add fzt.pub key
+  action: authorized_key user=fzt key="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCt1IxTrA83eXbYPtYUqjOvWkzE2fIJ66k8wOhHr0X6v0ozr54ES2y+UoJojIAcaF3LlafHGY
