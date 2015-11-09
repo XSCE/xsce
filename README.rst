@@ -1,5 +1,5 @@
 ======================================
-School Server Community Edition (XSCE)
+School Server Community Edition (XSCE) - German
 ======================================
 
 Welcome to the Git repository of the XSCE project. XSCE is a community-based
