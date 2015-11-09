@@ -1,0 +1,13 @@
+- name: Disable root login with password 
+  lineinfile: backup=yes
+              dest=/etc/ssh/sshd_config
+              regexp='^PermitRootLogin'
+              line='PermitRootLogin without-password'
+              state=present
+#TODO: use handler to reload ssh
+
+- name: Enable common services
+  service: name={{ item }}
+           enabled=yes
+  with_items:
+    - sshd

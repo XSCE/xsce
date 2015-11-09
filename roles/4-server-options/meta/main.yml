@@ -1,4 +1,5 @@
 dependencies:
+    - { role: sshd, tags: ['services','sshd','base'] }
     - { role: postgresql, tags: ['services','postgresql','base'], when: postgresql_install }
     - { role: authserver,  tags: ['services','authserver','base'], when: authserver_install }
     - { role: openvpn, tags: ['options','openvpn'], when: openvpn_install }
