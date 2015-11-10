@@ -160,6 +160,9 @@ idmgr_install: True
 activity-server_install: True
 xo_services_enabled: True
 
+# activation-server
+activation-server_install: True
+
 # 6-GENERIC-APPS
 
 # MYSQL

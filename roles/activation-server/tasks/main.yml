@@ -1,0 +1,14 @@
+- name: Install packages for xs-activations
+  yum: name={{ item }}
+       state=present
+  with_items:
+   - xs-activation
+   - mod_python
+   - olpc-bios-crypto
+  notify:
+   - initialize activation service
+  tags:
+    - download
+
+- name: initialize activation service
+  command: "/etc/sysconfig/olpc-scripts/setup.d/xs-activation"

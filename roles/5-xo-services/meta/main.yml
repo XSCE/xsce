@@ -2,3 +2,4 @@ dependencies:
    - { role: ejabberd, tags: ['olpc','ejabberd','xo-services'], when: ejabberd_install }
    - { role: idmgr,  tags: ['olpc','idmgr','xo-services'], when: idmgr_install }
    - { role: activity-server, tags: ['olpc','activity-server','xo-services'], when: activity-server_install  }   
+   - { role: activation-server, tags: ['olpc','activation-server','xo-services'], when: activation-server_install }
