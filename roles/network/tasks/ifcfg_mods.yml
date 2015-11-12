@@ -60,7 +60,7 @@
 
 # test point, we should always have one with any kind of starting point
 # no ifcfg = supply
-# had but not WAN = rename and edit.
+# had but not WAN = rename and edit if wired, skip wifi gateway.
 # test point, confirm onboot=no is OK everywhere
 
 - name: Enabling pre-existing ifcfg-WAN file
