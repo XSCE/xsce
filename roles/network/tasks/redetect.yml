@@ -70,12 +70,12 @@
   when: dhcp_wifi_results.stdout is defined and dhcp_wifi_results.stdout != ""
 
 - name: interface list
-  shell: ls /sys/class/net | grep -v -e lo
+  shell: ls /sys/class/net | grep -v -e lo -e br
   register: adapter_list
 
 # discovered_wireless_iface might need work
 - name: Try dhcp on all wired devices 
-  shell: nmcli d connect "{{ item|trim }}"
+  shell: nmcli d connect {{ item|trim }}
   when: item|trim != discovered_wireless_iface and item|trim != xsce_wireless_lan_iface and not dhcp_good
   with_items:
       - "{{ adapter_list.stdout_lines }}"
