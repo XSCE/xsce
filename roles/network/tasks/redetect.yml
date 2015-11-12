@@ -73,6 +73,11 @@
   shell: ls /sys/class/net | grep -v -e lo -e br
   register: adapter_list
 
+# monitor-connection-files defaults to no with F21, F18-F20 defaults to yes
+- name: Reloading nmcli for deleted files
+  shell: nmcli con reload
+  when: not installing and not no_NM_reload
+
 # discovered_wireless_iface might need work
 - name: Try dhcp on all wired devices 
   shell: nmcli d connect {{ item|trim }}
