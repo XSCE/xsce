@@ -79,6 +79,7 @@ cat > /opt/schoolserver/xsce/vars/local_vars.yml  << EOF
 postgresql_install: True
 mysql_install: True
 pathagar_install: True
+xovis_install: False
 EOF
 
 ### preload the new install
