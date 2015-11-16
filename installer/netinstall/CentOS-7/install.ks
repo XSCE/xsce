@@ -129,9 +129,9 @@ touch /.xsce-booted
 EOF
 
 # now make xsce-prep active
-/sbin/chmod 755 /etc/rc.d/init.d/xsce-prep
-/sbin/restorecon /etc/rc.d/init.d/xsce-prep
-/sbin/chkconfig --add xsce-prep
+chmod 755 /etc/rc.d/init.d/xsce-prep
+restorecon /etc/rc.d/init.d/xsce-prep
+chkconfig --add xsce-prep
 
 %end
 
