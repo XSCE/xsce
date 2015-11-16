@@ -110,8 +110,9 @@ cat > /etc/rc.d/init.d/xsce-prep << EOF
 
 . /etc/init.d/functions
 
-### 
-if [ -e /.xsce-prepped ] ; then
+### ensure install-console gets run on first-boot also.
+
+if [ -e /.xsce-booted ] ; then
     systemctl disable xsce-prep
     #/sbin/chkconfig --del xsce-prep
     #rm /etc/rc.d/init.d/xsce-prep
@@ -123,7 +124,7 @@ cd /opt/schoolserver/xsce/
 
 # run install-console
 /opt/schoolserver/xsce/install-console > /opt/schoolserver/xsce/xsce-firstboot.log
-
+touch /.xsce-booted
 EOF
 
 # now make xsce-prep active
