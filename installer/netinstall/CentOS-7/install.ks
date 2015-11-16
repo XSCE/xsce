@@ -34,9 +34,9 @@ clearpart --none --initlabel
 # System services
 # services --enabled="chronyd"
 
+url --url=http://mirror.centos.org/centos/7.1.1503/os/x86_64/
+repo --name=updates2 --baseurl=http://mirror.centos.org/centos/7.1.1503/updates/x86_64/
 repo --name=epel-mirror --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=x86_64
-#repo --name=mirror --mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=fedora-$releasever&arch=$basearch
-#repo --name=updates2 --mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=updates-released-f$releasever&arch=$basearch
 
 selinux --disabled
 firstboot --disable
@@ -68,9 +68,9 @@ echo "path is $PATH"
 mkdir -p /opt/schoolserver
 cd /opt/schoolserver
 
-$ switch this to release branch or stable once it's updated. 
+# switch this to release branch or stable once it's updated. 
 #git clone --depth 1 --branch stable https://github.com/XSCE/xsce 
-git clone --depth 1 --branch master https://github.com/XSCE/xsce 
+git clone --depth 1 --branch master https://github.com/XSCE/xsce
 
 cd xsce
 
@@ -79,6 +79,7 @@ cat > /opt/schoolserver/xsce/vars/local_vars.yml  << EOF
 postgresql_install: True
 mysql_install: True
 pathagar_install: True
+xovis_install: False
 EOF
 
 ### preload the new install
@@ -110,8 +111,9 @@ cat > /etc/rc.d/init.d/xsce-prep << EOF
 
 . /etc/init.d/functions
 
-### 
-if [ -e /.xsce-prepped ] ; then
+### ensure install-console gets run on first-boot also.
+
+if [ -e /.xsce-booted ] ; then
     systemctl disable xsce-prep
     #/sbin/chkconfig --del xsce-prep
     #rm /etc/rc.d/init.d/xsce-prep
@@ -123,13 +125,13 @@ cd /opt/schoolserver/xsce/
 
 # run install-console
 /opt/schoolserver/xsce/install-console > /opt/schoolserver/xsce/xsce-firstboot.log
-
+touch /.xsce-booted
 EOF
 
 # now make xsce-prep active
-/sbin/chmod 755 /etc/rc.d/init.d/xsce-prep
-/sbin/restorecon /etc/rc.d/init.d/xsce-prep
-/sbin/chkconfig --add xsce-prep
+chmod 755 /etc/rc.d/init.d/xsce-prep
+restorecon /etc/rc.d/init.d/xsce-prep
+chkconfig --add xsce-prep
 
 %end
 
