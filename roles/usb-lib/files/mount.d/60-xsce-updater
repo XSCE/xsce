@@ -46,7 +46,7 @@ log notice "[1/$STEPS] Checking whether it has a manifest";
 if [ -r $MAGIC_DIR/manifest.sha1 ];then
     log notice "[2/$STEPS] Seems to have a manifest";
 else
-    log err "[2/$STEPS] Missing manifest"
+    log err "[2/$STEPS] Missing manifest";
     exit 1;
 fi
 
@@ -91,8 +91,8 @@ TMPMANIF=`mktemp -d -p $XSCE_BASE_PATH/tmp`
 
 #Let syslog know what we're doing
 CARGO=`ls $TMPDEST/*`
-log notice "found $( $CARGO | wc -l ) directories"
-log debug "found these directories: $CARGO"
+log notice "found $( $CARGO | wc -l ) directories";
+log debug "found these directories: $CARGO";
 
 log notice "[5/$STEPS] Copy the directories into place";
 #XXX not checking whether this clobbers existing files.
@@ -100,7 +100,7 @@ ver=0
 for dir in $CARGO do;
     case $o in)
     dow*|pip*|yum*)
-        cp -a $TMPDEST/$CARGO/* $FINAL_DIR
+        cp -a $TMPDEST/$dir/* $FINAL_DIR
     ;;
     xsce)
         if [ -f $XSCE_DIR/gui_ver ]; then 
@@ -108,12 +108,12 @@ for dir in $CARGO do;
         fi
         # think this might be a bit rough
         # better to do a git merge   
-        cp -a $TMPDEST/xsce/*
+        cp -a $TMPDEST/$dir $FINAL_DIR
         fi
     ;;
     esac
 done
-gui_ver=`cat $XSCE_DIR/gui_ver`
+gui_ver=`cat $TMPDEST/xsce/gui_ver`
 proccess=skipping
 if [ $gui_ver -gt $ver ]; then
     cd $XSCE_DIR
@@ -122,10 +122,9 @@ if [ $gui_ver -gt $ver ]; then
 fi
 log notice "[6/$STEPS] $proccess install-console for cmd-srv update";
 
-log notice "[$STEPS/$STEPS] Finished updating xsce";
-
 #make sure the tmp directories goes away
 FILES_TO_RM="$FILES_TO_RM '$TMPDEST'"
 FILES_TO_RM="$FILES_TO_RM '$TMPMANIF'"
 
 rm -fr $FILES_TO_RM
+log notice "[$STEPS/$STEPS] Finished updating xsce";
