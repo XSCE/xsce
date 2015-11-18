@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# Mark local_vars as do not track to preserve local changes
-
-git update-index --assume-unchanged vars/local_vars.yml
-
 # the playbook does nothing if the following already exists so exit
 
 if [ -f /etc/xsce/config_vars.yml ]
@@ -18,6 +14,9 @@ then
  echo "Exiting."
  exit 1
 fi
+
+# Mark local_vars as do not track to preserve local changes
+git update-index --assume-unchanged vars/local_vars.yml
 
 PLAYBOOK="install-init.yml"
 INVENTORY="ansible_hosts"
