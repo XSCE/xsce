@@ -1,0 +1,12 @@
+The install.ks files are designed to be introduced into Fedora's or CentOS's installer environment. The anaconda installer uses a method known as kickstart and we use that method to provide our information for the automated install. In a nutshell we need to get install.ks into the installer. Please refer to the kickstart documention for full details. One way is to place install.ks on a flashdrive and know the device's label. Hint with the key mounted: 
+ls /dev/disk/by-label/
+
+Now boot the install iso with the key inserted hit tab at the splash screen and append after quite:
+
+inst.ks=hd:LABEL=<lablel>:/install.ks
+
+replacing <label> with your device's label
+
+
+
+

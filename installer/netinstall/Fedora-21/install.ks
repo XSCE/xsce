@@ -120,8 +120,18 @@ fi
 # the vars/* are not found
 cd /opt/schoolserver/xsce/
 
-# run install-console
-/opt/schoolserver/xsce/install-console > /opt/schoolserver/xsce/xsce-firstboot.log
+if [ -f  xsce-kickstart.log ] ; then
+    result=`cat xsce-kickstart.log | grep failed=0 | awk '{print $6}' | wc -l`
+    if [ $result -eq 2 ] ; then
+        # ran to completion
+        ./runtags network > xsce-firstboot.log
+        touch /.xsce-booted
+        exit 0
+    fi
+fi
+./install-console > xsce-firstboot.log
+touch /.xsce-booted
+exit 0
 
 EOF
 
