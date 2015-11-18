@@ -1,11 +1,14 @@
 #!/bin/bash
 
-# if not the first run, repo location is here
+# Mark local_vars as do not track to preserve local changes
 
-if [ -f /etc/xsce/xsce.env ]
+git update-index --assume-unchanged vars/local_vars.yml
+
+# the playbook does nothing if the following already exists so exit
+
+if [ -f /etc/xsce/config_vars.yml ]
 then
-  . /etc/xsce/xsce.env
-  cd $XSCE_DIR
+  exit 0
 fi
 
 if [ ! -f xsce.yml ]
@@ -13,7 +16,7 @@ then
  echo "XSCE Playbook not found."
  echo "Please run this command from the top level of the git repo."
  echo "Exiting."
- exit
+ exit 1
 fi
 
 PLAYBOOK="install-init.yml"
