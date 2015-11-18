@@ -1,0 +1,130 @@
+#!/bin/bash
+# based on a similarly named scripts in the xs-rsync package
+# by Martin Langhoff <martin@laptop.org>
+#
+# And for xs-activity-server by Douglas Bagnall
+# <douglas@paradise.net.nz>
+#
+# Copyright: Jerry Vonau <me@jvonau.ca>
+# Note to add GPL
+
+set -e
+
+VERBOSE=yes
+MAGIC_DIR=$UM_MOUNTPOINT/schoolserver
+
+FINAL_DIR=$XSCE_BASE_PATH
+
+FILES_TO_RM=""
+
+. /etc/xsce/xsce.env
+
+# combined with set -e, error() is called if something fails.
+error(){
+    logger -puser.err -t "xsce-update[$$]" "Error at line $(caller)"
+    [ "$FILES_TO_RM" ] && rm -rf $FILES_TO_RM
+}
+trap error ERR
+
+
+# Log a string via the syslog facility.
+log()
+{
+    if test $1 != debug || expr "$VERBOSE" : "[yY]" > /dev/null; then
+	logger -p user.$1 -t "xsce-updater[$$]" -- "$2"
+    fi
+}
+
+
+STEPS=7
+
+[ -d $MAGIC_DIR ] || exit 0
+
+log notice 'Found schoolserver directory';
+log notice "[1/$STEPS] Checking whether it has a manifest";
+
+if [ -r $MAGIC_DIR/manifest.sha1 ];then
+    log notice "[2/$STEPS] Seems to have a manifest";
+else
+    log err "[2/$STEPS] Missing manifest";
+    exit 1;
+fi
+
+## Do we have enough space?
+# note: we could use awk {'print $4'} instead of the
+# perl regex, but it breaks with long /dev nodes
+# such as those from LVMs -which wrap. The regex captures the
+# number just left of the number with the percentage sign.
+NEED=`du -s -B1M $MAGIC_DIR | awk {'print $1'}`
+HAVE=`df -B1M $FINAL_DIR | tail -n1 | \
+    perl -pe 'm/(\d+)\s+\d+\%/; $_=($1-1);'`
+if [ $NEED -gt $HAVE ];then
+    log err 'Not enough free space in /opt/schoolserver - cancelling';
+    exit 1;
+fi
+
+### Copy it first - as the media is bound to be slow
+# - make this atomic by cp'ing to a tmpdir, and mv'ing into place
+#   to be fail-safe
+# - mv aside manifest.sha1 and its sig
+# - TODO? we could avoid cp'ing files we already have using
+#   rsync --copy-dest instead of cp
+#
+log notice "[3/$STEPS] Copying files to disk";
+TMPDEST=`mktemp -d -p $XSCE_BASE_PATH/tmp`
+
+cp --preserve=timestamps $MAGIC_DIR/* $TMPDEST
+
+# In a tmpdir we own, safe from race conditions
+# run the checksums...
+log notice "[4/$STEPS] Checking the manifest";
+# mv the manifest to a different dir
+
+TMPMANIF=`mktemp -d -p $XSCE_BASE_PATH/tmp`
+
+
+#mv $TMPDEST/manifest.sha1 $TMPMANIF/
+#if [ -e $TMPDEST/manifest.sha1.sig ]; then
+#    mv $TMPDEST/manifest.sha1.sig $TMPMANIF/
+#fi
+#xs-sum -c $TMPMANIF/manifest.sha1 -d $TMPDEST
+
+#Let syslog know what we're doing
+CARGO=`ls $TMPDEST/*`
+log notice "found $( $CARGO | wc -l ) directories";
+log debug "found these directories: $CARGO";
+
+log notice "[5/$STEPS] Copy the directories into place";
+#XXX not checking whether this clobbers existing files.
+ver=0
+for dir in $CARGO do;
+    case $o in)
+    dow*|pip*|yum*)
+        cp -a $TMPDEST/$dir/* $FINAL_DIR
+    ;;
+    xsce)
+        if [ -f $XSCE_DIR/gui_ver ]; then 
+            ver=`cat $XSCE_DIR/gui_ver`
+        fi
+        # think this might be a bit rough
+        # better to do a git merge   
+        cp -a $TMPDEST/$dir $FINAL_DIR
+        fi
+    ;;
+    esac
+done
+gui_ver=`cat $TMPDEST/xsce/gui_ver`
+proccess=skipping
+if [ $gui_ver -gt $ver ]; then
+    cd $XSCE_DIR
+    proccess=running
+    ./install-console
+fi
+log notice "[6/$STEPS] $proccess install-console for cmd-srv update";
+
+#make sure the tmp directories goes away
+FILES_TO_RM="$FILES_TO_RM '$TMPDEST'"
+FILES_TO_RM="$FILES_TO_RM '$TMPMANIF'"
+
+rm -fr $FILES_TO_RM
+log notice "[$STEPS/$STEPS] Finished updating xsce";

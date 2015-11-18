@@ -45,24 +45,7 @@ firstboot --disable
 network  --bootproto=dhcp --device=link --ipv6=auto --activate --hostname=schoolserver
 
 %post
-mkdir /root/debug
-# ensure network cards are turned on
-NICs=`ls /etc/sysconfig/network-scripts/ifcfg-*` 
-for nic in $NICs ; do
-    case $o in
-    *lo)
-        ;;
-    *)
-        cp $nic /root/debug/
-        sed -i -e "s/ONBOOT=no/ONBOOT=yes/" $nic
-        ;;
-    esac
-done
-
-# make kickstart see ansible
-echo "path is $PATH"
-export PATH=/usr/bin:/usr/sbin:/sbin:/bin:$PATH
-echo "path is $PATH"
+#### part of automated install routine.
 
 # make the default install path and clone
 mkdir -p /opt/schoolserver
@@ -72,80 +55,18 @@ cd /opt/schoolserver
 #git clone --depth 1 --branch stable https://github.com/XSCE/xsce 
 git clone --depth 1 --branch master https://github.com/XSCE/xsce
 
-cd xsce
-
-# set install time options here
-cat > /opt/schoolserver/xsce/vars/local_vars.yml  << EOF
-postgresql_install: True
-mysql_install: True
-pathagar_install: True
-xovis_install: False
-EOF
-
-### preload the new install
-./runtags download,download2 > xsce-preload.log
-touch /.preload
-
-# Don't start services while in the chroot
-cat > /opt/schoolserver/xsce/vars/local_vars.yml << EOF
-installing: True
-EOF
-
-/opt/schoolserver/xsce/install-console > xsce-kickstart.log
-
+# prep
+-include% /opt/schoolserver/xsce/installer/ks-scripts/prep.ks
+# runtags download
+-include% /opt/schoolserver/xsce/installer/ks-scripts/pre-load.ks
+# install-console
+-include% /opt/schoolserver/xsce/installer/ks-scripts/console.ks
 # get rid of custom local_vars
-git reset --hard
-
-# run install-console on first boot
-cat > /etc/rc.d/init.d/xsce-prep << EOF
-#!/bin/bash
-#
-# xsce: Init script for xsce-prep
-#
-# chkconfig: 345 00 98
-
-# description: Init script for XSCE prep.
-### BEGIN INIT INFO
-# X-Start-Before: display-manager
-### END INIT INFO
-
-. /etc/init.d/functions
-
-### ensure install-console gets run on first-boot also.
-
-if [ -e /.xsce-booted ] ; then
-    systemctl disable xsce-prep
-    #/sbin/chkconfig --del xsce-prep
-    #rm /etc/rc.d/init.d/xsce-prep
-    exit 0
-fi
-
-# the vars/* are not found
-cd /opt/schoolserver/xsce/
-
-if [ -f  xsce-kickstart.log ] ; then
-    result=`cat xsce-kickstart.log | grep failed=0 | awk '{print $6}' | wc -l`
-    if [ $result -eq 2 ] ; then
-        # ran to completion
-        ./runtags network > xsce-firstboot.log
-        touch /.xsce-booted
-        exit 0
-    fi
-fi
-./install-console > xsce-firstboot.log
-touch /.xsce-booted
-exit 0
-
-EOF
-
-# now make xsce-prep active
-chmod 755 /etc/rc.d/init.d/xsce-prep
-restorecon /etc/rc.d/init.d/xsce-prep
-chkconfig --add xsce-prep
+-include% /opt/schoolserver/xsce/installer/ks-scripts/git-cleanup.ks
+# xsce-prep
+-include% /opt/schoolserver/xsce/installer/ks-scripts/xsce-prep.ks
 
 %end
-
-
 
 %packages
 epel-release
