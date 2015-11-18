@@ -7,6 +7,10 @@ inst.ks=hd:LABEL=<lablel>:/install.ks
 
 replacing <label> with your device's label
 
+There are other options that could be set but are left # out that could be enabled for a fully automated install.
 
+If you're after a bootable usbkey use alter.sh with the net-install iso for your distro.
+
+Feedback welcome
 
 
