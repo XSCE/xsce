@@ -7,7 +7,7 @@ then
   exit 0
 fi
 
-if [ ! -f xsce.yml ]
+if [ ! -f install-init.yml ]
 then
  echo "XSCE Playbook not found."
  echo "Please run this command from the top level of the git repo."
