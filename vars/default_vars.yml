@@ -121,6 +121,8 @@ xsce_home_url: /xs-portal
 #xsce_home_url: /dokuwiki
 
 # 4-SERVER-OPTIONS
+# sshd
+sshd_enabled: True
 
 # openvpn
 vpn_presence: unleashkids.org
