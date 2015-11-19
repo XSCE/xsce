@@ -9,9 +9,6 @@ UUID=`cat /etc/xsce/uuid`
 
 cd $XSCE_DIR
 
-# while we're here untrack local vars
-git update-index --assume-unchanged vars/local_vars.yml
-
 # get current version
 BRANCH=`git rev-parse --abbrev-ref HEAD`
 COMMIT=`git rev-parse --verify HEAD`
