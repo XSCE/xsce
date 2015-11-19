@@ -10,12 +10,3 @@
   service: name=systemd-udevd
            state=restarted
   when: udev_needs_patch and not installing
-
-- name: Add usb-lib to service list
-  ini_file: dest='{{ service_filelist }}'
-            section=usb-lib
-            option='{{ item.option }}'
-            value='{{ item.value }}'
-  with_items:
-    - option: systemd-udevd-patched
-      value: "{{ udev_needs_patch }}"
