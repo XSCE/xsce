@@ -1,0 +1,12 @@
+- name: Change MountFlags from slave to shared
+  lineinfile: backup=no
+              dest=/etc/systemd/system/systemd-udevd.service
+              regexp='^MountFlags'
+              line='MountFlags=shared'
+              state=present
+  when: udev_needs_patch
+
+- name: Restart systemd-udevd.service
+  service: name=systemd-udevd
+           state=restarted
+  when: udev_needs_patch and not installing
