@@ -70,7 +70,7 @@
   when: dhcp_wifi_results.stdout is defined and dhcp_wifi_results.stdout != ""
 
 - name: interface list
-  shell: ls /sys/class/net | grep -v -e lo -e br
+  shell: ls /sys/class/net | grep -v -e lo -e br -e tun
   register: adapter_list
 
 # monitor-connection-files defaults to no with F21, F18-F20 defaults to yes
