@@ -9,11 +9,6 @@
   changed_when: False
   when: xsce_prepped and (num_lan_interfaces != "0" or xsce_wireless_lan_iface != "none")
 
-# move gateway if not WAN
-# might have wifi info if wireless is used as uplink.
-- include: edit_ifcfg.yml
-  when: has_ifcfg_gw != "none" and has_ifcfg_gw != "/etc/sysconfig/network-scripts/ifcfg-WAN"
-
 # clear all bridge ifcfg files
 - name: Now delete slave bridge ifcfg files
   shell: rm -f /etc/sysconfig/network-scripts/ifcfg-"{{ item }}"
@@ -24,6 +19,11 @@
 ## vars/ users should set user_wan_iface to avoid messy redetect
 - include: redetect.yml
   when: discovered_wan_iface == "none" and user_wan_iface == "auto"
+
+# move gateway if not WAN
+# might have wifi info if wireless is used as uplink.
+- include: edit_ifcfg.yml
+  when: has_wifi_gw == "none" and has_ifcfg_gw != "none" and has_ifcfg_gw != "/etc/sysconfig/network-scripts/ifcfg-WAN"
 
 # create ifcfg-WAN if missing
 # if we get here we have gateway but no ifcfg file
@@ -60,7 +60,7 @@
 
 # test point, we should always have one with any kind of starting point
 # no ifcfg = supply
-# had but not WAN = rename and edit.
+# had but not WAN = rename and edit if wired, skip wifi gateway.
 # test point, confirm onboot=no is OK everywhere
 
 - name: Enabling pre-existing ifcfg-WAN file

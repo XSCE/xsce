@@ -30,10 +30,10 @@
 # we need to have an interface name for ifcfg-WAN to be able to change gateway
 # the DEVICE from the gui. Thanks to George for proving my point about knowing
 # what device to switch to.
-- name: Using GUI_WAN info
-  set_fact:
-    user_wan_iface: "{{ gui_wan_iface }}"
-  when: gui_wan_iface != "unset" and gui_desired_network_role is defined and gui_desired_network_role != "LanController"
+#- name: Using GUI_WAN info
+#  set_fact:
+#    user_wan_iface: "{{ gui_wan_iface }}"
+#  when: gui_wan_iface != "unset" and gui_desired_network_role is defined and gui_desired_network_role != "LanController"
 
 # should make the GUI buttons the last call
 - name: Checking xsce_wan_enabled
