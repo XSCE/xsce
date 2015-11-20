@@ -110,7 +110,7 @@ cat > /etc/rc.d/init.d/xsce-prep << EOF
 . /etc/init.d/functions
 
 ### 
-if [ -e /.xsce-prepped ] ; then
+if [ -e /.xsce-booted ] ; then
     systemctl disable xsce-prep
     #/sbin/chkconfig --del xsce-prep
     #rm /etc/rc.d/init.d/xsce-prep
