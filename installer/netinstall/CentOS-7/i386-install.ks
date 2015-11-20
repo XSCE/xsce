@@ -15,13 +15,13 @@ lang en_US.UTF-8
 # System timezone
 #timezone America/Winnipeg
 
-ignoredisk --only-use=sda
+#ignoredisk --only-use=sda
 
 # System bootloader configuration
-bootloader --location=mbr --boot-drive=sda
+#bootloader --location=mbr --boot-drive=sda
 
 # Partition clearing information
-clearpart --none --initlabel
+#clearpart --none --initlabel
 
 # Disk partitioning information
 #autopart --type=plain
@@ -29,7 +29,7 @@ clearpart --none --initlabel
 # custom layout
 #part swap --fstype="swap" --ondisk=sda --size=2048
 #part /boot --fstype="ext4" --ondisk=sda --size=500
-#part / --fstype="ext4
+#part / --fstype="ext4"
 
 # System services
 # services --enabled="chronyd"
