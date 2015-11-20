@@ -6,6 +6,9 @@
 - include: install.yml
   when: not is_F18
 
+- name: ask systemd to reread the unit files
+  shell: systemctl daemon-reload
+
 - name: Calc kalite db file name
   set_fact:
      kalite_db_name: "{{ kalite_root }}/kalite/database/data.sqlite"
