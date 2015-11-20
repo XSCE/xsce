@@ -67,9 +67,9 @@
 # Set flag to True that was initialized to False in role defaults
 # We can't undo this
 - name: Does udev need patching
-  set_fact: 
+  set_fact:
     udev_needs_patch: True
-  when: ansible_distribution_version >= "21"
+  when: ansible_distribution == "Fedora" and ansible_distribution_version >= "21"
 
 # for various reasons the mysql service can not be enabled on fedora 20,
 # but 'mariadb', which is its real name can
