@@ -95,7 +95,7 @@ cd /opt/schoolserver/xsce/
 
 if [ -f  xsce-kickstart.log ] ; then
     result=`cat xsce-kickstart.log | grep failed=0 | awk '{print $6}' | wc -l`
-    if [ $result -eq 2 ] ; then
+    if [ $result -eq 1 ] ; then
         # ran to completion
         ./runtags network > xsce-firstboot.log
         touch /.xsce-booted

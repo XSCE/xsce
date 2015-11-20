@@ -8,6 +8,8 @@ inst.ks=hd:LABEL=<lablel>:/install.ks
 replacing <label> with your device's label
 
 There are other options that could be set but are left # out that could be enabled for a fully automated install.
+Note these are intended for x86_64 and will need editing of the "arch=" to be i386 where x86_64 is seen. 
+Not supported on CentOS-i386 until further testing occurs. 
 
 If you're after a bootable usbkey use alter.sh with the net-install iso for your distro.
 
