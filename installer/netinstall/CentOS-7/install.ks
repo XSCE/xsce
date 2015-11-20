@@ -29,7 +29,7 @@ clearpart --none --initlabel
 # custom layout
 #part swap --fstype="swap" --ondisk=sda --size=2048
 #part /boot --fstype="ext4" --ondisk=sda --size=500
-#part / --fstype="ext4
+#part / --fstype="ext4"
 
 # System services
 # services --enabled="chronyd"
