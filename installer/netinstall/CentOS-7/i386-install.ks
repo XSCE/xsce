@@ -34,7 +34,7 @@ clearpart --none --initlabel
 # System services
 # services --enabled="chronyd"
 
-url http://mirror.centos.org/altarch/7/os/i386/
+url --url=http://mirror.centos.org/altarch/7/os/i386/
 repo --name=updates2 --baseurl=http://mirror.centos.org/altarch/7/updates/i386/
 repo --name=epel-mirror --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=x86_64
 
