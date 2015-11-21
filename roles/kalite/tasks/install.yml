@@ -24,11 +24,6 @@
   tags:
     - download2
 
-- command: /usr/bin/make_database.sh arg1 arg2
-  args:
-    chdir: somedir/
-    creates: /path/to/database
-
 - name: Install kalite with pip
   pip: name=ka-lite
        extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
