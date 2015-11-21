@@ -29,7 +29,7 @@ clearpart --none --initlabel
 # custom layout
 #part swap --fstype="swap" --ondisk=sda --size=2048
 #part /boot --fstype="ext4" --ondisk=sda --size=500
-#part / --fstype="ext4
+#part / --fstype="ext4"
 
 # System services
 # services --enabled="chronyd"
@@ -125,7 +125,7 @@ cd /opt/schoolserver/xsce/
 
 if [ -f  xsce-kickstart.log ] ; then
     result=`cat xsce-kickstart.log | grep failed=0 | awk '{print $6}' | wc -l`
-    if [ $result -eq 2 ] ; then
+    if [ $result -eq 1 ] ; then
         # ran to completion
         ./runtags network > xsce-firstboot.log
         touch /.xsce-booted

@@ -32,8 +32,8 @@ clearpart --none --initlabel
 
 # System services
 # services --enabled="chronyd"
-url --mirrorlist="https://mirrors.fedoraproject.org/mirrorlist?repo=fedora-22&arch=x86_64"
-repo --name=updates2 --mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=updates-released-f22&arch=x86_64
+url --mirrorlist="https://mirrors.fedoraproject.org/mirrorlist?repo=fedora-22&arch=i686"
+repo --name=updates2 --mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=updates-released-f22&arch=i686
 
 selinux --disabled
 firstboot --disable
