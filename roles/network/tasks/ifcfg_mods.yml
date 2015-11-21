@@ -84,5 +84,11 @@
   shell: nmcli conn up id xsce-LAN
   ignore_errors: True
   when: xsce_lan_iface != "none" and not installing
-# testpoint confirm with 'nmcli c show' 'brctl show'
 
+# we could do the DEVICE name stuff for a cleaner looking nmcli 
+- name: Enabling ifcfg slaves
+  shell: nmcli conn up id "System {{ item|trim }}"
+  when: xsce_lan_iface == "br0" and item|trim != xsce_wireless_lan_iface and item|trim != xsce_wan_iface
+  with_items:
+      - "{{ lan_list_result.stdout_lines }}"
+# testpoint confirm with 'nmcli c show' 'brctl show'
