@@ -20,9 +20,6 @@
 - name: Disable dhcp server just because
   service: name=dhcpd state=stopped
 
-### clear all connections first
-# We should have the LAN torndown at this point. 
-
 - name: No ifcfg-WAN known
   debug: msg="NO WAN known"
   when: not has_WAN
@@ -72,6 +69,12 @@
 - name: interface list
   shell: ls /sys/class/net | grep -v -e lo -e br -e tun
   register: adapter_list
+
+- name: Not risking a active device dropping all devices
+  shell: nmcli d disconnect {{ item|trim }}
+  when: item|trim != xsce_wireless_lan_iface and not dhcp_good
+  with_items:
+      - "{{ adapter_list.stdout_lines }}"
 
 # monitor-connection-files defaults to no with F21, F18-F20 defaults to yes
 - name: Reloading nmcli for deleted files
