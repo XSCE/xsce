@@ -116,6 +116,13 @@
   with_items:
       - "{{ ifcfg_dhcp_device.stdout_lines }}"
 
+- name: Disconnect non-gateway wired devices
+  shell: nmcli d disconnect {{ item|trim }}
+  ignore_errors: True
+  when: item|trim != xsce_wireless_lan_iface or item|trim != xsce_wan_iface 
+  with_items:
+      - "{{ adapter_list.stdout_lines }}"
+
 ### keep at end.
 ### If dhcp fails the single interface will become LAN again because we didn't prevent the creation
 # Now disable LAN if single interface
