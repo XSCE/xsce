@@ -57,7 +57,7 @@
   when: xsce_wan_iface != "none" and has_wifi_gw == "none" and not installing
 
 - name: xsce-WAN is
-  debug: msg="WAN_active.stdout_lines"
+  debug: msg="{{WAN_active.stdout_lines}}"
 #- pause: 
 #Test point
 
