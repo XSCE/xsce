@@ -56,13 +56,10 @@
   register: WAN_active
   when: xsce_wan_iface != "none" and has_wifi_gw == "none" and not installing
 
-- name: Stop 'Wired WAN connection'
-  shell: nmcli dev disconnect {{ discovered_wan_iface }}
-  ignore_errors: True
-  changed_when: False
-  when: WAN_active != discovered_wan_iface and WAN_active is defined
-  with_items:
-      - "{{ WAN_active.stdout_lines }}"
+- name: xsce-WAN is
+  debug: msg="WAN_active.stdout_lines"
+#- pause: 
+#Test point
 
 # monitor-connection-files defaults to no with F21, F18-F20 defaults to yes
 - name: Re-read network config files

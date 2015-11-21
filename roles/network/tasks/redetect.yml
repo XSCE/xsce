@@ -116,10 +116,10 @@
   with_items:
       - "{{ ifcfg_dhcp_device.stdout_lines }}"
 
-- name: Disconnect non-gateway wired devices
+- name: Disconnect wired devices
   shell: nmcli d disconnect {{ item|trim }}
   ignore_errors: True
-  when: item|trim != xsce_wireless_lan_iface or item|trim != xsce_wan_iface and dhcp_good
+  when: item|trim != xsce_wireless_lan_iface
   with_items:
       - "{{ adapter_list.stdout_lines }}"
 
