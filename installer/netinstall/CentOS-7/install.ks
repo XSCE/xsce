@@ -154,12 +154,4 @@ git
 ansible
 python-pip
 nano
-# https://fedorahosted.org/cloud/ticket/126
-python2
-python-dnf
-libsemanage-python
-libselinux-python
-python-dnf
-python-firewall
-
 %end
