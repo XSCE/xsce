@@ -58,6 +58,7 @@
 
 - name: xsce-WAN is
   debug: msg="{{WAN_active.stdout_lines}}"
+  when: WAN_active is defined 
 #- pause: 
 #Test point
 
