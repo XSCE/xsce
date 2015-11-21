@@ -70,8 +70,9 @@
   shell: ls /sys/class/net | grep -v -e lo -e br -e tun
   register: adapter_list
 
-- name: Not risking a active device dropping all devices
+- name: Not risking an active device dropping all devices
   shell: nmcli d disconnect {{ item|trim }}
+  ignore_errors: True
   when: item|trim != xsce_wireless_lan_iface and not dhcp_good
   with_items:
       - "{{ adapter_list.stdout_lines }}"
