@@ -12,7 +12,7 @@
 # clear all bridge ifcfg files
 - name: Now delete slave bridge ifcfg files
   shell: rm -f /etc/sysconfig/network-scripts/ifcfg-"{{ item }}"
-  when: item|trim != device_gw and (num_lan_interfaces != "0" or xsce_wireless_lan_iface != "none")
+  when: num_lan_interfaces != "0" or xsce_wireless_lan_iface != "none"
   with_items:
     - "{{ ifcfg_slaves.stdout_lines }}"
 
@@ -39,7 +39,7 @@
 - name: Wired enslaving ## lan_list_result ## to Bridge
   template: src=network/ifcfg-slave.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-{{ item|trim }}
-  when: xsce_lan_iface == "br0" and item|trim != xsce_wireless_lan_iface and item|trim != device_gw
+  when: xsce_lan_iface == "br0" and item|trim != xsce_wireless_lan_iface and item|trim != discovered_wan_iface
   with_items:
       - "{{ lan_list_result.stdout_lines }}"
 
@@ -47,8 +47,6 @@
   template: src=network/wifi-slave.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-{{ xsce_wireless_lan_iface }}
   when: xsce_lan_iface == "br0" and xsce_wireless_lan_iface != "none"
-  tags:
-    - network
 
 - include: enable_wan.yml
   when: not installing
@@ -88,7 +86,7 @@
 # we could do the DEVICE name stuff for a cleaner looking nmcli 
 - name: Enabling ifcfg slaves
   shell: nmcli conn up id "System {{ item|trim }}"
-  when: xsce_lan_iface == "br0" and item|trim != xsce_wireless_lan_iface and item|trim != xsce_wan_iface
+  when: xsce_lan_iface == "br0" and item|trim != xsce_wireless_lan_iface
   with_items:
       - "{{ lan_list_result.stdout_lines }}"
 # testpoint confirm with 'nmcli c show' 'brctl show'
