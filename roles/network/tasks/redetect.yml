@@ -75,7 +75,7 @@
 
 # monitor-connection-files defaults to no with F21, F18-F20 defaults to yes
 - name: Reloading nmcli for deleted files
-  shell: nmcli con reload
+  shell: nmcli con reload | sleep 5
   when: not installing and not no_NM_reload
 
 # discovered_wireless_iface might need work
