@@ -10,6 +10,7 @@
   tags:
     - download
 
+- include: patch_udev.yml
 - include: chrony.yml
 - include: sysctl.yml
 - include: html.yml

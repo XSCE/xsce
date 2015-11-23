@@ -1,3 +1,4 @@
+# Refers to where stage2 lives
 # Use CDROM installation media (if dvd is used)
 #cdrom
 
@@ -14,13 +15,13 @@ lang en_US.UTF-8
 # System timezone
 #timezone America/Winnipeg
 
-ignoredisk --only-use=sda
+#ignoredisk --only-use=sda
 
 # System bootloader configuration
 #bootloader --location=mbr --boot-drive=sda
 
 # Partition clearing information
-clearpart --none --initlabel
+#clearpart --none --initlabel
 
 # Disk partitioning information
 #autopart --type=plain
@@ -32,27 +33,18 @@ clearpart --none --initlabel
 
 # System services
 # services --enabled="chronyd"
-url --mirrorlist="https://mirrors.fedoraproject.org/mirrorlist?repo=fedora-22&arch=x86_64"
-repo --name=updates2 --mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=updates-released-f22&arch=x86_64
+
+url --url=http://mirror.centos.org/altarch/7/os/i386/
+repo --name=updates2 --baseurl=http://mirror.centos.org/altarch/7/updates/i386/
+repo --name=epel-mirror --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=x86_64
 
 selinux --disabled
 firstboot --disable
 
 # Network information
-network  --bootproto=dhcp --device=link --ipv6=auto --activate --hostname=schoolserver.lan
-
-%packages
-wget
-git
-ansible
-python-pip
-nano
-%end
+network  --bootproto=dhcp --device=link --ipv6=auto --activate --hostname=schoolserver
 
 %post
-# make kickstart see ansible
-export PATH=/usr/bin:/usr/sbin:/sbin:/bin:$PATH
-
 mkdir /root/debug
 # ensure network cards are turned on
 NICs=`ls /etc/sysconfig/network-scripts/ifcfg-*` 
@@ -66,6 +58,43 @@ for nic in $NICs ; do
         ;;
     esac
 done
+
+# make kickstart see ansible
+echo "path is $PATH"
+export PATH=/usr/bin:/usr/sbin:/sbin:/bin:$PATH
+echo "path is $PATH"
+
+# make the default install path and clone
+mkdir -p /opt/schoolserver
+cd /opt/schoolserver
+
+# switch this to release branch or stable once it's updated. 
+#git clone --depth 1 --branch stable https://github.com/XSCE/xsce 
+git clone --depth 1 --branch master https://github.com/XSCE/xsce
+
+cd xsce
+
+# set install time options here
+cat > /opt/schoolserver/xsce/vars/local_vars.yml  << EOF
+postgresql_install: True
+mysql_install: True
+pathagar_install: True
+xovis_install: False
+EOF
+
+### preload the new install
+./runtags download,download2 > xsce-preload.log
+touch /.preload
+
+# Don't start services while in the chroot
+cat > /opt/schoolserver/xsce/vars/local_vars.yml << EOF
+installing: True
+EOF
+
+/opt/schoolserver/xsce/install-console > xsce-kickstart.log
+
+# get rid of custom local_vars
+git reset --hard
 
 # run install-console on first boot
 cat > /etc/rc.d/init.d/xsce-prep << EOF
@@ -82,7 +111,8 @@ cat > /etc/rc.d/init.d/xsce-prep << EOF
 
 . /etc/init.d/functions
 
-### 
+### ensure install-console gets run on first-boot also.
+
 if [ -e /.xsce-booted ] ; then
     systemctl disable xsce-prep
     #/sbin/chkconfig --del xsce-prep
@@ -113,35 +143,15 @@ chmod 755 /etc/rc.d/init.d/xsce-prep
 restorecon /etc/rc.d/init.d/xsce-prep
 chkconfig --add xsce-prep
 
-# make the default install path and clone
-mkdir -p /opt/schoolserver
-cd /opt/schoolserver
+%end
 
-# switch this to release branch or stable once it's updated. 
-#git clone --depth 1 --branch stable https://github.com/XSCE/xsce 
-git clone --depth 1 --branch master https://github.com/XSCE/xsce
 
-cd xsce
 
-# set install time options here
-cat > /opt/schoolserver/xsce/vars/local_vars.yml  << EOF
-postgresql_install: True
-mysql_install: True
-pathagar_install: True
-EOF
-
-### preload the new install
-./runtags download,download2 > xsce-preload.log
-touch /.preload
-
-# Don't start services while in the chroot
-cat > /opt/schoolserver/xsce/vars/local_vars.yml << EOF
-installing: True
-EOF
-
-/opt/schoolserver/xsce/install-console > xsce-kickstart.log
-
-# get rid of custom local_vars
-git reset --hard
-
+%packages
+epel-release
+wget
+git
+ansible
+python-pip
+nano
 %end

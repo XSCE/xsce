@@ -11,7 +11,7 @@
   service: name=kalite-serve
            enabled=yes
            state=started
-  async: 120
+  async: 900
   poll: 5
   when: kalite_enabled
 

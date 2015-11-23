@@ -62,7 +62,7 @@ adm_cons_allow_downloads: False
 # Values are used if there is an internal wifi adapter and hostapd is enabled
 # The platform variable adapts install to specific hardware (raspberry pi=rpi2)
 hostapd_enabled: True
-host_ssid: "XSCE"
+host_ssid: "Internet in a Box"
 host_wifi_mode: g
 host_channel: 6
 
@@ -125,6 +125,8 @@ xsce_home_url: /xs-portal
 #xsce_home_url: /dokuwiki
 
 # 4-SERVER-OPTIONS
+# sshd
+sshd_enabled: True
 
 # openvpn
 vpn_presence: unleashkids.org

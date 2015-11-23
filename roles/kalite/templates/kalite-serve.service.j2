@@ -7,7 +7,7 @@ Type=forking
 Environment="KALITE_HOME={{ kalite_root }}"
 ExecStart=/usr/bin/kalite start {{ job_scheduler_stanza }}--port={{ kalite_server_port }}
 ExecStop=/usr/bin/kalite stop
-TimeoutStartSec=400
+TimeoutStartSec=900
 
 [Install]
 WantedBy=multi-user.target

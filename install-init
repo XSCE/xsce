@@ -1,20 +1,22 @@
 #!/bin/bash
 
-# if not the first run, repo location is here
+# the playbook does nothing if the following already exists so exit
 
-if [ -f /etc/xsce/xsce.env ]
+if [ -f /etc/xsce/config_vars.yml ]
 then
-  . /etc/xsce/xsce.env
-  cd $XSCE_DIR
+  exit 0
 fi
 
-if [ ! -f xsce.yml ]
+if [ ! -f install-init.yml ]
 then
  echo "XSCE Playbook not found."
  echo "Please run this command from the top level of the git repo."
  echo "Exiting."
- exit
+ exit 1
 fi
+
+# Mark local_vars as do not track to preserve local changes
+git update-index --assume-unchanged vars/local_vars.yml
 
 PLAYBOOK="install-init.yml"
 INVENTORY="ansible_hosts"

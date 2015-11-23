@@ -1,3 +1,2 @@
 usb_lib_install: True
 usb_lib_enabled: True
-udev_needs_patch: False

@@ -29,7 +29,7 @@ clearpart --none --initlabel
 # custom layout
 #part swap --fstype="swap" --ondisk=sda --size=2048
 #part /boot --fstype="ext4" --ondisk=sda --size=500
-#part / --fstype="ext4
+#part / --fstype="ext4"
 
 # System services
 # services --enabled="chronyd"
@@ -110,7 +110,7 @@ cat > /etc/rc.d/init.d/xsce-prep << EOF
 . /etc/init.d/functions
 
 ### 
-if [ -e /.xsce-prepped ] ; then
+if [ -e /.xsce-booted ] ; then
     systemctl disable xsce-prep
     #/sbin/chkconfig --del xsce-prep
     #rm /etc/rc.d/init.d/xsce-prep
@@ -120,8 +120,18 @@ fi
 # the vars/* are not found
 cd /opt/schoolserver/xsce/
 
-# run install-console
-/opt/schoolserver/xsce/install-console > /opt/schoolserver/xsce/xsce-firstboot.log
+if [ -f  xsce-kickstart.log ] ; then
+    result=`cat xsce-kickstart.log | grep failed=0 | awk '{print $6}' | wc -l`
+    if [ $result -eq 1 ] ; then
+        # ran to completion
+        ./runtags network > xsce-firstboot.log
+        touch /.xsce-booted
+        exit 0
+    fi
+fi
+./install-console > xsce-firstboot.log
+touch /.xsce-booted
+exit 0
 
 EOF
 

@@ -32,8 +32,8 @@ clearpart --none --initlabel
 
 # System services
 # services --enabled="chronyd"
-url --mirrorlist="https://mirrors.fedoraproject.org/mirrorlist?repo=fedora-22&arch=x86_64"
-repo --name=updates2 --mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=updates-released-f22&arch=x86_64
+url --mirrorlist="https://mirrors.fedoraproject.org/mirrorlist?repo=fedora-23&arch=i686"
+repo --name=updates2 --mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=updates-released-f23&arch=i686
 
 selinux --disabled
 firstboot --disable
@@ -47,6 +47,13 @@ git
 ansible
 python-pip
 nano
+# https://fedorahosted.org/cloud/ticket/126
+python2
+python-dnf
+libsemanage-python
+libselinux-python
+python-dnf
+python-firewall
 %end
 
 %post
