@@ -27,8 +27,8 @@
 
 # create ifcfg-WAN if missing
 # if we get here we have gateway but no ifcfg file
-- include: create_ifcfg.yml
-  when: xsce_wan_iface != "none" and not has_WAN and has_ifcfg_gw == "none" and xo_model == "none"
+#- include: create_ifcfg.yml
+#  when: xsce_wan_iface != "none" and not has_WAN and has_ifcfg_gw == "none" and xo_model == "none"
 
 - name: Configuring LAN interface as xsce_lan_iface
   template: src=network/ifcfg.j2
