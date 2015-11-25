@@ -15,4 +15,3 @@
       - { role: 7-edu-apps, tags: ['edu-apps'] }
       - { role: 8-mgmt-tools, tags: ['tools'] }
       - { role: 9-local-addons, tags: ['addons'] }
-      - { role: network, tags: ['network','base'] }
