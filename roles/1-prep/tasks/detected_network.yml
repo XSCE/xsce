@@ -17,6 +17,7 @@
 - name: Checking for old device gateway interface for device test
   set_fact:
     device_gw: "{{ prior_gw.stdout }}"
+    device_gw2: "{{ prior_gw.stdout }}"
   when: prior_gw is defined and prior_gw.stdout != ""
 
 - name: Checking for ifcfg-WAN file
@@ -235,7 +236,7 @@
   - option: 'detected_gateway'
     value: '{{ discovered_wan_iface }}'
   - option: 'prior_gateway'
-    value: '{{ device_gw }}'
+    value: '{{ device_gw2 }}'
   - option: 'wireless_list_1'
     value: '{{ wifi1 }}'
   - option: 'wireless_list_2'
