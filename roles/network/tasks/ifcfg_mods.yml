@@ -65,7 +65,7 @@
 
 - name: Enabling pre-existing ifcfg-WAN file
   shell: nmcli conn up id xsce-WAN
-  when: has_WAN and xsce_wan_iface != "none" and not installing not xsce_demo_mode
+  when: has_WAN and xsce_wan_iface != "none" and not installing and not xsce_demo_mode
 
 - name: Enabling ifcfg-LAN file
   shell: nmcli conn up id xsce-LAN
