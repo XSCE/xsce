@@ -86,6 +86,26 @@
     is_F18: True
   when: ansible_distribution_release == "based on Fedora 18" or ansible_distribution_version == "18"
 
+- Name: Fedora 20
+  set_fact:
+    is_F20: True
+  when: ansible_distribution == "Fedora" and ansible_distribution_version == "20"
+
+- Name: Fedora 21
+  set_fact:
+    is_F21: True
+  when: ansible_distribution == "Fedora" and ansible_distribution_version == "21"
+
+- Name: Fedora 22
+  set_fact:
+    is_F22: True
+  when: ansible_distribution == "Fedora" and ansible_distribution_version == "22"
+
+- Name: Fedora 23
+  set_fact:
+    is_F23: True
+  when: ansible_distribution == "Fedora" and ansible_distribution_version == "23"
+
 - name: Set kiwix source file name i686
   set_fact:
      kiwix_src_file: "kiwix-linux-i686.tar.bz2"
