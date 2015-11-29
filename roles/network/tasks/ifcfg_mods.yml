@@ -70,6 +70,14 @@
 - name: Enabling ifcfg-LAN file
   shell: nmcli conn up id xsce-LAN
   ignore_errors: True
-  when: xsce_lan_iface != "none" and not installing
+  when: xsce_lan_iface != "none" and not installing and not xsce_demo_mode
+
+# we could do the DEVICE name stuff for a cleaner looking nmcli 
+- name: Enabling ifcfg slaves
+  shell: nmcli conn up id "System {{ item|trim }}"
+  when: xsce_lan_iface == "br0" and item|trim != xsce_wireless_lan_iface and item|trim != xsce_wan_iface and not xsce_demo_mode
+  with_items:
+      - "{{ lan_list_result.stdout_lines }}"
+
 # testpoint confirm with 'nmcli c show' 'brctl show'
 
