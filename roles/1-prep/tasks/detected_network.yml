@@ -127,11 +127,13 @@
      wifi2: "{{ wireless_list2.stdout|trim }}"
   when: wireless_list2.stdout != "" and wireless_list2.stdout|trim != discovered_wan_iface
 
-# 
+# Last device is used 
 - name: Use discovered wireless, take 2
   set_fact:
      discovered_wireless_iface: "{{ wireless_list2.stdout|trim }}"
   when: wireless_list2.stdout != "" and wireless_list2.stdout|trim != discovered_wan_iface
+  with_items:
+      - "{{ wireless_list2.stdout_lines }}"
 
 - name: Count Wifi ifaces
   shell: "ls -la /sys/class/net/*/phy80211 | awk -F / '{print $5}' | wc -l"
