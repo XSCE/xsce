@@ -19,10 +19,38 @@
             value=1
 
 # Put conditional includes for platforms here
+##  DISCOVER PLATFORMS ######
+- name: Discover if this is a rpi2 -- if so it has a bcm2709 processor
+  set_fact: 
+     rpi_model: "rpi2"
+  when:  ansible_cmdline["bcm2709.serial"]  is defined
+  ignore_errors: true
+
+- name: Check of the identifier for tplink725 is present
+  shell: "lsusb | grep 0bda:8179 | wc |gawk '{print $1}'"
+  register: usb_response
+  ignore_errors: true
+
+- name: Use compiled hostapd, and wpa_supplicant if tplink WM725M
+  set_fact:
+     wifi_id: tplink_WM725M
+  when:  usb_response.stdout|int > 0
+
+- include: hw_rpi2.yml
+  when: rpi_model is defined and rpi_model == "rpi2"
+  tags:
+    - rpi2
+
 - include: xo.yml
   when: xo_model != "none"
   tags:
     - xo
+
+# need to add proper download section and get the binary out of git
+- name: copy  the firmware for tplink WM752M
+  copy: src=rtl8188eufw.bin dest=/lib/firmware/rtlwifi/
+  when: wifi_id  ==  "tplink_WM725M" and xo_model == "none" and not rpi_model is defined
+  ignore_errors: true
 
 - include: centos.yml
   when: ansible_distribution == "CentOS"

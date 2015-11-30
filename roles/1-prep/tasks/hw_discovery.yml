@@ -1,9 +1,11 @@
-##  DISCOVER PLATFORMS ######
-- name: Discover if this is a rpi2 -- if so it has a bcm2709 processor
-  set_fact: 
-     rpi_model: "rpi2"
-  when:  ansible_cmdline["bcm2709.serial"]  is defined
-  ignore_errors: true
+##  DISCOVER ADAPTERS   ######
+- name: Detect an i2c rtc if it exists
+  shell: "i2cdetect -y 1 | grep -e 68 -e UU | wc | gawk '{print $1}'"
+  register: rtc_response
+  ignore_errors: yes
 
+- name: Record whether rtc hardware was detected
+  set_fact:
+     rtc_id: "DS3231"
+  when:  rtc_response.stdout > "0"
 
-- include: hw_rpi2.yml
