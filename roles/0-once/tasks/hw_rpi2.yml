@@ -1,8 +1,3 @@
-- name: Check of the identifier for tplink725 is present
-  shell: "lsusb | grep 0bda:8179 | wc |gawk '{print $1}'"
-  register: usb_response
-  ignore_errors: true
-
 - name: Use compiled hostapd, and wpa_supplicant if tplink WM725M
   set_fact:
      wifi_id: tplink_WM725M
@@ -16,7 +11,7 @@
      - wpa_supplicant_8188_armv7hl
   when: wifi_id  ==  "tplink_WM725M" and rpi_model == "rpi2" and not {{ use_cache }} and not {{ no_network }}
   tags:
-    - download
+    - rpi2
 
 - name: Put the substitute files in place
   copy: src={{ downloads_dir }}/hostapd_8188_armv7hl
