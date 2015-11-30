@@ -31,6 +31,11 @@
   register: usb_response
   ignore_errors: true
 
+- name: Use compiled hostapd, and wpa_supplicant if tplink WM725M
+  set_fact:
+     wifi_id: tplink_WM725M
+  when:  usb_response.stdout|int > 0
+
 - include: hw_rpi2.yml
   when: rpi_model is defined and rpi_model == "rpi2"
   tags:
