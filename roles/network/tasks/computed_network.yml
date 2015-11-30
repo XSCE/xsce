@@ -18,12 +18,12 @@
 - name: Found Checking for NetworkManager-config-server
   set_fact:
      strict_networking: True
-  when strict_networking_check == "1"
+  when: strict_networking_check == "1"
 
 - name: Use restricted network features
   set_fact:
      xsce_demo_mode: True
-  when teamviewer_install and not strict_networking
+  when: teamviewer_install and not strict_networking
 
 # static backout suppy new template file
 - name: undo gui-static-wan by requesting new template file
