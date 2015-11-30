@@ -149,7 +149,7 @@
       - "{{ lan_list_result.stdout_lines }}"
 
 - name: Count LAN ifaces
-  shell: "ls /sys/class/net | grep -v  -e wwlan -e ppp -e lo -e br0 -e tun -e {{ device_gw }} -e {{ ap_device }} | wc -l
+  shell: ls /sys/class/net | grep -v  -e wwlan -e ppp -e lo -e br0 -e tun -e {{ device_gw }} -e {{ ap_device }} | wc -l
   register: num_lan_interfaces_result
   ignore_errors: True
   changed_when: false
