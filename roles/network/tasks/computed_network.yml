@@ -20,6 +20,11 @@
      xsce_demo_mode: True
   when: teamviewer_install and not strict_networking
 
+- name: XO wants usb wifi interface as AP mode
+  set_fact:
+     xsce_wireless_lan_iface: "{{ discovered_lan_iface }}"
+  when: num_wifi_interfaces >= "2" and xo_model != "none" and discovered_wan_iface != "none" and discovered_wireless_iface == "eth0"
+
 # static backout suppy new template file
 - name: undo gui-static-wan by requesting new template file
   set_fact:
