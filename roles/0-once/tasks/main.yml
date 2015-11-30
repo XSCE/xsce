@@ -26,6 +26,11 @@
   when:  ansible_cmdline["bcm2709.serial"]  is defined
   ignore_errors: true
 
+- name: Check of the identifier for tplink725 is present
+  shell: "lsusb | grep 0bda:8179 | wc |gawk '{print $1}'"
+  register: usb_response
+  ignore_errors: true
+
 - include: hw_rpi2.yml
   when: rpi_model is defined and rpi_model == "rpi2"
   tags:
