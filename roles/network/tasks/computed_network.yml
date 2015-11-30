@@ -15,10 +15,24 @@
      strict_networking: True
   when: strict_networking_check == "1"
 
+- name: Checking for teamviewer
+  shell: rpm -qa | grep  teamviewer | wc -l
+  register: teamviewer_rpm
+
+- name: Found teamviewer
+  set_fact:
+     teamviewer_present: True
+  when: teamviewer_rpm == "1"
+
+- name: Use restricted network features
+  set_fact:
+     teamviewer_present: True
+  when: teamviewer_install or teamviewer_enabled
+
 - name: Use restricted network features
   set_fact:
      xsce_demo_mode: True
-  when: teamviewer_install and not strict_networking
+  when: teamviewer_present and not strict_networking
 
 - name: XO wants usb wifi interface as AP mode
   set_fact:
