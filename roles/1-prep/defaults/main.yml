@@ -8,6 +8,7 @@ wireless_lan_present: False
 is_F18: False
 udev_needs_patch: False
 strict_networking: False
+teamviewer_present: False
 xsce_demo_mode: False
 
 # Set default for discovered hardware

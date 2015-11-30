@@ -15,21 +15,29 @@
      strict_networking: True
   when: strict_networking_check == "1"
 
+- name: Checking for teamviewer
+  shell: rpm -qa | grep  teamviewer | wc -l
+  register: teamviewer_rpm
+
+- name: Found teamviewer rpm
+  set_fact:
+     teamviewer_present: True
+  when: teamviewer_rpm == "1"
+
+- name: Found teamviewer enabled
+  set_fact:
+     teamviewer_present: True
+  when: teamviewer_install or teamviewer_enabled
+
 - name: Use restricted network features
   set_fact:
      xsce_demo_mode: True
-  when: teamviewer_install and not strict_networking
+  when: teamviewer_present and not strict_networking
 
 - name: XO wants usb wifi interface as AP mode
   set_fact:
      xsce_wireless_lan_iface: "{{ discovered_lan_iface }}"
   when: num_wifi_interfaces >= "2" and xo_model != "none" and discovered_wan_iface != "none" and discovered_wireless_iface == "eth0"
-
-# static backout suppy new template file
-- name: undo gui-static-wan by requesting new template file
-  set_fact:
-     has_WAN: False
-  when:  gui_static_wan is defined and gui_static_wan == "False" and gui_static_wan_ip is defined and gui_static_wan_ip != "unset"
 
 - name: gui-static-wan
   set_fact:
@@ -45,6 +53,12 @@
     wan_gateway: "{{ gui_static_wan_gateway }}"
     wan_nameserver: "{{ gui_static_wan_nameserver }}"
   when: gui_static_wan_ip != "unset" and gui_static_wan_ip != "undefined" and gui_static_wan is defined
+
+# static backout suppy new template file
+- name: undo gui-static-wan by requesting new template file
+  set_fact:
+     has_WAN: False
+  when:  gui_static_wan is defined and gui_static_wan == "False" and gui_static_wan_ip is defined and gui_static_wan_ip != "unset" and not xsce_demo_mode
 
 # we need to have an interface name for ifcfg-WAN to be able to change gateway
 # the DEVICE from the gui. Thanks to George for proving my point about knowing
@@ -177,3 +191,9 @@
     value: '{{ host_wifi_mode }}'
   - option: 'host_channel'
     value: '{{ host_channel }}'
+  - option: 'teamviewer'
+    value: '{{ teamviewer_present }}'
+  - option: 'NetworkManager-config-server'
+    value: '{{ strict_networking }}'
+
+
