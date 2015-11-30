@@ -7,6 +7,7 @@ has_WAN: False
 wireless_lan_present: False
 is_F18: False
 udev_needs_patch: False
+strict_networking: False
 
 # Set default for discovered hardware
 driver_name: nl80211
