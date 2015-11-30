@@ -131,7 +131,7 @@
 - name: Use discovered wireless, take 2
   set_fact:
      discovered_wireless_iface: "{{ wireless_list2.stdout|trim }}"
-  when: wireless_list2.stdout != "" and wireless_list2.stdout|trim != discovered_wan_iface and wireless_list1.stdout == ""
+  when: wireless_list2.stdout != "" and wireless_list2.stdout|trim != discovered_wan_iface
 
 - name: Count Wifi ifaces
   shell: "ls -la /sys/class/net/*/phy80211 | awk -F / '{print $5}' | wc -l"
