@@ -19,12 +19,12 @@
   shell: rpm -qa | grep  teamviewer | wc -l
   register: teamviewer_rpm
 
-- name: Found teamviewer
+- name: Found teamviewer rpm
   set_fact:
      teamviewer_present: True
   when: teamviewer_rpm == "1"
 
-- name: Use restricted network features
+- name: Found teamviewer enabled
   set_fact:
      teamviewer_present: True
   when: teamviewer_install or teamviewer_enabled
@@ -191,3 +191,9 @@
     value: '{{ host_wifi_mode }}'
   - option: 'host_channel'
     value: '{{ host_channel }}'
+  - option: 'teamviewer'
+    value: '{{ teamviewer_present }}'
+  - option: 'NetworkManager-config-server'
+    value: '{{ strict_networking }}'
+
+
