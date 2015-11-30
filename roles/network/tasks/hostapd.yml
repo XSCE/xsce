@@ -10,7 +10,7 @@
   service: enabled=no
            name=hostapd.service
            state=stopped
-  when: xsce_wireless_lan_iface == "none" or xsce_network_mode == "Appliance" and not hostapd_enabled
+  when: xsce_wireless_lan_iface == "none" or xsce_network_mode == "Appliance" or not hostapd_enabled
 
 - name: ask systemd to reread the unit files for hostapd
   shell: systemctl daemon-reload
