@@ -28,7 +28,7 @@
 # create ifcfg-WAN if missing
 # if we get here we have gateway but no ifcfg file
 - include: create_ifcfg.yml
-  when: xsce_wan_iface != "none" and not has_WAN and has_ifcfg_gw == "none" and xo_model == "none"
+  when: xsce_wan_iface != "none" and not has_WAN and has_ifcfg_gw == "none" and xo_model == "none" and not xsce_demo_mode
 
 - name: Configuring LAN interface as xsce_lan_iface
   template: src=network/ifcfg.j2
@@ -39,7 +39,7 @@
 - name: Wired enslaving ## lan_list_result ## to Bridge
   template: src=network/ifcfg-slave.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-{{ item|trim }}
-  when: xsce_lan_iface == "br0" and item|trim != xsce_wireless_lan_iface and item|trim != device_gw
+  when: xsce_lan_iface == "br0" and item|trim != xsce_wireless_lan_iface and item|trim != xsce_wan_iface
   with_items:
       - "{{ lan_list_result.stdout_lines }}"
 
@@ -51,7 +51,7 @@
     - network
 
 - include: enable_wan.yml
-  when: not installing
+  when: not installing and not xsce_demo_mode
 
 # monitor-connection-files defaults to no with F21, F18-F20 defaults to yes
 - name: Re-read network config files
@@ -65,11 +65,19 @@
 
 - name: Enabling pre-existing ifcfg-WAN file
   shell: nmcli conn up id xsce-WAN
-  when: has_WAN and xsce_wan_iface != "none" and not installing
+  when: has_WAN and xsce_wan_iface != "none" and not installing and not xsce_demo_mode
 
 - name: Enabling ifcfg-LAN file
   shell: nmcli conn up id xsce-LAN
   ignore_errors: True
-  when: xsce_lan_iface != "none" and not installing
+  when: xsce_lan_iface != "none" and not installing and not xsce_demo_mode
+
+# we could do the DEVICE name stuff for a cleaner looking nmcli 
+- name: Enabling ifcfg slaves
+  shell: nmcli conn up id "System {{ item|trim }}"
+  when: xsce_lan_iface == "br0" and item|trim != xsce_wireless_lan_iface and item|trim != xsce_wan_iface and not xsce_demo_mode
+  with_items:
+      - "{{ lan_list_result.stdout_lines }}"
+
 # testpoint confirm with 'nmcli c show' 'brctl show'
 

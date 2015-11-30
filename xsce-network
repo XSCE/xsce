@@ -1,0 +1,25 @@
+#!/bin/bash
+
+if [ -f /etc/xsce/xsce.env ]
+then
+  . /etc/xsce/xsce.env
+  cd $XSCE_DIR
+fi
+
+if [ ! -f xsce-network.yml ]
+then
+ echo "XSCE Playbook not found."
+ echo "Please run this command from the top level of the git repo."
+ echo "Exiting."
+ exit
+fi
+
+export ANSIBLE_LOG_PATH="xsce-network.log"
+ansible-playbook -i ansible_hosts xsce-network.yml --connection=local
+
+nmcli c >> xsce-network.log
+brctl show >> xsce-network.log
+echo "run on:" >> xsce-network.log
+date >> xsce-network.log
+echo "" >> xsce-network.log
+echo "" >> xsce-network.log
