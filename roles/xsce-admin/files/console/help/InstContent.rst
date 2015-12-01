@@ -83,6 +83,10 @@ To download, unzip, and install the above content click **Download RACHEL Conten
 
 Particular content items can be removed from the RACHEL menu (but not from the server), by moving them from the rachel/www/modules directory to rachel/www/modules.out. In the future it will be possible to do this using this menu option.
 
+### Please Note
+
+With the current version of RACHEL there are errors in several files that may cause this download to fail part way through the first time.  However, it will succeed on a subsequent try.  If you see that it has failed when visting the **Display Job Status** screen, please return to this screen and click **Download RACHEL Content**.  The download and unzip will resume from the point at which it failed.
+
 ### Don't Forget
 
 Make sure that the **RACHEL** service is enabled under **Configure** - **Services Enabled**.  The content can be downloaded if it is not enabled, but will only be visible to students after RACHEL has been enabled.
