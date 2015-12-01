@@ -18,6 +18,7 @@ export ANSIBLE_LOG_PATH="xsce-network.log"
 ansible-playbook -i ansible_hosts xsce-network.yml --connection=local
 echo "" >> xsce-network.log
 ls -la /etc/sys*/net*/ifcfg* >> xsce-network.log
+nmcli d >> xsce-network.log
 nmcli c >> xsce-network.log
 brctl show >> xsce-network.log
 echo "run on:" >> xsce-network.log
