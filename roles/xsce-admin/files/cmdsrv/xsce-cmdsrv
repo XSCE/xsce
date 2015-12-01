@@ -963,7 +963,7 @@ def get_rachel_stat(cmd_info):
         rachel_stat['status'] = 'INSTALLED'
 
         #print xsce_ini['rachel']['enabled']
-        if xsce_ini['rachel']['enabled']: # is True doesn't work
+        if xsce_ini['rachel']['enabled'] == "True": # For some reason True/False from ini is string not boolean
             rachel_stat['status'] = 'ENABLED'
 
         rachel_index = xsce_ini['rachel']['rachel_content_path'] + "index.php"
