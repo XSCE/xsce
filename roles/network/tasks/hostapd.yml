@@ -1,61 +1,3 @@
-- name: Download substitute software for arm
-  get_url: url="{{ xsce_download_url }}/{{ item }}"  dest={{ downloads_dir}}/{{ item }}
-  with_items:
-     - hostapd_8188_armv7hl
-     - wpa_supplicant_8188_armv7hl
-  when: wifi_id  ==  "tplink_WM725M" and rpi_model == "rpi2" and not {{ use_cache }} and not {{ no_network }}
-  tags:
-    - download
-
-- name: Download substitute software for i386 on FC18 XO1.5
-  get_url: url="{{ xsce_download_url }}/{{ item }}"  dest={{ downloads_dir}}/{{ item }}
-  with_items:
-     - hostapd_8188_i386
-  when: wifi_id  ==  "tplink_WM725M" and xo_model == "XO-1.5"  and not {{ use_cache }} and not {{ no_network }}
-  tags:
-    - download
-
-- name: Put the substitute files in place
-  copy: src={{ downloads_dir }}/hostapd_8188_armv7hl
-        dest=/usr/sbin/hostapd
-        backup=yes
-        mode=0775
-        owner=root
-        group=root
-  when: wifi_id  ==  "tplink_WM725M" and rpi_model == "rpi2"
-
-- name: Put the substitute wpa_supplicant in place
-  copy: src={{ downloads_dir }}/wpa_supplicant_8188_armv7hl
-        dest=/usr/sbin/wpa_supplicant
-        backup=yes
-        mode=0775
-        owner=root
-        group=root
-  when: wifi_id  ==  "tplink_WM725M" and rpi_model == "rpi2"
-
-- name: Put the substitute in place
-  copy: src={{ downloads_dir }}/hostapd_8188_i386
-        dest=/usr/sbin/hostapd
-        backup=yes
-        mode=0775
-        owner=root
-        group=root
-  when: wifi_id  ==  "tplink_WM725M" and xo_model == "XO-1.5"
-
-- name: copy  the firmware for tplink WM752M
-  copy: src=rtl8188eufw.bin dest=/lib/firmware/rtlwifi/
-  when: wifi_id  ==  "tplink_WM725M"
-
-- name: Use a systemd unit file to start hostapd
-  template: src=hostapd/hostapd.service.j2
-            dest=/etc/systemd/system/hostapd.service
-            owner=root
-            group=root
-            mode=0644
-
-- name: ask systemd to reread the unit files for hostapd
-  shell: systemctl daemon-reload
-
 - name: Create a config file for hostapd
   template: src=hostapd/hostapd.conf.j2
             dest=/etc/hostapd/hostapd.conf
@@ -64,17 +6,20 @@
             mode=0644
   when: xsce_wireless_lan_iface != "none"
 
+- name: Disable the Access Point Hostapd program
+  service: enabled=no
+           name=hostapd.service
+           state=stopped
+  when: xsce_wireless_lan_iface == "none" or xsce_network_mode == "Appliance" or not hostapd_enabled
+
+- name: ask systemd to reread the unit files for hostapd
+  shell: systemctl daemon-reload
+
 - name: Enable the Access Point Hostapd program
   service: enabled=yes
            name=hostapd.service
            state=restarted
   when: xsce_wireless_lan_iface != "none" and xsce_network_mode != "Appliance" and hostapd_enabled
-
-- name: Disable the Access Point Hostapd program
-  service: enabled=no
-           name=hostapd.service
-           state=stopped
-  when: xsce_wireless_lan_iface == "none" or xsce_network_mode == "Appliance" and not hostapd_enabled
 
 - name: Checking if slave is active waiting 10 seconds
   shell: "sleep {{ hostapd_wait }} | brctl show | grep {{ xsce_wireless_lan_iface }}"

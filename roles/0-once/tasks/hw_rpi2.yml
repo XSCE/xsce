@@ -1,0 +1,32 @@
+- name: Use compiled hostapd, and wpa_supplicant if tplink WM725M
+  set_fact:
+     driver_name: rtl871xdrv
+  when:  usb_response.stdout|int > 0
+
+- name: Download substitute software for arm
+  get_url: url="{{ xsce_download_url }}/{{ item }}"  dest={{ downloads_dir}}/{{ item }}
+  with_items:
+     - hostapd_8188_armv7hl
+     - wpa_supplicant_8188_armv7hl
+  when: wifi_id  ==  "tplink_WM725M" and rpi_model == "rpi2" and not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - rpi2
+
+- name: Put the substitute files in place
+  copy: src={{ downloads_dir }}/hostapd_8188_armv7hl
+        dest=/usr/sbin/hostapd
+        backup=yes
+        mode=0775
+        owner=root
+        group=root
+  when: wifi_id  ==  "tplink_WM725M" and rpi_model == "rpi2"
+
+- name: Put the substitute wpa_supplicant in place
+  copy: src={{ downloads_dir }}/wpa_supplicant_8188_armv7hl
+        dest=/usr/sbin/wpa_supplicant
+        backup=yes
+        mode=0775
+        owner=root
+        group=root
+  when: wifi_id  ==  "tplink_WM725M" and rpi_model == "rpi2"
+
