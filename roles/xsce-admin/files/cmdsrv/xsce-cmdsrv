@@ -724,6 +724,7 @@ def get_install_vars(cmd_info):
     return (resp)
 
 def get_xsce_ini(cmd_info):
+    read_xsce_ini_file()
     resp = json.dumps(xsce_ini)
     return (resp)
 
