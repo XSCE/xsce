@@ -151,6 +151,12 @@
       ap_device: "eth0"
   when: xsce_wan_iface != "eth0" and discovered_wireless_iface != "none" and xo_model == "XO-1.5"
 
+# takes adapter name
+- name: Blacklisted wifi adapter
+  set_fact:
+      ap_device: "{{ blacklist_wifi }}"
+  when: blacklist_wifi is defined and discovered_wireless_iface != xsce_wan_iface and num_wifi_interfaces >= "2"
+
 # LAN - pick non WAN's
 - name: Create list of  LAN (non wan) ifaces
   shell: ls /sys/class/net | grep -v -e wwlan -e ppp -e lo -e br0 -e tun -e {{ device_gw }} -e {{ ap_device }}
@@ -174,7 +180,7 @@
   changed_when: false
 
 # facts are apparently all stored as text, so do text comparisons from here on
-- name: create a simple variable from a compound one
+- name: Calulate number of LAN interfaces including WiFi
   set_fact:
       num_lan_interfaces: "{{ num_lan_interfaces_result.stdout|int }}"
 
