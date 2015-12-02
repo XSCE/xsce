@@ -441,6 +441,8 @@ def end_job(job_id, job_info, status):
 
     if job_info['cmd'] == "RUN-ANSIBLE":
         ansible_running_flag = False
+        #if status == "SUCCEEDED":
+        read_xsce_ini_file() # reread ini file after running ansible
 
     running_job_count -= 1
     if running_job_count < 0:
@@ -722,6 +724,7 @@ def get_install_vars(cmd_info):
     return (resp)
 
 def get_xsce_ini(cmd_info):
+    read_xsce_ini_file()
     resp = json.dumps(xsce_ini)
     return (resp)
 
@@ -963,7 +966,7 @@ def get_rachel_stat(cmd_info):
         rachel_stat['status'] = 'INSTALLED'
 
         #print xsce_ini['rachel']['enabled']
-        if xsce_ini['rachel']['enabled']: # is True doesn't work
+        if xsce_ini['rachel']['enabled'] == "True": # For some reason True/False from ini is string not boolean
             rachel_stat['status'] = 'ENABLED'
 
         rachel_index = xsce_ini['rachel']['rachel_content_path'] + "index.php"
@@ -1508,6 +1511,7 @@ def read_config_vars():
 
 def read_xsce_ini_file():
     global xsce_ini
+    xsce_ini_tmp = {}
 
     config = ConfigParser.ConfigParser()
     config.read(xsce_ini_file)
@@ -1517,7 +1521,9 @@ def read_xsce_ini_file():
         for opt in opts:
             attr = config.get(section, opt)
             xsce_ini_sec[opt] = attr
-        xsce_ini[section] = xsce_ini_sec
+        xsce_ini_tmp[section] = xsce_ini_sec
+
+    xsce_ini = xsce_ini_tmp
 
 def write_config_vars():
     global config_vars

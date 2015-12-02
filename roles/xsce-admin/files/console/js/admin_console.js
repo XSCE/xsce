@@ -616,9 +616,16 @@ function changePasswordSuccess ()
   alert ("Password Changed.");
   return true;
 }
-  function getXsceIni (data)
+  function getXsceIni ()
   {
     //alert ("in getXsceIni");
+    sendCmdSrvCmd("GET-XSCE-INI", procXsceIni);
+    return true;
+  }
+
+  function procXsceIni (data)
+  {
+    //alert ("in procXsceIni");
     consoleLog(data);
     xsce_ini = data;
     jstr = JSON.stringify(xsce_ini, undefined, 2);
@@ -1506,7 +1513,7 @@ function init ()
   $.when(
     sendCmdSrvCmd("GET-ANS-TAGS", getAnsibleTags),
     sendCmdSrvCmd("GET-WHLIST", getWhitelist),
-    $.when(sendCmdSrvCmd("GET-VARS", getInstallVars), sendCmdSrvCmd("GET-ANS", getAnsibleFacts),sendCmdSrvCmd("GET-CONF", getConfigVars),sendCmdSrvCmd("GET-XSCE-INI", getXsceIni)).done(initConfigVars),
+    $.when(sendCmdSrvCmd("GET-VARS", getInstallVars), sendCmdSrvCmd("GET-ANS", getAnsibleFacts),sendCmdSrvCmd("GET-CONF", getConfigVars),sendCmdSrvCmd("GET-XSCE-INI", procXsceIni)).done(initConfigVars),
     $.when(getLangCodes(),readKiwixCatalog(),sendCmdSrvCmd("GET-ZIM-STAT", procZimStatInit)).done(procZimCatalog),
     sendCmdSrvCmd("GET-STORAGE-INFO", procSysStorageAll),
     waitDeferred(3000))
