@@ -139,9 +139,17 @@
   shell: "ls -la /sys/class/net/*/phy80211 | awk -F / '{print $5}' | wc -l"
   register: count_wifi_interfaces
 
-- name: Remember number of Wifi devices 
+- name: Remember number of Wifi devices
   set_fact:
       num_wifi_interfaces: "{{ count_wifi_interfaces.stdout|int }}"
+
+# XO hack here ap_device would not be active therefore not set with
+# wired as gw use ap_device to exclude eth0 from network calulations
+
+- name: XO override 2 wifi on LAN
+  set_fact:
+      ap_device: "eth0"
+  when: xsce_wan_iface != "eth0" and discovered_wireless_iface != "none" and xo_model == "XO-1.5"
 
 # LAN - pick non WAN's
 - name: Create list of  LAN (non wan) ifaces
