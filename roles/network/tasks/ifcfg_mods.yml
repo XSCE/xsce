@@ -3,11 +3,13 @@
            state=stopped
   when: xsce_wireless_lan_iface != "none"
 
-- name: Now delete original ifcfg files
-  shell: rm -f /etc/sysconfig/network-scripts/ifcfg-"{{ item }}"
-  when: num_lan_interfaces == "1" and xsce_lan_iface != "br0"
+# might need an exclude for F18 here
+- name: Now disconnect bridge slaves
+  shell: nmcli c delete id "System {{ item|trim }}"
+  ignore_errors: True
+  when: item|trim != xsce_wireless_lan_iface
   with_items:
-    - "{{ discovered_lan_iface }}"
+    - "{{ ifcfg_slaves.stdout_lines }}"
 
 # clear all bridge ifcfg files
 - name: Now delete slave bridge ifcfg files
@@ -16,13 +18,11 @@
   with_items:
     - "{{ ifcfg_slaves.stdout_lines }}"
 
-# might need an exclude for F18 here
-- name: Now disconnect bridge slaves
-  shell: nmcli c delete id "System {{ item|trim }}"
-  ignore_errors: True
-  when: item|trim != xsce_wireless_lan_iface
+- name: Now delete original ifcfg files
+  shell: rm -f /etc/sysconfig/network-scripts/ifcfg-"{{ item }}"
+  when: num_lan_interfaces == "1" and xsce_lan_iface != "br0"
   with_items:
-    - "{{ ifcfg_slaves.stdout_lines }}"
+    - "{{ discovered_lan_iface }}"
 
 - name: Stop the LAN/Bridge deleting xsce-LAN
   shell: nmcli con delete id xsce-LAN
