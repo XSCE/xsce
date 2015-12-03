@@ -32,7 +32,7 @@
 
 ## vars/ users should set user_wan_iface to avoid messy redetect
 - include: redetect.yml
-  when: discovered_wan_iface == "none" and user_wan_iface == "auto" and wan_ip == "dhcp"
+  when: discovered_wan_iface == "none" and user_wan_iface == "auto"
 
 # move gateway if not WAN
 # might have wifi info if wireless is used as uplink.
