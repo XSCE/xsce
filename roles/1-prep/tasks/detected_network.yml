@@ -279,3 +279,5 @@
     value: '{{ num_lan_interfaces }}'
   - option: 'detected_lan'
     value: '{{ discovered_lan_iface }}'
+  - option: 'static_wan'
+    value: '{{ gui_static_wan }}'
