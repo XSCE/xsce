@@ -42,11 +42,21 @@
     discovered_wan_iface: "{{ ansible_default_ipv4.alias }}"
   when: 'ansible_default_ipv4.gateway is defined'
 
+- name: Verify gateway present
+  shell: ping -c2 "{{ ansible_default_ipv4.gateway }}" &> /dev/null ; echo $?
+  register: gw_active_test
+  when: discovered_wan_iface != "none"
+
+- name: Recording gateway response 
+  set_fact: 
+     gw_active: True
+  when: gw_active_test == 0
+
 - name: Setting wan if detected
   set_fact:
     xsce_wan_iface: "{{ discovered_wan_iface }}"
     device_gw: "{{ discovered_wan_iface }}"
-  when: discovered_wan_iface != "none" and xsce_wan_iface == "none"
+  when: discovered_wan_iface != "none" and gw_active
 
 # returns list of paths
 - name: Find gateway config based on device
@@ -151,6 +161,12 @@
       ap_device: "eth0"
   when: xsce_wan_iface != "eth0" and discovered_wireless_iface != "none" and xo_model == "XO-1.5"
 
+# takes adapter name
+- name: Blacklisted wifi adapter
+  set_fact:
+      ap_device: "{{ blacklist_wifi }}"
+  when: blacklist_wifi is defined and discovered_wireless_iface != xsce_wan_iface and num_wifi_interfaces >= "2"
+
 # LAN - pick non WAN's
 - name: Create list of  LAN (non wan) ifaces
   shell: ls /sys/class/net | grep -v -e wwlan -e ppp -e lo -e br0 -e tun -e {{ device_gw }} -e {{ ap_device }}
@@ -174,7 +190,7 @@
   changed_when: false
 
 # facts are apparently all stored as text, so do text comparisons from here on
-- name: create a simple variable from a compound one
+- name: Calulate number of LAN interfaces including WiFi
   set_fact:
       num_lan_interfaces: "{{ num_lan_interfaces_result.stdout|int }}"
 
@@ -241,6 +257,8 @@
             option='{{ item.option }}'
             value='{{ item.value }}'
   with_items:
+  - option: 'gateway_actve' 
+    value:  '{{ gw_active }}'
   - option: 'gateway_ifcfg'
     value: '{{ has_ifcfg_gw }}'
   - option: 'detected_gateway'
@@ -261,3 +279,5 @@
     value: '{{ num_lan_interfaces }}'
   - option: 'detected_lan'
     value: '{{ discovered_lan_iface }}'
+  - option: 'static_wan'
+    value: '{{ gui_static_wan }}'

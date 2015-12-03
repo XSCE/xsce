@@ -3,6 +3,21 @@
            state=stopped
   when: xsce_wireless_lan_iface != "none"
 
+# might need an exclude for F18 here
+- name: Now disconnect bridge slaves
+  shell: nmcli c delete id "System {{ item|trim }}"
+  ignore_errors: True
+  when: item|trim != xsce_wireless_lan_iface
+  with_items:
+    - "{{ ifcfg_slaves.stdout_lines }}"
+
+# clear all bridge ifcfg files
+- name: Now delete slave bridge ifcfg files
+  shell: rm -f /etc/sysconfig/network-scripts/ifcfg-"{{ item }}"
+  when: num_lan_interfaces != "0" or xsce_wireless_lan_iface != "none"
+  with_items:
+    - "{{ ifcfg_slaves.stdout_lines }}"
+
 - name: Now delete original ifcfg files
   shell: rm -f /etc/sysconfig/network-scripts/ifcfg-"{{ item }}"
   when: num_lan_interfaces == "1" and xsce_lan_iface != "br0"
@@ -14,13 +29,6 @@
   ignore_errors: True
   changed_when: False
   when: xsce_prepped and (num_lan_interfaces != "0" or xsce_wireless_lan_iface != "none")
-
-# clear all bridge ifcfg files
-- name: Now delete slave bridge ifcfg files
-  shell: rm -f /etc/sysconfig/network-scripts/ifcfg-"{{ item }}"
-  when: num_lan_interfaces != "0" or xsce_wireless_lan_iface != "none"
-  with_items:
-    - "{{ ifcfg_slaves.stdout_lines }}"
 
 ## vars/ users should set user_wan_iface to avoid messy redetect
 - include: redetect.yml
@@ -81,6 +89,7 @@
 # we could do the DEVICE name stuff for a cleaner looking nmcli 
 - name: Enabling ifcfg slaves
   shell: nmcli conn up id "System {{ item|trim }}"
+  ignore_errors: True
   when: xsce_lan_iface == "br0" and item|trim != xsce_wireless_lan_iface and item|trim != xsce_wan_iface and not xsce_demo_mode
   with_items:
       - "{{ lan_list_result.stdout_lines }}"

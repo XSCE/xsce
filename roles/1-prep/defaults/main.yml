@@ -9,6 +9,8 @@ is_F18: False
 udev_needs_patch: False
 strict_networking: False
 xsce_demo_mode: False
+gw_active: False
+gui_static_wan: False
 
 # Set default for discovered hardware
 driver_name: nl80211
