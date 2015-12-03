@@ -1,5 +1,6 @@
 ---
 # The values here are default local variables.
+gui_static_wan: False
 gui_wan_iface: "unset"
 gui_static_wan_ip: "unset"
 wondershaper_dspeed: "4096"

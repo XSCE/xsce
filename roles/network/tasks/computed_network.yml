@@ -29,13 +29,13 @@
 - name: undo gui-static-wan by requesting new template file
   set_fact:
      has_WAN: False
-  when:  gui_static_wan is defined and gui_static_wan == "False" and gui_static_wan_ip is defined and gui_static_wan_ip != "unset"
+  when: gui_static_wan_ip != "unset" and not gui_static_wan
 
 - name: gui-static-wan
   set_fact:
     wan_ip: dhcp
     gui_static_wan_ip: undefined
-  when: gui_static_wan is defined and gui_static_wan == "False"
+  when: gui_static_wan_ip != "unset" or not gui_static_wan
 
 # figure out more than one interfaces to detect.
 - name: Using GUI_STATIC info
@@ -44,7 +44,7 @@
     wan_netmask: "{{ gui_static_wan_netmask }}"
     wan_gateway: "{{ gui_static_wan_gateway }}"
     wan_nameserver: "{{ gui_static_wan_nameserver }}"
-  when: gui_static_wan_ip != "unset" and gui_static_wan_ip != "undefined" and gui_static_wan is defined
+  when: gui_static_wan_ip != "unset" and gui_static_wan_ip != "undefined" and gui_static_wan
 
 # we need to have an interface name for ifcfg-WAN to be able to change gateway
 # the DEVICE from the gui. Thanks to George for proving my point about knowing
