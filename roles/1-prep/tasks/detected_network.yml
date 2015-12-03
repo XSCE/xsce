@@ -48,7 +48,7 @@
   when: discovered_wan_iface != "none"
 
 - name: Recording gateway response 
-   set_fact: 
+  set_fact: 
      gw_active: True
   when: gw_active_test == 0
 
