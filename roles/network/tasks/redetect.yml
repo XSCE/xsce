@@ -73,14 +73,24 @@
   shell: ls /sys/class/net | grep -v -e lo -e br -e tun
   register: adapter_list
 
+# wired devices with no wire plugged in fail here
+- name: Not risking an active device dropping all devices
+  shell: nmcli d delete {{ item|trim }}
+  ignore_errors: True
+  when: item|trim != xsce_wireless_lan_iface and not dhcp_good
+  with_items:
+      - "{{ adapter_list.stdout_lines }}"
+
 # monitor-connection-files defaults to no with F21, F18-F20 defaults to yes
 - name: Reloading nmcli for deleted files
   shell: nmcli con reload
   when: not installing and not no_NM_reload
 
+# wired devices with no wire plugged in fail here
 # discovered_wireless_iface might need work
-- name: Try dhcp on all wired devices 
+- name: Try dhcp on all wired devices
   shell: nmcli d connect {{ item|trim }}
+  ignore_errors: True
   when: item|trim != discovered_wireless_iface and item|trim != xsce_wireless_lan_iface and not dhcp_good
   with_items:
       - "{{ adapter_list.stdout_lines }}"
@@ -111,6 +121,14 @@
   when: ifcfg_dhcp_device.stdout_lines is defined and item|trim != ""
   with_items:
       - "{{ ifcfg_dhcp_device.stdout_lines }}"
+
+# wired devices with no wire plugged in fail here
+- name: Disconnect wired devices
+  shell: nmcli d delete {{ item|trim }}
+  ignore_errors: True
+  when: item|trim != xsce_wireless_lan_iface and item|trim != xsce_wan_iface
+  with_items:
+      - "{{ adapter_list.stdout_lines }}"
 
 ### keep at end.
 ### If dhcp fails the single interface will become LAN again because we didn't prevent the creation
