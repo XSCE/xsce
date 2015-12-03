@@ -124,7 +124,7 @@
 
 # wired devices with no wire plugged in fail here
 - name: Disconnect wired devices
-  shell: nmcli d delete {{ item|trim }}
+  shell: nmcli c down id "System{{ item|trim }}"
   ignore_errors: True
   when: item|trim != xsce_wireless_lan_iface and item|trim != xsce_wan_iface and wan_ip == "dhcp"
   with_items:
