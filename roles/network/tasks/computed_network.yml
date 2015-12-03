@@ -26,25 +26,27 @@
   when: num_wifi_interfaces >= "2" and xo_model != "none" and discovered_wan_iface != "none" and discovered_wireless_iface == "eth0"
 
 # static backout suppy new template file
+- name: gui-static-wan
+  set_fact:
+    wan_ip: dhcp
+    gui_static_wan_ip: undefined
+  when: gui_static_wan_ip != "unset" and not gui_static_wan
+
 - name: undo gui-static-wan by requesting new template file
   set_fact:
      has_WAN: False
   when: gui_static_wan_ip != "unset" and not gui_static_wan
 
-- name: gui-static-wan
-  set_fact:
-    wan_ip: dhcp
-    gui_static_wan_ip: undefined
-  when: gui_static_wan_ip != "unset" or not gui_static_wan
-
 # figure out more than one interfaces to detect.
 - name: Using GUI_STATIC info
   set_fact:
+    has_WAN: False
+    has_ifcfg_gw: "none"
     wan_ip: "{{ gui_static_wan_ip }}"
     wan_netmask: "{{ gui_static_wan_netmask }}"
     wan_gateway: "{{ gui_static_wan_gateway }}"
     wan_nameserver: "{{ gui_static_wan_nameserver }}"
-  when: gui_static_wan_ip != "unset" and gui_static_wan_ip != "undefined" and gui_static_wan
+  when: gui_static_wan and user_wan_iface != "auto"
 
 # we need to have an interface name for ifcfg-WAN to be able to change gateway
 # the DEVICE from the gui. Thanks to George for proving my point about knowing
