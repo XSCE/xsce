@@ -11,6 +11,7 @@
 # set top level variables from local facts for convenience
 - set_fact:
      phplib_dir: '{{ ansible_local["local_facts"]["phplib_dir"] }}'
+     no_network: '{{ ansible_local["local_facts"]["no_network"] }}'
      xsce_preload: '{{ ansible_local["local_facts"]["xsce_preload"] }}'
 
 - name: Defaulting xsce_prepped
