@@ -41,7 +41,7 @@
 <?php kiwix_link("/wikipedia_fr_all_2015-03", "Wikipedia in French", "The Wikipedia in French as of March 2015."); ?>
 -->
 
-<?php hard_link("/rachel", "RACHEL", "Remote Area Community Hotspot for Education and Learning: best free materials from the Internet!"); ?>
+<?php hard_link("/rachel", "RACHEL", "Remote Area Community Hotspot for Education and Learning: best free materials from the Internet!","/library/rachel/www"); ?>
 
 <?php kiwix_link("gutenberg_en_all_10_2014", "Project Gutenberg", "Collection of English classic literature."); ?>
 
