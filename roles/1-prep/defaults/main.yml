@@ -32,6 +32,7 @@ device_gw: "none"
 has_ifcfg_gw: "none"
 has_wifi_gw: "none"
 ap_device: "none"
+device_gw2: ""
 
 # WiFi
 ssid: XSCE
