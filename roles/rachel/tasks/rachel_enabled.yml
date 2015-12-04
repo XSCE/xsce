@@ -1,10 +1,13 @@
-- name: Create link to rachel from doc root
-  file: src={{ rachel_content_path }}
-        dest={{ rachel_doc_root }}
-        owner=root
-        group=admin
-        state=link
+- name: Copy RACHEL httpd conf file
+  template: src=rachel.conf.j2
+            dest=/etc/httpd/conf.d/rachel.conf
 
+- name: Remove RACHEL httpd conf file if we are disabled
+  file: path=/etc/httpd/conf.d/rachel.conf
+        state=absent
+  when: not rachel_enabled
+
+# This probably doesn't work, but we can't get search to work either
 - name: Create link to rachel mysql db from mysql data dir
   file: src={{ rachel_mysqldb_path }}
         dest=/var/lib/mysql/sphider_plus
@@ -21,8 +24,6 @@
 - name: Restart mysqld service
   service: name={{ mysql_service }}
            state=restarted
-
-
 
 - name: Restart httpd service
   service: name=httpd
