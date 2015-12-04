@@ -34,7 +34,7 @@ else
   PRELOAD="False"
 fi
 
-ping -c1 8.8.8.8
+ping -c1 8.8.8.8 > /dev/null 2>&1
 if [ "$?" != 0 ]; then
   NO_NETWORK="True"
 else
