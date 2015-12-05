@@ -53,7 +53,7 @@
   when: gw_active_test == "0"
 
 - name: Test for internet access
-  shell: ping -c2 8.8.8.8 &> /dev/null ; echo $?
+  shell: wget "{{ xsce_download_url }}/heart-beat.txt" &> /dev/null ; echo $?
   register: internet_access_test
 
 - name: Set has_internet_connection false by default
