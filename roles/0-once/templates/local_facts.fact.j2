@@ -34,20 +34,11 @@ else
   PRELOAD="False"
 fi
 
-ping -c1 8.8.8.8 > /dev/null 2>&1
-if [ "$?" == 0 ]; then
-  HAS_INTERNET_CONNECTION="True"
-else
-  HAS_INTERNET_CONNECTION="False"
-fi
-
-
 cat <<EOF
 {"phplib_dir"             : "$PHPLIB_DIR",
 "xsce_branch"             : "$BRANCH",
 "xsce_commit"             : "$COMMIT",
 "xsce_uuid"               : "$UUID",
 "xo_model"                : "$XO_VERSION",
-"has_internet_connection" : "$HAS_INTERNET_CONNECTION",
 "xsce_preload"            : "$PRELOAD"}
 EOF

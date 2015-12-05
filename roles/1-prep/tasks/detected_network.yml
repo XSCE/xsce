@@ -1,4 +1,4 @@
-- name: Checking xs_domain_name 
+- name: Checking xs_domain_name
   shell: "cat /etc/sysconfig/xs_domain_name"
   register: prior_domain
   ignore_errors: True
@@ -47,10 +47,23 @@
   register: gw_active_test
   when: discovered_wan_iface != "none"
 
-- name: Recording gateway response 
-  set_fact: 
+- name: Recording gateway response
+  set_fact:
      gw_active: True
   when: gw_active_test == "0"
+
+- name: Test for internet access
+  shell: ping -c2 8.8.8.8 &> /dev/null ; echo $?
+  register: internet_access_test
+
+- name: Set has_internet_connection false by default
+  set_fact:
+     has_internet_connection: False
+
+- name: Set has_internet_connection true if ping succeeded
+  set_fact:
+     has_internet_connection: True
+  when: internet_access_test == "0"
 
 - name: Setting wan if detected
   set_fact:
@@ -76,7 +89,7 @@
 
 # returns path
 - name: Find active gateway config based on macaddress
-  shell: "egrep -irn {{ ansible_default_ipv4.macaddress }} /etc/sysconfig/network-scripts/ifcfg* | gawk -F ':' '{print $1}' | head -n 1"  
+  shell: "egrep -irn {{ ansible_default_ipv4.macaddress }} /etc/sysconfig/network-scripts/ifcfg* | gawk -F ':' '{print $1}' | head -n 1"
   register: ifcfg_gw_mac
   ignore_errors: True
   changed_when: False
@@ -139,7 +152,7 @@
   with_items:
       - "{{ wireless_list2.stdout_lines }}"
 
-# Last device is used 
+# Last device is used
 - name: Use discovered wireless, take 2
   set_fact:
      discovered_wireless_iface: "{{ wifi2 }}"
@@ -257,7 +270,7 @@
             option='{{ item.option }}'
             value='{{ item.value }}'
   with_items:
-  - option: 'gateway_active' 
+  - option: 'gateway_active'
     value:  '{{ gw_active }}'
   - option: 'gateway_ifcfg'
     value: '{{ has_ifcfg_gw }}'
