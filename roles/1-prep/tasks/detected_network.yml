@@ -65,6 +65,17 @@
      has_internet_connection: True
   when: internet_access_test == "0"
 
+- name: Turn off downloads if no internet connection
+  set_fact:
+     no_network: True
+  when: not has_internet_connection
+
+- name: Testing for xsce_preload
+  set_fact:
+     use_cache: True
+     no_network: True
+  when: xsce_preload == "True"
+
 - name: Setting wan if detected
   set_fact:
     xsce_wan_iface: "{{ discovered_wan_iface }}"
