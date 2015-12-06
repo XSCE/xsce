@@ -16,7 +16,7 @@
 - name: Turn off downloads if no internet connection
   set_fact:
      no_network: True
-  when: has_internet_connection == "False"
+  when: not has_internet_connection
 
 - name: Defaulting xsce_prepped
   set_fact:
