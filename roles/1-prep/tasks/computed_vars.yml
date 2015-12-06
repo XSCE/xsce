@@ -11,7 +11,6 @@
 # set top level variables from local facts for convenience
 - set_fact:
      phplib_dir: '{{ ansible_local["local_facts"]["phplib_dir"] }}'
-     has_internet_connection: '{{ ansible_local["local_facts"]["has_internet_connection"] }}'
      xsce_preload: '{{ ansible_local["local_facts"]["xsce_preload"] }}'
 
 - name: Turn off downloads if no internet connection
