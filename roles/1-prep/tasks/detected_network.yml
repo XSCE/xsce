@@ -60,7 +60,7 @@
   set_fact:
      has_internet_connection: False
 
-- name: Set has_internet_connection true if ping succeeded
+- name: Set has_internet_connection true if wget succeeded
   set_fact:
      has_internet_connection: True
   when: internet_access_test == "0"
