@@ -56,9 +56,13 @@
   shell: wget "{{ xsce_download_url }}/heart-beat.txt" &> /dev/null ; echo $?
   register: internet_access_test
 
+- debug: msg="internet_access_test is {{ internet_access_test }}"
+
 - name: Set has_internet_connection false by default
   set_fact:
      has_internet_connection: False
+
+- debug: msg="internet_access_test is {{ internet_access_test }}"
 
 - name: Set has_internet_connection true if wget succeeded
   set_fact:
