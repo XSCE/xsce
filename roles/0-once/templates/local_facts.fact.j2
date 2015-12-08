@@ -34,20 +34,11 @@ else
   PRELOAD="False"
 fi
 
-ping -c1 8.8.8.8 > /dev/null 2>&1
-if [ "$?" != 0 ]; then
-  NO_NETWORK="True"
-else
-  NO_NETWORK="False"
-fi
-
-
 cat <<EOF
-{"phplib_dir"  : "$PHPLIB_DIR",
-"xsce_branch"  : "$BRANCH",
-"xsce_commit"  : "$COMMIT",
-"xsce_uuid"    : "$UUID",
-"xo_model"     : "$XO_VERSION",
-"no_network"   : "$NO_NETWORK",
-"xsce_preload" : "$PRELOAD"}
+{"phplib_dir"             : "$PHPLIB_DIR",
+"xsce_branch"             : "$BRANCH",
+"xsce_commit"             : "$COMMIT",
+"xsce_uuid"               : "$UUID",
+"xo_model"                : "$XO_VERSION",
+"xsce_preload"            : "$PRELOAD"}
 EOF

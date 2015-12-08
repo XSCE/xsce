@@ -11,7 +11,6 @@
 # set top level variables from local facts for convenience
 - set_fact:
      phplib_dir: '{{ ansible_local["local_facts"]["phplib_dir"] }}'
-     no_network: '{{ ansible_local["local_facts"]["no_network"] }}'
      xsce_preload: '{{ ansible_local["local_facts"]["xsce_preload"] }}'
 
 - name: Defaulting xsce_prepped
@@ -20,12 +19,6 @@
   tags:
     - download
     - download2
-
-- name: Testing for xsce_preload
-  set_fact:
-     use_cache: True
-     no_network: True
-  when: xsce_preload == "True"
 
 - name: Set exFAT enabled for XOs
   set_fact:
