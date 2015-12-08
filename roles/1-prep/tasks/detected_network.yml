@@ -50,7 +50,7 @@
 - name: Recording gateway response
   set_fact:
      gw_active: True
-  when: gw_active_test.stdout == "0"
+  when: discovered_wan_iface != "none" and gw_active_test.stdout == "0"
 
 - name: Test for internet access
   shell: wget "{{ xsce_download_url }}/heart-beat.txt" &> /dev/null ; echo $?
