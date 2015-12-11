@@ -239,7 +239,7 @@ $("#CANCEL-JOBS").click(function(){
         cmdList.push(cancelJobFunc(job_id));
         if (job_status[job_id]["cmd_verb"] == "INST-ZIMS"){
         	var zim_id = job_status[job_id]["cmd_args"]["zim_id"];
-        	consoleLog (zim_id);
+        	//consoleLog (zim_id);
           if (zimsScheduled.indexOf(zim_id) > -1){
             zimsScheduled.pop(zim_id);
             updateZimDiskSpaceUtil(zim_id, false)
@@ -640,7 +640,7 @@ function changePasswordSuccess ()
   function getWhitelist (data)
   {
     //alert ("in getWhitelist");
-    consoleLog(data);
+    //consoleLog(data);
     whlist_array = data['xsce_whitelist'];
     whlist_str = whlist_array[0];
     for (var i = 1; i < whlist_array.length; i++) {
@@ -658,7 +658,7 @@ function changePasswordSuccess ()
     whlist_array = $('#xsce_whitelist').val().split('\n');
     whlist_ret['xsce_whitelist'] = whlist_array;
     cmd = "SET-WHLIST " + JSON.stringify(whlist_ret);
-    consoleLog(cmd);
+    //consoleLog(cmd);
     sendCmdSrvCmd(cmd, genericCmdHandler);
     alert ("Saving Permitted URLs List.");
     return true;
@@ -708,6 +708,10 @@ function changePasswordSuccess ()
 
   function getKiwixCatalog() // Downloads kiwix catalog from kiwix
   {
+    button_feedback("#KIWIX-LIB-REFRESH", true);
+    // remove any selections as catalog may have changed
+    selectedZims = [];
+
     command = "GET-KIWIX-CAT";
     sendCmdSrvCmd(command, procKiwixCatalog, "KIWIX-LIB-REFRESH");
     return true;
@@ -720,10 +724,18 @@ function changePasswordSuccess ()
   }
 
   function procKiwixCatalog() {
-    readKiwixCatalog();
-    getZimStat();
-    procZimCatalog();
-    alert ("Kiwix Catalog has been downloaded.");
+    $.when(
+      sendCmdSrvCmd("GET-ZIM-STAT", procZimStatInit),
+      readKiwixCatalog()
+    )
+    .done(function() {
+      procZimCatalog();
+      sumCheckedZimDiskSpace();
+    })
+    .always(function() {
+      alert ("Kiwix Catalog has been downloaded.");
+      button_feedback("#KIWIX-LIB-REFRESH", false);
+    })
   }
 
   function procZimStatInit(data) {
@@ -828,7 +840,7 @@ function getLangCodes() {
 }
 
 function readKiwixCatalog() { // Reads kiwix catalog from file system as json
-  //alert ("in sendCmdSrvCmd(");
+  //consoleLog ("in readKiwixCatalog");
   //consoleLog ('ran sendCmdSrvCmd');
   //if (asyncFlag === undefined) asyncFlag = false;
 
@@ -840,7 +852,7 @@ function readKiwixCatalog() { // Reads kiwix catalog from file system as json
   .done(function( data ) {
   	kiwixCatalogDate = Date.parse(data['download_date']);
   	kiwixCatalog = data['zims'];
-    consoleLog(kiwixCatalog);
+    //consoleLog(kiwixCatalog);
   })
   .fail(jsonErrhandler);
 
@@ -857,8 +869,6 @@ function procZimCatalog() {
   // Uses installedZimCat, kiwixCatalog, langCodes, and langGroups
   // Calculates zimCatalog, zimGroups, langNames, zimsInstalled, zimsScheduled
 
-  consoleLog('in procZimCatalog');
-
   zimCatalog = {};
   zimGroups = {};
   zimLangs = [];
@@ -872,6 +882,7 @@ function procZimCatalog() {
   // Create working arrays of installed and wip
   zimsInstalled = [];
   zimsScheduled = [];
+
   for (var id in installedZimCat['INSTALLED']){
     zimsInstalled.push(id);
     lang = installedZimCat['INSTALLED'][id]['language'];
@@ -1341,9 +1352,8 @@ function sumCheckedZimDiskSpace(){
     var size =  parseInt(zim.size);
 
     sysStorage.zims_selected_size += size;
-
-    setZimDiskSpace();
   }
+  setZimDiskSpace();
 }
 
 function getInetSpeed(){
