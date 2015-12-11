@@ -96,7 +96,7 @@
 
 <h2>Temporary Passwords</h2>
 <ul>
-	<li>KA Lite: kalite/kalite</li>
+	<li>KA Lite: Admin/changeme</li>
 	<li>ownCloud: Admin/changeme</li>
 	<li>Elgg: Admin/changeme</li>
 	<li>Munin: admin/munindxs</li>
