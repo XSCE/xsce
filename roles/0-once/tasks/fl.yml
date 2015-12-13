@@ -37,6 +37,8 @@
     - /library/downloads/rachel
     - /library/working/zims
     - /library/working/rachel
+    - "{{ xsce_zim_path }}/content"
+    - "{{ xsce_zim_path }}/index"
 
 - name: Create olpc-scripts directory
   file: path={{ item }}
