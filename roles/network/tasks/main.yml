@@ -37,11 +37,6 @@
     - network
     - domain
 
-- name: Domain name did not change setting xsce_prepped
-  set_fact: 
-    xsce_prepped: True
-  when: not domainname.changed
-
 #TODO: Use vars instead of hardcoded values
 - name: Configure /etc/hosts with LAN
   lineinfile: dest=/etc/hosts
