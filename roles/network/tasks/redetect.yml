@@ -43,6 +43,13 @@
   register: dhcp_wifi_results
   when: try_wifi is defined and try_wifi.changed
 
+# We have the DEVICE?
+- name: Now setting xsce_wan_iface based on wifi
+  set_fact: 
+     xsce_wan_iface: "{{ dhcp_wifi_results.stdout }}"
+     dhcp_good: True
+  when: dhcp_wifi_results.stdout is defined and dhcp_wifi_results.stdout != ""
+
 - name: Trying ifcfg-WAN second
   shell: nmcli conn up id xsce-WAN
   register: dhcp_WAN
@@ -55,33 +62,36 @@
 
 - name: Delete ifcfg-WAN
   shell: rm -f /etc/sysconfig/network-scripts/ifcfg-WAN
-  when: dhcp_WAN is defined and dhcp_WAN|failed
+  when: dhcp_WAN is defined and dhcp_WAN|failed and wan_ip == "dhcp"
 
 - name: Setting no ifcfg-WAN
   set_fact:
       has_WAN: False
-  when: dhcp_WAN is defined and dhcp_WAN|failed
-
-# We have the DEVICE?
-- name: Now setting xsce_wan_iface based on wifi
-  set_fact: 
-     xsce_wan_iface: "{{ dhcp_wifi_results.stdout }}"
-     dhcp_good: True
-  when: dhcp_wifi_results.stdout is defined and dhcp_wifi_results.stdout != ""
+  when: dhcp_WAN is defined and dhcp_WAN|failed and wan_ip == "dhcp"
 
 - name: interface list
   shell: ls /sys/class/net | grep -v -e lo -e br -e tun
   register: adapter_list
+
+# wired devices with no wire plugged in fail here
+- name: Not risking an active device dropping all devices
+  shell: nmcli d delete {{ item|trim }}
+  ignore_errors: True
+  when: item|trim != xsce_wireless_lan_iface and not dhcp_good and wan_ip == "dhcp"
+  with_items:
+      - "{{ adapter_list.stdout_lines }}"
 
 # monitor-connection-files defaults to no with F21, F18-F20 defaults to yes
 - name: Reloading nmcli for deleted files
   shell: nmcli con reload
   when: not installing and not no_NM_reload
 
+# wired devices with no wire plugged in fail here
 # discovered_wireless_iface might need work
-- name: Try dhcp on all wired devices 
+- name: Try dhcp on all wired devices
   shell: nmcli d connect {{ item|trim }}
-  when: item|trim != discovered_wireless_iface and item|trim != xsce_wireless_lan_iface and not dhcp_good
+  ignore_errors: True
+  when: item|trim != discovered_wireless_iface and item|trim != xsce_wireless_lan_iface and not dhcp_good and wan_ip == "dhcp"
   with_items:
       - "{{ adapter_list.stdout_lines }}"
 
@@ -99,7 +109,7 @@
   when: dhcp_1BY1_results.stdout is defined and dhcp_1BY1_results.stdout != "" and not has_WAN
 
 - name: Find gateway config based on device
-  shell: egrep -rn {{ xsce_wan_iface }} /etc/sysconfig/network-scripts/ifcfg* | gawk -F ':' '{print $1}'
+  shell: egrep -rn "{{ xsce_wan_iface }}" /etc/sysconfig/network-scripts/ifcfg* | gawk -F ':' '{print $1}'
   register: ifcfg_dhcp_device
   ignore_errors: True
   changed_when: False
@@ -111,6 +121,14 @@
   when: ifcfg_dhcp_device.stdout_lines is defined and item|trim != ""
   with_items:
       - "{{ ifcfg_dhcp_device.stdout_lines }}"
+
+# wired devices with no wire plugged in fail here
+- name: Disconnect wired devices
+  shell: nmcli c down id "System{{ item|trim }}"
+  ignore_errors: True
+  when: item|trim != xsce_wireless_lan_iface and item|trim != xsce_wan_iface and wan_ip == "dhcp"
+  with_items:
+      - "{{ adapter_list.stdout_lines }}"
 
 ### keep at end.
 ### If dhcp fails the single interface will become LAN again because we didn't prevent the creation

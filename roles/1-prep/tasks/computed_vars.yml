@@ -20,12 +20,6 @@
     - download
     - download2
 
-- name: Testing for xsce_preload
-  set_fact:
-     use_cache: True
-     no_network: True
-  when: xsce_preload == "True"
-
 - name: Set exFAT enabled for XOs
   set_fact:
      exFAT_enabled: True

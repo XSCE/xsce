@@ -366,6 +366,8 @@
 										<div class="tab-pane" id="instConRachel"> <!-- Start instConRachel Submenu Option Pane -->
 											<h2>Install Rachel</h2>
 											<p>RACHEL is a collection of a variety of educational content currated by World Possible.  This menu option allows you to download and install it.</p>
+											<h3>PLEASE NOTE</h3>
+											<p>There is an error in one or two files of the current version of RACHEL in use here, so it may be necessary to <b>run this command a second time</b> if the job fails.</p>
 											<div class="row">
 												<div class="col-sm-4">
 													<h3>Rachel Status: </h3>
@@ -491,17 +493,19 @@
 										<li><a href="#utilJobs" call-after="getJobStat">Display Job Status</a></li>
 										<li><a href="#utilsTools">Admin Tools</a></li>
 										<li><a href="#utilsAnsible">Display Ansible Facts</a></li>
-										<li><a href="#utilsXsceIni">Display XSCE.INI File</a></li>
+										<li><a href="#utilsXsceIni" call-after="getXsceIni">Display XSCE.INI File</a></li>
 										<li><a href="#utilsMemory" call-after="getSysMem">Display System Memory</a></li>
 										<li><a href="#utilsStorage" call-after="getSysStorage">Display System Storage</a></li>
 										<li><a href="#utilsSpeedTest">Perform Internet Speed Test</a></li>
 										<li><a href="#utilsAnsTags">Run Ansible by Tag</a></li>
 									</ul> <!-- End Status Sub Level Menu -->
+									<!--
 									<h2>Actions</h2>
 									<div class="action-buttons">
 									<button id="REBOOT" type="button" class="btn btn-lg btn-danger">REBOOT Server</button>
 									<button id="POWEROFF" type="button" class="btn btn-lg btn-danger">POWER OFF Server</button>
 									</div>
+									 -->
 								</div> <!-- left column -->
 								<div class="col-md-9"> <!-- Start right column -->
 									<div class="tab-content"> <!-- Start Container for Sub Menu Options Panes -->

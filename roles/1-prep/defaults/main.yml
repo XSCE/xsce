@@ -9,6 +9,8 @@ is_F18: False
 udev_needs_patch: False
 strict_networking: False
 xsce_demo_mode: False
+gw_active: False
+gui_static_wan: False
 
 # Set default for discovered hardware
 driver_name: nl80211
@@ -30,6 +32,7 @@ device_gw: "none"
 has_ifcfg_gw: "none"
 has_wifi_gw: "none"
 ap_device: "none"
+device_gw2: ""
 
 # WiFi
 ssid: XSCE
