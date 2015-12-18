@@ -3,7 +3,7 @@
 
 - name: Install pathagar pre requisites
   yum: name={{ item }}
-       state=latest
+       state=installed
   with_items:
     - python-virtualenv
     - python-pip
@@ -11,7 +11,6 @@
     - mod_wsgi
     - libxml2-devel
     - libxslt-devel
-  when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download
 
