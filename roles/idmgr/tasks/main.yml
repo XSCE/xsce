@@ -23,7 +23,7 @@
 
 - name: Configure ds-backup
   command: /etc/sysconfig/olpc-scripts/setup.d/ds-backup
-          creates=/etc/incron.d/ds-backup.conf
+           creates=/etc/incron.d/ds-backup.conf
 
 - name: Configure idmgr sqlite db
   command: /etc/sysconfig/olpc-scripts/setup.d/idmgr
@@ -31,11 +31,11 @@
 
 - name: Configure xs-rsync
   command: /etc/sysconfig/olpc-scripts/setup.d/xs-rsync
-          creates=/etc/xinetd.d/xs-rsyncd
+           creates=/etc/xinetd.d/xs-rsyncd
 
 - name: Copy idmgr init script 
   command: /bin/cp /etc/init.d/idmgr /usr/libexec/idmgr.init
-          creates=/usr/libexec/idmgr.init
+           creates=/usr/libexec/idmgr.init
 
 - name: Enable idmgr service
   service: name={{ item }}
@@ -44,6 +44,16 @@
   with_items:
     - idmgr
     - xinetd
+  when: xo_services_enabled
+
+- name: Disable idmgr service
+  service: name={{ item }}
+           enabled=no
+           state=stopped
+  with_items:
+    - idmgr
+    - xinetd
+  when: not xo_services_enabled
 
 #idmgr needs an extra step
 - name: Enable ejabberd service
