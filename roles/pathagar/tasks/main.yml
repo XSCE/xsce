@@ -3,7 +3,7 @@
 
 - name: Install pathagar pre requisites
   yum: name={{ item }}
-       state=latest
+       state=installed
   with_items:
     - python-virtualenv
     - python-pip
@@ -36,7 +36,7 @@
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
-      
+
 - name: download pathagar requirements in a virtualenv
   pip: name={{ item }}
           extra_args="--download {{ pip_packages_dir }}"
