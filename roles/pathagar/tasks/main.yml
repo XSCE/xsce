@@ -11,7 +11,6 @@
     - mod_wsgi
     - libxml2-devel
     - libxslt-devel
-  when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download
 
@@ -37,7 +36,7 @@
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
-
+      
 - name: download pathagar requirements in a virtualenv
   pip: name={{ item }}
           extra_args="--download {{ pip_packages_dir }}"
