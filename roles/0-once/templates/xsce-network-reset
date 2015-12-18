@@ -6,5 +6,7 @@ rm -rf /etc/sysconfig/xs_domain_name
 rm -rf /etc/sysconfig/xs_lan_device
 rm -rf /etc/sysconfig/xs_wan_device
 rm -rf /etc/NetworkManager/system-connestions/*
+mv /etc/sysconfig/network-scripts/ifcfg-WAN /root
+echo -e "\n\nWAN setup file moved to /root for safekeeping.\n\n"
 ls -1 /etc/sysconfig/network-scripts/ifcfg-*|grep -v -e ifcfg-lo|xargs rm
 echo -e "\n\nAll Network variables erased. Now run 'xsce-network' to set up the new network configuration.\n\nIf that fails, you may need to set 'user_lan_iface' and 'user_wan_iface' in /opt/schoolserver/xsce/vars/local_vars"
