@@ -33,7 +33,7 @@ This release extends the tools available to educators in three ways:
 * Elgg provides the tools for generating social networks http://learn.elgg.org/en/2.0/intro/features.html
 * ownCloud provides client based tools for storing and retrieving materials stored on the XSCE local cloud.
 * DokuWiki (EXPERIMENTAL) provides a means for students to publish their work. https://www.dokuwiki.org/features
-* Wordpress (EXPERIMENTAL -- enable in "local_vars") gives students experience editing/sharing using a tool that is becoming a industry standard.
+* Wordpress (EXPERIMENTAL -- enable in "local_vars") gives students experience editing/sharing using a tool that is becoming an industry standard.
 
 ### New Tools for Administering the XSCE schoolserver
 
