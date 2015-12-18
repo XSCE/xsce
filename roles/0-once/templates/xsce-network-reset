@@ -7,4 +7,4 @@ rm -rf /etc/sysconfig/xs_lan_device
 rm -rf /etc/sysconfig/xs_wan_device
 rm -rf /etc/NetworkManager/system-connestions/*
 ls -1 /etc/sysconfig/network-scripts/ifcfg-*|grep -v -e ifcfg-lo|xargs rm
-echo -e "\n\nAll Network variables erased. Now run 'xsce-network' to set up the new network configuration.\n\nIf that fails, you man need to set 'user_lan_iface' and 'user_wan_iface' in vars/local_vars"
+echo -e "\n\nAll Network variables erased. Now run 'xsce-network' to set up the new network configuration.\n\nIf that fails, you may need to set 'user_lan_iface' and 'user_wan_iface' in /opt/schoolserver/xsce/vars/local_vars"
