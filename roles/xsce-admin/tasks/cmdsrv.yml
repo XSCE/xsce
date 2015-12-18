@@ -40,8 +40,9 @@
     - download2
 
 - name: Install php binding for zeromq
-  shell: yes '' | pecl install zmq*tgz
-         creates="{{ phplib_dir }}/modules/zmq.so"
+  shell: pecl install -f zmq*tgz
+  args:
+    creates: "{{ phplib_dir }}/modules/zmq.so"
 
 - name: Download speedtest-cli
   pip: name=speedtest-cli
