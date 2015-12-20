@@ -68,6 +68,7 @@
 
 - name: Add admin user
   command: curl -X PUT {{ xovis_target_host }}/_config/admins/{{ xovis_db_user }} -d "\"{{ xovis_db_password }}\""
+  when: xovis_enabled
 
 - name: Check if db exists
   shell: "kanso listdb | grep {{xovis_db_name }}"
