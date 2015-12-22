@@ -77,12 +77,11 @@
   
 - name: Create Couchdb database if does not already exist
   command: kanso createdb {{ xovis_db_url }}
-  when: found_db.stdout != xovis_db_name
-  when: xovis_enabled
+  when: xovis_enabled and found_db.stdout != xovis_db_name
 
 - name: Load initial xovis database
   command: kanso push {{ xovis_root }} {{ xovis_db_url }}
-  when: found_db.stdout != xovis_db_name
+  when: xovis_enabled and found_db.stdout != xovis_db_name
   
 - name: Insert Sugar Journal metadata into Couchdb
   command: "{{ xovis_root }}/process_stats/process_journal_stats.py dbinsert {{ xovis_db_name }}
