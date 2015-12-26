@@ -256,16 +256,6 @@
     xsce_lan_iface: br0
   when: xsce_wireless_lan_iface != "none"
 
-- name: Set port 80 for Admin Console
-  set_fact:
-    gui_port: 80
-  when: not adm_cons_force_ssl
-
-- name: Set port 443 for Admin Console
-  set_fact:
-    gui_port: 443
-  when: adm_cons_force_ssl
-
 # OK try old gw this is a best guess based on what's in
 # /etc/sysconfig/xs_wan_device's last state intended to
 # provide a seed value to display in the GUI when no
