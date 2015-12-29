@@ -27,6 +27,13 @@ else
   XO_VERSION="none"
 fi
 
+if [ -f /.xsce-base ]
+then
+  BASE="True"
+else
+  BASE="False"
+fi
+
 if [ -f /.preload ]
 then
   PRELOAD="True"
@@ -40,5 +47,6 @@ cat <<EOF
 "xsce_commit"             : "$COMMIT",
 "xsce_uuid"               : "$UUID",
 "xo_model"                : "$XO_VERSION",
+"xsce_base"               : "$BASE",
 "xsce_preload"            : "$PRELOAD"}
 EOF

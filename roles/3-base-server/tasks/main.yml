@@ -12,7 +12,7 @@
   when: not installing
 
 # If we got here we're done
-- name: Create hidden xsce-prepped file 
-  file: dest=/.xsce-prepped
+- name: Create hidden xsce-base file 
+  file: dest=/.xsce-base
         state=touch
 
