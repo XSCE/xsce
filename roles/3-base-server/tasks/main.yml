@@ -13,6 +13,7 @@
 
 # If we got here we're done
 - name: Create hidden xsce-base file 
-  file: dest=/.xsce-base
-        state=touch
-
+  lineinfile: dest=/.xsce-base
+              regexp='^VERSION=*'
+              line='VERSION="{{ gui_version }}"'
+              state=present

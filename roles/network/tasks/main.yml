@@ -40,7 +40,7 @@
 - name: Domain name did not change setting xsce_prepped
   set_fact: 
     xsce_prepped: True
-  when: not domainname.changed and xsce_base
+  when: not domainname.changed and xsce_base != 0
 
 #TODO: Use vars instead of hardcoded values
 - name: Configure /etc/hosts with LAN

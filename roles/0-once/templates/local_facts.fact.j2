@@ -29,9 +29,10 @@ fi
 
 if [ -f /.xsce-base ]
 then
-  BASE="True"
+  . /.xsce-base
+  BASE="$VERSION"
 else
-  BASE="False"
+  BASE="0"
 fi
 
 if [ -f /.preload ]
