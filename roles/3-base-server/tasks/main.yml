@@ -12,7 +12,8 @@
   when: not installing
 
 # If we got here we're done
-- name: Create hidden xsce-prepped file 
-  file: dest=/.xsce-prepped
-        state=touch
+- name: Create xsce-base in config vars
+  ini_file: dest=/etc/xsce/config_vars.yml
+            option='xsce_base:'
+            value='{{ True }}'
 
