@@ -10,5 +10,8 @@ bridge=br0
 
 # Hardware configuration
 driver={{ driver_name }}
+{%if host_wireless_n %}
 ieee80211n=1
+{% endif %}
+country_code={{ host_country_code }}
 hw_mode={{ host_wifi_mode }}
