@@ -29,7 +29,7 @@
 
 - name: Disable munin-node service when it becomes disabled
   service: name=munin-node
-           enabled=yes
+           enabled=no
   when: not munin_enabled
 
 - name: Add munin to service list
