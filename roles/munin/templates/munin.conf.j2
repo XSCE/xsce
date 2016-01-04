@@ -37,7 +37,7 @@ includedir /etc/munin/conf.d
 # Since 2.0, munin-graph has been rewritten to use the cgi code. 
 # It is single threaded *by design* now.
 #
-graph_strategy cgi
+graph_strategy cron
 
 # munin-cgi-graph is invoked by the web server up to very many times at the
 # same time.  This is not optimal since it results in high CPU and memory
