@@ -7,3 +7,5 @@ wondershaper_upspeed: "1024"
 host_ssid: "XSCE"
 host_wifi_mode: g
 host_channel: 6
+host_wireless_n: False
+host_country_code: US
