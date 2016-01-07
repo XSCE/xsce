@@ -10,5 +10,10 @@ bridge=br0
 
 # Hardware configuration
 driver={{ driver_name }}
+{%if host_wireless_n %}
 ieee80211n=1
+{% endif %}
+country_code={{ host_country_code }}
+# limit emissions to what is legal in country
+ieee80211d=1
 hw_mode={{ host_wifi_mode }}
