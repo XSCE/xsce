@@ -22,8 +22,7 @@
   lineinfile: backup=yes
               dest=/etc/rpm/macros.imgcreate
               regexp='^%_excludedocs'
-              line='%_excludedocs 0'
-              state=present
+              state=absent
 
 - name: pre(re)-Install packages
   yum: name={{ item }}
