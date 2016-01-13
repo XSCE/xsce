@@ -27,7 +27,7 @@
        dest={{ downloads_dir }}/ka-lite
        depth=1
        version="0.13.x"
-  when: not {{ use_cache }}
+  when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
 
