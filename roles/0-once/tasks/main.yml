@@ -42,7 +42,7 @@
     - rpi2
 
 - include: xo.yml
-  when: xo_model != "none"
+  when: xo_model != "none" or osbuilder is defined
   tags:
     - xo
 

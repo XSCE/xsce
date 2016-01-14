@@ -17,6 +17,7 @@
             section=main
             option=keepcache
             value=1
+  when: not installing
 
 - name: Keep docs when installing packages
   lineinfile: backup=yes
@@ -122,7 +123,7 @@
 
 - name: Reboot system
   command: /sbin/reboot
-  when: disabled_login.changed
+  when: disabled_login.changed and not installing
   ignore_errors: yes
   async: 300
   poll: 120
