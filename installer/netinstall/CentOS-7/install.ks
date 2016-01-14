@@ -70,7 +70,7 @@ cd /opt/schoolserver
 
 # switch this to release branch or stable once it's updated. 
 #git clone --depth 1 --branch stable https://github.com/XSCE/xsce 
-git clone --depth 1 --branch master https://github.com/XSCE/xsce
+git clone --depth 1 --branch build_freeze https://github.com/XSCE/xsce
 
 cd xsce
 
