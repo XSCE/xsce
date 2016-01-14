@@ -7,6 +7,8 @@
 
 - name: Mask firewalld service
   shell: 'systemctl mask firewalld'
+  ignore_errors: yes
+  when: not installing
 
 - name: Stop firewalld service
   service: name=firewalld
