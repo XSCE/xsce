@@ -43,6 +43,15 @@
       value: '{{ xsce_preload }}'
 
 # Put all computed vars here so derive properly from any prior var file
+- name: Set port 80 for Admin Console
+  set_fact:
+    gui_port: 80
+  when: not adm_cons_force_ssl
+
+- name: Set port 443 for Admin Console
+  set_fact:
+    gui_port: 443
+  when: adm_cons_force_ssl
 
 - name: Turn on mysql if elgg or rachel enabled
   set_fact:
