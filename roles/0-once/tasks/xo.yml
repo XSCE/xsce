@@ -17,13 +17,13 @@
             section=main
             option=keepcache
             value=1
+  when: not installing
 
 - name: Keep docs when installing packages
   lineinfile: backup=yes
               dest=/etc/rpm/macros.imgcreate
               regexp='^%_excludedocs'
-              line='%_excludedocs 0'
-              state=present
+              state=absent
 
 - name: pre(re)-Install packages
   yum: name={{ item }}
@@ -123,7 +123,7 @@
 
 - name: Reboot system
   command: /sbin/reboot
-  when: disabled_login.changed
+  when: disabled_login.changed and not installing
   ignore_errors: yes
   async: 300
   poll: 120

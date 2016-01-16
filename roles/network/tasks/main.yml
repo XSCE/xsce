@@ -1,4 +1,5 @@
 - include: computed_network.yml
+  when: not installing
   tags:
     - network
     - network-discover
@@ -48,13 +49,13 @@
               regexp='^172\.18\.96\.1'
               line='172.18.96.1            {{ xsce_hostname }}.{{ xsce_domain }}      {{ xsce_hostname }}'
               state=present
-  when: xsce_lan_iface != "none"
+  when: xsce_lan_iface != "none" and not installing
 
 - name: Configure /etc/hosts without LAN
   lineinfile: dest=/etc/hosts
               regexp='^172\.18\.96\.1'
               state=absent
-  when: xsce_lan_iface == "none"
+  when: xsce_lan_iface == "none" and not installing
 
 - name: Configure /etc/hosts
   lineinfile: dest=/etc/hosts
@@ -145,6 +146,7 @@
   with_items:
     - xs_wan_device
     - xs_lan_device
+  when: not installing
   tags:
     - network
 
