@@ -73,6 +73,7 @@ fi
 cp -rpf /etc/NetworkManager/system-connestions /tmp/basket
 cp /etc/sysconfig/network-scripts/ifcfg-* /tmp/basket
 
+mkdir -p /etc/xsce/diagnose
 if [ ! -z diagnose_name ];then
   tar czf /etc/xsce/diagnose/$diagnose_name.tgz /tmp/basket/*
   rm -rf /tmp/basket
