@@ -13,8 +13,8 @@ cat << EOF > /tmp/script2overview
 # generate the body overview part diagnostic package about network
 for f in `ls -1 /etc/sysconfig/network-scripts/ifcfg-*`; do
    echo
-   echo $f
-   cat $f
+   echo \$f
+   cat \$f
 done
 echo 
 echo ifconfig
