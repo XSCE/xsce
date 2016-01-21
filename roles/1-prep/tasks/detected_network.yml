@@ -54,6 +54,8 @@
 
 - name: Test for internet access
   shell: wget "{{ xsce_download_url }}/heart-beat.txt" &> /dev/null ; echo $?
+  async: 10
+  poll: 2
   register: internet_access_test
 
 - name: Set has_internet_connection false by default
