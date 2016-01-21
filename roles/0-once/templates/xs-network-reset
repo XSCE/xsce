@@ -8,7 +8,7 @@ fi
 
 # collect all the network info in one place
 mkdir -p /tmp/basket
-cat << EOF > /tmp/basket/overview
+cat << EOF > /tmp/basket/script2overview
 #!/bin/bash
 # generate the body overview part diagnostic package about network
 for f in `ls -1 /etc/sysconfig/network-scripts/ifcfg-*`; do
@@ -50,9 +50,19 @@ else
   nmcli conn show 3>&2
 fi
 EOF
+chmod 755 /tmp/basket/script2overview
+/tmp/basket/script2overview > /tmp/basket/overview
+rm /tmp/basket/script2overview
+
+
+if [ -f /opt/schoolserver/xsce/xsce-network.log ]; then
+   cp /opt/schooserver/xsce/xsce-network.log /tmp/basket
+else
+  touch /tmp/basket/no_xsce-network.log
+fi
 
 if [ -e /.xsce-prepped ]; then
-  touch /tmp/basket/root.xsce-prepped
+  touch /tmp/basket/root_directory.xsce-prepped
 fi
 
 if [ -f /etc/sysconfig/xs_domain_name ];then
@@ -75,7 +85,7 @@ cp /etc/sysconfig/network-scripts/ifcfg-* /tmp/basket
 
 mkdir -p /etc/xsce/diagnose
 if [ ! -z diagnose_name ];then
-  tar czf /etc/xsce/diagnose/$diagnose_name.tgz /tmp/basket/*
+  tar czf -C /tmp/basket /etc/xsce/diagnose/$diagnose_name.tgz /tmp/basket/*
   rm -rf /tmp/basket
   exit 0
 else
@@ -92,4 +102,4 @@ rm -rf /etc/NetworkManager/system-connestions/*
 mv /etc/sysconfig/network-scripts/ifcfg-WAN /root
 echo -e "\n\nWAN setup file moved to /root for safekeeping.\n\n"
 ls -1 /etc/sysconfig/network-scripts/ifcfg-*|grep -v -e ifcfg-lo|xargs rm
-echo -e "\n\nAll Network variables erased. Now run 'xsce-network' to set up the new network configuration.\n\nPlease consider emailing the contents of /etc/xsce/diagnose/ to georgejhunt@gmail.com to help us continually improve XSCE"
+echo -e "\n\nAll Network variables erased. Now run 'xsce-network' to set up the new network configuration.\n\nPlease see /opt/schoolserver/xsce/docs/GETTING_HELP.rst for ways to get help or provide the feedback which will improve XSCE"
