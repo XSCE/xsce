@@ -8,6 +8,7 @@
     - /var/www/html/common/css
     - /var/www/html/common/js
     - /var/www/html/common/fonts
+    - /var/www/html/common/html
     - /var/www/html/common/images
     - /var/www/html/common/assets
 
@@ -37,6 +38,15 @@
         group=root
   with_fileglob:
         - html/fonts/*
+
+- name: Copy html files
+  copy: src={{ item }}
+        dest=/var/www/html/common/images
+        mode=0644
+        owner=root
+        group=root
+  with_fileglob:
+        - html/html/*
 
 - name: Copy images files
   copy: src={{ item }}
