@@ -1,6 +1,88 @@
 #!/bin/bash
-# clear out all the memory variables and let auto-configure start from scratch
+# if called w/ parameter, skip the reset, create diagnostic package w/ param as file name
+SCRIPTDIR=$(cd `dirname $0`; pwd)
+diagnose_name=
+if [ $# -ne 0 ]; then
+   diagnose_name=$1
+fi
 
+# collect all the network info in one place
+mkdir -p /tmp/basket
+cat << EOF > /tmp/basket/overview
+#!/bin/bash
+# generate the body overview part diagnostic package about network
+for f in `ls -1 /etc/sysconfig/network-scripts/ifcfg-*`; do
+   echo
+   echo $f
+   cat $f
+done
+echo 
+echo ifconfig
+ifconfig
+echo
+echo ip addr
+ip addr
+echo
+echo "brctl show"
+brctl show
+echo
+echo "/etc/resolv.conf"
+cat /etc/resolv.conf
+echo
+echo "cat /etc/xsce/xsce.ini"
+cat /etc/xsce/xsce.ini
+echo
+echo "routing table"
+netstat -rn
+echo
+echo "install log -- last 50 lines"
+tail -50 /opt/schoolserver/xsce/xsce-install.log
+echo
+echo "console log -- last 50 lines"
+tail -50 /opt/schoolserver/xsce/xsce-network.log
+echo
+cat /etc/fedora-release | grep 18
+if [ $? -eq 0 ]; then
+  echo "nmcli conn list"
+  nmcli conn list 3>&2
+else
+  echo "nmcli conn show"
+  nmcli conn show 3>&2
+fi
+EOF
+
+if [ -e /.xsce-prepped ]; then
+  touch /tmp/basket/root.xsce-prepped
+fi
+
+if [ -f /etc/sysconfig/xs_domain_name ];then
+  cp /etc/sysconfig/xs_domain_name /tmp/basket
+else 
+  touch /tmp/basket/xs_domain_name_not_set
+fi
+if [ -f /etc/sysconfig/xs_lan_device ];then
+  cp /etc/sysconfig/xs_lan_device  /tmp/basket
+else 
+  touch /tmp/basket/xs_lan_device_not_set
+fi
+if [ -f /etc/sysconfig/xs_wan_device ];then
+  cp /etc/sysconfig/xs_wan_device  /tmp/basket
+else 
+  touch /tmp/basket/xs_wan_device_not_set
+fi
+cp -rpf /etc/NetworkManager/system-connestions /tmp/basket
+cp /etc/sysconfig/network-scripts/ifcfg-* /tmp/basket
+
+if [ ! -z diagnose_name ];then
+  tar czf /etc/xsce/diagnose/$diagnose_name.tgz /tmp/basket/*
+  rm -rf /tmp/basket
+  exit 0
+else
+  tar czf /etc/xsce/diagnose/feedback.$$.tgz /tmp/basket/*
+  rm -rf /tmp/basket
+fi
+
+# clear out all the memory variables and let auto-configure start from scratch
 rm -rf /.xsce-prepped
 rm -rf /etc/sysconfig/xs_domain_name
 rm -rf /etc/sysconfig/xs_lan_device
@@ -9,4 +91,4 @@ rm -rf /etc/NetworkManager/system-connestions/*
 mv /etc/sysconfig/network-scripts/ifcfg-WAN /root
 echo -e "\n\nWAN setup file moved to /root for safekeeping.\n\n"
 ls -1 /etc/sysconfig/network-scripts/ifcfg-*|grep -v -e ifcfg-lo|xargs rm
-echo -e "\n\nAll Network variables erased. Now run 'xsce-network' to set up the new network configuration.\n\nIf that fails, you may need to set 'user_lan_iface' and 'user_wan_iface' in /opt/schoolserver/xsce/vars/local_vars"
+echo -e "\n\nAll Network variables erased. Now run 'xsce-network' to set up the new network configuration.\n\nPlease consider emailing the contents of /etc/xsce/diagnose/ to georgejhunt@gmail.com to help us continually improve XSCE"
