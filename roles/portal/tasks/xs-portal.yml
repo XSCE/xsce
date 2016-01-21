@@ -9,15 +9,6 @@
     - /var/www/html/xs-portal/images
     - /var/www/html/xs-portal/incl
 
-- name: Create home for content on portal page
-  file: path={{ item }}
-        mode=0755
-        owner=root
-        group=admin
-        state=directory
-  with_items:
-    - /library/content
-
 - name: Copy xs-portal php files
   copy: src={{ item }}
         dest=/var/www/html/xs-portal
@@ -80,4 +71,3 @@
             owner=root
             group=root
             mode=0644
-
