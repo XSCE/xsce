@@ -5,6 +5,18 @@ Portal README
 This portal is meant to be shown as a home page when accessing the SchoolServer via a browser from any device
 in the network.
 
+It is expected that many implementations will want to customize the portal with respect to the content deployed
+on the server and possibly with images that pertain to the implementation.
+
+Accordingly, there are two version of the home page included in XSCE, one in /var/www/html/xs-portal and another
+in /var/www/html/home.  Additionally, wordpress or a wiki can serve as the home page.
+
+The variable {{ xsce_home_url }} may be set to the location to which the server should redirect, such as /xs-portal
+or /home.
+
+XS-PORTAL
+=========
+
 Links to Services
 -----------------
 
@@ -40,9 +52,9 @@ To add another language to or change the list of languages in the menu:
 
 - modify files/xs-portal/incl/banner.html by adding another <li> tag with the code and name of the language
 - remove a <li> tag to take a language off the menu
-  
+
 To change the default language modify templates/xs-portal.conf changing the lines:
-  
+
   DefaultLanguage en
 
   LanguagePriority en
@@ -53,4 +65,10 @@ To add a language not yet encountered modify templates/xs-portal.conf:
 - add the code to both lists in RewriteRule ^((en|es|hi)/)?(.*?)(\.(html?|php|en|es|hi))
 - add a line SetEnvIf REDIRECT_LANG xx prefer-language=xx Header append Vary cookie
 - it may be necessary to AddCharset
-  
+
+HOME
+====
+
+The index.html page in /home is much simpler in that it does not include multilingual capabilities or sensing
+of the presence of content.  However, it will be easier to modify for those familiar with html.
+

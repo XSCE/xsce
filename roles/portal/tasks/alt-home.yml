@@ -1,0 +1,15 @@
+- name: Create alternative home directory tree
+  file: path={{ item }}
+        mode=0755
+        owner=root
+        group=root
+        state=directory
+  with_items:
+    - /var/www/html/home
+
+- name: Copy home index file
+  copy: src=alt-home/index-no-tabs.html
+        dest=/var/www/html/home/index.html
+        mode=0644
+        owner=root
+        group=root
