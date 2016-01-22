@@ -8,10 +8,8 @@
     - /var/www/html/home
 
 - name: Copy home index file
-  copy: src={{ item }}
+  copy: src=alt-home/index-no-tabs.html
         dest=/var/www/html/home
         mode=0644
         owner=root
         group=root
-  with_fileglob:
-        - alt-home/index.html

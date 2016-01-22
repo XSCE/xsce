@@ -41,7 +41,7 @@
 
 - name: Copy html files
   copy: src={{ item }}
-        dest=/var/www/html/common/images
+        dest=/var/www/html/common/html
         mode=0644
         owner=root
         group=root
