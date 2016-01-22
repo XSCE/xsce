@@ -55,7 +55,7 @@ else
 echo
 echo "==========================================================";
 cat /etc/fedora-release | grep 18
-if [ $? -eq 0 ]; then
+if [ \$? -eq 0 ]; then
   echo "nmcli conn list"
   nmcli conn list 3>&2
 else
@@ -64,13 +64,15 @@ else
 fi
 echo
 echo "==========================================================";
+echo nmcli dev wifi list
 nmcli dev wifi list
 EOF
+sleep 1
 chmod 755 /tmp/script2overview
 /tmp/script2overview > /tmp/basket/overview
 
 if [ -f /opt/schoolserver/xsce/xsce-network.log ]; then
-   cp /opt/schooserver/xsce/xsce-network.log /tmp/basket
+   cp /opt/schoolserver/xsce/xsce-network.log /tmp/basket
 else
   touch /tmp/basket/no_xsce-network.log
 fi
@@ -95,7 +97,7 @@ if [ -f /etc/sysconfig/xs_wan_device ];then
 else 
   touch /tmp/basket/xs_wan_device_not_set
 fi
-ls /etc/NetworkManager/system-connections
+ls /etc/NetworkManager/system-connections > /dev/null
 if [ $? -eq 0  ]; then
   cp -rp /etc/NetworkManager/system-connections /tmp/basket
 fi
