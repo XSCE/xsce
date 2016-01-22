@@ -64,31 +64,37 @@ if [ -e /.xsce-prepped ]; then
 fi
 
 if [ -f /etc/sysconfig/xs_domain_name ];then
-  cp /etc/sysconfig/xs_domain_name /tmp/basket
+  cp -p /etc/sysconfig/xs_domain_name /tmp/basket
 else 
   touch /tmp/basket/xs_domain_name_not_set
 fi
+
 if [ -f /etc/sysconfig/xs_lan_device ];then
-  cp /etc/sysconfig/xs_lan_device  /tmp/basket
+  cp -p /etc/sysconfig/xs_lan_device  /tmp/basket
 else 
   touch /tmp/basket/xs_lan_device_not_set
 fi
 if [ -f /etc/sysconfig/xs_wan_device ];then
-  cp /etc/sysconfig/xs_wan_device  /tmp/basket
+  cp -p /etc/sysconfig/xs_wan_device  /tmp/basket
 else 
   touch /tmp/basket/xs_wan_device_not_set
 fi
-cp -rpf /etc/NetworkManager/system-connestions /tmp/basket
+if [ -f /etc/NetworkManager/system-connections  ]; then
+  cp -rpf /etc/NetworkManager/system-connections /tmp/basket
+fi
 cp /etc/sysconfig/network-scripts/ifcfg-* /tmp/basket
-cp /opt/schoolserver/xsce/xsce-network.log /tmp/basket
+if [ -f /opt/schoolserver/xsce/xsce-network.log ]; then
+  cp -p /opt/schoolserver/xsce/xsce-network.log /tmp/basket
+fi
 
-mkdir -p /etc/xsce/diagnose
+mkdir -p /etc/xsce/diagnose/$diagnose_name
 if [ ! -z diagnose_name ];then
-  tar czf -C /tmp/basket /etc/xsce/diagnose/$diagnose_name.tgz /tmp/basket/*
+  tar czf -C /tmp/basket /etc/xsce/diagnose/$diagnose_name/$diagnose_name.tgz *
   rm -rf /tmp/basket
   exit 0
 else
-  tar czf -C /tmp/basket /etc/xsce/diagnose/feedback.$$.tgz /tmp/basket/*
+  name=feedback.$$.tgz
+  tar czf -C /tmp/basket /etc/xsce/diagnose/$name/$name.tgz *
   rm -rf /tmp/basket
 fi
 
