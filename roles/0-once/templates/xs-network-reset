@@ -106,8 +106,8 @@ if [ -f /opt/schoolserver/xsce/xsce-network.log ]; then
   cp -p /opt/schoolserver/xsce/xsce-network.log /tmp/basket
 fi
 
-mkdir -p /etc/xsce/diagnose/$diagnose_name
-if [ -n $diagnose_name ];then
+if [ ! -z $diagnose_name ];then
+  mkdir -p /etc/xsce/diagnose/$diagnose_name
   pushd /tmp/basket > /dev/null
   tar czf /etc/xsce/diagnose/$diagnose_name/$diagnose_name.tgz *
   popd > /dev/null
@@ -116,6 +116,7 @@ if [ -n $diagnose_name ];then
 else
   pushd /tmp/basket > /dev/null
   name=feedback.$$
+  mkdir -p /etc/xsce/diagnose/$name
   tar czf  /etc/xsce/diagnose/$name/${name}.tgz *
   popd > /dev/null
   rm -rf /tmp/basket
@@ -130,4 +131,4 @@ rm -rf /etc/NetworkManager/system-connestions/*
 mv /etc/sysconfig/network-scripts/ifcfg-WAN /root
 echo -e "\n\nWAN setup file moved to /root for safekeeping.\n\n"
 ls -1 /etc/sysconfig/network-scripts/ifcfg-*|grep -v -e ifcfg-lo|xargs rm
-echo -e "\n\nAll Network variables erased. Now run 'xsce-network' to set up the new network configuration.\n\nPlease see /opt/schoolserver/xsce/docs/GETTING_HELP.rst for ways to get help or provide the feedback which will improve XSCE"
+echo -e "\n\nAll Network variables erased. Now run 'xsce-network' to set up the new network configuration.\n\nPlease see /opt/schoolserver/xsce/docs/GETTING_HELP.rst for ways to get help or \nprovide the feedback which will improve XSCE\n\n"
