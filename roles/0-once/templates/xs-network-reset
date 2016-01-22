@@ -107,7 +107,7 @@ if [ -f /opt/schoolserver/xsce/xsce-network.log ]; then
 fi
 
 mkdir -p /etc/xsce/diagnose/$diagnose_name
-if [ ! -z diagnose_name ];then
+if [ -n $diagnose_name ];then
   pushd /tmp/basket > /dev/null
   tar czf /etc/xsce/diagnose/$diagnose_name/$diagnose_name.tgz *
   popd > /dev/null
