@@ -89,12 +89,16 @@ fi
 
 mkdir -p /etc/xsce/diagnose/$diagnose_name
 if [ ! -z diagnose_name ];then
-  tar czf -C /tmp/basket /etc/xsce/diagnose/$diagnose_name/$diagnose_name.tgz *
+  pushd /tmp/basket
+  tar czf /etc/xsce/diagnose/$diagnose_name/$diagnose_name.tgz *
+  popd
   rm -rf /tmp/basket
   exit 0
 else
+  pushd /tmp/basket
   name=feedback.$$.tgz
   tar czf -C /tmp/basket /etc/xsce/diagnose/$name/$name.tgz *
+  popd
   rm -rf /tmp/basket
 fi
 
