@@ -52,6 +52,7 @@ if [ -f /opt/schoolserver/xsce/xsce-network.log ]; then
 tail -50 /opt/schoolserver/xsce/xsce-network.log
 else 
   echo no xsce-network.log
+fi
 echo
 echo "==========================================================";
 cat /etc/fedora-release | grep 18
@@ -67,7 +68,6 @@ echo "==========================================================";
 echo nmcli dev wifi list
 nmcli dev wifi list
 EOF
-sleep 1
 chmod 755 /tmp/script2overview
 /tmp/script2overview > /tmp/basket/overview
 
@@ -116,7 +116,7 @@ if [ ! -z diagnose_name ];then
 else
   pushd /tmp/basket > /dev/null
   name=feedback.$$.tgz
-  tar czf -C /tmp/basket /etc/xsce/diagnose/$name/$name.tgz *
+  tar czf  /etc/xsce/diagnose/$name/$name.tgz *
   popd > /dev/null
   rm -rf /tmp/basket
 fi
