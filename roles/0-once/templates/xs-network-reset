@@ -105,7 +105,7 @@ fi
 
 mkdir -p /etc/xsce/diagnose/$diagnose_name
 if [ ! -z diagnose_name ];then
-  pushd /tmp/basket > /cev/null
+  pushd /tmp/basket > /dev/null
   tar czf /etc/xsce/diagnose/$diagnose_name/$diagnose_name.tgz *
   popd > /dev/null
   rm -rf /tmp/basket

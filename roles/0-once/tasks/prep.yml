@@ -56,8 +56,10 @@
     xo_model: '{{ ansible_local["local_facts"]["xo_model"] }}'
     xsce_preload: '{{ ansible_local["local_facts"]["xsce_preload"] }}'
 
-- name: Install small script to fully initialize network config
-  template: src=xsce-network-reset
+- name: Install script to fully initialize network config, and/or collect data
+# calling xs-network-reset w/ snapshot name, stores info, but aborts reset
+# intended as a convenience function for us
+  template: src=xs-network-reset
             dest=/usr/bin
             owner=root
             group=root
