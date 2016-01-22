@@ -95,8 +95,9 @@ if [ -f /etc/sysconfig/xs_wan_device ];then
 else 
   touch /tmp/basket/xs_wan_device_not_set
 fi
-if [ -f /etc/NetworkManager/system-connections  ]; then
-  cp -rpf /etc/NetworkManager/system-connections /tmp/basket
+ls /etc/NetworkManager/system-connections
+if [ $? -eq 0  ]; then
+  cp -rp /etc/NetworkManager/system-connections /tmp/basket
 fi
 cp /etc/sysconfig/network-scripts/ifcfg-* /tmp/basket
 if [ -f /opt/schoolserver/xsce/xsce-network.log ]; then
