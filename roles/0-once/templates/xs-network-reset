@@ -115,8 +115,8 @@ if [ ! -z diagnose_name ];then
   exit 0
 else
   pushd /tmp/basket > /dev/null
-  name=feedback.$$.tgz
-  tar czf  /etc/xsce/diagnose/$name/$name.tgz *
+  name=feedback.$$
+  tar czf  /etc/xsce/diagnose/$name/${name}.tgz *
   popd > /dev/null
   rm -rf /tmp/basket
 fi
