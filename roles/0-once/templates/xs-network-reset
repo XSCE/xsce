@@ -2,7 +2,7 @@
 # if called w/ parameter, skip the reset, create diagnostic package w/ param as file name
 SCRIPTDIR=$(cd `dirname $0` pwd)
 diagnose_name=
-if [ $# -ne 0 ] then
+if [ $# -ne 0 ]; then
    diagnose_name=$1
 fi
 
@@ -48,7 +48,7 @@ tail -50 /opt/schoolserver/xsce/xsce-install.log
 echo
 echo "=========================================================="
 echo "xsce-network log -- last 50 lines"
-if [ -f /opt/schoolserver/xsce/xsce-network.log ] then
+if [ -f /opt/schoolserver/xsce/xsce-network.log ]; then
 tail -50 /opt/schoolserver/xsce/xsce-network.log
 else 
   echo no xsce-network.log
@@ -56,7 +56,7 @@ fi
 echo
 echo "=========================================================="
 cat /etc/fedora-release | grep 18
-if [ \$? -eq 0 ] then
+if [ \$? -eq 0 ]; then
   echo "nmcli conn list"
   nmcli conn list 3>&2
 else
@@ -71,42 +71,42 @@ EOF
 chmod 755 /tmp/script2overview
 /tmp/script2overview > /tmp/basket/overview
 
-if [ -f /opt/schoolserver/xsce/xsce-network.log ] then
+if [ -f /opt/schoolserver/xsce/xsce-network.log ]; then
    cp /opt/schoolserver/xsce/xsce-network.log /tmp/basket
 else
   touch /tmp/basket/no_xsce-network.log
 fi
 
-if [ -e /.xsce-prepped ] then
+if [ -e /.xsce-prepped ]; then
   touch /tmp/basket/root_directory.xsce-prepped
 fi
 
-if [ -f /etc/sysconfig/xs_domain_name ]then
+if [ -f /etc/sysconfig/xs_domain_name ];then
   cp -p /etc/sysconfig/xs_domain_name /tmp/basket
 else 
   touch /tmp/basket/xs_domain_name_not_set
 fi
 
-if [ -f /etc/sysconfig/xs_lan_device ]then
+if [ -f /etc/sysconfig/xs_lan_device ];then
   cp -p /etc/sysconfig/xs_lan_device  /tmp/basket
 else 
   touch /tmp/basket/xs_lan_device_not_set
 fi
-if [ -f /etc/sysconfig/xs_wan_device ]then
+if [ -f /etc/sysconfig/xs_wan_device ];then
   cp -p /etc/sysconfig/xs_wan_device  /tmp/basket
 else 
   touch /tmp/basket/xs_wan_device_not_set
 fi
 ls /etc/NetworkManager/system-connections > /dev/null
-if [ $? -eq 0  ] then
+if [ $? -eq 0  ]; then
   cp -rp /etc/NetworkManager/system-connections /tmp/basket
 fi
 cp /etc/sysconfig/network-scripts/ifcfg-* /tmp/basket
-if [ -f /opt/schoolserver/xsce/xsce-network.log ] then
+if [ -f /opt/schoolserver/xsce/xsce-network.log ]; then
   cp -p /opt/schoolserver/xsce/xsce-network.log /tmp/basket
 fi
 
-if [ ! -z $diagnose_name ]then
+if [ ! -z $diagnose_name ];then
   mkdir -p /etc/xsce/diagnose/$diagnose_name
   pushd /tmp/basket > /dev/null
   tar czf /etc/xsce/diagnose/$diagnose_name/$diagnose_name.tgz *
