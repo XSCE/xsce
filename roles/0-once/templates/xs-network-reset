@@ -4,6 +4,7 @@ SCRIPTDIR=$(cd `dirname $0` pwd)
 diagnose_name=
 if [ $# -ne 0 ]; then
    basket=$1
+   diagnose_name=$1
 else
    basket=netlog.$$
 fi
