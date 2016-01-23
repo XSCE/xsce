@@ -117,7 +117,7 @@ if [ ! -z $diagnose_name ];then
   rm -rf /tmp/$basket
   exit 0
 else
-  pushd /tmp/$basket > /dev/null
+  pushd /tmp > /dev/null
   tar czf  /etc/xsce/diagnose/$basket.tgz $basket/*
   popd > /dev/null
   rm -rf /tmp/$basket
