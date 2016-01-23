@@ -109,8 +109,8 @@ if [ -f /opt/schoolserver/xsce/xsce-network.log ]; then
   cp -p /opt/schoolserver/xsce/xsce-network.log /tmp/$basket
 fi
 
+mkdir -p /etc/xsce/diagnose/
 if [ ! -z $diagnose_name ];then
-  mkdir -p /etc/xsce/diagnose/
   pushd /tmp > /dev/null
   tar czf /etc/xsce/diagnose/$basket.tgz $basket/*
   popd > /dev/null
@@ -118,9 +118,7 @@ if [ ! -z $diagnose_name ];then
   exit 0
 else
   pushd /tmp/$basket > /dev/null
-  name=feedback.$$
-  mkdir -p /etc/xsce/diagnose/$name
-  tar czf  /etc/xsce/diagnose/$name/${name}.tgz *
+  tar czf  /etc/xsce/diagnose/$basket.tgz $basket/*
   popd > /dev/null
   rm -rf /tmp/$basket
 fi
