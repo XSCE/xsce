@@ -20,8 +20,8 @@ xo_model: none
 rtc_id: none
 
 # Set defaults for discovery process as strings
-wifi1: "not found"
-wifi2: "not found"
+wifi1: "not found-1"
+wifi2: "not found-2"
 discovered_wan_iface: "none"
 discovered_lan_iface: "none"
 discovered_wireless_iface: "none"
