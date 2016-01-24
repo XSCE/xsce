@@ -159,7 +159,7 @@
   changed_when: False
 
 # Last device is used
- name: Set the discovered wireless, if found take 2
+- name: Set the discovered wireless, if found take 2
   set_fact:
      wifi2: "{{ item|trim }}"
      discovered_wireless_iface: "{{ item|trim }}"
