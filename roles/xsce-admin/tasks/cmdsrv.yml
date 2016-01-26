@@ -30,6 +30,13 @@
         group=root
         state=link
 
+- name: Set permissions on sqlite db
+  file: dest="{{ cmdsrv_path }}/{{xsce_cmdsrv_dbname }}"
+        mode=0600
+        owner=root
+        group=root
+        state=touch
+
 - name: Create cmdsrv.conf file
   template: backup=yes
             src=cmdsrv/cmdsrv.conf.j2
