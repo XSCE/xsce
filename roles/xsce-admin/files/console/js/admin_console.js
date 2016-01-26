@@ -183,7 +183,7 @@ $("#launchKaliteButton").click(function(){
 });
 
 $("#ZIM-STATUS-REFRESH").click(function(){
-  refreshDiskSpace();
+  getZimStat();
 });
 
 $("#RESTART-KIWIX").click(function(){
@@ -718,8 +718,13 @@ function changePasswordSuccess ()
   }
 
   function getZimStat(){
-    command = "GET-ZIM-STAT";
-    sendCmdSrvCmd(command, procZimStat);
+  	// Retrieve installed and wip zims and refresh screen
+    // Remove any unprocessed selections
+    selectedZims = [];
+
+    //command = "GET-ZIM-STAT";
+    //sendCmdSrvCmd(command, procZimStat, "ZIM-STATUS-REFRESH");
+    $.when(sendCmdSrvCmd("GET-STORAGE-INFO", procSysStorageDat),sendCmdSrvCmd("GET-ZIM-STAT", procZimStat)).then(procDiskSpace);
     return true;
   }
 
@@ -745,6 +750,7 @@ function changePasswordSuccess ()
   function procZimStat(data) {
     installedZimCat = data;
     procZimCatalog();
+    procDiskSpace();
   }
 
   function procZimLangs() {
@@ -1276,16 +1282,17 @@ function procSysStorage()
 function setZimDiskSpace(){
   var html = calcLibraryDiskSpace();
 
-  html += "Total Space Required: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+  html += "Estimated Space Required: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 
-  html += "<b>" + readableSize(sysStorage.zims_selected_size) + "</b>"
+  // make space estimate double the size due to needing both the download and the deployed files
+  html += "<b>" + readableSize(sysStorage.zims_selected_size * 2) + "</b>"
   $( "#zimDiskSpace" ).html(html);
 }
 
 function setRachelDiskSpace(){
   var html = calcLibraryDiskSpace();
 
-  html += "Total Space Required: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+  html += "Estimated Space Required: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 
   html += "<b>" + "23G (X 2 for Download)" + "</b>"
   $( "#rachelDiskSpace" ).html(html);
