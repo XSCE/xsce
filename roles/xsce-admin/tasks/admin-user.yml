@@ -41,7 +41,18 @@
   lineinfile: regexp=requiretty 
               state=absent 
               dest=/etc/sudoers
-                
+
 - name: end editing the sudoers file-- protect it again
   shell: chmod 0440 /etc/sudoers
-      
+	
+- name: Add xsce-admin parameters to ini file
+  ini_file: dest='{{ service_filelist }}'
+            section=xsce-admin
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: xsce-admin
+    - option: xsce_admin_user
+      value: "{{ xsce_admin_user }}"
+
