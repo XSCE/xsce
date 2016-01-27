@@ -210,7 +210,6 @@ $("#DEL-DOWNLOADS").click(function(){
     return;
 	button_feedback("#DEL-DOWNLOADS", true);
   delDownloadedFiles();
-  getDownloadList();
   button_feedback("#DEL-DOWNLOADS", false);
 });
 
@@ -1043,7 +1042,7 @@ function procDnldList(){
 
   $("#downloadedFilesRachel").html(calcDnldListHtml(downloadedFiles.rachel.file_list));
   $("#downloadedFilesZims").html(calcDnldListHtml(downloadedFiles.zims.file_list));
-
+  console.log("in procDnldList");
 }
 
 function calcDnldListHtml(list) {
@@ -1060,9 +1059,10 @@ function calcDnldListHtml(list) {
 }
 
 function delDownloadedFiles() {
-
-	delDownloadedFileList("downloadedFilesRachel", "rachel");
-	delDownloadedFileList("downloadedFilesZims", "zims");
+  $.when(
+    delDownloadedFileList("downloadedFilesRachel", "rachel"),
+    delDownloadedFileList("downloadedFilesZims", "zims"))
+    .done(getDownloadList, refreshDiskSpace);
 }
 
 function delDownloadedFileList(id, sub_dir) {
@@ -1082,7 +1082,10 @@ function delDownloadedFileList(id, sub_dir) {
   delArgs['file_list'] = fileList;
 
   var delCmd = 'DEL-DOWNLOADS ' + JSON.stringify(delArgs);
-  sendCmdSrvCmd(delCmd, genericCmdHandler);
+
+  //consoleLog(delCmd);
+
+  return sendCmdSrvCmd(delCmd, genericCmdHandler);
 }
 
 // Util functions
@@ -1204,7 +1207,8 @@ function refreshDiskSpace(){
 function procDiskSpace(){
   //procZimGroups(); - don't call because resets check boxes
   procSysStorage();
-  sumCheckedZimDiskSpace()
+  sumCheckedZimDiskSpace();
+  setDnldDiskSpace();
   // setZimDiskSpace(); called by previous
 }
 
