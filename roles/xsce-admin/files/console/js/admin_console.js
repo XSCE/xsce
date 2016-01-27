@@ -1082,9 +1082,6 @@ function delDownloadedFileList(id, sub_dir) {
   delArgs['file_list'] = fileList;
 
   var delCmd = 'DEL-DOWNLOADS ' + JSON.stringify(delArgs);
-
-  //consoleLog(delCmd);
-
   return sendCmdSrvCmd(delCmd, genericCmdHandler);
 }
 
