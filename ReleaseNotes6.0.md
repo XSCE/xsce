@@ -77,6 +77,8 @@ plays in the network will depend on what adapters and connections it has.
 
 ### Hardware and OS Mix
 
-* Intel NUC - Centos 7.2, Fedora 22 -- image available 2 weeks after release
-* XO1.5, XO4 - Fedora 18
-* Raspberry Pi 2 - Fedora 21 -- image available 2 weeks after release
+* Raspberry Pi 2 - Fedora 21 -- image available 1 week after release
+* Intel NUC - Centos 7.2, Fedora 22 -- Centos 7 image available 2 weeks after release
+* XO1.5, XO4 - Fedora 18 -- XO1.5 image 3 weaks after release
+  
+   Images will be available at http://download.unleashkids.org/xsce/downloads/images/release6.0/
