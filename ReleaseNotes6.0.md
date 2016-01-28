@@ -72,14 +72,11 @@ plays in the network will depend on what adapters and connections it has.
 ### Operating Systems
 
 * CentOS 7 64 bit version
-* Fedora 21 and 22 both 64 bit and 32 bit versions
+* Fedora  22 both 64 bit and 32 bit versions
 * Fedora 18 32 bit on XO laptops
 
 ### Hardware and OS Matrix
 
-| Hardware | CentOS 7.1 64 bit | Fedora 23 64 bit | Fedora 22 64 bit | Fedora 22 32 bit | Fedora 21 32 bit | Fedora 18 32 bit |
-| --- | --- | --- | --- | --- | --- | --- |
-| NUC | Image Available | Image in Devel | Image Available | Not Tested | Not Tested | Not Tested |
-| XO-1.5 | Not Available | Not Available | Not Available | Not Available | Not Available | Image Available |
-| XO-4| Not Available | Not Available | Not Available | Not Available | Not Available | Image Available |
-| Raspberry Pi 2 | Not Available | Not Available | Not Available | Not Available | Image Available | Not Available |
+* Intel NUC - Centos 7.2, Fedora 22 -- image available 2 weeks after release
+* XO1.5, XO4 - Fedora 18
+* Raspberry Pi 2 - Fedora 21 -- image available 2 weeks after release
