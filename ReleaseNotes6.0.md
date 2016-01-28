@@ -75,7 +75,7 @@ plays in the network will depend on what adapters and connections it has.
 * Fedora  22 both 64 bit and 32 bit versions
 * Fedora 18 32 bit on XO laptops
 
-### Hardware and OS Matrix
+### Hardware and OS Mix
 
 * Intel NUC - Centos 7.2, Fedora 22 -- image available 2 weeks after release
 * XO1.5, XO4 - Fedora 18
