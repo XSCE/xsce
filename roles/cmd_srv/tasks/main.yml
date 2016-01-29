@@ -3,11 +3,6 @@
     - base
     - console
 
-- include: console.yml
-  tags:
-    - base
-    - console
-
 - name: Add xsce-admin parameters to ini file
   ini_file: dest='{{ service_filelist }}'
             section=console

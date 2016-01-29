@@ -131,4 +131,12 @@
   service: name=xsce-cmdsrv
            enabled=yes
 
-#  when: xsce-cmdsrv_enabled - always enabled
+- name: Install packages for console
+  yum: name={{ item }}
+       state=installed
+  with_items:
+    - mod_ssl
+    - mod_authnz_external
+    - pwauth
+  tags:
+    - download
