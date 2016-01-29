@@ -104,10 +104,10 @@
             group=root
             mode={{ item.mode }}
   with_items:
-    - { src: 'cmdsrv/xsce-cmdsrv.service.j2', dest: '/etc/systemd/system/xsce-cmdsrv.service', mode: '0655'}
-    - { src: 'cmdsrv/xsce-cmdsrv-init.j2', dest: '/usr/libexec/xsce-cmdsrv-init', mode: '0755'}
-    - { src: 'cmdsrv/xsce-cmdsrv-ctl', dest: '/usr/bin/xsce-cmdsrv-ctl', mode: '0755'}
-    - { src: 'cmdsrv/zmq.ini', dest: '/etc/php.d/zmq.ini', mode: '0755'}
+    - { src: 'xsce-cmdsrv.service.j2', dest: '/etc/systemd/system/xsce-cmdsrv.service', mode: '0655'}
+    - { src: 'xsce-cmdsrv-init.j2', dest: '/usr/libexec/xsce-cmdsrv-init', mode: '0755'}
+    - { src: 'xsce-cmdsrv-ctl', dest: '/usr/bin/xsce-cmdsrv-ctl', mode: '0755'}
+    - { src: 'zmq.ini', dest: '/etc/php.d/zmq.ini', mode: '0755'}
 
 - name: Enable xsce-cmdsrv service
   service: name=xsce-cmdsrv

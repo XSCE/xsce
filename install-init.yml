@@ -20,7 +20,7 @@
     register: config_vars
 
   - name: Install default config_vars.yml
-    template: src=roles/xsce-admin/templates/cmdsrv/config_vars.yml
+    template: src=roles/cmdsrv/templates/config_vars.yml
               dest=/etc/xsce/config_vars.yml
               owner=root
               group=root
