@@ -12,6 +12,13 @@
            state=stopped
   when: xsce_wireless_lan_iface == "none" or xsce_network_mode == "Appliance" or not hostapd_enabled
 
+- name: Use custom systemd unit file to start hostapd
+  template: src=hostapd/hostapd.service.j2
+            dest=/etc/systemd/system/hostapd.service
+            owner=root
+            group=root
+            mode=0644
+
 - name: ask systemd to reread the unit files for hostapd
   shell: systemctl daemon-reload
 
