@@ -1,5 +1,5 @@
 dependencies:
-    - { role: portal, tags: ['services','portal'] } 
+#    - { role: portal, tags: ['services','portal'] } 
 
     - { role: sshd, tags: ['services','sshd','base'] }
     - { role: network, tags: ['services','base','network'], when: gui_desired_network_role is defined }
