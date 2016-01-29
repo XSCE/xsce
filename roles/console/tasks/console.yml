@@ -16,6 +16,13 @@
   with_fileglob:
         - cmdsrv/json/*
 
+- name: Create symlink from /common/assets to kiwix_catalog.json
+  file: src=/etc/xsce/kiwix_catalog.json
+        dest=/var/www/html/common/assets/kiwix_catalog.json
+        owner=root
+        group=root
+        state=link
+
 - name: Create admin-console directory tree
   file: path={{ item }}
         mode=0755

@@ -72,31 +72,6 @@
         owner=root
         group=root
 
-- name: Copy scripts
-  copy: src={{ item }}
-        dest="{{ cmdsrv_path }}/scripts"
-        mode=0755
-        owner=root
-        group=root
-  with_fileglob:
-        - cmdsrv/scripts/*
-
-- name: Copy json files
-  copy: src={{ item }}
-        dest="/etc/xsce"
-        mode=0644
-        owner=root
-        group=root
-  with_fileglob:
-        - cmdsrv/json/*
-
-- name: Create symlink from /common/assets to kiwix_catalog.json
-  file: src=/etc/xsce/kiwix_catalog.json
-        dest=/var/www/html/common/assets/kiwix_catalog.json
-        owner=root
-        group=root
-        state=link
-
 - name: Set permissions on sqlite db
   file: dest="{{ cmdsrv_path }}/{{xsce_cmdsrv_dbname }}"
         mode=0600
@@ -105,8 +80,7 @@
         state=touch
 
 - name: Create cmdsrv.conf file
-  template: backup=yes
-            src=cmdsrv/cmdsrv.conf.j2
+  template: src=cmdsrv/cmdsrv.conf.j2
             dest=/etc/xsce/cmdsrv.conf
             owner=root
             group=root
@@ -115,8 +89,7 @@
 # Create xsce-cmdsrv service
 
 - name: Create xsce-cmdsrv service
-  template: backup=yes
-            src={{ item.src }}
+  template: src={{ item.src }}
             dest={{ item.dest }}
             owner=root
             group=root
