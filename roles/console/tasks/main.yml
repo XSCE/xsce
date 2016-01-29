@@ -1,0 +1,4 @@
+- include: console.yml
+  tags:
+    - base
+    - console

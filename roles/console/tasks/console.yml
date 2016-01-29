@@ -1,12 +1,27 @@
-- name: Install packages for console
-  yum: name={{ item }}
-       state=installed
-  with_items:
-    - mod_ssl
-    - mod_authnz_external
-    - pwauth
-  tags:
-    - download
+- name: Copy scripts
+  copy: src={{ item }}
+        dest="{{ cmdsrv_path }}/scripts"
+        mode=0755
+        owner=root
+        group=root
+  with_fileglob:
+        - cmdsrv/scripts/*
+
+- name: Copy json files
+  copy: src={{ item }}
+        dest="/etc/xsce"
+        mode=0644
+        owner=root
+        group=root
+  with_fileglob:
+        - cmdsrv/json/*
+
+- name: Create symlink from /common/assets to kiwix_catalog.json
+  file: src=/etc/xsce/kiwix_catalog.json
+        dest=/var/www/html/common/assets/kiwix_catalog.json
+        owner=root
+        group=root
+        state=link
 
 - name: Create admin-console directory tree
   file: path={{ item }}
@@ -76,4 +91,3 @@
         owner=root
         group=root
         mode=0644
-

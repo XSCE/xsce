@@ -1,0 +1,19 @@
+- include: cmdsrv.yml
+  tags:
+    - base
+    - console
+
+- name: Add xsce-admin parameters to ini file
+  ini_file: dest='{{ service_filelist }}'
+            section=console
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: console
+    - option: description
+      value: '"GUI Admin Console and Command Server"'
+    - option: admin_console_path
+      value: "{{ admin_console_path }}"
+    - option: cmdsrv_path
+      value: "{{ cmdsrv_path }}"

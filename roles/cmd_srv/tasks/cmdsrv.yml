@@ -72,31 +72,6 @@
         owner=root
         group=root
 
-- name: Copy scripts
-  copy: src={{ item }}
-        dest="{{ cmdsrv_path }}/scripts"
-        mode=0755
-        owner=root
-        group=root
-  with_fileglob:
-        - cmdsrv/scripts/*
-
-- name: Copy json files
-  copy: src={{ item }}
-        dest="/etc/xsce"
-        mode=0644
-        owner=root
-        group=root
-  with_fileglob:
-        - cmdsrv/json/*
-
-- name: Create symlink from /common/assets to kiwix_catalog.json
-  file: src=/etc/xsce/kiwix_catalog.json
-        dest=/var/www/html/common/assets/kiwix_catalog.json
-        owner=root
-        group=root
-        state=link
-
 - name: Set permissions on sqlite db
   file: dest="{{ cmdsrv_path }}/{{xsce_cmdsrv_dbname }}"
         mode=0600
@@ -104,21 +79,8 @@
         group=root
         state=touch
 
-- name: See if default config_vars.yml exists
-  stat: path=/etc/xsce/config_vars.yml
-  register: config_vars
-
-- name: Install default config_vars.yml
-  template: src=cmdsrv/config_vars.yml
-            dest=/etc/xsce/config_vars.yml
-            owner=root
-            group=root
-            mode=0644
-  when: config_vars.stat.exists == false
-
 - name: Create cmdsrv.conf file
-  template: backup=yes
-            src=cmdsrv/cmdsrv.conf.j2
+  template: src=cmdsrv/cmdsrv.conf.j2
             dest=/etc/xsce/cmdsrv.conf
             owner=root
             group=root
@@ -127,8 +89,7 @@
 # Create xsce-cmdsrv service
 
 - name: Create xsce-cmdsrv service
-  template: backup=yes
-            src={{ item.src }}
+  template: src={{ item.src }}
             dest={{ item.dest }}
             owner=root
             group=root
@@ -143,4 +104,12 @@
   service: name=xsce-cmdsrv
            enabled=yes
 
-#  when: xsce-cmdsrv_enabled - always enabled
+- name: Install packages for console
+  yum: name={{ item }}
+       state=installed
+  with_items:
+    - mod_ssl
+    - mod_authnz_external
+    - pwauth
+  tags:
+    - download

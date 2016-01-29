@@ -53,6 +53,7 @@
 
 - name: Set XO model and preload
   set_fact:
+    phplib_dir: '{{ ansible_local["local_facts"]["phplib_dir"] }}'
     xo_model: '{{ ansible_local["local_facts"]["xo_model"] }}'
     xsce_preload: '{{ ansible_local["local_facts"]["xsce_preload"] }}'
 
