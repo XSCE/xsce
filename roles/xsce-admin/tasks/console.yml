@@ -1,25 +1,3 @@
-- name: Install packages for console
-  yum: name={{ item }}
-       state=installed
-  with_items:
-    - mod_ssl
-    - mod_authnz_external
-    - pwauth
-  tags:
-    - download
-
-- name: Create admin-console directory tree
-  file: path={{ item }}
-        mode=0755
-        owner=root
-        group=root
-        state=directory
-  with_items:
-    - "{{ admin_console_path }}"
-    - "{{ admin_console_path }}/css"
-    - "{{ admin_console_path }}/help"
-    - "{{ admin_console_path }}/js"
-
 - name: Copy admin-console css files
   copy: src={{ item }}
         dest="{{ admin_console_path }}/css"
@@ -76,4 +54,3 @@
         owner=root
         group=root
         mode=0644
-
