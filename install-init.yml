@@ -11,6 +11,7 @@
   roles:
       - { role: 0-once, tags: ['once'] }
       - { role: 2-common, tags: ['common'] }
+      - { role: cmd_srv, tags: ['common'] }
 
   tasks:
 

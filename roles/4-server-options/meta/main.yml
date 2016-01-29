@@ -1,5 +1,4 @@
 dependencies:
-    - { role: xsce-admin, tags: ['services','xsce-admin'] }
     - { role: portal, tags: ['services','portal'] } 
 
     - { role: sshd, tags: ['services','sshd','base'] }
