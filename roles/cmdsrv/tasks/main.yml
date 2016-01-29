@@ -89,7 +89,7 @@
         state=touch
 
 - name: Create cmdsrv.conf file
-  template: src=cmdsrv/cmdsrv.conf.j2
+  template: src=cmdsrv.conf.j2
             dest=/etc/xsce/cmdsrv.conf
             owner=root
             group=root
