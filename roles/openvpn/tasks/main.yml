@@ -76,6 +76,7 @@
 
 - name:    stop  openvpn tunnel immediately
   shell:   systemctl stop openvpn@xscenet.service
+  ignore_errors: True
   when:    not openvpn_enabled
 
 - name: Add openvpn to service list
