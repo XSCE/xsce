@@ -74,6 +74,10 @@
   shell:   systemctl disable openvpn@xscenet.service
   when:    not openvpn_enabled
 
+- name:    stop  openvpn tunnel immediately
+  shell:   systemctl stop openvpn@xscenet.service
+  when:    not openvpn_enabled
+
 - name: Add openvpn to service list
   ini_file: dest='{{ service_filelist }}'
             section=openvpn
