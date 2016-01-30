@@ -57,6 +57,16 @@
   pip: name=speedtest-cli
        extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
 
+- name: Create admin-console directory
+  file: path={{ item }}
+        mode=0700
+        owner=root
+        group=root
+        state=directory
+  with_items:
+    - "{{ cmdsrv_path }}"
+    - "{{ cmdsrv_path }}/scripts"
+
 - name: Set permissions on sqlite db
   file: dest="{{ cmdsrv_path }}/{{xsce_cmdsrv_dbname }}"
         mode=0600

@@ -1,13 +1,3 @@
-- name: Create admin-console directory
-  file: path={{ item }}
-        mode=0700
-        owner=root
-        group=root
-        state=directory
-  with_items:
-    - "{{ cmdsrv_path }}"
-    - "{{ cmdsrv_path }}/scripts"
-
 - name: Install Command Server Executable
   copy: src=cmdsrv/xsce-cmdsrv
         dest="{{ cmdsrv_path }}/xsce-cmdsrv"
