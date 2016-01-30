@@ -1,3 +1,11 @@
+- name: Install wget for network sensing
+  yum: name={{ item }}
+       state=present
+  with_items:
+   - wget
+  tags:
+    - download
+
 - name: Checking xs_domain_name
   shell: "cat /etc/sysconfig/xs_domain_name"
   register: prior_domain
