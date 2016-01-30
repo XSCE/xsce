@@ -53,3 +53,4 @@
   service: name=httpd
            enabled=yes
 
+- include: html.yml
