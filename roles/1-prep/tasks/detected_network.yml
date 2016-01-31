@@ -53,7 +53,7 @@
   when: discovered_wan_iface != "none" and gw_active_test.stdout == "0"
 
 - name: Test for internet access
-  shell: shell:  ping -c 2 google.com &> /dev/null ; echo $?
+  shell: ping -c 2 google.com &> /dev/null ; echo $?
   register: internet_access_test
 
 - name: Set has_internet_connection false by default
