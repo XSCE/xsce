@@ -11,6 +11,7 @@
   roles:
       - { role: 0-once, tags: ['once'] }
       - { role: 2-common, tags: ['common'] }
+      - { role: cmdsrv, tags: ['cmdsrv'] }
       - { role: network, tags: ['network'] }
   tasks:
 
