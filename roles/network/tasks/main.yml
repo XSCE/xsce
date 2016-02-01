@@ -41,7 +41,7 @@
 - name: Domain name did not change setting xsce_prepped
   set_fact: 
     xsce_prepped: True
-  when: not domainname.changed
+  when: not domainname.changed and not installing
 
 #TODO: Use vars instead of hardcoded values
 - name: Configure short hostname in /etc/hosts
