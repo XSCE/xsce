@@ -11,7 +11,7 @@
   roles:
       - { role: 0-once, tags: ['once'] }
       - { role: 2-common, tags: ['common'] }
-
+      - { role: network, tags: ['network'] }
   tasks:
 
   - name: See if default config_vars.yml exists
