@@ -1,8 +1,8 @@
 - name: Create home for content on portal page
   file: path={{ item }}
         mode=0755
-        owner=xsce-admin
-        group=xsce-admin
+        owner=apache
+        group=apache
         state=directory
   with_items:
     - /library/content

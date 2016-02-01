@@ -4,6 +4,7 @@
   with_items:
    - nss-mdns
    - avahi
+   - avahi-libs
    - avahi-tools
   tags:
     - download
