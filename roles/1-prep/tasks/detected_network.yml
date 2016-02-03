@@ -54,6 +54,8 @@
 
 - name: Test for internet access
   shell: wget "{{ xsce_download_url }}/heart-beat.txt" &> /dev/null ; echo $?
+  async: 10
+  poll: 2
   register: internet_access_test
 
 - name: Set has_internet_connection false by default
@@ -156,18 +158,14 @@
   ignore_errors: True
   changed_when: False
 
+# Last device is used
 - name: Set the discovered wireless, if found take 2
   set_fact:
      wifi2: "{{ item|trim }}"
+     discovered_wireless_iface: "{{ item|trim }}"
   when: wireless_list2.stdout != "" and item|trim != discovered_wan_iface
   with_items:
       - "{{ wireless_list2.stdout_lines }}"
-
-# Last device is used
-- name: Use discovered wireless, take 2
-  set_fact:
-     discovered_wireless_iface: "{{ wifi2 }}"
-  when: wireless_list2.stdout != "" and wifi2 != discovered_wan_iface
 
 - name: Count Wifi ifaces
   shell: "ls -la /sys/class/net/*/phy80211 | awk -F / '{print $5}' | wc -l"

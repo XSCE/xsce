@@ -122,7 +122,7 @@ xsce_home_url: /xs-portal
 # if they are installed xsce_home_url can also be:
 
 #xsce_home_url: /wordpress
-#xsce_home_url: /dokuwiki
+#xsce_home_url: /wiki
 
 # 4-SERVER-OPTIONS
 # sshd

@@ -183,7 +183,7 @@ $("#launchKaliteButton").click(function(){
 });
 
 $("#ZIM-STATUS-REFRESH").click(function(){
-  refreshDiskSpace();
+  getZimStat();
 });
 
 $("#RESTART-KIWIX").click(function(){
@@ -210,7 +210,6 @@ $("#DEL-DOWNLOADS").click(function(){
     return;
 	button_feedback("#DEL-DOWNLOADS", true);
   delDownloadedFiles();
-  getDownloadList();
   button_feedback("#DEL-DOWNLOADS", false);
 });
 
@@ -718,8 +717,13 @@ function changePasswordSuccess ()
   }
 
   function getZimStat(){
-    command = "GET-ZIM-STAT";
-    sendCmdSrvCmd(command, procZimStat);
+  	// Retrieve installed and wip zims and refresh screen
+    // Remove any unprocessed selections
+    selectedZims = [];
+
+    //command = "GET-ZIM-STAT";
+    //sendCmdSrvCmd(command, procZimStat, "ZIM-STATUS-REFRESH");
+    $.when(sendCmdSrvCmd("GET-STORAGE-INFO", procSysStorageDat),sendCmdSrvCmd("GET-ZIM-STAT", procZimStat)).then(procDiskSpace);
     return true;
   }
 
@@ -745,6 +749,7 @@ function changePasswordSuccess ()
   function procZimStat(data) {
     installedZimCat = data;
     procZimCatalog();
+    procDiskSpace();
   }
 
   function procZimLangs() {
@@ -1037,7 +1042,7 @@ function procDnldList(){
 
   $("#downloadedFilesRachel").html(calcDnldListHtml(downloadedFiles.rachel.file_list));
   $("#downloadedFilesZims").html(calcDnldListHtml(downloadedFiles.zims.file_list));
-
+  console.log("in procDnldList");
 }
 
 function calcDnldListHtml(list) {
@@ -1054,9 +1059,10 @@ function calcDnldListHtml(list) {
 }
 
 function delDownloadedFiles() {
-
-	delDownloadedFileList("downloadedFilesRachel", "rachel");
-	delDownloadedFileList("downloadedFilesZims", "zims");
+  $.when(
+    delDownloadedFileList("downloadedFilesRachel", "rachel"),
+    delDownloadedFileList("downloadedFilesZims", "zims"))
+    .done(getDownloadList, refreshDiskSpace);
 }
 
 function delDownloadedFileList(id, sub_dir) {
@@ -1076,7 +1082,7 @@ function delDownloadedFileList(id, sub_dir) {
   delArgs['file_list'] = fileList;
 
   var delCmd = 'DEL-DOWNLOADS ' + JSON.stringify(delArgs);
-  sendCmdSrvCmd(delCmd, genericCmdHandler);
+  return sendCmdSrvCmd(delCmd, genericCmdHandler);
 }
 
 // Util functions
@@ -1198,7 +1204,8 @@ function refreshDiskSpace(){
 function procDiskSpace(){
   //procZimGroups(); - don't call because resets check boxes
   procSysStorage();
-  sumCheckedZimDiskSpace()
+  sumCheckedZimDiskSpace();
+  setDnldDiskSpace();
   // setZimDiskSpace(); called by previous
 }
 
@@ -1276,16 +1283,17 @@ function procSysStorage()
 function setZimDiskSpace(){
   var html = calcLibraryDiskSpace();
 
-  html += "Total Space Required: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+  html += "Estimated Space Required: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 
-  html += "<b>" + readableSize(sysStorage.zims_selected_size) + "</b>"
+  // make space estimate double the size due to needing both the download and the deployed files
+  html += "<b>" + readableSize(sysStorage.zims_selected_size * 2) + "</b>"
   $( "#zimDiskSpace" ).html(html);
 }
 
 function setRachelDiskSpace(){
   var html = calcLibraryDiskSpace();
 
-  html += "Total Space Required: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+  html += "Estimated Space Required: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 
   html += "<b>" + "23G (X 2 for Download)" + "</b>"
   $( "#rachelDiskSpace" ).html(html);

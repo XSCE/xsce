@@ -24,27 +24,22 @@
       dest: '/etc/squid/sites.whitelist.txt'
       owner: 'squid'
       group: 'squid'
-      mode: '0644'         
+      mode: '0644'
     - src: 'squid/allowregex.rules'
       dest: '/etc/squid/allowregex.rules'
       owner: 'squid'
       group: 'squid'
-      mode: '0644'         
+      mode: '0644'
     - src: 'squid/denyregex.rules'
       dest: '/etc/squid/denyregex.rules'
       owner: 'squid'
       group: 'squid'
-      mode: '0644'         
+      mode: '0644'
     - src: 'squid/dstaddress.rules'
       dest: '/etc/squid/dstaddress.rules'
       owner: 'squid'
       group: 'squid'
-      mode: '0644'         
-    - src: 'squid/dansguardian.conf.j2'
-      dest: '/etc/dansguardian/dansguardian.conf'
-      owner: 'dansguardian'
-      group: 'dansguardian'
-      mode: '0640'
+      mode: '0644'
     - src: 'squid/xs-httpcache.j2'
       dest: '/usr/bin/xs-httpcache'
       owner: 'root'
@@ -65,12 +60,7 @@
         mode=0750
         state=directory
 
-- name: Create dansguardian log directory
-  file: path=/var/log/dansguardian
-        owner=dansguardian
-        group=dansguardian
-        mode=0750
-        state=directory
+- include: dansguardian.yml
 
 - name: Stop Squid
   service: name=squid
