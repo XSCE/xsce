@@ -69,6 +69,9 @@ $IPTABLES -A INPUT -m state --state NEW -i  $lan -j ACCEPT
 # Allow mDNS 
 $IPTABLES -A INPUT -p udp --dport 5353 -j ACCEPT
 
+# FZT: Permitir conexion a kiwix desde fuera
+$IPTABLES -A INPUT -m state --state NEW -m tcp -p tcp --dport 3000 -j ACCEPT
+
 # FZT: Permitir conexiones a nagios
 $IPTABLES -A INPUT -m state --state NEW -m tcp -p tcp --dport 5666 -j ACCEPT
 
