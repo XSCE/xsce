@@ -1,0 +1,13 @@
+In the open terminal type: sudo xsceinst
+
+Proceed through the guided prompts
+
+Click partitioning and then click on "done "
+
+Click on "begin installation"
+
+Should you want to create another user please do not use "xsce-admin" as a new user, that one is already occupied.
+
+Notes:
+
+Please refrain from using liveinst during testing, tring to implement that functionality in the future, but if you're brave try "xsceinst" at the bootprompt. 
