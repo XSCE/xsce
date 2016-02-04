@@ -169,7 +169,7 @@ xo_services_enabled: True
 
 # MYSQL
 mysql_install: True
-mysql_enabled: False
+mysql_enabled: True
 phpmyadmin_enabled: False
 # password is fixmysql
 # mysql_root_password: $6$xsce51$3ICIW0CLWxxMW2a3yrHZ38ukZItD5tcadL4rWcE9D.qIGStxhh8rRsaSxoj3b.MYxI/VRDNjpzSYK/V6zkWFI0
@@ -177,13 +177,13 @@ mysql_root_password: fixmysql
 
 # ELGG
 elgg_install: True
-elgg_enabled: False
+elgg_enabled: True
 # elgg_mysql_password: $6$xsce51$jeTwnATcbaa92xo0QBTgjLBU.5aVDDrbKeNyyC99R/TAWz6pvfzj.L7lfnOVVjD78nxqT.gkNn6XZmuRV0W3o1
 elgg_mysql_password: elgg4kids
 
 # OwnCloud
 owncloud_install: True
-owncloud_enabled: False
+owncloud_enabled: True
 
 # WordPress
 wordpress_install: False
@@ -212,7 +212,7 @@ rachel_doc_root: /var/www/html{{ rachel_url }}
 
 # Kiwix-Serve
 kiwix_install: True
-kiwix_serve_enabled: False
+kiwix_serve_enabled: True
 xsce_zim_path: /library/zims
 
 # KA Lite
@@ -223,7 +223,7 @@ kalite_password_hash: $6$<salt>$KHET0XRRsgAY.wOWyTOI3W7dyDh0ESOr48uI5vtk2xdzsU7a
 kalite_password: kalite
 kalite_server_name: kalite
 kalite_server_port: 8008
-kalite_enabled: False
+kalite_enabled: True
 kalite_cron_enabled: False
 
 # 8-MGMT-TOOLS
