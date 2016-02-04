@@ -33,6 +33,9 @@ clearpart --all --initlabel --drives=sda
 # run ./runtags network on first boot
 systemctl enable xsce-prep
 
+# disable the graphical login
+ls -s --force /lib/systemd/system/multi-user.target /etc/systemd/system/default.target
+
 # get rid of custom local_vars
 cd /opt/schoolsever/xsce
 git reset --hard 
