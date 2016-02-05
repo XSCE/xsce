@@ -1,15 +1,5 @@
-- name: Install httpd required packages
-  yum: name={{ item }}
-       state=installed
-  with_items:
-    - httpd
-    - php
-  tags:
-    - download
-
 - name: Create httpd config files
-  template: backup=yes
-            src={{ item.src }}
+  template: src={{ item.src }}
             dest={{ item.dest }}
             owner=root
             group=root
