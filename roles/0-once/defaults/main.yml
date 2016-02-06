@@ -4,4 +4,7 @@ xsce_lan_iface: "none"
 xsce_wan_iface: "none"
 gui_port: 80
 xsce_prepped: False
--include: roles/xsce-admin/defaults/main.yml
+# must keep roles/xsce-admin/defaults/main.yml sync'd
+admin_console_path: "{{ xsce_base }}/admin_console"
+cmdsrv_path: "{{ xsce_base }}/xsce_cmdsrv"
+xsce_cmdsrv_dbname : "xsce_cmdsrv.0.2.db"
