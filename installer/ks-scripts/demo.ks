@@ -30,8 +30,11 @@ autopart --type=plain
 clearpart --all --initlabel --drives=sda
 
 %post
-# run ./runtags network on first boot
+# run xsce-network on first boot
 systemctl enable xsce-prep
+systemctl disable xsce-installer
+/sbin/chkconfig --del xsce-installer
+rm /etc/rc.d/init.d/xsce-installer
 
 # disable the graphical login
 ln -s --force /lib/systemd/system/multi-user.target /etc/systemd/system/default.target
