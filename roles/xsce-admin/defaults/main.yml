@@ -1,4 +1,5 @@
 ---
+# must keep roles/0-once/defaults/main.yml sync'd
 # The values here are defaults.
 
 admin_console_path: "{{ xsce_base }}/admin_console"
