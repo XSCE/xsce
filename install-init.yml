@@ -8,13 +8,12 @@
   - vars/default_vars.yml
   - vars/local_vars.yml
 
+  roles:
+      - { role: 0-once, tags: ['once'] }
+      - { role: 2-common, tags: ['common'] }
+      - { role: cmdsrv, tags: ['cmdsrv'] }
+      - { role: network, tags: ['network'] }
   tasks:
-  - name: Create /etc/xsce
-    file: path=/etc/xsce
-          owner=root
-          group=root
-          mode=0755
-          state=directory
 
   - name: See if default config_vars.yml exists
     stat: path=/etc/xsce/config_vars.yml
