@@ -16,6 +16,7 @@
     * [Zims](#zims)
     * [RACHEL](#rachel)
     * [Khan Academy Lite](#khan-academy-lite)
+    * [Copy KA Lite Videos Manually](#copy-ka-lite-videos)
     * [Open Street Maps](#open-street-maps)
     * [Other Content](#other-content)
 
@@ -46,7 +47,8 @@ be files available for every platform and every configuration and the files may 
 
 Here is the complete list of the steps required. Some may already be done.
 
-   1. Assemble your hardware with your chosen amount of RAM, storage, and network devices.  (See [link] on Networking.
+   1. Assemble your hardware with your chosen amount of RAM, storage, and network devices.
+      See [XSCE Platforms](https://github.com/XSCE/xsce/wiki/XSCE-Platforms) and [XSCE Networking Overview](https://github.com/XSCE/xsce/wiki/XSCE-Networking-Overview).
    1. Install Fedora or Centos on that hardware. We currently support Centos 7 and Fedora 22, along with Fedora 18 on XOs.
    1. Log into the machine locally or via ssh.
    1. Verify your internet connection by typing:
@@ -126,7 +128,7 @@ While these images have been developed on the Intel NUC (Next Unit of Computing)
 You can create an iso file that will contain all the required rpms and other packages and will allow you to do a livecd type installation of XSCE.
 It will contain all of the steps in Do Everything from Scratch and be ready for Configuring the Server.
 
-The steps for doing this are detailed at [link].
+The steps for doing this are detailed at https://github.com/XSCE/xsce/blob/master/installer/livecd.
 
 #### How To Install XSCE on an XO to Create Your Own Image
 
@@ -244,9 +246,16 @@ You can monitor the progress with Utilities->Display Job Status.
 
 #### Khan Academy Lite
 
-Take Install Content->Download Khan Academy Videos to launch KA Lite which has and administrative user interface to help with getting videos in various languages.
+Take Install Content->Download Khan Academy Videos to launch KA Lite which has an administrative user interface to help with getting videos in various languages.
 
-### Add Manually
+### Add Content Manually
+
+#### Copy KA Lite Videos
+
+If KA Lite videos have been obtained from another install or on some storage medium they can be copied directly to KA Lite without going through the admin interface.
+
+1. Copy to /library/ka-lite/content/
+1. Issue the command ``systemctl restart kalite-serve`` to restart the server
 
 #### Open Street Maps
 
@@ -267,4 +276,4 @@ Similarly, any such content put onto a USB stick in a directory
 * /Share
 * /PirateShare
 
-will appear under the /content URL when it is plugged into a USB port on the server.  See [link] for more details.
+will appear under the /content URL when it is plugged into a USB port on the server.  See https://github.com/XSCE/xsce/tree/master/roles/usb-lib for more details.

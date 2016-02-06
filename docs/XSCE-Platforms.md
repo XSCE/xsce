@@ -1,115 +1,55 @@
-# XSCE School Server Hardware
+# XSCE School Server Platforms
 
-## Quick Links
+## Operating Systems
 
-* [Overview](#overview)
-* [Installing the Software](#installing-the-software)
-    * [Do Everything from Scratch](#do-everything-from-scratch)
-    * [Take a Short Cut](#take-a-short-cut)
-    * [Create Your Own Short Cut](#create-your-own-short-cut)
-* [Configuring the Server](#configuring-the-server)
-    * [Server Security](#server-security)
-    * [Configure Menu](#configure-menu)
-    * [Supported Network Modes](#supported-network-modes)
-    * [Enable Services](#enable-services)
-* [Adding Content](#adding-content)
-    * [Zims](#zims)
-    * [RACHEL](#rachel)
-    * [Khan Academy Lite](#khan-academy-lite)
-    * [Open Street Maps](#open-street-maps)
-    * [Other Content](#other-content)
+* CentOS 7 64 bit version
+* Fedora 22 and 23 (experimental) both 64 bit and 32 bit versions
+* Fedora 18 32 bit on XO laptops
 
-## Overview
+## Hardware Platforms
 
-Theoretically the XSCE School Server should run on any machine that can run Centos 7 or Fedora 22 - 23.
+Theoretically the XSCE School Server should run on any machine that can run Centos 7 or Fedora 22 and 23.
 
 In practice, XSCE has been tested on the following platforms and configurations.
 
-## Selecting a Platform
+#### NUC - Intel's Next Unit of Computing
 
-## Platforms
+Typically configured with 4 to 8 Gigabytes of RAM and 500G to 1TB of internal hard disk. Most models have a minimum of four USB ports and some have an internal wifi adapter.
 
-## Networking
+- Tested with Centos 7.1 and Fedora 22 and 23.
 
-### Gateway Installation Network Configurations
+#### OLPC XO-1.5, XO-1.75, XO-4
 
-| **One Dongle**
-|    eth0 - internal wifi for gateway
-|    eth1 - usb ethernet for schoolserver LAN connected to an access point
+OLPC laptop with an external SD card of 32, 64, or 128 Gigabyte capacity and a subset of the content found on machines with more storage or with an external hard drive.
 
-| **Two Dongle**
-|    eth0 - internal wifi not used
-|    eth1 - usb ethernet for gateway
-|    eth2 - usb ethernet for schoolserver LAN connected to an access point
+- Only Fedora 18 available.
 
-Non-Gateway (aka "Appliance") Installation Network Configurations
-================================================================
+#### Raspberry Pi 2
 
-**NOTE:** Appliance installs integrate into existing networking infrastructure and do not include dhcpd, squid, dansguardian, or wondershaper.  This installation does not behave as an internet gateway.
+1 Gigabyte of RAM with an external micro SD card of 32, 64, or 128 Gigabyte capacity.  Four USB ports allow the addition of ethernet dongles, a wifi adapter, and possibly additional storage.
 
-| **XSCE Appliance - no additional interfaces**
-|    eth0 - internal wifi connected to an existing LAN
+- Tested with Fedora 22.
 
-| **XSCE Appliance One Dongle**
-|    eth0 - internal wifi not used
-|    eth1 - usb ethernet connected to an existing LAN
+#### VBox VM
 
+Virtual machines with varying configurations, especially Centos 7 and Fedora, often used for testing or proof of concept.
 
-## What Hardware can I use?
+#### Other Recent Intel Computers
 
-XSCE has been tested on the following hardware platforms and OS releases and an image is available for each:
+A number of users have successfully deployed XSCE on late model desktop and laptop computers.
 
-### Platforms
+## Network Adapters
 
-* NUC - Intel's Next Unit of Computing, typically configured with 4 - 8 Gigabytes of RAM and 500G to 1TB of internal hard disk
-* XO-1.5, XO-4 - OLPC laptop with an external SD card of 32, 64, or 128 Gigabyte capacity and a subset of the content found on machines with more storage or with an external hard drive
-* Raspberry Pi 2 - With an external micro SD card of 32, 64, or 128 Gigabyte capacity
-* VBox VM - Virtual machines with varying configurations
-* Other Recent Intel Computers - A number of users have successfully deployed XSCE on late model desktop and laptop computers.
+Each of the above devices may have one or more network adapters.  These may be internal ethernet, internal or external wifi, or ethernet dongles.  The role the server is able to play in the network will depend on what adapters and connections it has.
 
-### Network Adapters
+#### Sample Gateway Configurations
 
-Each of the above devices may have one or more network adapters.  These may be internal ethernet, internal or external wifi, or ethernet dongles.  The role the server
-is able to play in the network will depend on what adapters and connections it has.
+* WAN on internal WiFi and LAN on internal Ethernet
+* WAN on internal Ethernet and LAN on internal or external WiFi as Access Point
+* WAN on Ethernet dongle and LAN on internal Ethernet with optional bridged internal/external WiFi as Access Point
 
-Some typical configurations are:
+#### Sample Appliance Configurations
 
-Gateway Installation Network Configurations
-===========================================
-
-| **One Dongle**
-|    eth0 - internal wifi for gateway
-|    eth1 - usb ethernet for schoolserver LAN connected to an access point
-
-| **Two Dongle**
-|    eth0 - internal wifi not used
-|    eth1 - usb ethernet for gateway
-|    eth2 - usb ethernet for schoolserver LAN connected to an access point
-
-Non-Gateway (aka "Appliance") Installation Network Configurations
-================================================================
-
-**NOTE:** Appliance installs integrate into existing networking infrastructure and do not include dhcpd, squid, dansguardian, or wondershaper.  This installation does not behave as an internet gateway.
-
-| **XSCE Appliance - no additional interfaces**
-|    eth0 - internal wifi connected to an existing LAN
-
-| **XSCE Appliance One Dongle**
-|    eth0 - internal wifi not used
-|    eth1 - usb ethernet connected to an existing LAN
-
-
-### Operating Systems
-
-* CentOS 7 64 bit version
-* Fedora 21 and 22 both 64 bit and 32 bit versions
-* Fedora 18 32 bit on XO laptops
-
-### Hardware and OS Matrix
-
-| Hardware | CentOS 7.1 64 bit | Fedora 23 64 bit | Fedora 22 64 bit | Fedora 22 32 bit | Fedora 21 32 bit | Fedora 18 32 bit |
-| --- | --- | --- | --- | --- | --- | --- |
-| NUC | Image Available | Image in Devel | Image Available | Not Tested | Not Tested | Not Tested |
-| XO-1.5 | Not Available | Not Available | Not Available | Not Available | Not Available | Image Available |
-| XO-4| Not Available | Not Available | Not Available | Not Available | Not Available | Image Available |
-| Raspberry Pi 2 | Not Available | Not Available | Not Available | Not Available | Image Available | Not Available |
+* Internal WiFi connected to an existing LAN
+* Internal Ethernet connected to an existing LAN
+* Ethernet dongle connected to an existing LAN
