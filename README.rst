@@ -26,10 +26,10 @@ Installation procedures are in the process of being reworked to include:
 
 To manually install and experiment with these changes please do the following:
 
-* Install a minimal version of Fedora 22 or CentOS 7
+* Install a minimal version of Fedora 21
 * Login using ssh as root
 * Issue the following commands:
-* 'yum -y install wget git ansible'
+* 'yum -y install git ansible'
 * 'mkdir /opt/schoolserver'
 * 'cd /opt/schoolserver' 
 * 'git clone https://github.com/XSCE/xsce --branch stable --depth 1'
