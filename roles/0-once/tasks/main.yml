@@ -69,5 +69,6 @@
 - include: yum.yml
 - include: fedora.yml
   when: ansible_distribution == "Fedora"
- 
+- include: cmdsrv.yml
+
 - include: patch_udev.yml
