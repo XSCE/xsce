@@ -50,36 +50,4 @@ There are three main methods of installing this software:
 
 In each case you need hardware that has been assembled, but with nothing installed on it.
 
-Detailed instructions on each of these methods is at https://github.com/XSCE/xsce/blob/master/docs/INSTALL.rst
-
-## What Hardware can I use?
-
-XSCE has been tested on the following hardware platforms and OS releases and an image is available for each:
-
-### Platforms
-
-* NUC - Intel's Next Unit of Computing, typically configured with 4 - 8 Gigabytes of RAM and 500G to 1TB of internal hard disk
-* XO-1.5, XO-4 - OLPC laptop with an external SD card of 32, 64, or 128 Gigabyte capacity and a subset of the content found on machines with more storage or with an external hard drive
-* Raspberry Pi 2 - With an external micro SD card of 32, 64, or 128 Gigabyte capacity
-* VBox VM - Virtual machines with varying configurations
-* Other Recent Intel Computers - A number of users have successfully deployed XSCE on late model desktop and laptop computers.
-
-### Network Adapters
-
-Each of the above devices may have one or more network adapters.  These may be internal eithernet, internal or external wifi, or ethernet dongles.  The role the server
-plays in the network will depend on what adapters and connections it has.
-
-### Operating Systems
-
-* CentOS 7 64 bit version
-* Fedora 21 and 22 both 64 bit and 32 bit versions
-* Fedora 18 32 bit on XO laptops
-
-### Hardware and OS Matrix
-
-| Hardware | CentOS 7.1 64 bit | Fedora 23 64 bit | Fedora 22 64 bit | Fedora 22 32 bit | Fedora 21 32 bit | Fedora 18 32 bit |
-| --- | --- | --- | --- | --- | --- | --- |
-| NUC | Image Available | Image in Devel | Image Available | Not Tested | Not Tested | Not Tested |
-| XO-1.5 | Not Available | Not Available | Not Available | Not Available | Not Available | Image Available |
-| XO-4| Not Available | Not Available | Not Available | Not Available | Not Available | Image Available |
-| Raspberry Pi 2 | Not Available | Not Available | Not Available | Not Available | Image Available | Not Available |
+Detailed instructions on each of these methods is at https://github.com/XSCE/xsce/wiki/XSCE-Installation.
