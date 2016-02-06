@@ -34,8 +34,8 @@ clearpart --none --initlabel
 # System services
 # services --enabled="chronyd"
 
-url --url=http://mirror.centos.org/centos/7.1.1503/os/x86_64/
-repo --name=updates2 --baseurl=http://mirror.centos.org/centos/7.1.1503/updates/x86_64/
+url --url=http://mirror.centos.org/centos/7/os/x86_64/
+repo --name=updates2 --baseurl=http://mirror.centos.org/centos/7/updates/x86_64/
 repo --name=epel-mirror --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=x86_64
 
 selinux --disabled
