@@ -4,4 +4,4 @@ xsce_lan_iface: "none"
 xsce_wan_iface: "none"
 gui_port: 80
 xsce_prepped: False
-include: roles/xsce-admin/defaults/main.yml
+-include: roles/xsce-admin/defaults/main.yml
