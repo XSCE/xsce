@@ -68,3 +68,9 @@
 
 - include: selinux.yml
   when: ansible_selinux["status"] != "disabled"
+
+- include: yum.yml
+- include: fedora.yml
+  when: ansible_distribution == "Fedora"
+ 
+- include: patch_udev.yml
