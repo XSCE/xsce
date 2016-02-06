@@ -1,0 +1,6 @@
+udev_needs_patch: False
+installing: True
+xsce_lan_iface: "none"
+xsce_wan_iface:	"none"
+gui_port: 80
+xsce_prepped: False
