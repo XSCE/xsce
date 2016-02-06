@@ -10,11 +10,12 @@
 - include: xo.yml
   when: xo_model != "none" or osbuilder is defined
 
+- include: centos.yml
+  when: ansible_distribution == "CentOS"
+
 - include: yum.yml
 - include: fedora.yml
   when: ansible_distribution == "Fedora"
-- include: centos.yml
-  when: ansible_distribution == "CentOS"
 - include: cmdsrv.yml
 
 # Patch Fedora 21+ so usbmount works
