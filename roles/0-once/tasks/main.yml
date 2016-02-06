@@ -1,3 +1,22 @@
+- include: fl.yml
+- include: prep.yml
+- include: xsce_ini.yml
+- name: Keep yum cache
+  ini_file: dest=/etc/yum.conf
+            section=main
+            option=keepcache
+            value=1
+
+- include: xo.yml
+  when: xo_model != "none" or osbuilder is defined
+
+- include: yum.yml
+- include: fedora.yml
+  when: ansible_distribution == "Fedora"
+- include: centos.yml
+  when: ansible_distribution == "CentOS"
+- include: cmdsrv.yml
+
 # Patch Fedora 21+ so usbmount works
 # Set flag to True that was initialized to False in role defaults
 # We can't undo this
@@ -6,25 +25,7 @@
     udev_needs_patch: True
   when: ansible_distribution == "Fedora" and ansible_distribution_version >= "21"
 
-- include: fl.yml
-  tags:
-    - download
-    - download2
-
-- include: prep.yml
-  tags:
-    - download
-
-- include: xsce_ini.yml
-  when: xsce_preload == "False"
-  tags:
-    - download
-
-- name: Keep yum cache
-  ini_file: dest=/etc/yum.conf
-            section=main
-            option=keepcache
-            value=1
+- include: patch_udev.yml
 
 # Put conditional includes for platforms here
 ##  DISCOVER PLATFORMS ######
@@ -46,13 +47,6 @@
 
 - include: hw_rpi2.yml
   when: rpi_model is defined and rpi_model == "rpi2"
-  tags:
-    - rpi2
-
-- include: xo.yml
-  when: xo_model != "none" or osbuilder is defined
-  tags:
-    - xo
 
 # need to add proper download section and get the binary out of git
 - name: copy  the firmware for tplink WM752M
@@ -60,18 +54,5 @@
   when: wifi_id  ==  "tplink_WM725M" and xo_model == "none" and not rpi_model is defined
   ignore_errors: true
 
-- include: centos.yml
-  when: ansible_distribution == "CentOS"
-  tags:
-    - centos
-    - download
-
 - include: selinux.yml
   when: ansible_selinux["status"] != "disabled"
-
-- include: yum.yml
-- include: fedora.yml
-  when: ansible_distribution == "Fedora"
-- include: cmdsrv.yml
-
-- include: patch_udev.yml
