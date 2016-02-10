@@ -119,10 +119,12 @@ xsce_gateway_enabled: True
 # Home page
 xsce_home_url: /xs-portal
 
-# if they are installed xsce_home_url can also be:
+# you can change xsce_home_url in local_vars in order to get a different home page
+# these could be one of the following (assuming they are enabled):
 
+#xsce_home_url: /home - the alternate home page
 #xsce_home_url: /wordpress
-#xsce_home_url: /wiki
+#xsce_home_url: /wiki - either dokuwiki or mediawiki
 
 # 4-SERVER-OPTIONS
 # sshd

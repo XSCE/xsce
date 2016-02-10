@@ -18,7 +18,7 @@ This presets some options for livecd-iso-to-disk namely the kickstart file to us
 
 "yum install livecd-tools" to install livecd-iso-to-disk.
 
-Download F21 netinstall or DVD iso if you don't already have them
+Download CentOS netinstall or DVD iso if you don't already have them
 
 I would not bother using the DVD.iso, would need to be updated after install while
 the netinstall will be fully updated out of the box.
