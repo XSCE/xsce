@@ -82,6 +82,10 @@ running_job_count = 0
 ansible_running_flag = False
 daemon_mode = False
 
+# Locking
+lock = threading.Lock() # for updating global variables
+db_lock = threading.Lock() # for sqlite db concurrency
+
 # vars read from ansible vars directory
 # effective is composite where local takes precedence
 
@@ -197,7 +201,6 @@ def job_minder_thread(client_url, worker_control_url, context=None):
     prereq_jobs_to_clear = [] # prerequisite jobs whose descendent has been processed
     jobs_to_close = [] # list of running jobs that have completed or been cancelled
     prereq_info = {}
-    lock = threading.Lock()
 
     # control signals from main thread
     context = context or zmq.Context.instance()
@@ -919,7 +922,6 @@ def get_config_vars(cmd_info):
 
 def set_config_vars(cmd_info):
     global config_vars
-    lock = threading.Lock()
     lock.acquire() # will block if lock is already held
     try:
         config_vars = cmd_info['cmd_args']['config_vars']
@@ -1273,10 +1275,19 @@ def cancel_job(cmd_info):
         return ('{"Error": "Job  ' + str(job_id) + ' Not Running or Scheduled."}')
 
 def get_last_jobs_stat(cmd_info):
-    conn = sqlite3.connect(xsce_cmdsrv_dbpath)
-    cur = conn.execute ("SELECT jobs.rowid, job_command, job_output, job_status, last_update_datetime, cmd_msg FROM jobs, commands where cmd_rowid = commands.rowid ORDER BY jobs.rowid DESC LIMIT 30")
-    last_jobs = cur.fetchall()
-    conn.close()
+    db_lock.acquire() # will block if lock is already held
+    try:
+        conn = sqlite3.connect(xsce_cmdsrv_dbpath)
+        cur = conn.execute ("SELECT jobs.rowid, job_command, job_output, job_status, last_update_datetime, cmd_msg FROM jobs, commands where cmd_rowid = commands.rowid ORDER BY jobs.rowid DESC LIMIT 30")
+        last_jobs = cur.fetchall()
+        conn.close()
+    except sqlite3.Error, e:
+        tprint ("Error %s:" % e.args[0])
+        log(syslog.LOG_ERR, "Sql Lite3 Error %s:" % e.args[0])
+    finally:
+        if conn:
+            conn.close()
+        db_lock.release()
 
     #print "job running"
     #print jobs_running
@@ -1371,7 +1382,7 @@ def cmd_malformed(cmd=None):
 
 def insert_command(cmd_msg):
     global last_command_rowid
-    lock = threading.Lock()
+
     lock.acquire() # will block if lock is already held
     try:
         cmd_id = last_command_rowid + 1
@@ -1380,21 +1391,20 @@ def insert_command(cmd_msg):
         lock.release() # release lock, no matter what
 
     now = datetime.now()
+
+    db_lock.acquire()
     try:
         conn = sqlite3.connect(xsce_cmdsrv_dbpath)
         conn.execute ("INSERT INTO commands (rowid, cmd_msg, create_datetime) VALUES (?,?,?)", (cmd_id, cmd_msg, now))
         conn.commit()
         conn.close()
-
     except sqlite3.Error, e:
-
         tprint ("Error %s:" % e.args[0])
         log(syslog.LOG_ERR, "Sql Lite3 Error %s:" % e.args[0])
-
     finally:
-
         if conn:
             conn.close()
+        db_lock.release()
 
     return (cmd_id)
 
@@ -1405,46 +1415,76 @@ def insert_job(job_id, cmd_rowid, job_command, cmd_step_no, depend_on_job_id, ha
     job_output=""
     job_status="SCHEDULED"
 
-    conn = sqlite3.connect(xsce_cmdsrv_dbpath)
-    conn.execute ("INSERT INTO jobs (rowid, cmd_rowid, cmd_step_no, depend_on_job_id, has_dependent, job_command, job_pid, job_output, job_status, create_datetime, last_update_datetime) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-                  (job_id, cmd_rowid, cmd_step_no, depend_on_job_id, has_dependent, job_command, job_pid, job_output, job_status, now, now))
+    db_lock.acquire()
+    try:
+        conn = sqlite3.connect(xsce_cmdsrv_dbpath)
+        conn.execute ("INSERT INTO jobs (rowid, cmd_rowid, cmd_step_no, depend_on_job_id, has_dependent, job_command, job_pid, job_output, job_status, create_datetime, last_update_datetime) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+                      (job_id, cmd_rowid, cmd_step_no, depend_on_job_id, has_dependent, job_command, job_pid, job_output, job_status, now, now))
 
-    conn.commit()
-    conn.close()
+        conn.commit()
+        conn.close()
+    except sqlite3.Error, e:
+        tprint ("Error %s:" % e.args[0])
+        log(syslog.LOG_ERR, "Sql Lite3 Error %s:" % e.args[0])
+    finally:
+        if conn:
+            conn.close()
+        db_lock.release()
 
 def upd_job_started(job_id, job_pid, job_status="STARTED"):
 
     now = datetime.now()
-
-    conn = sqlite3.connect(xsce_cmdsrv_dbpath)
-    conn.execute ("UPDATE jobs SET job_pid = ?, job_status = ?, last_update_datetime = ? WHERE rowid = ?", (job_pid, job_status, now, job_id))
-
-    conn.commit()
-    conn.close()
+    db_lock.acquire()
+    try:
+        conn = sqlite3.connect(xsce_cmdsrv_dbpath)
+        conn.execute ("UPDATE jobs SET job_pid = ?, job_status = ?, last_update_datetime = ? WHERE rowid = ?", (job_pid, job_status, now, job_id))
+        conn.commit()
+        conn.close()
+    except sqlite3.Error, e:
+        tprint ("Error %s:" % e.args[0])
+        log(syslog.LOG_ERR, "Sql Lite3 Error %s:" % e.args[0])
+    finally:
+        if conn:
+            conn.close()
+        db_lock.release()
 
 def upd_job_finished(job_id, job_output, job_status="FINISHED"):
 
     now = datetime.now()
-
-    conn = sqlite3.connect(xsce_cmdsrv_dbpath)
-    conn.execute ("UPDATE jobs SET job_status = ?, job_output = ?, last_update_datetime = ? WHERE rowid = ?", (job_status, job_output, now, job_id))
-
-    conn.commit()
-    conn.close()
+    db_lock.acquire()
+    try:
+        conn = sqlite3.connect(xsce_cmdsrv_dbpath)
+        conn.execute ("UPDATE jobs SET job_status = ?, job_output = ?, last_update_datetime = ? WHERE rowid = ?", (job_status, job_output, now, job_id))
+        conn.commit()
+        conn.close()
+    except sqlite3.Error, e:
+        tprint ("Error %s:" % e.args[0])
+        log(syslog.LOG_ERR, "Sql Lite3 Error %s:" % e.args[0])
+    finally:
+        if conn:
+            conn.close()
+        db_lock.release()
 
 def upd_job_cancelled(job_id, job_status="CANCELLED"):
 
     now = datetime.now()
-
-    conn = sqlite3.connect(xsce_cmdsrv_dbpath)
-    conn.execute ("UPDATE jobs SET job_status = ?, last_update_datetime = ? WHERE rowid = ?", (job_status, now, job_id))
-
-    conn.commit()
-    conn.close()
+    db_lock.acquire()
+    try:
+        conn = sqlite3.connect(xsce_cmdsrv_dbpath)
+        conn.execute ("UPDATE jobs SET job_status = ?, last_update_datetime = ? WHERE rowid = ?", (job_status, now, job_id))
+        conn.commit()
+        conn.close()
+    except sqlite3.Error, e:
+        tprint ("Error %s:" % e.args[0])
+        log(syslog.LOG_ERR, "Sql Lite3 Error %s:" % e.args[0])
+    finally:
+        if conn:
+            conn.close()
+        db_lock.release()
 
 def get_job_id():
     global last_job_rowid
-    lock = threading.Lock()
+
     lock.acquire() # will block if lock is already held
     try:
         job_id = last_job_rowid + 1
@@ -1475,6 +1515,8 @@ def init():
 
     # See if queue.db exists and create if not
     # Opening a connection creates if not exist
+    # No DB locking done in init as is single threaded
+
     statinfo = os.stat(xsce_cmdsrv_dbpath)
     if statinfo.st_size == 0:
         conn = sqlite3.connect(xsce_cmdsrv_dbpath)
@@ -1528,7 +1570,6 @@ def read_xsce_ini_file():
 def write_config_vars():
     global config_vars
 
-    lock = threading.Lock()
     lock.acquire() # will block if lock is already held
 
     try:
