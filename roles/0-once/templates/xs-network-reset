@@ -15,7 +15,7 @@ cat << EOF > /tmp/script2overview
 #!/bin/bash
 # generate the body overview part diagnostic package about network
 echo "=========================================================="
-for f in \$(ls  /etc/sysconfig/network-scripts/ifcfg-*); do
+for f in \$(ls  /etc/sysconfig/network-scripts/ifcfg-*|gawk '{printf(" %s",\$1)}'); do
    echo
    echo \$f
    cat \$f
