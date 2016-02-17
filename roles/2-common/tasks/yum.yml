@@ -74,3 +74,12 @@
 - name: Install optional exFAT packages for CentOS
   shell: yum --enablerepo=li-nux-ro install exfat-utils fuse-exfat
   when: exFAT_enabled == "True" and ansible_distribution == "CentOS"
+
+- name: Disable updating ejabberd on CentOS
+  shell: sed -i -e '/^enabled=/a exclude=ejabberd' {{ item }}
+  with_items:
+    - /etc/yum.repos.d/CentOS-Base.repo
+    - /etc/yum.repos.d/CentOS-CR.repo
+    - /etc/yum.repos.d/CentOS-fasttrack.repo
+    - /etc/yum.repos.d/CentOS-Vault.repo
+  when: ansible_distribution == "CentOS"

@@ -1,10 +1,3 @@
-- name: Disable updating
-  shell: sed -i -e '/^enabled=/a exclude=ejabberd' {{ item }}
-  with_items:
-    - /etc/yum.repos.d/fedora.repo
-    - /etc/yum.repos.d/fedora-updates.repo
-    - /etc/yum.repos.d/fedora-updates-testing.repo
-
 - name: Install ejabberd packages
   yum: name={{ item }}
        state=installed
