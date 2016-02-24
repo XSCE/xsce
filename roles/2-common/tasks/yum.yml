@@ -68,6 +68,7 @@
    - iptables
    - vim-minimal # ejabberd erlang does not update this properly
    - dbus-glib   # NM does not update this properly
+   - glibc # CVE-2015-7547
   tags:
     - download
 
