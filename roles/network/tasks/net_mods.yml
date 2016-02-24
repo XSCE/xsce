@@ -1,3 +1,10 @@
+- name: Disable systemd-networkd.service
+  service: name=systemd-networkd.service
+           enabled=no
+
+- name: Mask systemd-networkd.service
+  shell: 'systemctl mask systemd-networkd'
+
 - name: Disable network.service
   service: name=network
            enabled=no
