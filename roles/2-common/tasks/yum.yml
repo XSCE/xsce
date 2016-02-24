@@ -56,6 +56,7 @@
    - wpa_supplicant
    - wget
    - openssl   #FC 18 does not supply, but pear requires
+   - linux-firmware # grab wifi firmware
   tags:
     - download
 
@@ -68,6 +69,7 @@
    - iptables
    - vim-minimal # ejabberd erlang does not update this properly
    - dbus-glib   # NM does not update this properly
+   - glibc # CVE-2015-7547
   tags:
     - download
 
