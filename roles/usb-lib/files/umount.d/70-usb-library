@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 # Remove symlink in /library/content to autmounted usb drive
 #
 # based on a similar script in the xs-rsync package
@@ -9,12 +9,12 @@
 #
 # by Tim Moody tim@timmoody.com
 
-CONTENT_LINK_USB=`basename $UM_MOUNTPOINT | awk '{print toupper($0)}'`
-CONTENT_LINK="/library/content/$CONTENT_LINK_USB"
-
-logger -p user.notice -t "70-usb-library" -- "Attempting to remove link $CONTENT_LINK."
-
-if [ -L $CONTENT_LINK ]; then
-  /usr/bin/rm $CONTENT_LINK
-  logger -p user.notice -t "70-usb-library" -- "$CONTENT_LINK removed."
-fi
+for f in `ls -d /library/content/USB*`;do
+   TARGET=`ls -ld $f | gawk '{print $11}'`
+   # if this target is not mounted, delete link to it
+   mount | grep $TARGET
+   if [ $? -ne 0 ]; then
+     logger -p user.notice -t "70-usb-library" -- "Attempting to remove link to $TARGET."
+     unlink  $f
+   fi
+done
