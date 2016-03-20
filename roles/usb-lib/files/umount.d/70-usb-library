@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash 
 # Remove symlink in /library/content to autmounted usb drive
 #
 # based on a similar script in the xs-rsync package
