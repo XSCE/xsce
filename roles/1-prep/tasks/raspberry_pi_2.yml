@@ -4,7 +4,7 @@
 # RTC requires a change to the device tree (and reboot)
 - name: Check for needing to enable i2c rtc device in config.txt
   lineinfile: dest=/boot/config.txt
-              line="device_tree_param=i2c1=on"
+              line="dtoverlay=i2c-rtc,ds1307=on"
               state=present
   register: rpiconfig
 
@@ -20,12 +20,6 @@
               group=root
               mode=0755
               create=yes
-  when:  rtc_id  == "DS3231"
-
-- name: Instantiate a connection to i2c RTC
-  lineinfile: dest=/etc/rc.d/rc.local
-              line="/usr/bin/echo ds1307 0x68 > /sys/class/i2c-adapter/i2c-1/new_device"
-              state=present
   when:  rtc_id  == "DS3231"
 
 - name: Set the date from the hwclock
