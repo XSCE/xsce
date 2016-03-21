@@ -28,6 +28,12 @@
               state=present
   when:  rtc_id  == "DS3231"
 
+- name: Set the date from the hwclock
+  lineinfile: dest=/etc/rc.d/rc.local
+              line="hwclock --hctosys"
+              state=present
+  when:  rtc_id  == "DS3231"
+
 - name: Delete instantiation if rtc is removed
   lineinfile: dest=/etc/rc.d/rc.local
               regexp="/usr/bin/echo ds1307 0x68 > /sys/class/i2c-adapter/i2c-1/new_device"
