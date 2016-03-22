@@ -8,7 +8,7 @@
 
 - name: Copy umount file to usbmount when enabled
   copy: src=umount.d/70-usb-library
-        dest=/etc/usbmount/mount.d
+        dest=/etc/usbmount/umount.d
         owner=root
         group=root
         mode=0751
