@@ -4,9 +4,10 @@
 # RTC requires a change to the device tree (and reboot)
 - name: Check for needing to enable i2c rtc device in config.txt
   lineinfile: dest=/boot/config.txt
-              line="dtoverlay=i2c-rtc,ds3231=on"
+              line="dtoverlay=i2c-rtc,{{ rtc_id }}=on"
               state=present
   register: rpiconfig
+  when: rtc_id != "none"
 
 - name: Add a udev rule to transfer hwclock to system clock at dev creation
   template: src=92-rtc-i2c.rule
@@ -14,6 +15,7 @@
             owner:root
             group:root
             mode:0755
+  when: rtc_id != "none"
 
 - name: Reboot if the config.txt was changed
   command: /sbin/reboot
