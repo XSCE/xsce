@@ -14,7 +14,7 @@
             dest=/etc/udev/rules.d/92-rtc-i2c.rule
             owner:root
             group:root
-            mode:0755
+            mode:0644
   when: rtc_id != "none"
 
 - name: Reboot if the config.txt was changed
