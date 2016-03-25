@@ -10,8 +10,8 @@
   when: rtc_id != "none"
 
 - name: Add a udev rule to transfer hwclock to system clock at dev creation
-  template: src=92-rtc-i2c.rule
-            dest=/etc/udev/rules.d/92-rtc-i2c.rule
+  template: src=92-rtc-i2c.rules
+            dest=/etc/udev/rules.d/92-rtc-i2c.rules
             owner:root
             group:root
             mode:0644
