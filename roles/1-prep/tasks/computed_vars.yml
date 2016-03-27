@@ -78,7 +78,7 @@
 - name: Does udev need patching for Centos
   set_fact:
     udev_needs_patch: True
-  when: ansible_distribution == "CentOS" and ansible_distribution_version == "7.2.1511"
+  when: ansible_distribution == "CentOS" and ansible_distribution_version >= "7.2.1511"
 
 # for various reasons the mysql service can not be enabled on fedora 20,
 # but 'mariadb', which is its real name can
