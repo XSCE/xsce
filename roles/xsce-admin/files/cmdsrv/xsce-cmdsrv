@@ -179,9 +179,6 @@ def main():
     except OSError:
         pass
 
-    # give a little time for worker threads to close, so apache does not stall
-    time.sleep(1)
-
     sys.exit()
 
 def job_minder_thread(client_url, worker_control_url, context=None):
