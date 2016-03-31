@@ -1,11 +1,6 @@
 ##  DISCOVER ADAPTERS   ######
-- name: Detect an i2c rtc if it exists
-  shell: "i2cdetect -y 1 | grep -e 68 -e UU | wc | gawk '{print $1}'"
-  register: rtc_response
-  ignore_errors: yes
-
-- name: Record whether rtc hardware was detected
-  set_fact:
-     rtc_id: "DS3231"
-  when:  rtc_response.stdout > "0"
+# If an rtc is included in a raspberry pi device the user must identify it in 
+# vars/local_vars.yml via a declaration similar to "rtc_id: DS3231"
+#
+# Note that raspberry pi cpu discovery occurs in roles/0-prep/tasks/main.yml
 
