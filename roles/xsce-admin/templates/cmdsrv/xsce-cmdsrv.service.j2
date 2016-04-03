@@ -1,7 +1,6 @@
 [Unit]
 Description=Provides the XSCE Command Server
-Requires=httpd.service
-After=syslog.target network.target local-fs.target httpd.service
+After=syslog.target network.target local-fs.target
 
 [Service]
 Type=forking
