@@ -35,14 +35,10 @@ systemctl enable xsce-prep
 systemctl disable xsce-installer
 /sbin/chkconfig --del xsce-installer
 rm /etc/rc.d/init.d/xsce-installer
+rm /usr/bin/xsceinst
 
 # disable the graphical login
 ln -s --force /lib/systemd/system/multi-user.target /etc/systemd/system/default.target
-
-# get rid of custom local_vars
-cd /opt/schoolsever/xsce
-git reset --hard 
-git checkout master
 
 %end
 #%anaconda

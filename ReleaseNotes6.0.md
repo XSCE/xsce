@@ -3,14 +3,14 @@
 ## What is it?
 
 XSCE is the digital backbone for your education revolution. Put simply, School Server is an open-education project inspired by
-One Laptop Per Child to provide breakthrough digital learning tools to the world’s poorest children.
+One Laptop Per Child to provide breakthrough digital learning tools to the worldâ€™s poorest children.
 
 ### A Rose by any other Name
 
 Internally and in the source code we refer to this software as XSCE, the Community Edition of the XS server originally from
 OLPC. Students and teachers often know it as Internet in a Box, a collection of educational materials and applications found on the internet,
 but available on the server even without an internet connection.  We also refer to it as a School Server since it is aimed at
-schools and other places where people learn and peforms the function of a server.
+schools and other places where people learn and performs the function of a server.
 
 ## What's new in XSCE Release 6.0?
 
@@ -45,7 +45,7 @@ This release extends the tools available to educators in three ways:
 There are three main methods of installing this software:
 
 * Use ansible and the git repository - this is the fall back when you need to customize or you have a platform for which we have not created an image.
-* Use an image you download - for some commonly used platforms we create image files that you can download, put on a usb stick or sd card and boot in your new hardward.
+* Use an image you download - for some commonly used platforms we create image files that you can download, put on a usb stick or sd card and boot in your new hardware.
 * Create and use your own image - this will appeal to you if you want an image to use in multiple machines and are able to use the tools we provide to create it.
 
 In each case you need hardware that has been assembled, but with nothing installed on it.
