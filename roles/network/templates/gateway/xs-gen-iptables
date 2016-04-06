@@ -69,6 +69,15 @@ $IPTABLES -A INPUT -m state --state NEW -i  $lan -j ACCEPT
 # Allow mDNS 
 $IPTABLES -A INPUT -p udp --dport 5353 -j ACCEPT
 
+# FZT: Permitir conexion a kiwix desde fuera
+$IPTABLES -A INPUT -m state --state NEW -m tcp -p tcp --dport 3000 -j ACCEPT
+
+# FZT: Permitir conexiones a nagios
+$IPTABLES -A INPUT -m state --state NEW -m tcp -p tcp --dport 5666 -j ACCEPT
+
+# FZT: Permitit conexion a ka-lite desde fuera
+$IPTABLES -A INPUT -m state --state NEW -m tcp -p tcp --dport 8008 -j ACCEPT
+
 #when run as gateway 
 $IPTABLES -A INPUT -p tcp --dport $ssh_port -m state --state NEW -i $wan -j ACCEPT
 
@@ -82,6 +91,9 @@ if [ "$xsce_gateway_enabled" == "True" ]; then
 fi
 
 $IPTABLES -A FORWARD -i $wan -o $lan -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# drop connections from other (172.18.125.0/24)
+$IPTABLES -A FORWARD -o $wan -s 172.18.125.0/24 -j DROP
 
 #Block https traffic except if directed at server
 if [  "$gw_block_https" == "True" ]; then    
@@ -100,8 +112,11 @@ if [ "$block_DNS" == "True" ];then
     $IPTABLES -t nat -A PREROUTING -i $lan -p udp --dport 53 ! -d {{lan_ip}} -j DNAT --to {{lan_ip}}:53
 fi
 
+# FZT
 if [ -f /etc/sysconfig/xs_httpcache_on ]; then
-    $IPTABLES  -t nat  -A PREROUTING -i $lan -p tcp --dport 80 ! -d 172.18.96.1 -j DNAT --to 172.18.96.1:3128
+#   $IPTABLES  -t nat  -A PREROUTING -i $lan -p tcp --dport 80 ! -d 172.18.96.1 -j DNAT --to 172.18.96.1:3128
+    $IPTABLES  -t nat  -A PREROUTING -i $lan -p tcp --dport 80 ! -s 172.18.125.0/24 -j DNAT --to 172.18.96.1:3128
+
 fi
 
 # Enable routing.
