@@ -32,7 +32,7 @@
 - name: ask systemd to reread the unit files
   shell: systemctl daemon-reload
   when: not kalite_installed.stat.exists
- 
+
 - include: setup-f18.yml
   when: not kalite_installed.stat.exists and is_F18
  
