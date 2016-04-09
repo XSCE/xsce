@@ -17,15 +17,6 @@
 - include: fedora.yml
   when: ansible_distribution == "Fedora"
 - include: cmdsrv.yml
-
-# Patch Fedora 21+ so usbmount works
-# Set flag to True that was initialized to False in role defaults
-# We can't undo this
-- name: Does udev need patching
-  set_fact:
-    udev_needs_patch: True
-  when: ansible_distribution == "Fedora" and ansible_distribution_version >= "21"
-
 - include: patch_udev.yml
 
 # Put conditional includes for platforms here
