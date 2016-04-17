@@ -53,9 +53,7 @@
   when: not {{ use_cache }} and not {{ no_network }}
 
 - name: Download khan assessments
-  command: "/usr/bin/wget -q {{ khan_assessment_url }} -O {{ downloads_dir }}/khan_assessment.zip"
-  args:
-      creates: "{{ downloads_dir }}/khan_assessment.zip"
+  get_url: url="{{ khan_assessment_url }}" dest="{{ downloads_dir }}/khan_assessment.zip"
   when: not {{ use_cache }} and not {{ no_network }} and khan_assessment_install
   tags:
     - download2
