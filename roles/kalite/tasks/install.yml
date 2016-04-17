@@ -29,7 +29,7 @@
   pip: name={{ item }}
        extra_args="--download {{ pip_packages_dir }}"
   with_items:
-    - ka-lite==0.16.0
+    - ka-lite>=0.16,<0.17
     - django-js-reverse==0.5.0
     - django-dbbackup==2.3.2
   when: not {{ use_cache }} and not {{ no_network }}
@@ -66,7 +66,7 @@
   with_items:
     - django-js-reverse==0.5.0
     - django-dbbackup==2.3.2
-    - ka-lite==0.16.0
+    - ka-lite>=0.16,<0.17
 
 - name: Default is to have cronserve started with kalite
   set_fact:
