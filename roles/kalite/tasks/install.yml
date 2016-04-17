@@ -26,7 +26,6 @@
 # django-dbbackup==2.3.2   ## no rpm
 
 - name: Download kalite with pip
-<<<<<<< HEAD
   pip: name={{ item }}       
        extra_args="--download {{ pip_packages_dir }}"
   with_items:
