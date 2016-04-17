@@ -15,20 +15,20 @@
   register: kalite_installed
 
 - include: install-f18.yml
-  when: not kalite_installed.stat.exists and is_F18
+  when: not kalite_installed is defined and is_F18
 
 - include: install.yml
-  when: not kalite_installed.stat.exists and not is_F18
+  when: not kalite_installed is defined and not is_F18
 
 - name: ask systemd to reread the unit files
   shell: systemctl daemon-reload
-  when: not kalite_installed.stat.exists
+  when: not kalite_installed is defined
 
 - include: setup-f18.yml
-  when: not kalite_installed.stat.exists and is_F18
+  when: not kalite_installed is defined and is_F18
 
 - include: setup.yml
-  when: not kalite_installed.stat.exists and not is_F18
+  when: not kalite_installed is defined and not is_F18
 
 - include: assessment.yml
   when: not is_F18
