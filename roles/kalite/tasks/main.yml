@@ -24,26 +24,26 @@
     - download2
 
 - include: install-f18.yml
-  when: not kalite_installed is defined and is_F18
+  when: not kalite_installed.stat.exists and is_F18
   tags:
     - download
     - download2
 
 - include: install.yml
-  when: not kalite_installed is defined and not is_F18
+  when: not kalite_installed.stat.exists and not is_F18
   tags:
     - download
     - download2
 
 - name: ask systemd to reread the unit files
   shell: systemctl daemon-reload
-  when: not kalite_installed is defined
+  when: not kalite_installed.stat.exists
 
 - include: setup-f18.yml
-  when: not kalite_installed is defined and is_F18
+  when: not kalite_installed.stat.exists and is_F18
 
 - include: setup.yml
-  when: not kalite_installed is defined and not is_F18
+  when: not kalite_installed.stat.exists and not is_F18
 
 - include: assessment.yml
   when: not is_F18
