@@ -52,6 +52,7 @@
 
 - name: Download khan assessments
   get_url: url="{{ khan_assessment_url }}" dest="{{ downloads_dir }}/khan_assessment.zip"
+  when: not {{ use_cache }} and not {{ no_network }} and khan_assessment_install
   tags:
     - download2
 
