@@ -32,6 +32,7 @@
     - ka-lite>=0.16,<0.17
     - django-js-reverse==0.5.0
     - django-dbbackup==2.3.2
+    - python-docopt
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
@@ -62,6 +63,7 @@
   pip: name={{ item }}
        extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
   with_items:
+    - python-docopt
     - django-js-reverse==0.5.0
     - django-dbbackup==2.3.2
     - ka-lite>=0.16,<0.17
