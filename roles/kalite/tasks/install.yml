@@ -29,29 +29,32 @@
   pip: name={{ item }}
        extra_args="--download {{ pip_packages_dir }}"
   with_items:
-    - ka-lite>=0.16,<0.17
     - django-js-reverse==0.5.0
     - django-dbbackup==2.3.2
     - docopt>=0.6.2
+    - ka-lite>=0.16,<0.17
 
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
 
-- name: Install python packages required for kalite
-  yum: name={{ item }}
-       state=installed
-  with_items:
-    - python-django-south
-    - python-ply
-    - python-slimit
-    - python-six
-    - python-django-appconf
-    - python-peewee
-    - python-dateutil
-  when: not {{ use_cache }} and not {{ no_network }}
-  tags:
-    - download
+# django-js-reverse is pulling in a later version of django than the rpm 
+# docopt rpm seems to be to old - giveup revisit F23
+
+#- name: Install python packages required for kalite
+#  yum: name={{ item }}
+#       state=installed
+#  with_items:
+#    - python-django-south
+#    - python-ply
+#    - python-slimit
+#    - python-six
+#    - python-django-appconf
+#    - python-peewee
+#    - python-dateutil
+#  when: not {{ use_cache }} and not {{ no_network }}
+#  tags:
+#    - download
 
 - name: Download khan assessments
   get_url: url="{{ khan_assessment_url }}" dest="{{ downloads_dir }}/khan_assessment.zip"
