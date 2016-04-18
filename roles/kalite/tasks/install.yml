@@ -32,7 +32,8 @@
     - ka-lite>=0.16,<0.17
     - django-js-reverse==0.5.0
     - django-dbbackup==2.3.2
-    - python-docopt
+    - docopt>=0.6.2
+
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
@@ -41,7 +42,6 @@
   yum: name={{ item }}
        state=installed
   with_items:
-    - python-docopt
     - python-django-south
     - python-ply
     - python-slimit
@@ -63,7 +63,7 @@
   pip: name={{ item }}
        extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
   with_items:
-    - python-docopt
+    - docopt>=0.6.2
     - django-js-reverse==0.5.0
     - django-dbbackup==2.3.2
     - ka-lite>=0.16,<0.17
