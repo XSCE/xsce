@@ -1,6 +1,6 @@
 # Assume all XOs are F18 and nothing else is
 
-- name: Calc kalite db file name
+- name: Calc kalite db file name F18
   set_fact:
      kalite_db_name: "{{ kalite_root }}/kalite/database/data.sqlite"
   when: is_F18
