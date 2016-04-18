@@ -18,15 +18,3 @@
      KALITE_HOME: "{{ kalite_root }}"
   async: 900
   poll: 10
-
-- name: Finish setup by running kalite start
-  command: "/usr/bin/kalite start"
-  environment:
-     KALITE_HOME: "{{ kalite_root }}"
-  async: 900
-  poll: 10
-
-- name: Stop kalite server started in previous step because we use systemd
-  command: "/usr/bin/kalite stop"
-  environment:
-     KALITE_HOME: "{{ kalite_root }}"
