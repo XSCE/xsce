@@ -32,22 +32,22 @@
   tags:
     - download2
 
-- name: Create xsce-kalite user and password
+- name: Create xsce-kalite user and password F18
   user: name={{ kalite_user }}
         password={{ kalite_password_hash }}
         update_password=on_create
 
-- name: Create kalite_root directory
+- name: Create kalite_root directory F18
   file: path={{ kalite_root }}
         owner=root
         group=root
         mode=0755
         state=directory
 
-- name: Copy the kalite repo into place
+- name: Copy the kalite repo into place F18
   command: "rsync -at {{ downloads_dir }}/ka-lite/ {{ kalite_root }}"
 
-- name: Make kalite_user owner
+- name: Make kalite_user owner F18
   file: path={{ kalite_root }}
         owner={{ kalite_user }}
         group={{ kalite_user }}
@@ -55,14 +55,14 @@
         state=directory
 
 # local_settings is deprecated
-- name: Copy local_settings file
+- name: Copy local_settings file F18
   template: src=f18/local_settings.py.j2
             dest="{{ kalite_root }}/kalite/local_settings.py"
             owner={{ kalite_user }}
             group={{ kalite_user }}
             mode=644
 
-- name: Create kalite service(s) and support scripts
+- name: Create kalite service(s) and support scripts F18
   template: backup=yes
             src={{ item.src }}
             dest={{ item.dest }}
