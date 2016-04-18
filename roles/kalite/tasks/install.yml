@@ -49,9 +49,9 @@
     - python-django-appconf
     - python-peewee
     - python-dateutil
+  when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download
-  when: not {{ use_cache }} and not {{ no_network }}
 
 - name: Download khan assessments
   get_url: url="{{ khan_assessment_url }}" dest="{{ downloads_dir }}/khan_assessment.zip"
