@@ -53,19 +53,20 @@
   when: discovered_wan_iface != "none" and gw_active_test.stdout == "0"
 
 - name: Test for internet access
-  shell: wget "{{ xsce_download_url }}/heart-beat.txt" &> /dev/null ; echo $?
+  get_url: url="{{ xsce_download_url }}/heart-beat.txt" dest=/tmp/heart-beat.txt
+  ignore_errors: True
   async: 10
   poll: 2
   register: internet_access_test
 
-- name: Set has_internet_connection false by default
-  set_fact:
-     has_internet_connection: False
-
 - name: Set has_internet_connection true if wget succeeded
   set_fact:
      has_internet_connection: True
-  when: internet_access_test.stdout == "0"
+  when: internet_access_test
+
+- name: Cleanup internet test file
+  file: path=/tmp/heart-beat.txt
+        state=absent
 
 - name: Turn off downloads if no internet connection
   set_fact:
