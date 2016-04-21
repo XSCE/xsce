@@ -149,6 +149,10 @@ authserver_enabled: True
 usb_lib_install: True
 usb_lib_enabled: True
 
+# cups
+cups_install: True
+cups_enabled: False
+
 # 5-XO-SERVICES
 
 # ejabberd
