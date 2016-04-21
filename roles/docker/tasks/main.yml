@@ -1,0 +1,38 @@
+- name: Install docker
+  yum: name={{ item }}
+  with_items:
+        - docker
+        - python-docker-py
+  when: docker_install
+  
+- name: put the systemd startup file in place
+  template: src=docker.service
+            dest=/etc/systemd/system/
+            owner=root
+            group=root
+            mode=0644
+
+- name: create the socket for docker
+  template: src=docker.socket
+            dest=/etc/systemd/system/
+            owner=root
+            group=root
+            mode=0644
+
+- name: Create a folder for systemd unit files that are docker containers
+  file: path=/etc/systemd/system/docker.service.d
+        owner=root
+        group=root
+        mode=0644
+        state=directory
+
+- name: Start the docker service, if enabled
+  service: enabled=yes
+           state=started
+  when: docker_enabled
+           
+    - name: stop the docker daemon
+      service: enabled=no       
+               state=stopped
+      when: not docker_enabled
+               
