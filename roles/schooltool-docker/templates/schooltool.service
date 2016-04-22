@@ -1,0 +1,16 @@
+[unit]
+Description=schooltool
+After=docker.service
+Requires=docker.service
+
+[Service]
+ExecStart=/opt/bin/systemd-docker run --rm --name %n replaceafill/schooltool
+Restart=always
+RestartSec=10s
+Type=notify
+NotifyAccess=all
+TimeoutStartSec=120
+TimeoutStopSec=15
+
+[Install]
+WantedBy=multi-user.target
