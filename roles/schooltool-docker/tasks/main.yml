@@ -1,5 +1,30 @@
+# the defaults on this image are user:manager, password:schooltool
 - name: Get the schooltool container if it is missing
   docker: image=replaceafill/schooltool
           ports=7080:7080
 
+- name: Configure schooltool to run in docker container under systemd
+  template: backup=yes
+            src={{ item.src }}
+            dest={{ item.dest }}
+            owner=root
+            group=root
+            mode={{ item.mode }}
+  with_items:
+      dest: '/etc/systemd/system/docker.service'
+      mode: '0644'
+      dest: '/etc/systemd/system/docker.socket'
+      mode: '0644'
+      dest: '/etc/systemd/system/schooltool.service'
+      mode: '0644'
+
+- name: Enable schooltool
+  service: state=started
+           enabled=yes
+  when: schooltool_enabled
+
+- name: Disable schooltool
+  service: state=stopped
+           enabled=no
+  when: not schooltool_enabled
 
