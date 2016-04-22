@@ -1,0 +1,6 @@
+moodle_version: 30
+moodle_repo_url: "https://github.com/moodle/moodle.git"
+moodle_root: "{{ xsce_base }}/moodle_current"
+moodle_user: moodle
+moodle_current_install: True
+moodle_current_enabled: True
