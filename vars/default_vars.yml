@@ -181,8 +181,12 @@ owncloud_install: True
 owncloud_enabled: False
 
 # WordPress
-wordpress_install: False
+wordpress_install: True
 wordpress_enabled: False
+
+# Dokuwiki
+dokuwiki_install: True
+dokuwiki_enabled: False
 
 # 7-EDU-APPS
 
@@ -197,6 +201,10 @@ iiab_enabled: True
 # Pathagar
 pathagar_install: True
 pathagar_enabled: False
+
+# Calibre
+calibre_install: True
+calibre_enabled: False
 
 # RACHEL
 rachel_install: True
@@ -221,7 +229,15 @@ kalite_server_port: 8008
 kalite_enabled: False
 kalite_cron_enabled: False
 
+#Sugarizer
+sugarizer_install
+sugarizer_enabled
+
 # 8-MGMT-TOOLS
+
+# schooltool
+schooltool_install: True
+schooltool_enabled: False
 
 # sugar-stats
 sugar_stats_install: True
