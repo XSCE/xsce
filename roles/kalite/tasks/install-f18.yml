@@ -32,19 +32,19 @@
   tags:
     - download2
 
-- name: Create xsce-kalite user and password
+- name: Create xsce-kalite user and password F18
   user: name={{ kalite_user }}
         password={{ kalite_password_hash }}
         update_password=on_create
 
-- name: Create kalite_root directory
+- name: Create kalite_root directory F18
   file: path={{ kalite_root }}
         owner=root
         group=root
         mode=0755
         state=directory
 
-- name: Copy the kalite repo into place
+- name: Copy the kalite repo into place F18
   command: "rsync -at {{ downloads_dir }}/ka-lite/ {{ kalite_root }}"
 
 - name: Make kalite_user owner
@@ -63,7 +63,7 @@
             mode=644
 
 - name: Create kalite service(s) and support scripts
-  template: backup=yes
+  template: backup=no
             src={{ item.src }}
             dest={{ item.dest }}
             owner=root

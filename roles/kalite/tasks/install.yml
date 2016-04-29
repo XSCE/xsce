@@ -9,26 +9,42 @@
     - download
   when: not {{ use_cache }} and not {{ no_network }} and ansible_distribution == "CentOS"
 
+# Version 0.16.x
+# pip show kalite 
+# Requires: docopt, South, django-js-reverse, ply, slimit, six, django-appconf, 
+# peewee, python-dateutil, django-dbbackup
+
+# from /usr/lib/python2.7/site-packages/ka_lite-0.16.0-py2.7.egg-info/requires.txt
+# docopt>=0.6,<0.7
+# South==0.8.4
+# django-js-reverse==0.5.0 ## no rpm 
+# ply==3.4
+# slimit==0.8.1
+# six==1.9.0
+# django-appconf==1.0.1
+# peewee==2.6.3
+# python-dateutil==2.4.2
+# django-dbbackup==2.3.2   ## no rpm
+
 - name: Download kalite with pip
-  pip: name=ka-lite
-       version={{ kalite_version }}
+  pip: name={{ item }}       
        extra_args="--download {{ pip_packages_dir }}"
+  with_items:
+    - ka-lite>=0.16,<0.17
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
 
 - name: Download khan assessments
-  command: "/usr/bin/wget -q {{ khan_assessment_url }} -O {{ downloads_dir }}/khan_assessment.zip"
-  args:
-      creates: "{{ downloads_dir }}/khan_assessment.zip"
-  when: not {{ use_cache }} and not {{ no_network }} and khan_assessment_install
+  get_url: url="{{ khan_assessment_url }}" dest="{{ downloads_dir }}/khan_assessment.zip"
   tags:
     - download2
 
 - name: Install kalite with pip
-  pip: name=ka-lite
-       version={{ kalite_version }}
+  pip: name={{ item }}
        extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
+  with_items:
+    - ka-lite>=0.16,<0.17
 
 - name: Default is to have cronserve started with kalite
   set_fact:
