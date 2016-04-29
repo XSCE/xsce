@@ -11,6 +11,7 @@
 
 - name: Download kalite with pip
   pip: name=ka-lite
+       version={{ kalite_version }}
        extra_args="--download {{ pip_packages_dir }}"
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
@@ -26,6 +27,7 @@
 
 - name: Install kalite with pip
   pip: name=ka-lite
+       version={{ kalite_version }}
        extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
 
 - name: Default is to have cronserve started with kalite
