@@ -1,5 +1,17 @@
 # This is for an OS other than Fedora 18
 
+- name: Create kalite_root directory
+  file: path={{ kalite_root }}/httpsrv/static
+        owner=root
+        group=root
+        mode=0755
+        state=directory
+
+- name: correct Doc link
+  file: path=/library/ka-lite/httpsrv/static/html
+        src=/usr/share/kalite/docs/_build/html
+        state=link
+
 - name: Run the setup using kalite manage
   command: "/usr/bin/kalite manage setup --username={{ kalite_admin_user }} --password={{ kalite_admin_password }} --noinput"
   environment:
@@ -7,14 +19,7 @@
   async: 900
   poll: 10
 
-- name: Finish setup by running kalite start
-  command: "/usr/bin/kalite start"
-  environment:
-     KALITE_HOME: "{{ kalite_root }}"
-  async: 900
-  poll: 10
-
-- name: Stop kalite server started in previous step because we use systemd
-  command: "/usr/bin/kalite stop"
-  environment:
-     KALITE_HOME: "{{ kalite_root }}"
+- name: Kluge to get kalite docs in 0.16.x
+  command: pip install -U --force-reinstall ka-lite
+           creates=/usr/share/kalite/docs/_build/html/installguide/install_all.html
+  
