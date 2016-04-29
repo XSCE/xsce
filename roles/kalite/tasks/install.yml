@@ -45,7 +45,7 @@
        extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
   with_items:
     - ka-lite>=0.16,<0.17
-
+  
 - name: Default is to have cronserve started with kalite
   set_fact:
      job_scheduler_stanza: ""
