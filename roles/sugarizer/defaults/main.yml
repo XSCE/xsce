@@ -1,0 +1,3 @@
+sugarizer_src: /opt/schoolserver/sugarizer
+sugarizer_install: True
+sugarizer_enabled: False
