@@ -522,6 +522,7 @@ function assignConfigVars (data)
     //console.log($(this).val());
     //consoleLog(this.name);
   });
+  
   //config_vars = data;
   //consoleLog(jqXHR);
   //initConfigVars()
@@ -537,6 +538,12 @@ function setRadioButton(name, value){
 
 function initConfigVars()
 {
+  // handle exception where gui name distinct and no data
+  // home page - / added when used in ansible
+  if (! config_vars.hasOwnProperty('gui_desired_home_url')){
+  	config_vars['gui_desired_home_url'] = "home";  
+  	consoleLog("home url is " + config_vars['gui_desired_home_url']);
+  }
   assignConfigVars();
   var html = "Gateway: ";
   if(typeof ansibleFacts.ansible_default_ipv4.address === 'undefined'){

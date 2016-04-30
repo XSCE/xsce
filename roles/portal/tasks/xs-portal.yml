@@ -60,10 +60,7 @@
             mode=0644
   with_items:
             - xs-portal.conf
-            - xs-portal-lang.inc
-            - content_dir.conf
-            - xsce-home-page.conf
-
+            - xs-portal-lang.inc            
 
 - name: Install xs-portal service discovery
   template: src=service_list.php
