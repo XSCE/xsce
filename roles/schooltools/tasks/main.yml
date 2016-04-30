@@ -11,10 +11,6 @@
             group=root
             mode={{ item.mode }}
   with_items:
-      dest: '/etc/systemd/system/docker.service'
-      mode: '0644'
-      dest: '/etc/systemd/system/docker.socket'
-      mode: '0644'
       dest: '/etc/systemd/system/schooltool.service'
       mode: '0644'
 
