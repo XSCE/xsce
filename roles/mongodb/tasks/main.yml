@@ -11,21 +11,19 @@
   file: state=directory
         path={{ item.path }}
         owner=mongodb
-        state: directory
-  with item:
+  with_items:
      - { path: '/var/run/mongodb' }
      - { path: '/library/dbdata/mongodb' }
-     - { path: '/var/log/mongodb
+     - { path: '/var/log/mongodb' }
 
 - name: Create systemd files
-  template: backup=yes
-            src={{ item.src }}
+  template: src={{ item.src }}
             dest={{ item.dest }}
             owner=root
             group=root
             mode=0644
   with_items:
-     - { src: 'mongodb.service' , dest: '/etc/systemd/system/'}
+     - { src: 'mongodb.service' , dest: '/etc/systemd/system/' }
      - { src: 'mongodb' , dest: '/etc/sysconfig/'}
      - { src: 'mongod.conf' , dest: '/etc/'}
 
