@@ -5,45 +5,26 @@
     - mongodb
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
-<<<<<<< HEAD
     - download
-=======
-    - download2
->>>>>>> move mongodb stuff to own playbook
 
 - name: create the data directory for mongodb
   file: state=directory
         path={{ item.path }}
         owner=mongodb
-<<<<<<< HEAD
   with_items:
      - { path: '/var/run/mongodb' }
      - { path: '/library/dbdata/mongodb' }
      - { path: '/var/log/mongodb' }
 
-- name: Create systemd files
-  template: src={{ item.src }}
-=======
-        state: directory
-  with item:
-     - { path: '/var/run/mongodb' }
-     - { path: '/library/dbdata/mongodb' }
-     - { path: '/var/log/mongodb
 
 - name: Create systemd files
-  template: backup=yes
-            src={{ item.src }}
->>>>>>> move mongodb stuff to own playbook
+  template: src={{ item.src }}
             dest={{ item.dest }}
             owner=root
             group=root
             mode=0644
   with_items:
-<<<<<<< HEAD
      - { src: 'mongodb.service' , dest: '/etc/systemd/system/' }
-=======
-     - { src: 'mongodb.service' , dest: '/etc/systemd/system/'}
->>>>>>> move mongodb stuff to own playbook
      - { src: 'mongodb' , dest: '/etc/sysconfig/'}
      - { src: 'mongod.conf' , dest: '/etc/'}
 
