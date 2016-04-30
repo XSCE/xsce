@@ -70,6 +70,12 @@
     postgresql_enabled: True
   when: moodle_enabled or pathagar_enabled
 
+- name: Turn on docker if schooltool is enabled
+  set_fact:
+    docker_install: True
+    docker_enabled: True
+  when: schooltool_enabled
+
 # Patch Fedora 21+ so usbmount works
 # Set flag to True that was initialized to False in role defaults
 # We can't undo this
