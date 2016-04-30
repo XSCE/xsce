@@ -78,6 +78,21 @@ The last filter is based not on URLs, but on **Words in the Content**.
 
 Use your local policy to decide which of these filters to enable.
 
+Server Portal
+-------------
+
+The School Server portal or home page is the main menu for accessing the various content modules on the server.
+
+This is an aspect of the server that many wish to customize based on content choices, so we have included several alternative home pages.
+
+* The default is simply called Home and has an icon look and feel with submenus.
+
+* An earlier home page called xs-portal remains with multilingual capabilites and php scripts to detect the presence of content.
+
+* For those who want to take customization further, both WordPress and Dokuwiki are installed and may be made the home page.
+
+**Please Note**: Selecting WordPress or Dokuwiki will only take effect if you **Check its Box** titled 'Check to Enable'.
+
 Services Enabled
 ----------------
 
@@ -95,14 +110,6 @@ You should **note** that a number of items below require content to be useful.  
 * **Moodle** - a Courseware Manager and E-Learning Platform
 
     Moodle is one of the most widely used Learning Management Systems.  There is a great deal of course materials available for it, and it can be used to set up classes and curriculum.
-
-* **ELGG** -  a Social Networking Platform for Student Blogging, File Sharing, and Collaboration
-
-* **OwnCloud** - a local server-based facility for sharing files, photos, contacts, calendars, etc.
-
-* **SAMBA** provides Network File Sharing
-
-    There is some overlap between these three.  **ELGG** allows blogging and other forms of social media.  Students and Teachers can use it to collaborate on projects or for journalling.  **OwnCloud** is great for sharing media. It has apps for phones and tablets that make it easy to drop photos and other materials onto the server for sharing. **SAMBA** gives you the ability to share directories on the server that can be accessed by Teachers and Students as if they were local to their laptops.
 
 * **Kiwix** -  serves Wikipediae and other content from sources below. You must also install content.
 
@@ -125,11 +132,27 @@ You should **note** that a number of items below require content to be useful.  
 
     RACHEL content can be downloaded and installed using the **Install Content** - **Get RACHEL** menu option.
 
-* **Pathagar** -  an E-Book Platform. You must also install content.
+* **Calibre** - an E-Book Platform. You must also install content.
+
+* **Pathagar** -  another E-Book Platform. You must also install content.
+
+### Media Sharing and Printing
+
+* **ELGG** -  a Social Networking Platform for Student Blogging, File Sharing, and Collaboration
+
+* **OwnCloud** - a local server-based facility for sharing files, photos, contacts, calendars, etc.
+
+* **SAMBA** provides Network File Sharing
+
+    There is some overlap between these three.  **ELGG** allows blogging and other forms of social media.  Students and Teachers can use it to collaborate on projects or for journalling.  **OwnCloud** is great for sharing media. It has apps for phones and tablets that make it easy to drop photos and other materials onto the server for sharing. **SAMBA** gives you the ability to share directories on the server that can be accessed by Teachers and Students as if they were local to their laptops.
+
+* **CUPS** provides support for **Printers** either directly attached to the server or on the network.
 
 ### For Monitoring and Administration
 
 The options below are intended for administrators and people who may help with or support the installatiion of this School Server. It is best to consult with someone who set up the server to decide which of these to turn on.
+
+* **SchoolTool** - a School Administration System.
 
 * **XO Visualization** - Graphs of Student Usage Statistics.
 * Title to Appear on XO Visualization Charts
@@ -143,6 +166,8 @@ The options below are intended for administrators and people who may help with o
 * **VnStat** gathers and displays networking statistics.
 
 * **AWStats** graphs statistics on web server usage.
+
+* **PhpMyadmin** allows maintenance of mysql databases.
 
 * **Open VPN** allows a secure connection between servers over the Internet for remote maintenance. You can access via a terminal or a web browser.
 

@@ -26,6 +26,7 @@ Configuration
 
 * Network Parameters
 * Internet Caching/Filtering
+* Server Portal
 * Services Enabled
 * Edit Permitted URLs
 
