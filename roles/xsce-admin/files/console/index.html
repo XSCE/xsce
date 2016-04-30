@@ -86,6 +86,7 @@
 										<li class="active"><a href="#confNetwork">Network Parameters</a></li>
 										<li><a href="#confNetFilter">Internet Caching/Filtering</a></li>
 										<li><a href="#confHostapd">Internal Wifi AP</a></li>
+										<li><a href="#confPortal">Server Portal</a></li>
 										<li><a href="#confServices">Services Enabled</a></li>
 										<li><a href="#confWhitelist">Edit Permitted URLs</a></li>
 									</ul>
@@ -188,6 +189,35 @@
                         <div class="row"><label class="col-md-3">Internal Wifi Access Point Channel</label><div class="col-md-3"><input type="text" class="form-control" name="host_channel" id="host_channel"></div></div>
 											</form>
 										</div> <!--  Configure Hostapd pane -->
+										<div class="tab-pane" id="confPortal"> <!-- Start Configure Server Portal Pane -->
+											<h2>Server Portal</h2>
+											<p><b>Please Note:</b> The selected Portal Page will only work if the corresponding software is Enabled.</p>
+											<form role="form" id="confPortalForm">
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="wordpress_enabled" id="wordpress_enabled">Check to Enable WordPress.
+													</label>
+												</div>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="dokuwiki_enabled" id="dokuwiki_enabled">Check to Enable Dokuwiki.
+													</label>
+												</div>	
+												<h3>Select Server Home Page</h3>
+												<div class="radio">
+                          <label><input type="radio" name="gui_desired_home_url" id="gui_desired_home_url-home" value="home">/home</label>
+                        </div>
+                        <div class="radio">
+                          <label><input type="radio" name="gui_desired_home_url" id="gui_desired_home_url-xs-portal" value="xs-portal">/xs-portal</label>
+                        </div>
+                        <div class="radio">
+                          <label><input type="radio" name="gui_desired_home_url" id="gui_desired_home_url-wordpress" value="wordpress">/wordpress</label>
+                        </div>
+                        <div class="radio">
+                          <label><input type="radio" name="gui_desired_home_url" id="gui_desired_home_url-wiki" value="wiki">/wiki</label>
+                        </div>
+											</form>
+										</div> <!--  Configure Server Portal pane -->
 										<div class="tab-pane" id="confServices"> <!--  Start Configure Services Pane -->
 											<h2>Check Each Service to Enable</h2>
 											<form role="form" id="confServicesForm">
@@ -205,21 +235,6 @@
 												<div class="checkbox">
 													<label>
 														<input type="checkbox" name="moodle_enabled" id="moodle_enabled">Moodle, a Courseware Manager and E-Learning Platform
-													</label>
-												</div>
-												<div class="checkbox">
-													<label>
-														<input type="checkbox" name="elgg_enabled" id="elgg_enabled">ELGG, a Social Networking Platform for Student Blogging, File Sharing, and Collaboration
-													</label>
-												</div>
-												<div class="checkbox">
-													<label>
-														<input type="checkbox" name="owncloud_enabled" id="owncloud_enabled">OwnCloud is a local server-based facility for sharing files, photos, contacts, calendars, etc.
-													</label>
-												</div>
-												<div class="checkbox">
-													<label>
-														<input type="checkbox" name="samba_enabled" id="samba_enabled">SAMBA provides Network File Sharing
 													</label>
 												</div>
 												<div class="checkbox">
@@ -249,10 +264,47 @@
 												</div>
 												<div class="checkbox">
 													<label>
-														<input type="checkbox" name="pathagar_enabled" id="pathagar_enabled">Pathagar, an E-Book Platform. You must also install content.
+														<input type="checkbox" name="calibre_enabled" id="calibre_enabled">Calibre, an E-Book Platform. You must also install content.
 													</label>
 												</div>
-												<h3>For Monitoring and Administration</h3>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="pathagar_enabled" id="pathagar_enabled">Pathagar, another E-Book Platform. You must also install content.
+													</label>
+												</div>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="sugarizer_enabled" id="sugarizer_enabled">Sugarizer provides SugarLabs activities directly on the server.
+													</label>
+												</div>
+												<h3>Media Sharing and Printing</h3>												
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="elgg_enabled" id="elgg_enabled">ELGG, a Social Networking Platform for Student Blogging, File Sharing, and Collaboration
+													</label>
+												</div>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="owncloud_enabled" id="owncloud_enabled">OwnCloud is a local server-based facility for sharing files, photos, contacts, calendars, etc.
+													</label>
+												</div>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="samba_enabled" id="samba_enabled">SAMBA provides Network File Sharing
+													</label>
+												</div>
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="cups_enabled" id="cups_enabled">CUPS provides support for printers.
+													</label>
+												</div>
+
+												<h3>For Monitoring and Administration</h3>												
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="schooltool_enabled" id="schooltool_enabled">SchoolTool is a School Administration System.
+													</label>
+												</div>
 												<div class="checkbox">
 													<label>
 														<input type="checkbox" name="xovis_enabled" id="xovis_enabled">XO Visualization&mdash;Graphs of Student Usage Statistics.
@@ -286,6 +338,11 @@
 												<div class="checkbox">
 													<label>
 														<input type="checkbox" name="awstats_enabled" id="awstats_enabled">AWStats graphs statistics on web server usage.
+													</label>
+												</div>												
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="phpmyadmin_enabled" id="phpmyadmin_enabled">PhpMyadmin allows maintenance of mysql databases.
 													</label>
 												</div>
 												<div class="checkbox">
