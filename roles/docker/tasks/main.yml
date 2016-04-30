@@ -1,0 +1,27 @@
+
+- name: Put systemd files in place to run docker container 
+  template: backup=yes
+            src={{ item.src }}
+            dest={{ item.dest }}
+            owner=root
+            group=root
+            mode={{ item.mode }}
+  with_items:
+      dest: '/etc/systemd/system/docker.service'
+      mode: '0644'
+      dest: '/etc/systemd/system/docker.socket'
+      mode: '0644'
+  tags: download
+
+- name: add docker to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=docker
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: Docker Container
+    - option: description
+      value: '"Docker allows a person to package an application with all of its dependencies into a standardized unit for software development."'
+    - option: enabled
+      value: "{{ docker_enabled }}"
