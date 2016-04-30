@@ -1,1 +1,1 @@
-OPTIONS=' -f /etc/mongod.conf '
+OPTIONS='--fork --port 27018 --logpath /var/log/mongodb.log'
