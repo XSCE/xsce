@@ -24,3 +24,15 @@
            enabled=no
   when: not schooltool_enabled
 
+- name: add schooltool to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=schooltool
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: Schooltool
+    - option: description
+      value: '"SchoolTool is an open source, web based student information system designed for schools in the developing world, with strong support for translation, localization and automated deployment and updates."'
+    - option: enabled
+      value: "{{ schooltool_enabled }}"
