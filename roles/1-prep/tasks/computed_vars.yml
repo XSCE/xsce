@@ -59,6 +59,12 @@
     mysql_enabled: True
   when: elgg_enabled or rachel_enabled or owncloud_enabled
 
+- name: Turn on mongodb if sugarizer enabled
+  set_fact:
+    mongodb_install: True
+    mongodb_enabled: True
+  when: sugarizer_enabled
+
 # There might be other db's
 - name: Turn on postgresql if moodle or pathagar enabled
   set_fact:
