@@ -3,26 +3,10 @@
   yum: name={{ item }}
        state=present
   with_items:
+    - moodle-xs
     - python-psycopg2
   tags:
     - download
-
-- name: Download the latest moodle repo
-  git: repo={{ moodle_repo_url }}
-       dest={{ xsce_base }}/moodle
-       depth=1
-       version="MOODLE_{{ moodle_version }}_STABLE"
-#  ignore_errors: yes
-  when: not {{ use_cache }} and not {{ no_network }}
-  tags:
-    - download2
-
-- name: Give apache permission to write moodle directory
-  file: path={{ xsce_base }}/moodle
-        group=apache
-        mode=0775
-        state=directory
-        recurse=true
 
 - name: Remove stock moodle conf
   file: path='/etc/httpd/conf.d/moodle.conf'
@@ -36,22 +20,15 @@
             group=root
             mode={{ item.mode }}
   with_items:
-    - src: 'config.php.j2'
-      dest: '{{ xsce_base }}/moodle'
-      mode: '0644'
-
-- name: Enable moodle
-  template: src=022-moodle.j2
-            dest=/etc/httpd/conf.d/022-moodle.conf
-            owner=root
-            group=root
-            mode=0644
-  when: moodle_enabled
-
-- name: Disable moodle
-  file: path=/etc/httpd/conf.d/022-moodle.conf
-        state=absent
-  when: not moodle_enabled
+    - src: '020-xsce-moodle.conf.j2'
+      dest: '/etc/httpd/conf.d/020-xsce-moodle.conf'
+      mode: '0655'
+    - src: 'moodle-xs.service.j2'
+      dest: '/etc/systemd/system/moodle-xs.service'
+      mode: '0655'
+    - src: 'moodle-xs-init'
+      dest: '/usr/libexec/moodle-xs-init'
+      mode: '0755'
 
 - name: Stop postgresql
   service: name=postgresql
@@ -62,25 +39,24 @@
            state=started
 
 - name: Create db user
-  postgresql_user: name=moodle
-                   password=moodle
+  postgresql_user: name=apache
+                   password=apache
                    role_attr_flags=NOSUPERUSER,NOCREATEROLE,NOCREATEDB
                    state=present
   sudo: yes
   sudo_user: postgres
 
 - name: Create database
-  postgresql_db: name=moodle
+  postgresql_db: name=moodle-xs
                  encoding=utf8
-                 owner=moodle
+                 owner=apache
                  template=template0
                  state=present
   sudo: yes
   sudo_user: postgres
 
 - name: Execute moodle startup script
-#  command: /usr/libexec/moodle-xs-init start
-  shell: php {{ xsce_base }}/moodle/install.php
+  command: /usr/libexec/moodle-xs-init start
 
 - name: Restart postgresql-xs
   service: name=postgresql-xs
@@ -89,6 +65,15 @@
 - name: Restart httpd
   service: name=httpd
            state=restarted
+
+- name: Enable moodle service
+  service: name=moodle-xs
+           enabled=yes
+           state=started
+
+- name: fetch the administrative password for moodle
+  shell: cat /etc/moodle/adminpw
+  register: moodlepw
 
 - name: add moodle to service list
   ini_file: dest='{{ service_filelist }}'
@@ -102,5 +87,7 @@
       value: '"Access the Moodle learning management system."'
     - option: path
       value: /moodle
-    - option: moodle-enabled
+    - option: enabled
       value: "{{ moodle_enabled }}"
+    - option: adminpw
+      value: "{{ moodlepw.stdout }}"
