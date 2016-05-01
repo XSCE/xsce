@@ -37,6 +37,5 @@
               value: '"phpMyAdmin is an interface with a mysql database written in php, and available to administer the database engine locally or across the network"'
             - option: path
               value: /opt/phpmyadmin
-# TODO (maybe?) separately enable phpmyadmin in GUI (and disable the set fact above
             - option: enabled
               value: "{{ phpmyadmin_enabled }}"
