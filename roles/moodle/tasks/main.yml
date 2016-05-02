@@ -4,13 +4,15 @@
        state=present
   with_items:
     - python-psycopg2
+    - expect
   tags:
     - download
 
 - name: Download the latest moodle repo
   git: repo={{ moodle_repo_url }}
-       dest={{ xsce_base }}/moodle
+       dest={{ moodle_base }}
        depth=1
+       force=yes
        version="MOODLE_{{ moodle_version }}_STABLE"
 #  ignore_errors: yes
   when: not {{ use_cache }} and not {{ no_network }}
@@ -18,27 +20,36 @@
     - download2
 
 - name: Give apache permission to write moodle directory
-  file: path={{ xsce_base }}/moodle
+  file: path={{ moodle_base }}
         group=apache
         mode=0775
         state=directory
         recurse=true
+
+- name: Create a moodle data dir with apache permission to write 
+  file: path={{ moodle_data }}
+        owner=apache
+        group=apache
+        mode=0770
+        state=directory
 
 - name: Remove stock moodle conf
   file: path='/etc/httpd/conf.d/moodle.conf'
         state=absent
 
 - name: Configure moodle
-  template: backup=yes
-            src={{ item.src }}
+  template: src={{ item.src }}
             dest={{ item.dest }}
             owner=root
             group=root
             mode={{ item.mode }}
   with_items:
     - src: 'config.php.j2'
-      dest: '{{ xsce_base }}/moodle'
-      mode: '0644'
+      dest: '{{ moodle_base }}/config.php'
+      mode: 0644
+    - src:  moodle_expect.j2
+      dest: /usr/local/sbin/moodle_expect
+      mode: 0755
 
 - name: Enable moodle
   template: src=022-moodle.j2
@@ -62,8 +73,8 @@
            state=started
 
 - name: Create db user
-  postgresql_user: name=moodle
-                   password=moodle
+  postgresql_user: name=Admin
+                   password=changeme
                    role_attr_flags=NOSUPERUSER,NOCREATEROLE,NOCREATEDB
                    state=present
   sudo: yes
@@ -78,9 +89,11 @@
   sudo: yes
   sudo_user: postgres
 
+- pause: 
+
 - name: Execute moodle startup script
 #  command: /usr/libexec/moodle-xs-init start
-  shell: php {{ xsce_base }}/moodle/install.php
+  shell: sudo -u apache php {{ moodle_base }}/admin/cli/install.php --non-interactive --agree-license --adminpass=(Changem3)
 
 - name: Restart postgresql-xs
   service: name=postgresql-xs
@@ -100,7 +113,7 @@
       value: Moodle
     - option: description
       value: '"Access the Moodle learning management system."'
-    - option: path
-      value: /moodle
-    - option: moodle-enabled
+    - option: 'directory path'
+      value: '{{ moodle_base }}'
+    - option: moodle_enabled
       value: "{{ moodle_enabled }}"
