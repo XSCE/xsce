@@ -36,3 +36,20 @@
            enabled=no
            state=stopped
   when: not calibre_enabled
+
+- name: Add calibre to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=calibre
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: description
+      value: '"Calibre epub book server"'
+    - option: url
+      value: "{{ calibre_src_url }}"
+    - option: database
+      value: "{{ calibre_dbpath }}"
+    - option: port
+      value: "{{ calibre_port }}"
+    - option: enabled
+      value: "{{ calibre_enabled }}"
