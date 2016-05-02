@@ -32,13 +32,6 @@
         mode=0770
         state=directory
 
-- name: Create a moodle data dir with apache permission to write 
-  file: path={{ moodle_data }}
-        owner=apache
-        group=apache
-        mode=0770
-        state=directory
-
 - name: Remove stock moodle conf
   file: path='/etc/httpd/conf.d/moodle.conf'
         state=absent
