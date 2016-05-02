@@ -33,6 +33,13 @@
         mode=0770
         state=directory
 
+- name: Create a moodle data dir with apache permission to write 
+  file: path={{ moodle_data }}
+        owner=apache
+        group=apache
+        mode=0770
+        state=directory
+
 - name: Remove stock moodle conf
   file: path='/etc/httpd/conf.d/moodle.conf'
         state=absent
@@ -75,9 +82,15 @@
   sudo: yes
   sudo_user: postgres
 
+- pause: 
+
 - name: Execute moodle startup script
 #  command: /usr/libexec/moodle-xs-init start
+<<<<<<< HEAD
   script: moodle_installer
+=======
+  shell: sudo -u apache php {{ moodle_base }}/admin/cli/install.php --non-interactive --agree-license --adminpass=(Changem3)
+>>>>>>> obsolete the expect approach
 
 - name: Restart postgresql-xs
   service: name=postgresql-xs
