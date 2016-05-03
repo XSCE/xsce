@@ -74,9 +74,13 @@
   sudo: yes
   sudo_user: postgres
 
+- name: see if the config.php file exists
+  stat: path='{{ moodle_base }}/config.php
+  register: config
+
 - name: Execute moodle startup script
-#  command: /usr/libexec/moodle-xs-init start
   script: moodle_installer
+  when: config.stat.exists is defined and config.stat.exists
 
 - name: Restart postgresql-xs
   service: name=postgresql-xs
