@@ -1,8 +1,8 @@
 # replaces stock moodle.conf
-Alias /moodle {{ xsce_base }}/moodle
+Alias /moodle {{ moodle_base }}
 
 # Moodle public web pages - must be publically accessible
-<Directory {{ xsce_base }}/moodle>
+<Directory {{ moodle_base }}>
   Require all granted
 </Directory>
 
