@@ -4,9 +4,9 @@ After=docker.service
 Requires=docker.service
 
 [Service]
-ExecStart=/opt/bin/systemd-docker run --rm --name %n replaceafill/schooltool:2.8
-Restart=always
-RestartSec=10s
+ExecStart=/usr/bin/docker run -p 7080:7080 -v /var/lib/schooltool replaceafill/schooltool:2.8
+#Restart=always
+#RestartSec=10s
 Type=notify
 NotifyAccess=all
 TimeoutStartSec=120
