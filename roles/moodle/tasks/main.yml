@@ -75,7 +75,7 @@
   sudo_user: postgres
 
 - name: see if the config.php file exists
-  stat: path='{{ moodle_base }}/config.php
+  stat: path='{{ moodle_base }}/config.php'
   register: config
 
 - name: Execute moodle startup script
