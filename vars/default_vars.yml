@@ -113,11 +113,13 @@ gw_block_https: False
 xsce_gateway_enabled: True
 
 # Home page
-xsce_home_url: /home
+# Default to the gui where the selection is made or override in localvars
+xsce_home_url: /admin
 
 # you can change xsce_home_url in local_vars in order to get a different home page
 # these could be one of the following (assuming they are enabled):
 
+#xsce_home_url: /home
 #xsce_home_url: /xs-portal - the alternate home page
 #xsce_home_url: /wordpress
 #xsce_home_url: /wiki - either dokuwiki or mediawiki
@@ -165,6 +167,7 @@ xo_services_enabled: True
 # MYSQL
 mysql_install: True
 mysql_enabled: False
+phpmyadmin_install: False
 phpmyadmin_enabled: False
 # password is fixmysql
 # mysql_root_password: $6$xsce51$3ICIW0CLWxxMW2a3yrHZ38ukZItD5tcadL4rWcE9D.qIGStxhh8rRsaSxoj3b.MYxI/VRDNjpzSYK/V6zkWFI0
@@ -230,9 +233,6 @@ kalite_server_port: 8008
 kalite_enabled: False
 kalite_cron_enabled: False
 
-#Sugarizer
-sugarizer_install
-sugarizer_enabled
 
 # 8-MGMT-TOOLS
 
