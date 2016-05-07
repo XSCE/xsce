@@ -14,7 +14,7 @@
     - npm
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
-    - download2
+    - download
 
 - name: Create systemd files
   template: backup=yes
