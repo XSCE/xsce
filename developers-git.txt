@@ -16,6 +16,9 @@
 	fetch = +refs/heads/*:refs/remotes/origin/*
 	url = https://github.com/tim-moody/xsce
 [branch "master"]
-	remote = master
+	remote = origin
 	merge = refs/heads/master
+[branch "release-6.0"]
+	remote = origin
+	merge = refs/heads/release-6.0
 
