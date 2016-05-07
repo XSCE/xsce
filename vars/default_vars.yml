@@ -165,6 +165,7 @@ xo_services_enabled: True
 # MYSQL
 mysql_install: True
 mysql_enabled: False
+phpmyadmin_install: False
 phpmyadmin_enabled: False
 # password is fixmysql
 # mysql_root_password: $6$xsce51$3ICIW0CLWxxMW2a3yrHZ38ukZItD5tcadL4rWcE9D.qIGStxhh8rRsaSxoj3b.MYxI/VRDNjpzSYK/V6zkWFI0
@@ -230,9 +231,6 @@ kalite_server_port: 8008
 kalite_enabled: False
 kalite_cron_enabled: False
 
-#Sugarizer
-sugarizer_install
-sugarizer_enabled
 
 # 8-MGMT-TOOLS
 
