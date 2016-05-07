@@ -19,6 +19,16 @@
    - { src: 'dhcp/dhcpd-env.j2' , dest: '/etc/sysconfig/dhcpd' , mode: '0755' }
   when: dhcpd_enabled
 
+- name: Copy named  file
+  template: src={{ item.src }}
+            dest={{ item.dest }}
+            owner=root
+            group=root
+            mode={{ item.mode }}
+  with_items:
+   - { src: 'named/school.local.zone.db' , dest: '/var/named-xs/' , mode: '0755' }
+   - { src: 'named/school.internal.zone.db' , dest: '/var/named-xs/' , mode: '0755' }
+
 - name: Enable iptables service
   service: name=iptables
            enabled=yes
