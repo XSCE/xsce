@@ -33,7 +33,6 @@
 - name: Create a user to access the elgg database
   mysql_user: name={{ dbuser }} host={{ item }} password={{ dbpassword }} priv=*.*:ALL
   with_items:
-        - "{{ ansible_hostname }}"
         - 127.0.0.1
         - ::1
         - localhost
