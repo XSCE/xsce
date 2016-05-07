@@ -1,0 +1,15 @@
+- name: Disable updating ansible on CentOS
+  shell: sed -i -e '/^enabled=/a exclude=ansible' {{ item }}
+  with_items:
+    - /etc/yum.repos.d/CentOS-Base.repo
+    - /etc/yum.repos.d/CentOS-CR.repo
+    - /etc/yum.repos.d/CentOS-fasttrack.repo
+    - /etc/yum.repos.d/CentOS-Vault.repo
+  when: ansible_distribution == "CentOS"
+
+- name: Disable updating ansible on Fedora
+  shell: sed -i -e '/^enabled=/a exclude=ansible' {{ item }}
+  with_items:
+    - /etc/yum.repos.d/fedora.repo
+    - /etc/yum.repos.d/fedora-updates.repo
+    - /etc/yum.repos.d/fedora-updates-testing.repo
