@@ -22,5 +22,5 @@
   with_items:
             - content_dir.conf
             - xsce-home-page.conf
-  notify: restart apache
   when: not installing
+  notify: restart apache
