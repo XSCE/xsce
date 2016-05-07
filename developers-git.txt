@@ -1,0 +1,24 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+[remote "origin"]
+	fetch = +refs/heads/*:refs/remotes/origin/*
+	url = https://github.com/XSCE/xsce
+[remote "jv"]
+	fetch = +refs/heads/*:refs/remotes/origin/*
+	url = https://github.com/jvonau/xsce
+[remote "gh"]
+	fetch = +refs/heads/*:refs/remotes/origin/*
+	url = https://github.com/georgejhunt/xsce
+[remote "tm"]
+	fetch = +refs/heads/*:refs/remotes/origin/*
+	url = https://github.com/tim-moody/xsce
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master
+[branch "release-6.0"]
+	remote = origin
+	merge = refs/heads/release-6.0
+
