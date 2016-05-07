@@ -5,4 +5,4 @@
 - include: raspberry_pi_2.yml
   when: rpi_model != "none"
 - include: fix_ansible_version.yml
-  when: not gui_version is defined or xsce_base < 1
+  when: not gui_version is defined or xsce_base_ver < 1
