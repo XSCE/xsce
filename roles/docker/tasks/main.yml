@@ -31,8 +31,8 @@
            state=started
   when: docker_enabled
            
-    - name: stop the docker daemon
-      service: enabled=no       
-               state=stopped
-      when: not docker_enabled
+- name: stop the docker daemon
+  service: enabled=no       
+           state=stopped
+  when: not docker_enabled
                
