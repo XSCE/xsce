@@ -1,5 +1,6 @@
 # These entries should never be changed in this file.
 # These are defaults for boolean routines, 
+xsce_base: 0
 installing: False
 exFAT_enabled: False
 no_NM_reload: False

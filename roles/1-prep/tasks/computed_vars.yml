@@ -10,6 +10,11 @@
      xsce_base: '{{ ansible_local["local_facts"]["xsce_base"] }}'
      xsce_preload: '{{ ansible_local["local_facts"]["xsce_preload"] }}'
 
+- name: Defaulting xsce_base
+  set_fact:
+     xsce_base: 0
+  when: xsce_base == ""
+
 - name: Defaulting xsce_prepped
   set_fact:
      xsce_prepped: False
