@@ -43,8 +43,8 @@
       value: '{{ phplib_dir }}'
     - option: 'runtime_preload'
       value: '{{ xsce_preload }}'
-    - option: 'runtime_base'
-      value: '{{ xsce_base }}'
+    - option: 'runtime_base_ver'
+      value: '{{ xsce_base_ver }}'
 
 # Put all computed vars here so derive properly from any prior var file
 - name: Set port 80 for Admin Console

@@ -11,9 +11,14 @@
            state=restarted
   when: not installing
 
+- name: Create hidden xsce-prepped file
+  file: dest=/.xsce_base_ver
+        state=touch
+
 # If we got here we're done
 - name: Create hidden xsce-base file 
-  lineinfile: dest=/.xsce-base
+  lineinfile: dest=/.xsce_base_ver
               regexp='^VERSION=*'
               line='VERSION="{{ gui_version }}"'
               state=present
+  when: not installing
