@@ -36,6 +36,7 @@
 
 - name: re-Install packages
   shell: yum -y reinstall sed libidn grep which util-linux wget gnupg2 groff gnash yum
+  when: not osbuilder is defined
 
 - name: Configure networkmanager plugin
   ini_file: dest=/etc/NetworkManager/NetworkManager.conf
