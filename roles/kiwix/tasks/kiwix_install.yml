@@ -42,6 +42,7 @@
         mode=0644
         owner=root
         group=root
+        force=no
 
 - name: Copy kiwix library file
   copy: src=library.xml
@@ -49,11 +50,12 @@
         mode=0644
         owner=root
         group=root
+        force=no
 
 # Create kiwix service
 
 - name: Create kiwix-serve service
-  template: backup=yes
+  template: backup=no
             src={{ item.src }}
             dest={{ item.dest }}
             owner=root
@@ -101,3 +103,9 @@
            enabled=yes
            state=restarted
   when: kiwix_serve_enabled
+
+- name: Disable kiwix-serve service
+  service: name=kiwix-serve
+           enabled=no
+           state=stopped
+  when: not kiwix_serve_enabled
