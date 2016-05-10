@@ -151,6 +151,10 @@ authserver_enabled: True
 usb_lib_install: True
 usb_lib_enabled: True
 
+# docker
+docker_install: True
+docker_enabled: False
+
 # 5-XO-SERVICES
 
 # ejabberd
