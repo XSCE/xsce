@@ -7,3 +7,4 @@ kiwix_content_path: "{{ xsce_zim_path }}/content"
 kiwix_install: True
 kiwix_serve_enabled: False
 kiwix_content_found: False
+kiwix_first_pass: False
