@@ -9,6 +9,31 @@
     - "{{ kiwix_content_path }}"
     - "{{ xsce_zim_path }}/index"
 
+- name: Copy kiwix library file if needed
+  template: src={{ item }}
+            dest="{{ kiwix_library_xml }}"
+            mode=0644
+            owner=root
+            group=root
+            force=no
+  with_items:
+    - library.xml
+  register: kiwix_first_pass_test
+
+- name: Set kiwix first pass
+  set_fact:
+    kiwix_first_pass: True
+  when: kiwix_first_pass_test.changed
+
+- name: Copy test.zim file
+  copy: src=test.zim
+        dest="{{ kiwix_content_path }}"
+        mode=0644
+        owner=root
+        group=root
+        force=no
+  when: kiwix_first_pass
+
 # we get a whole web server for intel but only the kiwix execs for arm
 
 - name: Unarchive it to permanent location - not bin_only
@@ -16,7 +41,7 @@
              dest="{{ xsce_base }}"
              owner=root
              group=root
-  when: not kiwix_src_bin_only
+  when: not kiwix_src_bin_only and kiwix_first_pass
 
 - name: Create directory for kiwix bin
   file: path="{{ xsce_base }}/kiwix/bin"
@@ -30,30 +55,16 @@
              dest="{{ xsce_base }}/kiwix/bin"
              owner=root
              group=root
-  when: kiwix_src_bin_only
+  when: kiwix_src_bin_only and kiwix_first_pass
 
 # workaround because unarchive does not set ownership properly
 - name: Set kiwix ownership
   command: "chown -R root:root {{ xsce_base }}"
 
-- name: Copy test.zim file
-  copy: src=test.zim
-        dest="{{ kiwix_content_path }}"
-        mode=0644
-        owner=root
-        group=root
-
-- name: Copy kiwix library file
-  copy: src=library.xml
-        dest="{{ kiwix_library_xml }}"
-        mode=0644
-        owner=root
-        group=root
-
 # Create kiwix service
 
 - name: Create kiwix-serve service
-  template: backup=yes
+  template: backup=no
             src={{ item.src }}
             dest={{ item.dest }}
             owner=root
@@ -101,3 +112,9 @@
            enabled=yes
            state=restarted
   when: kiwix_serve_enabled
+
+- name: Disable kiwix-serve service
+  service: name=kiwix-serve
+           enabled=no
+           state=stopped
+  when: not kiwix_serve_enabled
