@@ -151,6 +151,14 @@ authserver_enabled: True
 usb_lib_install: True
 usb_lib_enabled: True
 
+# docker
+docker_install: True
+docker_enabled: False
+
+# Common UNIX printing system
+cups_install: True
+cups_enabled: False
+
 # 5-XO-SERVICES
 
 # ejabberd
@@ -194,7 +202,7 @@ dokuwiki_enabled: False
 # 7-EDU-APPS
 
 # Moodle
-moodle_install: False
+moodle_install: True
 moodle_enabled: False
 
 # Internet-in-a-Box
@@ -233,6 +241,9 @@ kalite_server_port: 8008
 kalite_enabled: False
 kalite_cron_enabled: False
 
+#Sugarizer
+sugarizer_install: True
+sugarizer_enabled: False
 
 # 8-MGMT-TOOLS
 
