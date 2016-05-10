@@ -149,6 +149,14 @@ authserver_enabled: True
 usb_lib_install: True
 usb_lib_enabled: True
 
+# docker
+docker_install: True
+docker_enabled: False
+
+# Common UNIX printing system
+cups_install: True
+cups_enabled: False
+
 # 5-XO-SERVICES
 
 # ejabberd
@@ -230,8 +238,8 @@ kalite_enabled: False
 kalite_cron_enabled: False
 
 #Sugarizer
-sugarizer_install
-sugarizer_enabled
+sugarizer_install: True
+sugarizer_enabled: False
 
 # 8-MGMT-TOOLS
 
@@ -242,6 +250,11 @@ schooltool_enabled: False
 # sugar-stats
 sugar_stats_install: True
 sugar_stats_enabled: False
+
+# phpmyadmin is GUI to set up and query mysql databases
+phpmyadmin_install: False
+phpmyadmin_enabled: False
+
 
 # ajenti
 ajenti_install: True
