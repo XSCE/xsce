@@ -187,8 +187,8 @@ wordpress_enabled: False
 # 7-EDU-APPS
 
 # Moodle
-moodle_install: True
-moodle_enabled: True
+moodle_install: False
+moodle_enabled: False
 
 # Internet-in-a-Box
 iiab_install: True
