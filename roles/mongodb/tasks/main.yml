@@ -5,7 +5,7 @@
     - mongodb
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
-    - download2
+    - download
 
 - name: create the data directory for mongodb
   file: state=directory
