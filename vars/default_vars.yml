@@ -7,6 +7,7 @@
 # Installation Constants
 xsce_base: /opt/schoolserver
 xsce_dir: "{{ xsce_base }}/xsce"
+content_base: "/library"
 pip_packages_dir: "{{ xsce_base }}/pip-packages"
 yum_packages_dir: "{{ xsce_base }}/yum-packages"
 downloads_dir: "{{ xsce_base }}/downloads"
