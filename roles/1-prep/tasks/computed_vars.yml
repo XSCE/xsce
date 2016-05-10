@@ -61,7 +61,7 @@
   set_fact:
     mysql_install: True
     mysql_enabled: True
-  when: elgg_enabled or rachel_enabled or owncloud_enabled or phpmyadmin_enabled
+  when: elgg_enabled or rachel_enabled or owncloud_enabled or phpmyadmin_enabledor wordpress_enabled
 
 # There might be other db's
 - name: Turn on postgresql if moodle or pathagar enabled
