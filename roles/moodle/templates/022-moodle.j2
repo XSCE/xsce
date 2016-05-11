@@ -7,6 +7,6 @@ Alias /moodle {{ moodle_base }}
 </Directory>
 
 # Moodle private data - must NOT be publically accessible
-<Directory {{ moodle_data }}
+<Directory {{ moodle_data }}>
   Require all denied
 </Directory>
