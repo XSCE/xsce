@@ -19,6 +19,7 @@
 - name: in Centos, the following config dir is symlink to /etc/owncloud
   file: path=/etc/owncloud
         state=directory
+  when: ansible_distribution == 'CentOS'
 
 - name: Add autoconfig file
   template: src=autoconfig.php.j2
