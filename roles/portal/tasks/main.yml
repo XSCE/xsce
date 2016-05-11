@@ -9,18 +9,3 @@
 
 - include: xs-portal.yml
 - include: alt-home.yml
-
-- include: home-page.yml
-  when: gui_desired_home_url is defined
-
-- name: Install home page and content config file
-  template: src={{ item }}
-            dest=/etc/httpd/conf.d/
-            owner=root
-            group=root
-            mode=0644
-  with_items:
-            - content_dir.conf
-            - xsce-home-page.conf
-  when: not installing
-  notify: restart apache
