@@ -1,0 +1,46 @@
+# administer this service by browsing to localhost:631
+- name: get the CUPS package installed
+  yum: name={{ item }}
+       state=installed
+  with_items:
+    - cups
+  when: cups_install
+  tags:
+    - download
+  
+- name: Enable services for cups
+  service: name={{ item }}
+           state=started
+           enabled=yes
+  with_items:
+    - cups
+    - cups-browsed
+  when: cups_enabled
+
+- name: Permit headless admin of CUPS -- only works when cups daemon is running
+  shell: "cupsctl --remote-admin"
+  when: cups_enabled
+
+- name: Disable services for cups
+  service: name={{ item }}
+          state=stopped
+          enabled=no
+  with_items:
+    - cups
+    - cups-browsed
+  when: not cups_enabled
+
+- name: add cups to service list
+  ini_file: dest={{ service_filelist }}
+            section=cups
+            option={{ item.option }}
+            value={{ item.value }}
+  with_items:
+    - option: name
+      value: '"Common UNIX Printing System (CUPS)"'
+    - option: description
+      value: '"CUPS  is a modular printing system  which allows a computer to act as a print server. A computer running CUPS is a host that can accept print jobs from client computers, process them, and send them to the appropriate printer."'
+    - option: installed
+      value: "{{ cups_install }}"
+    - option: enabled
+      value: "{{ cups_enabled }}"
