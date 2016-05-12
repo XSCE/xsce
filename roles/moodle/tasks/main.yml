@@ -80,7 +80,7 @@
 
 - name: Execute moodle startup script
   script: moodle_installer
-  when: config.stat.exists is defined and not config.stat.exists
+  when: moodle_enabled and config.stat.exists is defined and not config.stat.exists
   
 
 - name: Restart postgresql-xs
