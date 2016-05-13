@@ -59,4 +59,4 @@
     - download
 
 - include: selinux.yml
-  when: ansible_selinux["status"] != "disabled"
+  when: ansible_selinux
