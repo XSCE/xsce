@@ -1,6 +1,6 @@
 #!/bin/bash -x
-sudo -u apache /usr/bin/php /opt/schoolserver/moodle/admin/cli/install.php \
-"--wwwroot=http://schoolserver.lan/moodle --dataroot=/library/moodle \
+sudo -u apache /usr/bin/php {{moodle_base}}/admin/cli/install.php \
+"--wwwroot=http://schoolserver.lan/moodle --dataroot={{moodle_date}} \
 --dbtype=pgsql --dbname=moodle --dbuser=Admin --dbpass=changeme \
 --fullname=\"Your School\" --shortname=School \
 --adminuser=admin --adminpass=changeme \
