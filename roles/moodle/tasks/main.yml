@@ -78,8 +78,12 @@
   stat: path='{{ moodle_base }}/config.php'
   register: config
 
+- name: Put a startup install script in place
+  template: path={{moodle_base}}
+            src=moodle_installer
+
 - name: Execute moodle startup script
-  script: moodle_installer
+  shell: '{{moodle_base}}/moodle_installer'
   when: moodle_enabled and config.stat.exists is defined and not config.stat.exists
   
 
