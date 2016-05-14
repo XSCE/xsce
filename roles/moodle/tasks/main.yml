@@ -25,6 +25,12 @@
         state=directory
 #        recurse=true
 
+- name: Give apache permission to write moodle data directory
+  file: path={{ content_base }}/dbdata/moodle
+        owner=apache
+        mode=0775
+        state=directory
+
 - name: Create a moodle data dir with apache permission to write 
   file: path={{ moodle_data }}
         owner=apache
@@ -79,8 +85,9 @@
   register: config
 
 - name: Put a startup install script in place
-  template: path={{moodle_base}}
+  template: dest={{moodle_base}}
             src=moodle_installer
+            mode=0755
 
 - name: Execute moodle startup script
   shell: '{{moodle_base}}/moodle_installer'
