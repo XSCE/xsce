@@ -1,0 +1,29 @@
+- name: Install docker
+  yum:  name=docker
+  when: docker_install
+  tags: download
+
+- name: Enable docker
+  service: name=docker
+           state=started
+           enabled=true
+  when: docker_enabled
+
+- name: Disable docker
+  service: name=docker
+           state=stopped
+           enabled=false
+  when: not docker_enabled
+
+- name: add docker to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=docker
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: Docker Container
+    - option: description
+      value: '"Docker allows a person to package an application with all of its dependencies into a standardized unit for software development."'
+    - option: enabled
+      value: "{{ docker_enabled }}"
