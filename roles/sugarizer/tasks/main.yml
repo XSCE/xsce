@@ -25,6 +25,7 @@
             mode=0644
   with_items:
      - { src: 'sugarizer.service.j2' , dest: '/etc/systemd/system/sugarizer.service'}
+     - { src: 'sugarizer.ini' , dest: '{{xsce_base}}/sugarizer/server'}
 
 - name: enable services
   service: name={{ item.name }}
