@@ -78,10 +78,6 @@
   stat: path='{{ moodle_base }}/config.php'
   register: config
 
-- name: Execute moodle startup script
-  script: moodle_installer
-  when: moodle_enabled and config.stat.exists is defined and not config.stat.exists
-  
 
 - name: Restart postgresql-xs
   service: name=postgresql-xs
@@ -91,6 +87,10 @@
   service: name=httpd
            state=restarted
 
+- name: Execute moodle startup script
+  script: moodle_installer
+  when: moodle_enabled and config.stat.exists is defined and not config.stat.exists
+  
 - name: add moodle to service list
   ini_file: dest='{{ service_filelist }}'
             section=moodle
