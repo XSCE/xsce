@@ -1,11 +1,16 @@
 - name: Clone sugarizer repo
   git: repo=https://github.com/llaske/sugarizer.git
+  when: not {{ use_cache }} and not {{ no_network }}
        dest={{ sugarizer_src }}
        update=yes
        version=master
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
+
+- name: Prevent the stall on change to ini file in the git repo
+  shell: git update-index --assume-unchanged {{xsce_base}}/sugarizer/server/sugarizer.ini
+  when: not {{ use_cache }} and not {{ no_network }}
 
 - name: Install sugarizer required packages
   yum: name={{ item }}
