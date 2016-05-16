@@ -1,16 +1,16 @@
 - name: Clone sugarizer repo
   git: repo=https://github.com/llaske/sugarizer.git
   when: not {{ use_cache }} and not {{ no_network }}
-       dest={{ sugarizer_src }}
+       dest={{ downloads_dir }}
        update=yes
        version=master
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
 
-- name: Prevent the stall on change to ini file in the git repo
-  shell: git update-index --assume-unchanged {{xsce_base}}/sugarizer/server/sugarizer.ini
-  when: not {{ use_cache }} and not {{ no_network }}
+- name: Leave git pristine, but copy to target location for modification/install
+  synchronize: src={{ downloads_dir }}/sugarizer
+               dest={{ sugarizer_location }}
 
 - name: Install sugarizer required packages
   yum: name={{ item }}
@@ -21,16 +21,19 @@
   tags:
     - download
 
-- name: Create systemd files
-  template: backup=yes
-            src={{ item.src }}
+- name: Create systemd files and copy our ini file 
+  template: src={{ item.src }}
             dest={{ item.dest }}
             owner=root
             group=root
             mode=0644
   with_items:
      - { src: 'sugarizer.service.j2' , dest: '/etc/systemd/system/sugarizer.service'}
-     - { src: 'sugarizer.ini' , dest: '{{xsce_base}}/sugarizer/server'}
+     - { src: 'sugarizer.ini' , dest: '{{sugarizer_location}}/server'}
+
+- name: Create the express framework for node.js
+  shell: "cd {{sugarizer_location}}/server; npm install"
+  creates: {{sugarizer_location}}/server/node_modules
 
 - name: enable services
   service: name={{ item.name }}
