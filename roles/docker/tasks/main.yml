@@ -1,5 +1,8 @@
 - name: Install docker
-  yum:  name=docker
+  yum:  name={{item.name}}
+  with_items:
+    - name=docker
+    - name=docker-python
   when: docker_install
   tags: download
 
