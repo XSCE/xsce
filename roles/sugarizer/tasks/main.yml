@@ -1,7 +1,6 @@
 - name: Clone sugarizer repo
   git: repo=https://github.com/llaske/sugarizer.git
-  when: not {{ use_cache }} and not {{ no_network }}
-       dest={{ downloads_dir }}
+       dest={{ downloads_dir }}/sugarizer
        update=yes
        version=master
   when: not {{ use_cache }} and not {{ no_network }}
@@ -9,7 +8,7 @@
     - download2
 
 - name: Leave git pristine, but copy to target location for modification/install
-  synchronize: src={{ downloads_dir }}/sugarizer
+  synchronize: src={{ downloads_dir }}/sugarizer/
                dest={{ sugarizer_location }}
 
 - name: Install sugarizer required packages
@@ -29,11 +28,13 @@
             mode=0644
   with_items:
      - { src: 'sugarizer.service.j2' , dest: '/etc/systemd/system/sugarizer.service'}
-     - { src: 'sugarizer.ini' , dest: '{{sugarizer_location}}/server'}
+     - { src: 'sugarizer.ini' , dest: '{{ sugarizer_location }}/server' }
 
 - name: Create the express framework for node.js
-  shell: "cd {{sugarizer_location}}/server; npm install"
-  creates: {{sugarizer_location}}/server/node_modules
+  shell:  npm install
+  args:
+     chdir: "{{ sugarizer_location }}/server" 
+     creates: "{{ sugarizer_location }}/server/node_modules"
 
 - name: enable services
   service: name={{ item.name }}
