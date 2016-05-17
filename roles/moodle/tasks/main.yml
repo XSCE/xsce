@@ -4,6 +4,7 @@
        state=present
   with_items:
     - python-psycopg2
+    - php-pgsql
   tags:
     - download
 
@@ -24,6 +25,12 @@
         mode=0775
         state=directory
 #        recurse=true
+
+- name: Give apache permission to write moodle data directory
+  file: path={{ content_base }}/dbdata/moodle
+        owner=apache
+        mode=0775
+        state=directory
 
 - name: Create a moodle data dir with apache permission to write 
   file: path={{ moodle_data }}
@@ -78,11 +85,15 @@
   stat: path='{{ moodle_base }}/config.php'
   register: config
 
+- name: Put a startup install script in place
+  template: dest={{moodle_base}}
+            src=moodle_installer
+            mode=0755
+
 - name: Execute moodle startup script
-  script: moodle_installer
+  shell: '{{moodle_base}}/moodle_installer'
   when: moodle_enabled and config.stat.exists is defined and not config.stat.exists
   
-
 - name: Restart postgresql-xs
   service: name=postgresql-xs
            state=restarted
@@ -91,6 +102,10 @@
   service: name=httpd
            state=restarted
 
+- name: Execute moodle startup script
+  shell: '{{moodle_base}}/moodle_installer'
+  when: moodle_enabled and config.stat.exists is defined and not config.stat.exists
+  
 - name: add moodle to service list
   ini_file: dest='{{ service_filelist }}'
             section=moodle
