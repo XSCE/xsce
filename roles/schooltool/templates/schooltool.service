@@ -1,0 +1,16 @@
+[unit]
+Description=schooltool
+After=docker.service
+Requires=docker.service
+
+[Service]
+ExecStart=/usr/bin/docker run -d -p 7080:7080 -v /var/lib/schooltool:/var/lib/schooltool replaceafill/schooltool:2.8
+#Restart=always
+#RestartSec=10s
+Type=notify
+NotifyAccess=all
+TimeoutStartSec=120
+TimeoutStopSec=15
+
+[Install]
+WantedBy=multi-user.target
