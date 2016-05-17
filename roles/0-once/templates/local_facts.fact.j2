@@ -41,7 +41,7 @@ then
 else
   PRELOAD="False"
 fi
-
+ANSIBLE_VERSION=$(ansible --version|head -n 1|cut -f 2 -d " ")
 cat <<EOF
 {"phplib_dir"             : "$PHPLIB_DIR",
 "xsce_branch"             : "$BRANCH",
@@ -49,5 +49,6 @@ cat <<EOF
 "xsce_uuid"               : "$UUID",
 "xo_model"                : "$XO_VERSION",
 "xsce_base_ver"           : "$BASE",
+"ansble_version"	  : "$ANSIBLE_VERSION",
 "xsce_preload"            : "$PRELOAD"}
 EOF

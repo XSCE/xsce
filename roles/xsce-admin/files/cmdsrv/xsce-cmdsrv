@@ -709,6 +709,10 @@ def subproc_cmd(cmdstr):
     outp = subprocess.check_output(args)
     return (outp)
 
+def get_ansible_version():
+    outp = subprocess.check_output("ansible --version | head -n1 | cut -f2 -d' '",shell=True)
+    return outp
+
 def wget_file(cmd_info):
     resp = cmd_info['cmd'] + " done."
 
@@ -1628,22 +1632,32 @@ def get_ansible_facts():
     command = "/usr/bin/ansible localhost -i " + xsce_git_path + "/ansible_hosts  -m setup -o  --connection=local"
     args = shlex.split(command)
     outp = subprocess.check_output(args)
-    ans_str = outp.split('success >> ')
+    if (get_ansible_version() < '2'):
+        splitter = 'success >> '
+    else:
+        splitter = 'SUCCESS => '
+    ans_str = outp.split(splitter)
     ans = json.loads(ans_str[1])
     ansible_facts = ans['ansible_facts']
 
 def get_ansible_tags():
     global ansible_tags
 
-    command = "/usr/bin/ansible-playbook -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local --tags=???"
+    if (get_ansible_version() < '2'):
+        command = "/usr/bin/ansible-playbook -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local --tags=???"
+        splitter = 'values: '
+    else:
+        command = "/usr/bin/ansible-playbook -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local --list-tags"
+        splitter = 'TASK TAGS: '
+
     args = shlex.split(command)
     try:
-        subprocess.check_output(args)
+        outp = subprocess.check_output(args)
     except subprocess.CalledProcessError as e:
-        outp = e.output
-
+        pass
+        
     # get just the tag list and remove final newline
-    split = outp.split('values: ')
+    split = outp.split(splitter)
     ans_tags_str = split[1].split('\n')[0]
     ansible_tags['ansible_tags'] = ans_tags_str
 
