@@ -1,0 +1,3 @@
+sugarizer_install: True
+sugarizer_enabled: False
+sugarizer_location: '/var/www/html/sugarizer'

@@ -1,0 +1,67 @@
+- name: Clone sugarizer repo
+  git: repo=https://github.com/llaske/sugarizer.git
+       dest={{ downloads_dir }}/sugarizer
+       update=yes
+       version=master
+  when: not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download2
+
+- name: Leave git pristine, but copy to target location for modification/install
+  synchronize: src={{ downloads_dir }}/sugarizer/
+               dest={{ sugarizer_location }}
+
+- name: Install sugarizer required packages
+  yum: name={{ item }}
+  with_items:
+    - nodejs
+    - npm
+  when: not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download
+
+- name: Create systemd files and copy our ini file 
+  template: src={{ item.src }}
+            dest={{ item.dest }}
+            owner=root
+            group=root
+            mode=0644
+  with_items:
+     - { src: 'sugarizer.service.j2' , dest: '/etc/systemd/system/sugarizer.service'}
+     - { src: 'sugarizer.ini' , dest: '{{ sugarizer_location }}/server' }
+
+- name: Create the express framework for node.js
+  shell:  npm install
+  args:
+     chdir: "{{ sugarizer_location }}/server" 
+     creates: "{{ sugarizer_location }}/server/node_modules"
+
+- name: enable services
+  service: name={{ item.name }}
+           enabled=yes
+           state=restarted
+  with_items:
+      - { name: sugarizer }
+  when: sugarizer_enabled
+
+
+- name: disable services
+  service: name={{ item.name }}
+           enabled=no
+           state=stopped
+  with_items:
+      - { name: sugarizer }
+  when: not sugarizer_enabled
+
+- name: add sugarizer to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=sugarizer
+            option='{{ item.option }}'
+            value='"{{ item.value }}"'
+  with_items:
+       - option: name
+         value: Sugarizer
+       - option: description
+         value: '"The Sugar Learning Platform is a leading learning platform that began in the famous One Laptop Per Child project. Sugarizer is a web implementation of that platform"' 
+       - option: enabled
+         value: "{{ sugarizer_enabled }}"
