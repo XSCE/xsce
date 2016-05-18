@@ -88,3 +88,5 @@
 
 - name: Download firmware for NUC6 wifi
   shell: wget -o /lib/firmware {{ xsce_download_url }}/iwlwifi-8000C-13.ucode
+  tags:
+    - download2
