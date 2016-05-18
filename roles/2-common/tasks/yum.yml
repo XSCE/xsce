@@ -90,3 +90,4 @@
   shell: wget -o /lib/firmware {{ xsce_download_url }}/iwlwifi-8000C-13.ucode
   tags:
     - download2
+  when: NUC6_firmware_needed
