@@ -24,6 +24,13 @@
        src:  'schooltool.conf'
        mode: '0644'
 
+#Experience teaches that enabling schooltool is more likely to succeed after docker restart
+- name: Restart docker
+  service: name=docker
+           state=restarted
+           enabled=yes
+  when: schooltool_enabled
+
 - name: Enable schooltool
   service: name=schooltool
            state=started
