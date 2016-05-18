@@ -1,0 +1,57 @@
+# the defaults on this image are user:manager, password:schooltool
+- name: Get the schooltool container if it is missing
+  docker: image=ghunt/schooltool:latest
+          ports=7080:7080
+          state=present
+          pull=missing
+  when: schooltool_install and docker_install and not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download2
+
+
+- name: Configure schooltool to run in docker container under systemd
+  template: backup=yes
+            src={{ item.src }}
+            dest={{ item.dest }}
+            owner=root
+            group=root
+            mode={{ item.mode }}
+  with_items:
+    -  dest: '/etc/systemd/system/schooltool.service'
+       src: 'schooltool.service'
+       mode: '0644'
+    -  dest: '/etc/httpd/conf.d/schooltool.conf'
+       src:  'schooltool.conf'
+       mode: '0644'
+
+#Experience teaches that enabling schooltool is more likely to succeed after docker restart
+- name: Restart docker
+  service: name=docker
+           state=restarted
+           enabled=yes
+  when: schooltool_enabled
+
+- name: Enable schooltool
+  service: name=schooltool
+           state=started
+           enabled=yes
+  when: schooltool_enabled
+
+- name: Disable schooltool
+  service: name=schooltool
+           state=stopped
+           enabled=no
+  when: not schooltool_enabled
+
+- name: add schooltool to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=schooltool
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: Schooltool
+    - option: description
+      value: '"SchoolTool is an open source, web based student information system designed for schools in the developing world, with strong support for translation, localization and automated deployment and updates."'
+    - option: enabled
+      value: "{{ schooltool_enabled }}"
