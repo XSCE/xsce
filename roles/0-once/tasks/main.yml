@@ -41,6 +41,17 @@
   tags:
     - rpi2
 
+- name: Check if the identifier for intel's NUC6 builtin wifi is present
+  shell: "lsusb | grep 8087:0a2b | wc |gawk '{print $1}'"
+  register: usb_NUC6
+  ignore_errors: true
+
+# set flag so that once wget is available we can download it
+- name: download the firmware for built in wifi on NUC6
+  set_fact: 
+     NUC6_firmware_needed: True
+  when:  usb_NUC6.stdout|int > 0
+
 - include: xo.yml
   when: xo_model != "none" or osbuilder is defined
   tags:

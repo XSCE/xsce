@@ -85,3 +85,6 @@
     - /etc/yum.repos.d/CentOS-fasttrack.repo
     - /etc/yum.repos.d/CentOS-Vault.repo
   when: ansible_distribution == "CentOS"
+
+- name: Download firmware for NUC6 wifi
+  shell: wget -o /lib/firmware {{ xsce_download_url }}/iwlwifi-8000C-13.ucode
