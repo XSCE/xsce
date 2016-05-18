@@ -4,7 +4,9 @@ After=docker.service
 Requires=docker.service
 
 [Service]
-ExecStart=/usr/bin/docker run -d -p 7080:7080 -v /var/lib/schooltool:/var/lib/schooltool replaceafill/schooltool:2.8
+ExecStartPre=-/usr/bin/docker stop tool
+ExecStartPre=-/usr/bin/docker rm tool
+ExecStart=/usr/bin/docker run -d  --name=tool -p 7080:7080 -v /var/lib/schooltool:/var/lib/schooltool ghunt/schooltool
 #Restart=always
 #RestartSec=10s
 Type=notify
