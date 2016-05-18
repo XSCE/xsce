@@ -46,10 +46,9 @@
   register: usb_NUC6
   ignore_errors: true
 
-# set flag so that once wget is available we can download it
 - name: download the firmware for built in wifi on NUC6
-  set_fact: 
-     NUC6_firmware_needed: True
+  get_url: dest=/lib/firmware
+           url={{ xsce_download_url }}/iwlwifi-8000C-13.ucode
   when:  usb_NUC6.stdout|int > 0
 
 - include: xo.yml
