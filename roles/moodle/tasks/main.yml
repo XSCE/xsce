@@ -81,19 +81,11 @@
   sudo: yes
   sudo_user: postgres
 
-- name: see if the config.php file exists
-  stat: path='{{ moodle_base }}/config.php'
-  register: config
-
 - name: Put a startup install script in place
   template: dest={{moodle_base}}
             src=moodle_installer
             mode=0755
 
-- name: Execute moodle startup script
-  shell: '{{moodle_base}}/moodle_installer'
-  when: moodle_enabled and config.stat.exists is defined and not config.stat.exists
-  
 - name: Restart postgresql-xs
   service: name=postgresql-xs
            state=restarted
@@ -101,6 +93,10 @@
 - name: Restart httpd
   service: name=httpd
            state=restarted
+
+- name: see if the config.php file exists
+  stat: path='{{ moodle_base }}/config.php'
+  register: config
 
 - name: Execute moodle startup script
   shell: '{{moodle_base}}/moodle_installer'
