@@ -30,9 +30,11 @@
               insertbefore='trusted_domains'
               line='/*'
               state=present
+  ignore_errors: true
 
 - name: Remove Trusted Domains - comment after
   lineinfile: dest="{{ owncloud_path }}/config/config.php"
               insertafter='\),'
               line='*/'
               state=present
+  ignore_errors: true
