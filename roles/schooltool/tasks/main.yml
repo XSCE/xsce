@@ -36,7 +36,7 @@
   file: path=/var/lib/schooltool
         state=directory
         owner=schooltool
-        mode-0777
+        mode=0777
 
 #Experience teaches that enabling schooltool is more likely to succeed after docker restart
 - name: Restart docker
