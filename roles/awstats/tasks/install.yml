@@ -1,5 +1,5 @@
 - name: Install awstats package
-  yum: pkg={{ item }} state=installed
+  package: pkg={{ item }} state=installed
   with_items:
     - awstats
     - mod_ssl

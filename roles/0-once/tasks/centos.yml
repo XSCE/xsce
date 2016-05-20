@@ -2,8 +2,8 @@
   command: echo Starting centos.yml
 
 - name: Install epel-release for CentOS
-  yum: name={{ item }}
-       state=present
+  package: name={{ item }}
+           state=present
   with_items:
    - epel-release
 

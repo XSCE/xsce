@@ -1,5 +1,5 @@
 - name: Install mongodb required packages
-  yum: name={{ item }}
+  package: name={{ item }}
   with_items:
     - mongodb-server
     - mongodb

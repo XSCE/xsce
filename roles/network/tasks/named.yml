@@ -1,6 +1,6 @@
 - name: Install named packages
-  yum: name={{ item }}
-       state=installed
+  package: name={{ item }}
+           state=installed
   with_items:
    - bind
    - bind-utils
