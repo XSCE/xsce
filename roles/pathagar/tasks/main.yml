@@ -1,9 +1,9 @@
 - name: Remove if exist pathagar rpm version
-  yum: name=pathagar state=absent
+  package: name=pathagar state=absent
 
 - name: Install pathagar pre requisites
-  yum: name={{ item }}
-       state=installed
+  package: name={{ item }}
+           state=installed
   with_items:
     - python-virtualenv
     - python-pip

@@ -1,7 +1,7 @@
 # administer this service by browsing to localhost:631
 - name: get the CUPS package installed
-  yum: name={{ item }}
-       state=installed
+  package: name={{ item }}
+           state=installed
   with_items:
     - cups
   when: cups_install
