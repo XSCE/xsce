@@ -1,3 +1,13 @@
+- name: Install packages for console
+  package: name={{ item }}
+           state=installed
+  with_items:
+    - mod_ssl
+    - mod_authnz_external
+    - pwauth
+  tags:
+    - download
+
 - name: Create admin-console directory tree
   file: path={{ item }}
         mode=0755

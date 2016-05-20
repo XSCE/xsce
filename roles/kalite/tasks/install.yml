@@ -1,8 +1,8 @@
 # This is for an OS other than Fedora 18
 
 - name: Install missing packages required for kalite startup
-  yum: name={{ item }}
-       state=installed
+  package: name={{ item }}
+           state=installed
   with_items:
     - lsb
   tags:
