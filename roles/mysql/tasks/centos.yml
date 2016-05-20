@@ -1,5 +1,5 @@
     - name: Install MySQL
-      yum: name={{ item }}
+      package: name={{ item }}
       with_items:
         - mysql-connector-python
         - mariadb-server

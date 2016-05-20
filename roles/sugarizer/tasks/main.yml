@@ -13,7 +13,7 @@
         state=link
 
 - name: Install sugarizer required packages
-  yum: name={{ item }}
+  package: name={{ item }}
   with_items:
     - nodejs
     - npm

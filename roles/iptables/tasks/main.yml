@@ -25,8 +25,8 @@
         state=absent
 
 - name: Install iptables service package
-  yum: name=iptables-services
-       state=installed
+  package: name=iptables-services
+           state=installed
   tags:
     - download
 

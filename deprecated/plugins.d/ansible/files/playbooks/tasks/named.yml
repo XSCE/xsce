@@ -1,9 +1,29 @@
-#- name: Install named packages
-#  yum: name=${item}
-#       state=installed
-#  with_items:
-#   - bind
-#   - bind-utils
+- name: Install named packages
+  package: name={{ item }}
+           state=installed
+  with_items:
+   - bind
+   - bind-utils
+  tags:
+    - download
+
+# or we have to change the serial number in the config files.
+- name: Stop named before copying files
+  service: name=named state=stopped
+  when: not installing
+
+- name: Set folder permission
+  file: path={{ item }}
+        owner=named
+        group=root
+        mode=0755
+        state=directory
+  with_items:
+    - /var/named-xs
+    - /var/named-xs/data
+    - /etc/sysconfig/olpc-scripts/domain_config.d
+
+>>>>>>> substitute package for yum module:roles/network/tasks/named.yml
 - name: Configure named
   template: src=${item.src}
             dest=${item.dest}

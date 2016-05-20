@@ -1,3 +1,12 @@
+- name: Install httpd required packages
+  package: name={{ item }}
+           state=installed
+  with_items:
+    - httpd
+    - php
+  tags:
+    - download
+
 - name: Create httpd config files
   template: backup=yes
             src={{ item.src }}
