@@ -2,7 +2,7 @@
 
 - name: Install missing packages required for kalite startup
   package: name={{ item }}
-           state=installed
+           state=present
   with_items:
     - lsb
   tags:

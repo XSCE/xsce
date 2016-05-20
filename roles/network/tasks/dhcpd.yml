@@ -1,6 +1,6 @@
 - name: Install dhcp package
   package: name=dhcp
-           state=installed
+           state=present
   tags:
     - download
 

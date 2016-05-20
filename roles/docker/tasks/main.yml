@@ -1,5 +1,5 @@
 - name: Install docker
-  package:  name={{ item }}
+  package:  name={{ item }} state=present
   with_items:
     - docker
     - python-docker-py

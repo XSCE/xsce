@@ -1,6 +1,6 @@
 - name: Install python-pip package
   package: name=python-pip
-           state=installed
+           state=present
   tags: 
     - download
 
@@ -17,7 +17,7 @@
 
 - name: Install required libraries
   package: name={{ item }}
-           state=installed
+           state=present
   with_items:
     - rrdtool-python
     - python-sqlalchemy

@@ -1,5 +1,5 @@
 - name: Install awstats package
-  package: pkg={{ item }} state=installed
+  package: pkg={{ item }} state=present
   with_items:
     - awstats
     - mod_ssl
