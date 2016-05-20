@@ -1,5 +1,6 @@
 - name: Remove if exist pathagar rpm version
-  package: name=pathagar state=absent
+  package: name=pathagar 
+           state=absent
 
 - name: Install pathagar pre requisites
   package: name={{ item }}
