@@ -25,13 +25,8 @@
         state=absent
 
 - name: Install iptables service package
-<<<<<<< HEAD
   package: name=iptables-persistent
            state=present
-=======
-  package: name=iptables-services
-           state=installed
->>>>>>> substitute package for yum module
   tags:
     - download
 

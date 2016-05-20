@@ -1,10 +1,6 @@
 - name: Install squid packages
   package: name={{ item }}
-<<<<<<< HEAD
            state=present
-=======
-           state=installed
->>>>>>> substitute package for yum module
   with_items:
     - squid3
     - cadaver
