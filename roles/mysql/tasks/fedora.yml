@@ -1,5 +1,8 @@
     - name: Install MySQL
       package: name={{ item }}
+<<<<<<< HEAD
                state=present
+=======
+>>>>>>> substitute package for yum module
       with_items:
         - mysql-server

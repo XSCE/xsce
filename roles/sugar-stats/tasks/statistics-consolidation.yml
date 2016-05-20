@@ -1,5 +1,6 @@
 - name: Install python-pip package
   package: name=python-pip
+
            state=present
   tags: 
     - download
