@@ -1,6 +1,6 @@
 # we need to install the rpm in order to get the dependencies
 - name: Install owncloud package
-  package: pkg={{ item }} state=installed
+  package: pkg={{ item }} state=present
   with_items:
       - owncloud
   tags:
