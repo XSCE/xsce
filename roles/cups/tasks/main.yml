@@ -1,7 +1,7 @@
 # administer this service by browsing to localhost:631
 - name: get the CUPS package installed
   package: name={{ item }}
-           state=installed
+           state=present
   with_items:
     - cups
   when: cups_install

@@ -1,12 +1,12 @@
 - name: Install python-pip package
   package: name=python-pip
-           state=installed
+           state=present
   tags:
     - download
 
 - name: Install required libraries
   package: name={{ item.pkg }}
-           state=installed
+           state=present
   with_items:
     - pkg: python-imaging
     - pkg: python-devel

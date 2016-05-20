@@ -13,7 +13,7 @@
         state=link
 
 - name: Install sugarizer required packages
-  package: name={{ item }}
+  package: name={{ item }} state=poresent
   with_items:
     - nodejs
     - npm
