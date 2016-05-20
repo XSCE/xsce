@@ -16,17 +16,20 @@
   with_items:
    - yum-utils
    - createrepo
+  when: ansible_distribution != "Debian"
   tags:
     - download
 
 - name: Create local yum repo
   shell: createrepo {{ yum_packages_dir }}
+  when: ansible_distribution != "Debian"
 
 - name: Install local repo file.
   template: dest=/etc/yum.repos.d/xsce-local.repo
             src=local.repo
             owner=root
             mode=0644
+  when: ansible_distribution != "Debian"
 
 - name: Install common packages
   package: name={{ item }}
@@ -42,9 +45,9 @@
    - net-tools
    - openssh-server
    - sudo
-   - syslog
+   - inetutils-syslogd
    - logrotate
-   - xml-common
+#   - xml-common
    - make
    - tar
    - unzip
@@ -53,10 +56,10 @@
    - bridge-utils
    - usbutils
    - hostapd
-   - wpa_supplicant
+   - wpasupplicant
    - wget
    - openssl   #FC 18 does not supply, but pear requires
-   - linux-firmware # grab wifi firmware
+#   - linux-firmware # grab wifi firmware--Debian installs non-free automatically
   tags:
     - download
 
@@ -64,12 +67,12 @@
   package: name={{ item }}
            state=latest
   with_items:
-   - NetworkManager
+   - network-manager
    - bash
    - iptables
-   - vim-minimal # ejabberd erlang does not update this properly
-   - dbus-glib   # NM does not update this properly
-   - glibc # CVE-2015-7547
+#   - glibc # CVE-2015-7547
+   - libc-bin
+   - libc6
   tags:
     - download
 

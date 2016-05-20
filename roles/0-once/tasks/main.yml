@@ -14,6 +14,7 @@
             section=main
             option=keepcache
             value=1
+  when: ansible_distribution != "Debian"
 
 - include: xo.yml
   when: xo_model != "none" or osbuilder is defined
