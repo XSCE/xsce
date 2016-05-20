@@ -1,11 +1,6 @@
 - name: Install dhcp package
-<<<<<<< HEAD
   package: name=isc-dhcp-server
            state=present
-=======
-  package: name=dhcp
-           state=installed
->>>>>>> substitute package for yum module
   tags:
     - download
 
