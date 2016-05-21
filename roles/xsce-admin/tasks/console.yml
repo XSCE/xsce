@@ -2,11 +2,13 @@
   package: name={{ item }}
            state=present
   with_items:
-    - mod_ssl
-    - mod_authnz_external
+    - libapache2-mod-authnz-external
     - pwauth
   tags:
     - download
+
+- name: Enable ssl
+  apache2_module: name=ssl
 
 - name: Create admin-console directory tree
   file: path={{ item }}
@@ -59,21 +61,24 @@
 
 - name: Install admin-console config file
   template: src=console/xs-console.conf.j2
-            dest=/etc/httpd/conf.d/xs-console.conf
+            dest=/etc/apache2/conf-available/xs-console.conf
             owner=root
             group=root
             mode=0644
-  when: not adm_cons_force_ssl
 
 - name: Install admin-console config file with ssl support
-  template: src=console/xs-console-ssl.conf.j2
-            dest=/etc/httpd/conf.d/xs-console.conf
-            owner=root
-            group=root
-            mode=0644
+  file: path=/etc/apache2/conf-enabled/xs-console.conf
+        src=/etc/apache2/conf-available/xs-console.conf
+        state=link
   when: adm_cons_force_ssl
 
-- name: Install admin-console command service
+- name: remove link for admin-console config file with ssl support
+  file: path=/etc/apache2/conf-enabled/xs-console.conf
+        src=/etc/apache2/conf-available/xs-console.conf
+        state=absent
+  when: not adm_cons_force_ssl
+
+- name: Install admin-console service
   template: src=console/cmd-service.php
             dest="{{ admin_console_path }}/cmd-service.php"
             owner=root
