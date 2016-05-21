@@ -72,7 +72,7 @@
 
 - name: Copy xs-activity-server config file
   template: src=xs-activity-server.conf
-            dest=/etc/httpd/conf.d/
+            dest=/etc/apache2/sites-available
             owner=root
             group=root
             mode=0644
@@ -95,7 +95,7 @@
 
 
 - name: Restart httpd
-  service: name=httpd
+  service: name=apache2
            enabled=yes
            state=restarted
 

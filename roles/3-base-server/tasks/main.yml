@@ -7,7 +7,7 @@
   when: not installing
 
 - name: Restart httpd
-  service: name=httpd
+  service: name=apache2
            state=restarted
   when: not installing
 

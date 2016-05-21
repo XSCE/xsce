@@ -43,19 +43,25 @@
         state=directory
 
 - name: Remove stock moodle conf
-  file: path='/etc/httpd/conf.d/moodle.conf'
+  file: path='/etc/apache2/sites-available/moodle.conf'
         state=absent
 
-- name: Enable moodle
+- name: Put moodle config file in place
   template: src=022-moodle.j2
-            dest=/etc/httpd/conf.d/022-moodle.conf
+            dest=/etc/apache2/sites-available/022-moodle.conf
             owner=root
             group=root
             mode=0644
   when: moodle_enabled
 
+- name: Enable moodle
+  file: path=/etc/apache2/sites-enabled/022-moodle.conf
+        src=/etc/apache2/sites-available/moodle.conf
+        state=link
+  when: moodle_enabled
+
 - name: Disable moodle
-  file: path=/etc/httpd/conf.d/022-moodle.conf
+  file: path=/etc/apache2/sites-enabled/022-moodle.conf
         state=absent
   when: not moodle_enabled
 
@@ -93,8 +99,8 @@
   service: name=postgresql-xs
            state=restarted
 
-- name: Restart httpd
-  service: name=httpd
+- name: Restart apache
+  service: name=apache2
            state=restarted
 
 - name: see if the config.php file exists
