@@ -89,7 +89,7 @@
 - name: Copy IIAB config file
   template: backup=yes
             src=iiab.conf.j2
-            dest=/etc/httpd/conf.d/iiab.conf
+            dest=/etc/apache2/sites-available/iiab.conf
             owner=root
             group=root
             mode=0644
@@ -102,7 +102,7 @@
         state=link
 
 - name: Restart httpd service
-  service: name=httpd
+  service: name=apache2
            state=restarted
 
 - name: add iiab to service list

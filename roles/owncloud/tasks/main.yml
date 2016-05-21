@@ -74,13 +74,8 @@
         - localhost
   when: mysql_enabled and owncloud_enabled
 
-- name: Remove httpd conf file if we are disabled
-  file: path=/etc/httpd/conf.d/owncloud.conf
-        state=absent
-  when: not owncloud_enabled
-
 - name: Restart apache, so it picks up the new aliases
-  service: name=httpd state=restarted
+  service: name=apache2 state=restarted
   when: not owncloud_enabled
 
 # Enable owncloud by copying template to httpd config

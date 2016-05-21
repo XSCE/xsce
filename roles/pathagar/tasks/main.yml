@@ -160,11 +160,22 @@
 - name: Install httpd conf for pathagar
   template: src=pathagar.conf
             backup=yes
-            dest=/etc/httpd/conf.d/pathagar.conf
+            dest=/etc/apache2/sites-available/pathagar.conf
             mode=0644
 
+- name: Enable pathagar
+  file: path=/etc/apache2/sites-enabled/pathagar.conf
+        src=/etc/apache2/sites-available/pathagar.conf
+        state=link
+  when: pathagar_enabled
+
+- name: Disable pathagar
+  file: path=/etc/apache2/sites-enabled/pathagar.conf
+        state=absent
+  when: not pathagar_enabled
+
 - name: Restart http
-  service: name=httpd
+  service: name=apache2
            state=reloaded
 
 - name: add pathagar to service list
