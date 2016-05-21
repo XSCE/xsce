@@ -35,12 +35,12 @@
            enabled=yes
 
 - name: Enable named service
-  service: name=named
+  service: name=bind9
            enabled=yes
   when: named_enabled
 
 - name: Disable named service
-  service: name=named
+  service: name=bind9
            enabled=no
   when: not named_enabled
 

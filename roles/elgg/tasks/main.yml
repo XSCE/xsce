@@ -90,7 +90,7 @@
 
 - name: enable elgg
   file: path=/etc/apache2/sites-enabled/elgg.conf
-        src-/etc/apache2/sites-available/elgg.conf
+        src=/etc/apache2/sites-available/elgg.conf
         state=link
   when: elgg_enabled
 
