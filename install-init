@@ -21,5 +21,6 @@ git update-index --assume-unchanged vars/local_vars.yml
 PLAYBOOK="install-init.yml"
 INVENTORY="ansible_hosts"
 
-export ANSIBLE_LOG_PATH="xsce-install.log"
+XSCE_DIR=`pwd`
+export ANSIBLE_LOG_PATH="$XSCE_DIR/xsce-install.log"
 ansible-playbook -i $INVENTORY $PLAYBOOK --connection=local
