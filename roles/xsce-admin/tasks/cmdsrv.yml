@@ -13,6 +13,10 @@
   tags:
     - download
 
+- name: Install packages for fedora 23+
+  package: name=redhat-rpm-config
+           state=installed
+  when: ansible_distribution == "Fedora" and ansible_distribution-version >= "22"
 #        - zeromq3
 
 #	pip install pyzmq  - didn't use the installed zmq rpm and the target zmq 4, not 3, for which there is no rpm.
