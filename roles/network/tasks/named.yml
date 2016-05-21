@@ -2,19 +2,19 @@
   package: name={{ item }}
            state=present
   with_items:
-   - bind
-   - bind-utils
+   - bind9
+   - bind9-utils
   tags:
     - download
 
 # or we have to change the serial number in the config files.
 - name: Stop named before copying files
-  service: name=named state=stopped
+  service: name=bind9 state=stopped
   when: not installing
 
 - name: Set folder permission
   file: path={{ item }}
-        owner=named
+        owner=bind
         group=root
         mode=0755
         state=directory

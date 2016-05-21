@@ -1,16 +1,16 @@
 # dhcpd service is restarted with NM dispatcher.d script
 - name: Stop dhcpd
-  service: name=dhcpd
+  service: name=bind9
            state=stopped
   when: not dhcpd_enabled
 
 - name: Stop named service
-  service: name=named
+  service: name=bind9
            state=stopped
   when: not named_enabled
 
 - name: Start named service
-  service: name=named
+  service: name=bind9
            state=started
   ignore_errors: True
   when: named_enabled
