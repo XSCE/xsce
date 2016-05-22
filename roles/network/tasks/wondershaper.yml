@@ -1,7 +1,7 @@
 - name: copy wshaper service script
   template: backup=yes
             src=wondershaper/wondershaper.service
-            dest=/usr/lib/systemd/system/wondershaper.service
+            dest=/etc/systemd/system/wondershaper.service
             mode=0644
 
 - name: copy wshaper script
@@ -20,8 +20,7 @@
         state=directory
 
 - name: copy wshaper config script
-  template: backup=yes
-            src=wondershaper/wondershaper.conf
+  template: src=wondershaper/wondershaper.conf
             dest=/etc/conf.d/wondershaper.conf
             owner=root
             group=root
