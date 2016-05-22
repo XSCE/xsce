@@ -6,8 +6,7 @@
     mode=0755
   tags:
     download2
-  when: calibre_install and ansible_distribution == "CentOS"
-
+  when: ansible_architecture != "armv7hl"
 
 - name: Install calibre
   shell: "{{ downloads_dir }}/calibre-installer.py >> /dev/null"
