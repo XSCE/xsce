@@ -1,5 +1,5 @@
 - name: Get the stable release channel repo definition
-  template: src=ce:stable.repo dest=/etc/repos.d/
+  template: src=ce:stable.repo dest=/etc/yum.repos.d/
 
 - name: Install owncloud package
   yum: pkg={{ item }} state=installed
