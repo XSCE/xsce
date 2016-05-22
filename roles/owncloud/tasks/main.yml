@@ -1,4 +1,5 @@
-# we need to install the rpm in order to get the dependencies
+- name: Get the stable release channel repo definition
+  template: src=cd\:stable.repo dest=/etc/repos.d/
 
 - name: Install owncloud package
   yum: pkg={{ item }} state=installed
