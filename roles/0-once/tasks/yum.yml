@@ -3,7 +3,7 @@
   when: ansible_distribution == "Fedora" and ansible_machine == "armv7l" and ansible_distribution_version|int >= 22
 
 - name: install yum from Fedora 23 for arm!!!
-  shell: dnf install -y https://kojipkgs.fedoraproject.org//packages/yum/3.4.3/506.fc23/noarch/yum-3.4.3-506.fc23.noarch.rpm
+  shell: dnf install -y https://kojipkgs.fedoraproject.org//packages/yum/3.4.3/506.fc23/noarch/yum-3.4.3-506.fc23.noarch.rpm python-dnf 
   when: ansible_distribution == "Fedora" and ansible_machine == "armv7l" and ansible_distribution_version|int >= 22
 
 - name: install yum if it has been dropped from our distribution -- Fedora 22 uses dnf!!!
