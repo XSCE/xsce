@@ -1,4 +1,4 @@
-elgg_xx: elgg-1.10.1
+elgg_xx: elgg
 
 # elgg_mysql_password: defined in default_vars
 elgg_url: /elgg
