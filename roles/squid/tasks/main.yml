@@ -2,11 +2,16 @@
   package: name={{ item }}
            state=present
   with_items:
-    - squid
+    - squid3
     - cadaver
     - dansguardian
   tags:
     - download
+
+- name: Create the squid user
+  user: name=squid
+        createhome=False
+        shell=/bin/false
 
 - name: Copy init script and config file
   template: src={{ item.src }}
@@ -20,23 +25,24 @@
       owner: 'root'
       group: 'root'
       mode: '0755'
-    - src: 'sites.whitelist.txt'
-      dest: '/etc/squid/sites.whitelist.txt'
+    - src: 'squid/sites.whitelist.txt'
+      dest: '/etc/squid3/sites.whitelist.txt'
       owner: 'squid'
       group: 'squid'
       mode: '0644'
-    - src: 'allowregex.rules'
-      dest: '/etc/squid/allowregex.rules'
+    - src: 'squid/allowregex.rules'
+      dest: '/etc/squid3/allowregex.rules'
       owner: 'squid'
       group: 'squid'
       mode: '0644'
-    - src: 'denyregex.rules'
-      dest: '/etc/squid/denyregex.rules'
+    - src: 'squid/denyregex.rules'
+      dest: '/etc/squid3/denyregex.rules'
       owner: 'squid'
       group: 'squid'
       mode: '0644'
-    - src: 'dstaddress.rules'
-      dest: '/etc/squid/dstaddress.rules'
+    - src: 'squid/dstaddress.rules'
+      dest: '/etc/squid3/dstaddress.rules'
+>>>>>>> start the day with a captured state:roles/network/tasks/squid.yml
       owner: 'squid'
       group: 'squid'
       mode: '0644'

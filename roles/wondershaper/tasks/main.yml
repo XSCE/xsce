@@ -1,7 +1,7 @@
 - name: copy wshaper service script
   template: backup=no
             src=wondershaper.service
-            dest=/usr/lib/systemd/system/wondershaper.service
+            dest=/etc/systemd/system/wondershaper.service
             mode=0644
 
 - name: copy wshaper script
@@ -20,8 +20,12 @@
         state=directory
 
 - name: copy wshaper config script
+<<<<<<< HEAD:roles/wondershaper/tasks/main.yml
   template: backup=no
             src=wondershaper.conf
+=======
+  template: src=wondershaper/wondershaper.conf
+>>>>>>> start the day with a captured state:roles/network/tasks/wondershaper.yml
             dest=/etc/conf.d/wondershaper.conf
             owner=root
             group=root

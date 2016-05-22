@@ -25,7 +25,7 @@
         state=absent
 
 - name: Install iptables service package
-  package: name=iptables-services
+  package: name=iptables-persistent
            state=present
   tags:
     - download
