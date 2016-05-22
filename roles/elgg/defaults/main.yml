@@ -7,6 +7,7 @@ elgg_install: True
 elgg_enabled: False
 
 # following variables used in elgg engine/settings.php template
+timezone: America/New_York
 dbuser: elgguser
 dbpassword: "{{ elgg_mysql_password }}"
 dbname: elggdb
