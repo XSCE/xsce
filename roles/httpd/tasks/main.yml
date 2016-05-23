@@ -57,7 +57,7 @@
         createhome=no
 
 - name: Create httpd log dir
-  file: path=/var/log/apache
+  file: path=/var/log/apache2
         mode=0755
         owner=apache
         group=apache

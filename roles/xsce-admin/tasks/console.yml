@@ -66,6 +66,11 @@
             group=root
             mode=0644
 
+- name: Make the xs-console enabled in apache2
+  file: state=link
+        dest=/etc/apache2/sites-enabled/xs-console.conf
+        src=/etc/apache2/sites-available/xs-console.conf
+
 - name: Install admin-console config file with ssl support
   file: path=/etc/apache2/conf-enabled/xs-console.conf
         src=/etc/apache2/conf-available/xs-console.conf
