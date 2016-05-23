@@ -26,13 +26,13 @@
   when: dansguardian_enabled
 
 - name: Stop squid service
-  service: name=squid
+  service: name=squid3
            state=stopped
   when: not squid_enabled
 
 # Squid get re-loaded with dispatcher.d
 - name: Restart squid service
-  service: name=squid
+  service: name=squid3
            state=started
   when: squid_enabled
 
@@ -53,7 +53,3 @@
 - name: Run iptables
   command: /usr/bin/xs-gen-iptables
 
-- name: Restart iptables service
-  service: name=iptables
-           state=restarted
-  ignore_errors: True

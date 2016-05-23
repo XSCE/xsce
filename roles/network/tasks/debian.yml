@@ -15,10 +15,16 @@
 - debug: var=gui_desired_network_role
 - debug: var=gui_static_wan_ip
 - debug: var=hostapd_enabled
+- debug: var=discovered_wireless_iface
+
+- name: default to lan controller
+  set_fact:
+      gui_desired_network_role: "lan_controller"
+  when: not gui_desired_network_role is defined
 
 - name: Copy the bridge script 
-  template: dest=/etc/network/interfaces.d
-            src=br0.j2
+  template: dest=/etc/network/interfaces.d/br0
+            src=network/br0.j2
 
 #create lan br0 if lan_controller or gateway
 #create wan br0 if appliance
