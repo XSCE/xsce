@@ -20,7 +20,7 @@
 #               Command Server on the XSCE School server
 #
 #  Source function library
-. /etc/rc.d/init.d/functions
+. /lib/lsb/init-functions
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 PID_FILE="/var/run/xsce-cmdsrv.pid"
@@ -32,15 +32,21 @@ RETVAL=0
 
 start() {
         # Start daemons.
-        echo -n "Starting $prog: "
-        daemon --pidfile=${PID_FILE} $SERVER $OPTS
+        log_daemon_msg "Starting $prog: " "cmdsrv"
+        if start-stop-daemon --start --oknodo --quiet --exec $SERVER \
+           --pidfile $PID_FILE; then
+           log_end_msg 0
+        else
+           log_end_msg 1
+        fi
         RETVAL=$?
         return $RETVAL
 }
 
 stop() {
         # Stop is handled by /usr/bin/xsce-cmdsrv-ctl STOP
-        RETVAL=1
+        /usr/bin/xscd-cmdsrv-ctl < STOP > /dev/null
+        RETVAL=$?
         return $RETVAL
 }
 
