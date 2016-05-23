@@ -9,6 +9,7 @@
     - python-pip
     - libzmq3-dev
     - python-cracklib
+    - pkg-config
   tags:
     - download
 
@@ -123,7 +124,7 @@
             mode={{ item.mode }}
   with_items:
     - { src: 'cmdsrv/xsce-cmdsrv.service.j2', dest: '/etc/systemd/system/xsce-cmdsrv.service', mode: '0655'}
-    - { src: 'cmdsrv/xsce-cmdsrv-init.j2', dest: '/etc/init.d/', mode: '0755'}
+    - { src: 'cmdsrv/xsce-cmdsrv-init.j2', dest: '/etc/init.d/xsce-cmdsrv', mode: '0755'}
     - { src: 'cmdsrv/xsce-cmdsrv-ctl', dest: '/usr/bin/xsce-cmdsrv-ctl', mode: '0755'}
     - { src: 'cmdsrv/zmq.ini', dest: '/etc/php5/apache2/conf.d/20-zmq.ini', mode: '0755'}
 

@@ -34,7 +34,7 @@ start() {
         # Start daemons.
         log_daemon_msg "Starting $prog: " "cmdsrv"
         if start-stop-daemon --start --oknodo --quiet --exec $SERVER \
-           --pidfile $PID_FILE; then
+           --pidfile $PID_FILE -- $OPTS; then
            log_end_msg 0
         else
            log_end_msg 1
