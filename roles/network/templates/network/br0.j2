@@ -25,13 +25,8 @@ iface {{discovered_wan_iface }} inet manual
    pre-up   ifconfig $IFACE up
    pre-down ifconfig $IFACE down
 
-<<<<<<< HEAD
 auto {{ discovered_wireless_iface }}
 iface {{discovered_wireless_iface }} inet manual
-=======
-auto {{ discovered_wifi_iface }}
-iface {{discovered_wifi_iface }} inet manual
->>>>>>> add in the config files
    pre-up   ifconfig $IFACE up
    pre-down ifconfig $IFACE down
 
