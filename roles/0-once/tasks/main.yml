@@ -16,23 +16,6 @@
             value=1
   when: ansible_distribution != "Debian"
 
-- include: xo.yml
-  when: xo_model != "none" or osbuilder is defined
-
-- include: centos.yml
-  when: ansible_distribution == "CentOS"
-
-- include: fedora.yml
-  when: ansible_distribution == "Fedora"
-
-- include: fix_ansible_version.yml
-- include: chrony.yml
-- include: prelim.yml
-- include: yum.yml
-- include: cmdsrv.yml
-- include: patch_udev.yml
-- include: net_mods.yml
-
 # Put conditional includes for platforms here
 ##  DISCOVER PLATFORMS ######
 - name: Discover if this is a rpi2 -- if so it has a bcm2709 processor
