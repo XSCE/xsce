@@ -57,11 +57,7 @@
         createhome=no
 
 - name: Create httpd log dir
-<<<<<<< HEAD
   file: path=/var/log/apache2
-=======
-  file: path=/var/log/apache
->>>>>>> fix merge conflicts
         mode=0755
         owner=apache
         group=apache
