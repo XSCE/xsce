@@ -68,14 +68,14 @@
 - include: dansguardian.yml
 
 - name: Stop Squid
-  service: name=squid
+  service: name=squid3
            state=stopped
   ignore_errors: yes
   when: not installing
 
 - name: Add squid to service list
   ini_file: dest='{{ service_filelist }}'
-            section=squid
+            section=squid3
             option='{{ item.option }}'
             value='{{ item.value }}'
   with_items:
