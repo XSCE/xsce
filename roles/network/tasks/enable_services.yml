@@ -30,10 +30,6 @@
    - { src: 'roles/named/templates/school.local.zone.db' , dest: '/var/named-xs/' , mode: '0644' }
    - { src: 'roles/named/templates/school.internal.zone.db' , dest: '/var/named-xs/' , mode: '0644' }
 
-- name: Enable iptables service
-  service: name=iptables
-           enabled=yes
-
 - name: Enable named service
   service: name=bind9
            enabled=yes
@@ -107,6 +103,9 @@
             mode='0755'
   with_items:
    - { 0: 'gateway/xs-gen-iptables', 1: '/usr/bin/xs-gen-iptables' }
+
+- name: Execute the script that sets up userspace firewall
+  shell: xs-gen-iptables
 
 - name: Add squid to service list
   ini_file: dest='{{ service_filelist }}'

@@ -1,5 +1,5 @@
 #!/bin/bash -x
-IPTABLES=/usr/sbin/iptables
+IPTABLES=/sbin/iptables
 IPTABLES_DATA=/etc/sysconfig/iptables
 LANIF=`cat /etc/sysconfig/xs_lan_device`
 WANIF=`cat /etc/sysconfig/xs_wan_device`
@@ -30,13 +30,13 @@ $IPTABLES -A INPUT -p udp --dport 5984 -j DROP
 if [  "x$WANIF" == "x" ]; then
     clear_fw
     # save the rule set
-    $IPTABLES-save > "$IPTABLES_DATA"
+    iptables-persistent save
     exit 0
 fi
 if [  "x$LANIF" == "x" ]; then
     clear_fw
     # save the rule set
-    $IPTABLES-save > "$IPTABLES_DATA"
+    iptables-persistent save
     exit 0
 fi
 
@@ -107,5 +107,5 @@ fi
 # Enable routing.
 echo 1 > /proc/sys/net/ipv4/ip_forward
 # save the whole rule set now
-$IPTABLES-save > "$IPTABLES_DATA"
+iptables-persistent save
 exit 0
