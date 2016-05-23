@@ -71,7 +71,7 @@
         dest=/etc/apache2/sites-enabled/xs-console.conf
         src=/etc/apache2/sites-available/xs-console.conf
 
-- name: Install admin-console config file with ssl support
+- name: add link for admin-console config file with ssl support
   file: path=/etc/apache2/conf-enabled/xs-console.conf
         src=/etc/apache2/conf-available/xs-console.conf
         state=link
