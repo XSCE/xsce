@@ -55,7 +55,7 @@
   when: squid_enabled
 
 - name: Enable squid service
-  service: name=squid
+  service: name=squid3
            enabled=yes
   when: squid_enabled
 
@@ -67,14 +67,14 @@
             mode={{ item.mode }}
   with_items:
     - src: 'squid/squid-xs.conf.j2'
-      dest: '/etc/squid/squid-xs.conf'
+      dest: '/etc/squid3/squid-xs.conf'
       owner: 'squid'
       group: 'squid'
       mode: '0644'
   when: squid_enabled
 
 - name: Disable squid service
-  service: name=squid
+  service: name=squid3
            enabled=no
   when: not squid_enabled
 
