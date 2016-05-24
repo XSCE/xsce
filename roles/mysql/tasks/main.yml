@@ -2,16 +2,16 @@
       package: name={{ item }}
                state=present
       with_items:
-        - MySQL-python
-        - mysql
-        - php-mysql
-        - php-gd
-        - php-imap
-        - php-ldap
-        - php-odbc
+        - python-mysqldb
+        - php5
+        - php5-mysql
         - php-pear
-        - php-xml
-        - php-xmlrpc
+        - php5-gd
+        - php5-imap
+        - php5-ldap
+        - php5-odbc
+        - php-xml-parser
+        - php5-xmlrpc
       tags:
         - download
 
@@ -22,6 +22,11 @@
 
     - include: fedora.yml
       when: ansible_distribution == "Fedora"
+      tags:
+        - download
+
+    - include: debian.yml
+      when: ansible_distribution == "Debian"
       tags:
         - download
 

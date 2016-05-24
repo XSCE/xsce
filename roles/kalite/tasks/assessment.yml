@@ -6,7 +6,7 @@
   register: khan_assessment_installed
 
 - name: Run the assessment setup using kalite manage
-  command: "/usr/bin/kalite manage unpack_assessment_zip {{ downloads_dir }}/khan_assessment.zip"
+  command: "{{ ka_prefix }}/bin/kalite manage unpack_assessment_zip {{ downloads_dir }}/khan_assessment.zip"
   environment:
      KALITE_HOME: "{{ kalite_root }}"
   async: 900

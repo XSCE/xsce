@@ -30,10 +30,8 @@
     - download2
 
 - include: install.yml
-  when: not kalite_installed.stat.exists and not is_F18
-  tags:
-    - download
-    - download2
+# debugging in debian
+#  when: not kalite_installed.stat.exists and not is_F18
 
 - name: ask systemd to reread the unit files
   shell: systemctl daemon-reload
