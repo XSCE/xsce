@@ -24,6 +24,7 @@
   service: name=dansguardian
            state=restarted
   when: dansguardian_enabled
+  ignore_errors: true
 
 - name: Stop squid service
   service: name=squid3
