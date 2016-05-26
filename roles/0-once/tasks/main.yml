@@ -1,22 +1,23 @@
 - include: fl.yml
-  tags:
-    - download
-    - download2
-
 - include: prep.yml
-  tags:
-    - download
-
 - include: xsce_ini.yml
-  when: xsce_preload == "False"
-  tags:
-    - download
-
 - name: Keep yum cache
   ini_file: dest=/etc/yum.conf
             section=main
             option=keepcache
             value=1
+
+- include: xo.yml
+  when: xo_model != "none" or osbuilder is defined
+
+- include: centos.yml
+  when: ansible_distribution == "CentOS"
+
+- include: yum.yml
+- include: fedora.yml
+  when: ansible_distribution == "Fedora"
+- include: cmdsrv.yml
+- include: patch_udev.yml
 
 # Put conditional includes for platforms here
 ##  DISCOVER PLATFORMS ######
@@ -61,12 +62,6 @@
   copy: src=rtl8188eufw.bin dest=/lib/firmware/rtlwifi/
   when: wifi_id  ==  "tplink_WM725M" and xo_model == "none" and not rpi_model is defined
   ignore_errors: true
-
-- include: centos.yml
-  when: ansible_distribution == "CentOS"
-  tags:
-    - centos
-    - download
 
 - include: selinux.yml
   when: ansible_version >= '2' and ansible_selinux or ansible_version < '2' and ansible_selinux['status'] != 'disabled'
