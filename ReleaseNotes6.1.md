@@ -1,4 +1,5 @@
-**What's New in Release 6.1?**
+# Release Notes for Release 6.1
+**What's New?**
 
 * Calibre -- A tool for managing a library of eBooks, modifyiing their file formats, adding search terms, and making them availabe online.
 * Wordpress -- A content management system which gives students experience with editing wiki pages, blogs, menuing systems, and which is widely used.
@@ -18,3 +19,7 @@
 A service that is installed on your hard disk, but not enabled in the administrative console, will have no impact on computer speed (will not use cpu cycles, or occupy scarce memory resources).  The XSCE default is to install everything, and only enable the few things which are essential for a server to operate.
 
 If you want to enable a service, you must browse to http://schoolserver.lan/admin, and click on configure, services enabled, and the appropriate checkbox. In addition, many services require additional content to be downloaded, which can also be accomplished by selecting the "Install Content" header button.
+
+**How Do I Install 6.1?**
+
+The install instructions have not changed much since release-6.0. Please refer to https://github.com/XSCE/xsce/wiki/XSCE-Installation
