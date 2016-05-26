@@ -5,6 +5,7 @@
 * Dokuwiki -- An alternate wiki system, similar to wordpress, but less popular, which makes transferring wiki materials easy from one school server to another.
 * Schooltool -- An administrative tool for teachers and principals to record student rosters, grade books,  school calendars, and make some or all this information available online, and in printed form.
 * Sugarizer -- Makes some of the sugar activities available to browser clients on laptops, and smart phones/tablets.
+* CUPS -- Common Unix Printing System provides the ability to connect to and share network or USB connected printers.
 
 **What's Upgraded?**
 
