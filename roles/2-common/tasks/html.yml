@@ -1,17 +1,3 @@
-- name: Create directory for common packages
-  file: path={{ item }}
-        mode=0755
-        owner=root
-        group=root
-        state=directory
-  with_items:
-    - /var/www/html/common/css
-    - /var/www/html/common/js
-    - /var/www/html/common/fonts
-    - /var/www/html/common/html
-    - /var/www/html/common/images
-    - /var/www/html/common/assets
-
 - name: Copy css files
   copy: src={{ item }}
         dest=/var/www/html/common/css

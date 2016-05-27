@@ -6,3 +6,6 @@
 - sysctl: name=net.ipv4.tcp_syncookies value=1 state=present
 - sysctl: name=kernel.shmmax value=268435456 state=present
 
+- name: Set default Timezone
+  shell: ln -sf /usr/share/zoneinfo/{{ xsce_TZ }} /etc/localtime
+  when: xsce_TZ is defined and xsce_TZ != ""
