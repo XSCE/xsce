@@ -13,9 +13,12 @@
 - include: centos.yml
   when: ansible_distribution == "CentOS"
 
-- include: yum.yml
 - include: fedora.yml
   when: ansible_distribution == "Fedora"
+
+- include: fix_ansible_version.yml
+
+- include: yum.yml
 - include: cmdsrv.yml
 - include: patch_udev.yml
 
@@ -39,8 +42,6 @@
 
 - include: hw_rpi2.yml
   when: rpi_model is defined and rpi_model == "rpi2"
-  tags:
-    - rpi2
 
 - name: Check if the identifier for intel's NUC6 builtin wifi is present
   shell: "lsusb | grep 8087:0a2b | wc |gawk '{print $1}'"
@@ -51,11 +52,6 @@
   get_url: dest=/lib/firmware
            url={{ xsce_download_url }}/iwlwifi-8000C-13.ucode
   when:  usb_NUC6.stdout|int > 0
-
-- include: xo.yml
-  when: xo_model != "none" or osbuilder is defined
-  tags:
-    - xo
 
 # need to add proper download section and get the binary out of git
 - name: copy  the firmware for tplink WM752M
