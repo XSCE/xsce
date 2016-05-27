@@ -1,4 +1,2 @@
-- include: prelim.yml
-- include: chrony.yml
 - include: sysctl.yml
 - include: html.yml
