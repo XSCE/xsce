@@ -1,17 +1,24 @@
-- name: Get calibre setup file
-  get_url: 
-    url="{{ calibre_src_url }}" 
-    dest="{{ downloads_dir }}/calibre-installer.py" 
-    mode=0755
-  tags:
-    download2
+#- name: Get calibre setup file
+#  get_url:
+#    url="{{ calibre_src_url }}"
+#    dest="{{ downloads_dir }}/calibre-installer.py"
+#    mode=0755
+#  tags:
+#    download2
+#
+#- name: Install calibre
+#  shell: "{{ downloads_dir }}/calibre-installer.py >> /dev/null"
+#  args:
+#    creates: /usr/bin/calibre-uninstall
+#  tags:
+#    download2
 
-- name: Install calibre
-  shell: "{{ downloads_dir }}/calibre-installer.py >> /dev/null" 
-  args: 
-    creates: /usr/bin/calibre-uninstall 
-  tags:
-    download2
+- name: Install Caibre rpms
+  yum:  name={{ item }}
+  with_items:
+    - calibre
+  when: calibre_install
+  tags: download
 
 - name: Create calibre service(s) and support scripts
   template: backup=no
