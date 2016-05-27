@@ -82,20 +82,6 @@
     docker_enabled: True
   when: schooltool_enabled
 
-# Patch Fedora 21+ so usbmount works
-# Set flag to True that was initialized to False in role defaults
-# We can't undo this
-- name: Does udev need patching
-  set_fact:
-    udev_needs_patch: True
-  when: ansible_distribution == "Fedora" and ansible_distribution_version >= "21"
-
-# Same patch for CentOS 7.2
-- name: Does udev need patching for Centos
-  set_fact:
-    udev_needs_patch: True
-  when: ansible_distribution == "CentOS" and ansible_distribution_version >= "7.2.1511"
-
 # for various reasons the mysql service can not be enabled on fedora 20,
 # but 'mariadb', which is its real name can
 # on fedora 18 we need to use 'mysqld'
