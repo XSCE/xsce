@@ -31,10 +31,17 @@ moodle_install: False
 pathagar_install: False
 sugarizer_install: False
 schooltool_install: False
+<<<<<<< HEAD
 iiab_install: False
 # 8-mgmat-tools
 sugar-stats_install: False
 ajenti_install: False
+=======
+# 8-mgmat-tools
+sugar-stats_install: False
+ajenti_install: False
+monit_install: False
+>>>>>>> more complete list not to install
 xovis_install: False
 phpmyadmin_install: False
 awstats_install: False
@@ -42,7 +49,5 @@ teamviewer_install: False
 sugar_stats_install: False
 monit_install: False
 ajenti_install: False
-postgresql_install: False
-mysql_install: False
 
 
