@@ -9,7 +9,9 @@ varible: value
 # 4-server-options
 postgresql_install: False
 authserver_install: False
+authserver_enabled: False
 samba_install: False
+dhcpd_install: False
 usb-lib_install: False
 cups_install: False
 dansguardian_install: False
