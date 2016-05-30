@@ -130,7 +130,7 @@ def main():
     ipc_sock = "/run/cmdsrv_sock"
     client_url = "ipc://" + ipc_sock
 
-    owner = pwd.getpwnam("apache")
+    owner = pwd.getpwnam("www-data")
     group = grp.getgrnam("xsce-admin")
 
     # Prepare our context and sockets
