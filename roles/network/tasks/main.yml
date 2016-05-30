@@ -65,9 +65,9 @@
   when: not installing
 
 - include: ifcfg_mods.yml
-  when: not installing
   tags:
     - network
+<<<<<<< HEAD
 
 - include: ifcfg_lan.yml
   tags:
@@ -82,13 +82,12 @@
   when: not installing
   tags:
     - network
-  when: ansible_distribution != 'Debian'
+  when: ansible_distribution != 'Debian'and not installing
 
 - include: debian.yml
-  when: not installing
   tags:
     - network
-  when: ansible_distribution == 'Debian'
+  when: ansible_distribution == 'Debian' and not installing
 
 - name: Create xs network flags
   template: src=network/{{ item }}.j2
