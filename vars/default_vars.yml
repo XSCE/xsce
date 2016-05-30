@@ -146,11 +146,11 @@ postgresql_enabled: False
 
 # authserver
 authserver_install: True
-authserver_enabled: True
+authserver_enabled: False
 
 # usb-lib
 usb_lib_install: True
-usb_lib_enabled: True
+usb_lib_enabled: False
 
 # docker
 docker_install: True
@@ -164,12 +164,12 @@ cups_enabled: False
 
 # ejabberd
 ejabberd_install: True
-ejabberd_enabled: True
+ejabberd_enabled: False
 
 # idmgr and activity-server
 idmgr_install: True
 activity-server_install: True
-xo_services_enabled: True
+xo_services_enabled: False
 
 # 6-GENERIC-APPS
 
@@ -208,7 +208,7 @@ moodle_enabled: False
 
 # Internet-in-a-Box
 iiab_install: True
-iiab_enabled: True
+iiab_enabled: False
 
 # Pathagar
 pathagar_install: True
@@ -289,7 +289,7 @@ awstats_enabled: False
 
 # xovis
 xovis_install: True
-xovis_enabled: True
+xovis_enabled: False	
 xovis_target_host: "127.0.0.1:5984"
 xovis_deployment_name: olpc
 
