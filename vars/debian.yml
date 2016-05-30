@@ -6,24 +6,39 @@
 # obtain a password hash with - python -c 'import crypt; print crypt.crypt("<plaintext>", "$6$<salt>")'
 #xsce_admin_passw_hash: 
 varible: value
-idmgr_install: False
+# 4-server-options
+postgresql_install: False
+authserver_install: False
+samba_install: False
+usb-lib_install: False
+cups_install: False
+dansguardian_install: False
+# 5-xoservices
+xo_services_install: False
 ejabberd_install: False
+idmgr_install: False
+activity_server_install: False
+# 6-generic-aps
+mysql_install: False
+elgg_install: False
+owncloud_install: False
+dokuwiki_install: False
+wordpres_install: False
+# 7-edu-aps
 moodle_install: False
 pathagar_install: False
 sugarizer_install: False
-elgg_install: False
-owncloud_install: False
-samba_install: False
-cups_install: False
 schooltool_install: False
+# 8-mgmat-tools
+sugar-stats_install: False
+ajenti_install: False
+monit_install: False
 xovis_install: False
-dansguardian_install: False
+phpmyadmin_install: False
 awstats_install: False
+teamviewer_install: False
 sugar_stats_install: False
 monit_install: False
-xo_servicer_install: False
 ajenti_install: False
-postgresql_install: False
-mysql_install: False
 
 
