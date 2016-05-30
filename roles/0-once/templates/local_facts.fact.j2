@@ -17,7 +17,11 @@ if [ -d /usr/lib64/php ]
 then
   PHPLIB_DIR=/usr/lib64/php
 else
-  PHPLIB_DIR=/usr/lib/php
+  if [ -d /usr/lib/php5 ]; then
+     PHPLIB_DIR=/usr/lib/php5
+  else
+     PHPLIB_DIR=/usr/lib/php
+  fi
 fi
 
 if [ -f /proc/device-tree/mfg-data/MN ]
