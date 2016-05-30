@@ -23,7 +23,7 @@ sugar_stats_install: False
 monit_install: False
 xo_servicer_install: False
 ajenti_install: False
-posgresql_install: False
+postgresql_install: False
 mysql_install: False
 
 
