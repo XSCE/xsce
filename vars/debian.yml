@@ -42,5 +42,7 @@ teamviewer_install: False
 sugar_stats_install: False
 monit_install: False
 ajenti_install: False
+posgresql_install: False
+mysql_install: False
 
 
