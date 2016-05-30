@@ -150,7 +150,7 @@ authserver_enabled: False
 
 # usb-lib
 usb_lib_install: True
-usb_lib_enabled: False
+usb_lib_enabled: True
 
 # docker
 docker_install: True
