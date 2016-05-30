@@ -1,0 +1,27 @@
+# Put variables for your installation that override defaults here
+# Better still, put this file in a branch of https://github.com/XSCE/xsce-local for your deployment
+
+#xsce_admin_user: xsce-admin
+
+# obtain a password hash with - python -c 'import crypt; print crypt.crypt("<plaintext>", "$6$<salt>")'
+#xsce_admin_passw_hash: 
+varible: value
+idmgr_install: False
+ejabberd_install: False
+moodle_install: False
+pathagar_install: False
+sugarizer_install: False
+elgg_install: False
+owncloud_install: False
+samba_install: False
+cups_install: False
+schooltool_install: False
+xovis_install: False
+dansguardian_install: False
+awstats_install: False
+sugar_stats_install: False
+monit_install: False
+xo_servicer_install: False
+ajenti_install: False
+
+
