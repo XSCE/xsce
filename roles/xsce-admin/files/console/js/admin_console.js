@@ -42,250 +42,269 @@ sysStorage.zims_selected_size = 0;
 
 var globalAjaxErrorFlag = false;
 
+// MAIN ()
+
+function main() {
+
 // Set jquery ajax calls not to cache in browser
-$.ajaxSetup({ cache: false });
+  $.ajaxSetup({ cache: false });
 
 // get default help
-getHelp("Overview.rst");
+  getHelp("Overview.rst");
+  navButtonsEvents();
+// Get Ansible facts and other data
+  init();
+}
 
 // Set up nav
 
-$("ul.nav a").click(function (e) {
-  e.preventDefault();
-  $(this).tab('show');
-  console.log($(this));
-  if ($(this).is('[call-after]')) {
-    //if ($this).attr('call-after') !== undefined) {
-    console.log($(this).attr('call-after'));
-    if ($(this).is('[call-after-arg]'))
-    {
-      console.log($(this).attr('call-after-arg'));
-      window[$(this).attr('call-after')]($(this).attr('call-after-arg'));
+function navButtonsEvents() {
+  $("ul.nav a").click(function (e) {
+    e.preventDefault();
+    $(this).tab('show');
+    console.log($(this));
+    if ($(this).is('[call-after]')) {
+      //if ($this).attr('call-after') !== undefined) {
+      console.log($(this).attr('call-after'));
+      if ($(this).is('[call-after-arg]'))
+      {
+        console.log($(this).attr('call-after-arg'));
+        window[$(this).attr('call-after')]($(this).attr('call-after-arg'));
+      }
+      else
+        window[$(this).attr('call-after')]();
     }
     else
-      window[$(this).attr('call-after')]();
-  }
-  else
-    console.log(' no call-after');
-});
-
-// Get Ansible facts and other data
-init();
+      console.log(' no call-after');
+  });
+}
 
 // BUTTONS
 
 // Control Buttons
 
-$("#REBOOT").click(function(){
-  rebootServer();
-});
-
-$("#POWEROFF").click(function(){
-  poweroffServer();
-});
-
-
-// Configuration Buttons
-$("#Bad-CMD").click(function(){
-  sendCmdSrvCmd("XXX", testCmdHandler);
-});
-
-$("#Test-CMD").click(function(){
-  //sendCmdSrvCmd("TEST ;", testCmdHandler);
-  getJobStat();
-});
-
-$("#List-CMD").click(function(){
-	// xsce-cmdsrv-ctl LIST-LIBR '{"sub_dir":"downloads/zims"}'
-  sendCmdSrvCmd("LIST", listCmdHandler);
-});
-
-$("#SET-CONF-CMD").click(function(){
-  button_feedback("#SET-CONF-CMD", true);
-  setConfigVars();
-  button_feedback("#SET-CONF-CMD",false);
-});
-
-$("#SAVE-WHITELIST").click(function(){
-  button_feedback("#SAVE-WHITELIST", true);
-  setWhitelist();
-  button_feedback("#SAVE-WHITELIST", false);
-});
-
-$("#RUN-ANSIBLE").click(function(){
-  button_feedback("#RUN-ANSIBLE", true);
-  runAnsible("ALL-TAGS");
-  //runAnsible("addons");
-  button_feedback("#RUN-ANSIBLE", false);
-});
-
-$("#RUN-TAGS").click(function(){
-  button_feedback("#RUN-TAGS", true);
-  tagList = "";
-  $('#ansibleTags input').each( function(){
-    if (this.type == "checkbox") {
-      if (this.checked)
-      tagList += this.name + ',';
-    }
+function controlButtonsEvents() {
+  $("#REBOOT").click(function(){
+    rebootServer();
   });
-  if (tagList.length > 0)
-  tagList = tagList.substring(0, tagList.length - 1);
-  runAnsible(tagList);
-  //runAnsible("addons");
-  button_feedback("#RUN-TAGS", false);
-});
 
-$("#STOP").click(function(){
-  sendCmdSrvCmd("STOP", genericCmdHandler);
-});
-
-// Install Content Buttons
-
-$("#selectLangButton").click(function(){
-  procZimGroups();
-  $('#selectLangCodes').modal('hide');
-  $('#ZimLanguages2').hide();
-  procZimLangs(); // make top menu reflect selections
-});
-
-$("#selectLangButton2").click(function(){
-  procZimGroups();
-  $('#selectLangCodes').modal('hide');
-  $('#ZimLanguages2').hide();
-  procZimLangs(); // make top menu reflect selections
-});
-
-$("#moreLangButton").click(function(){
-  $('#ZimLanguages2').show();
-});
-
-$("#INST-ZIMS").click(function(){
-  var zim_id;
-  button_feedback("#INST-ZIMS", true);
-
-  $('#ZimDownload input').each( function(){
-    if (this.type == "checkbox")
-    if (this.checked){
-      zim_id = this.name;
-      if (zimsInstalled.indexOf(zim_id) == -1 && zimsScheduled.indexOf(zim_id) == -1)
-      instZim(zim_id);
-    }
+  $("#POWEROFF").click(function(){
+    poweroffServer();
   });
-  procZimGroups();
-  alert ("Selected Zims scheduled to be installed.\n\nPlease view Utilities->Display Job Status to see the results.");
-  button_feedback("#INST-ZIMS", false);
-});
+  console.log(' REBOOT and POWEROFF set');
+}
 
-$("#launchKaliteButton").click(function(){
-  var url = "http://" + window.location.host + ":8008";
-  //consoleLog(url);
-  window.open(url);
-});
+  // Configuration Buttons
 
-$("#ZIM-STATUS-REFRESH").click(function(){
-  getZimStat();
-});
+function configButtonsEvents() {
+  $("#Bad-CMD").click(function(){
+    sendCmdSrvCmd("XXX", testCmdHandler);
+  });
 
-$("#RESTART-KIWIX").click(function(){
-  restartKiwix();
-});
+  $("#Test-CMD").click(function(){
+    //sendCmdSrvCmd("TEST ;", testCmdHandler);
+    getJobStat();
+  });
 
-$("#KIWIX-LIB-REFRESH").click(function(){
-  getKiwixCatalog();
-});
+  $("#List-CMD").click(function(){
+  	// xsce-cmdsrv-ctl LIST-LIBR '{"sub_dir":"downloads/zims"}'
+    sendCmdSrvCmd("LIST", listCmdHandler);
+  });
 
-$("#DOWNLOAD-RACHEL").click(function(){
-	if (rachelStat.content_installed == true){
-	  var rc = confirm("RACHEL content is already in the library.  Are you sure you want to download again?");
-	  if (rc != true)
-	    return;
-	}
-  sendCmdSrvCmd("INST-RACHEL", genericCmdHandler, "DOWNLOAD-RACHEL");
-  alert ("RACHEL scheduled to be downloaded and installed.\n\nPlease view Utilities->Display Job Status to see the results.");
-});
+  $("#SET-CONF-CMD").click(function(){
+    make_button_disabled("#SET-CONF-CMD", true);
+    setConfigVars();
+    make_button_disabled("#SET-CONF-CMD",false);
+  });
 
-$("#DEL-DOWNLOADS").click(function(){
-	var r = confirm("Press OK to Delete Checked Files");
-  if (r != true)
-    return;
-	button_feedback("#DEL-DOWNLOADS", true);
-  delDownloadedFiles();
-  button_feedback("#DEL-DOWNLOADS", false);
-});
+  $("#SAVE-WHITELIST").click(function(){
+    make_button_disabled("#SAVE-WHITELIST", true);
+    setWhitelist();
+    make_button_disabled("#SAVE-WHITELIST", false);
+  });
 
-// Util Buttons
+  $("#RUN-ANSIBLE").click(function(){
+    make_button_disabled("#RUN-ANSIBLE", true);
+    runAnsible("ALL-TAGS");
+    //runAnsible("addons");
+    make_button_disabled("#RUN-ANSIBLE", false);
+  });
 
-$("#CHGPW").click(function(){
-	changePassword();
-});
-
-$("#JOB-STATUS-REFRESH").click(function(){
-	button_feedback("#JOB-STATUS-REFRESH", true);
-  getJobStat();
-  button_feedback("#JOB-STATUS-REFRESH", false);
-});
-
-$("#CANCEL-JOBS").click(function(){
-	var cmdList = [];
-  button_feedback("#CANCEL-JOBS", true);
-  $('#jobStatTable input').each( function(){
-    if (this.type == "checkbox")
-      if (this.checked){
-        job_idArr = this.id.split('-');
-        job_id = job_idArr[1];
-
-        // cancelJobFunc returns the function to call not the result as needed by array.push()
-        cmdList.push(cancelJobFunc(job_id));
-        if (job_status[job_id]["cmd_verb"] == "INST-ZIMS"){
-        	var zim_id = job_status[job_id]["cmd_args"]["zim_id"];
-        	//consoleLog (zim_id);
-          if (zimsScheduled.indexOf(zim_id) > -1){
-            zimsScheduled.pop(zim_id);
-            updateZimDiskSpaceUtil(zim_id, false)
-            procZimGroups();
-            //$( "input[name*='" + zim_id + "']" ).checked = false;
-          }
-        }
-        this.checked = false;
+  $("#RUN-TAGS").click(function(){
+    make_button_disabled("#RUN-TAGS", true);
+    tagList = "";
+    $('#ansibleTags input').each( function(){
+      if (this.type == "checkbox") {
+        if (this.checked)
+        tagList += this.name + ',';
       }
+    });
+    if (tagList.length > 0)
+    tagList = tagList.substring(0, tagList.length - 1);
+    runAnsible(tagList);
+    //runAnsible("addons");
+    make_button_disabled("#RUN-TAGS", false);
   });
-  //consoleLog(cmdList);
-  $.when.apply($, cmdList).then(getJobStat, procZimCatalog);
-  alert ("Jobs marked for Cancellation.\n\nPlease click Refresh to see the results.");
-  button_feedback("#CANCEL-JOBS", false);
-});
 
-$("#GET-INET-SPEED").click(function(){
-  getInetSpeed();
-});
+  $("#STOP").click(function(){
+    sendCmdSrvCmd("STOP", genericCmdHandler);
+  });
+}
 
-$("#GET-INET-SPEED2").click(function(){
-  getInetSpeed2();
-});
+  // Install Content Buttons
 
-// Static Wan Fields
+function instContentButtonsEvents() {
+  $("#selectLangButton").click(function(){
+    procZimGroups();
+    $('#selectLangCodes').modal('hide');
+    $('#ZimLanguages2').hide();
+    procZimLangs(); // make top menu reflect selections
+  });
 
-$("#gui_static_wan").change(function(){
-  gui_static_wanVal();
-});
+  $("#selectLangButton2").click(function(){
+    procZimGroups();
+    $('#selectLangCodes').modal('hide');
+    $('#ZimLanguages2').hide();
+    procZimLangs(); // make top menu reflect selections
+  });
 
-$("#gui_static_wan_ip").on('blur', function(){
-  staticIpVal("#gui_static_wan_ip");
-});
+  $("#moreLangButton").click(function(){
+    $('#ZimLanguages2').show();
+  });
 
-$("#gui_static_wan_netmask").on('blur', function(){
-  staticIpVal("#gui_static_wan_netmask");
-});
+  $("#INST-ZIMS").click(function(){
+    var zim_id;
+    make_button_disabled("#INST-ZIMS", true);
 
-$("#gui_static_wan_gateway").on('blur', function(){
-  staticIpVal("#gui_static_wan_gateway");
-});
+    $('#ZimDownload input').each( function(){
+      if (this.type == "checkbox")
+      if (this.checked){
+        zim_id = this.name;
+        if (zimsInstalled.indexOf(zim_id) == -1 && zimsScheduled.indexOf(zim_id) == -1)
+        instZim(zim_id);
+      }
+    });
+    procZimGroups();
+    alert ("Selected Zims scheduled to be installed.\n\nPlease view Utilities->Display Job Status to see the results.");
+    make_button_disabled("#INST-ZIMS", false);
+  });
 
-$("#gui_static_wan_nameserver").on('blur', function(){
-  staticIpVal("#gui_static_wan_nameserver");
-});
+  $("#launchKaliteButton").click(function(){
+    var url = "http://" + window.location.host + ":8008";
+    //consoleLog(url);
+    window.open(url);
+  });
 
-function button_feedback(id, grey_out) {
+  $("#ZIM-STATUS-REFRESH").click(function(){
+    getZimStat();
+  });
+
+  $("#RESTART-KIWIX").click(function(){
+    restartKiwix();
+  });
+
+  $("#KIWIX-LIB-REFRESH").click(function(){
+    getKiwixCatalog();
+  });
+
+  $("#DOWNLOAD-RACHEL").click(function(){
+  	if (rachelStat.content_installed == true){
+  	  var rc = confirm("RACHEL content is already in the library.  Are you sure you want to download again?");
+  	  if (rc != true)
+  	    return;
+  	}
+    sendCmdSrvCmd("INST-RACHEL", genericCmdHandler, "DOWNLOAD-RACHEL");
+    alert ("RACHEL scheduled to be downloaded and installed.\n\nPlease view Utilities->Display Job Status to see the results.");
+  });
+
+  $("#DEL-DOWNLOADS").click(function(){
+  	var r = confirm("Press OK to Delete Checked Files");
+    if (r != true)
+      return;
+  	make_button_disabled("#DEL-DOWNLOADS", true);
+    delDownloadedFiles();
+    make_button_disabled("#DEL-DOWNLOADS", false);
+  });
+}
+
+  // Util Buttons
+
+function utilButtonsEvents() {
+  $("#CHGPW").click(function(){
+  	changePassword();
+  });
+
+  $("#JOB-STATUS-REFRESH").click(function(){
+  	make_button_disabled("#JOB-STATUS-REFRESH", true);
+    getJobStat();
+    make_button_disabled("#JOB-STATUS-REFRESH", false);
+  });
+
+  $("#CANCEL-JOBS").click(function(){
+  	var cmdList = [];
+    make_button_disabled("#CANCEL-JOBS", true);
+    $('#jobStatTable input').each( function(){
+      if (this.type == "checkbox")
+        if (this.checked){
+          job_idArr = this.id.split('-');
+          job_id = job_idArr[1];
+
+          // cancelJobFunc returns the function to call not the result as needed by array.push()
+          cmdList.push(cancelJobFunc(job_id));
+          if (job_status[job_id]["cmd_verb"] == "INST-ZIMS"){
+          	var zim_id = job_status[job_id]["cmd_args"]["zim_id"];
+          	//consoleLog (zim_id);
+            if (zimsScheduled.indexOf(zim_id) > -1){
+              zimsScheduled.pop(zim_id);
+              updateZimDiskSpaceUtil(zim_id, false)
+              procZimGroups();
+              //$( "input[name*='" + zim_id + "']" ).checked = false;
+            }
+          }
+          this.checked = false;
+        }
+    });
+    //consoleLog(cmdList);
+    $.when.apply($, cmdList).then(getJobStat, procZimCatalog);
+    alert ("Jobs marked for Cancellation.\n\nPlease click Refresh to see the results.");
+    make_button_disabled("#CANCEL-JOBS", false);
+  });
+
+  $("#GET-INET-SPEED").click(function(){
+    getInetSpeed();
+  });
+
+  $("#GET-INET-SPEED2").click(function(){
+    getInetSpeed2();
+  });
+}
+
+function configFieldsEvents() {
+
+  // Static Wan Fields
+
+  $("#gui_static_wan").change(function(){
+    gui_static_wanVal();
+  });
+
+  $("#gui_static_wan_ip").on('blur', function(){
+    staticIpVal("#gui_static_wan_ip");
+  });
+
+  $("#gui_static_wan_netmask").on('blur', function(){
+    staticIpVal("#gui_static_wan_netmask");
+  });
+
+  $("#gui_static_wan_gateway").on('blur', function(){
+    staticIpVal("#gui_static_wan_gateway");
+  });
+
+  $("#gui_static_wan_nameserver").on('blur', function(){
+    staticIpVal("#gui_static_wan_nameserver");
+  });
+}
+
+function make_button_disabled(id, grey_out) {
 	// true means grey out the button and disable, false means the opposite
   if (grey_out){
   	$(id).prop('disabled', true);
@@ -522,7 +541,7 @@ function assignConfigVars (data)
     //console.log($(this).val());
     //consoleLog(this.name);
   });
-  
+
   //config_vars = data;
   //consoleLog(jqXHR);
   //initConfigVars()
@@ -541,7 +560,7 @@ function initConfigVars()
   // handle exception where gui name distinct and no data
   // home page - / added when used in ansible
   if (! config_vars.hasOwnProperty('gui_desired_home_url')){
-  	config_vars['gui_desired_home_url'] = "home";  
+  	config_vars['gui_desired_home_url'] = "home";
   	consoleLog("home url is " + config_vars['gui_desired_home_url']);
   }
   assignConfigVars();
@@ -714,7 +733,7 @@ function changePasswordSuccess ()
 
   function getKiwixCatalog() // Downloads kiwix catalog from kiwix
   {
-    button_feedback("#KIWIX-LIB-REFRESH", true);
+    make_button_disabled("#KIWIX-LIB-REFRESH", true);
     // remove any selections as catalog may have changed
     selectedZims = [];
 
@@ -745,7 +764,7 @@ function changePasswordSuccess ()
     })
     .always(function() {
       alert ("Kiwix Catalog has been downloaded.");
-      button_feedback("#KIWIX-LIB-REFRESH", false);
+      make_button_disabled("#KIWIX-LIB-REFRESH", false);
     })
   }
 
@@ -1480,7 +1499,7 @@ function sendCmdSrvCmd(command, callback, buttonId, errCallback, cmdArgs) {
   if (buttonId === undefined)
   buttonId = "";
   else
-    button_feedback('#' + buttonId, true);
+    make_button_disabled('#' + buttonId, true);
 
     resp = $.ajax({
       type: 'POST',
@@ -1508,7 +1527,7 @@ function sendCmdSrvCmd(command, callback, buttonId, errCallback, cmdArgs) {
     })
     .fail(jsonErrhandler)
     .always(function() {
-      button_feedback('#' + this.buttonId, false);
+      make_button_disabled('#' + this.buttonId, false);
     });
 
     return resp;
