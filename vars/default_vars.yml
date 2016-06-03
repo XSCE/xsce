@@ -289,7 +289,7 @@ awstats_enabled: False
 
 # xovis
 xovis_install: True
-xovis_enabled: False	
+xovis_enabled: False
 xovis_target_host: "127.0.0.1:5984"
 xovis_deployment_name: olpc
 
