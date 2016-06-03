@@ -1,6 +1,6 @@
 - name: Install packages for cmdsrv
-  yum: name={{ item }}
-       state=installed
+  package: name={{ item }}
+           state=present
   with_items:
     - gcc
     - gcc-c++

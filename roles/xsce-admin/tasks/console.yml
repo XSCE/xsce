@@ -1,6 +1,6 @@
 - name: Install packages for console
-  yum: name={{ item }}
-       state=installed
+  package: name={{ item }}
+           state=present
   with_items:
     - mod_ssl
     - mod_authnz_external

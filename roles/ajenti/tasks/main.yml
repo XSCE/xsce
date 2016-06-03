@@ -1,12 +1,12 @@
 - name: Install python-pip package
-  yum: name=python-pip
-       state=installed
+  package: name=python-pip
+           state=present
   tags:
     - download
 
 - name: Install required libraries
-  yum: name={{ item.pkg }}
-       state=installed
+  package: name={{ item.pkg }}
+           state=present
   with_items:
     - pkg: python-imaging
     - pkg: python-devel

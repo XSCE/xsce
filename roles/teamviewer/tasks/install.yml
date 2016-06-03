@@ -40,8 +40,8 @@
   when: teamviewer_install and xo_model == "none" and ansible_distribution_version >= "22"
 
 - name: using local copy
-  yum: name={{ item }}
-       state=present
+  package: name={{ item }}
+           state=present
   with_items:
    - teamviewer*
   when: teamviewer_install and xo_model == "none" and ansible_distribution_version >= "22"
