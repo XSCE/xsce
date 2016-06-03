@@ -1,4 +1,5 @@
-# we need to install the rpm in order to get the dependencies
+- name: Get the stable release channel repo definition
+  template: src=ce:stable.repo dest=/etc/yum.repos.d/
 
 - name: Install owncloud package
   yum: pkg={{ item }} state=installed
@@ -13,7 +14,7 @@
 
 - name: Override owncloud path when using rpms
   set_fact: 
-    owncloud_path: "/usr/share/owncloud"
+    owncloud_path: "/var/www/html/owncloud"
   when: not is_F18
 
 - name: in Centos, the following config dir is symlink to /etc/owncloud
