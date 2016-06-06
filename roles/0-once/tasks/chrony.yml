@@ -8,7 +8,7 @@
 
 #TODO: Use regexp filter instead of hard-code ip 
 - name: Update chrony config file
-  template: backup=yes
+  template: backup=no
             dest=/etc/chrony.conf
-            src=chrony/chrony.conf.j2
+            src=chrony.conf.j2
 

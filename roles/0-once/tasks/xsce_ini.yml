@@ -20,6 +20,10 @@
             option='{{ item.option }}'
             value='{{ item.value }}'
   with_items:
+    - option: 'distribution'
+      value: '{{ ansible_distribution }}'
+    - option: 'arch'
+      value: '{{ ansible_architecture }}'
     - option: 'xsce_branch'
       value: '{{ ansible_local["local_facts"]["xsce_branch"] }}'
     - option: 'xsce_commit'
@@ -30,26 +34,3 @@
       value: '{{ ansible_date_time["iso8601"] }}'
     - option: 'install_xo'
       value: '{{ xo_model }}'
-
-- name: add context section
-  ini_file: dest='{{ xsce_config_file }}'
-            section=context
-            option='{{ item.option }}'
-            value='{{ item.value }}'
-  with_items:
-    - option: 'arch'
-      value: '{{ ansible_architecture }}'
-    - option: 'distribution'
-      value: '{{ ansible_distribution }}'
-    - option: 'kernel'
-      value: '{{ ansible_kernel }}'
-    - option: 'memory_mb'
-      value: '{{ ansible_memtotal_mb }}'
-    - option: 'swap_mb'
-      value: '{{ ansible_swaptotal_mb }}'
-#    - option: 'machine_id'
-#      value: '{{ ansible_machine_id }}'
-    - option: 'product_id'
-      value: '{{ ansible_product_uuid }}'
-#    - option: 'library_gb'
-#      value: '{{ ansible_devices.sda.partitions.sda3.size }}'

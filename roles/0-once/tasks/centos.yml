@@ -6,8 +6,6 @@
        state=present
   with_items:
    - epel-release
-  tags:
-    - download
 
 - name: Install XECE repo for CentOS
   template: src={{ item }} dest=/etc/yum.repos.d/ owner=root group=root mode=0644
@@ -15,3 +13,10 @@
    - xsce-centos.repo
    - li.nux.ro.repo
 
+- name: Disable updating ejabberd on CentOS
+  shell: sed -i -e '/^enabled=/a exclude=ejabberd' {{ item }}
+  with_items:
+    - /etc/yum.repos.d/CentOS-Base.repo
+    - /etc/yum.repos.d/CentOS-CR.repo
+    - /etc/yum.repos.d/CentOS-fasttrack.repo
+    - /etc/yum.repos.d/CentOS-Vault.repo

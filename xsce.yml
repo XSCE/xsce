@@ -8,7 +8,6 @@
   - /etc/xsce/config_vars.yml
 
   roles:
-      - { role: 0-once, tags: ['once','platform','base'] }
       - { role: 1-prep, tags: ['prep','platform','base'] }
       - { role: 2-common, tags: ['common','base'] }
       - { role: 3-base-server, tags: ['base'] }
