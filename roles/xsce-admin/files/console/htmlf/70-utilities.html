@@ -11,6 +11,7 @@
 			<ul class="nav nav-pills nav-stacked"> <!-- Start Status Sub Level Menu -->
 				<li class="active"><a href="#utilChgPW">Change Password</a></li>
 				<li><a href="#utilJobs" call-after="getJobStat">Display Job Status</a></li>
+				<li><a href="#utilLog">Display Commands Log</a></li>
 				<li><a href="#utilsTools">Admin Tools</a></li>
 				<li><a href="#utilsAnsible">Display Ansible Facts</a></li>
 				<li><a href="#utilsXsceIni" call-after="getXsceIni">Display XSCE.INI File</a></li>
@@ -67,6 +68,10 @@
 						</table>
 					</div> <!--  End jobStatTable -->
 				</div> <!--  End Status statusJobs Submenu Option Pane -->
+				<div class="tab-pane" id="utilLog"> <!-- Start utilLogs Pane -->
+					<h2>Command Log</h2>
+					<div id="serverCmdLog"></div>
+				</div> <!--  End utilLogs pane -->
 				<div class="tab-pane" id="utilsTools"> <!-- Start utilsTools Pane -->
 					<h2>Administration Tools</h2>
 
