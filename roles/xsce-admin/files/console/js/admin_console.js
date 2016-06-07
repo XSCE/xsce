@@ -571,7 +571,7 @@ function initConfigVars()
   if ($.isEmptyObject(ansibleFacts)
       || $.isEmptyObject(xsce_ini)
       || $.isEmptyObject(effective_vars)
-      || $.isEmptyObject(config_vars)
+      // || $.isEmptyObject(config_vars) is empty the first time
       ){
       consoleLog("initConfigVars found empty data");
       displayServerCommandStatus ("initConfigVars found empty data")
@@ -599,6 +599,7 @@ function initConfigVars()
   $("#discoveredNetwork").html(html);
   if (typeof config_vars.gui_desired_network_role === "undefined")
   setRadioButton("gui_desired_network_role", xsce_ini.network.xsce_network_mode)
+  initStaticWanVars();
 }
 
 function initStaticWanVars() {
@@ -1568,7 +1569,7 @@ function sendCmdSrvCmd(command, callback, buttonId, errCallback, cmdArgs) {
 
   //consoleLog ("command: " + command);
 
-  cmdVerb = command.split(" ")[0];
+  var cmdVerb = command.split(" ")[0];
   logServerCommands (cmdVerb, "sent");
 
   if (buttonId === undefined)
@@ -1737,7 +1738,7 @@ function init ()
     waitDeferred(3000))
     .done(initDone)
     .fail(function () {
-    	displayServerCommandStatus("Init Failed");
+    	displayServerCommandStatus('<span style="color:red">Init Failed</span>');
     	consoleLog("Init failed");
     	})
 }
@@ -1746,13 +1747,13 @@ function initDone ()
 {
 	if (initStat["error"] == false){
 	  consoleLog("Init Finished Successfully");
-	  displayServerCommandStatus("Init Finished Successfully");
+	  displayServerCommandStatus('<span style="color:green">Init Finished Successfully</span>');
 	  // now turn on navigation
 	  navButtonsEvents();
 	  //$('#initDataModal').modal('hide');
   } else {
     consoleLog("Init Failed");
-    displayServerCommandStatus("Init Failed");
+    displayServerCommandStatus('<span style="color:red">Init Failed</span>');
     //$('#initDataModalResult').html("<b>There was an error on the Server.</b>");
   }
   initStat["active"] = false;
