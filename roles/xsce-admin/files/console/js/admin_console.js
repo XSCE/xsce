@@ -1,11 +1,12 @@
 // admin_console.js
-// copyright 2015 Tim Moody
+// copyright 2016 Tim Moody
 
 var today = new Date();
 var dayInMs = 1000*60*60*24;
 
 var xsceContrDir = "/etc/xsce/";
 var consoleJsonDir = "/common/assets/";
+var xsceCmdService = "cmd-service.php";
 var ansibleFacts = {};
 var ansibleTagsStr = "";
 var effective_vars = {};
@@ -19,7 +20,6 @@ var zimGroups = {}; // zim ids grouped by language and category
 var kiwixCatalog = {}; // catalog of kiwix zims, read from file downloaded from kiwix.org
 var kiwixCatalogDate = new Date; // date of download, stored in json file
 var installedZimCat = {}; // catalog of installed, and wip zims
-
 var rachelStat = {}; // installed, enabled and whether content is installed and which is enabled
 
 var zimsInstalled = []; // list of zims already installed
@@ -40,7 +40,9 @@ sysStorage.zims_selected_size = 0;
 // and because an error returned from the server is not an ajax error
 // flag must be set to false before use
 
-var globalAjaxErrorFlag = false;
+// defaults for ip addr of server and other info returned from server-info.php
+var serverInfo = {"xsce_server_ip":"","xsce_client_ip":"","xsce_server_found":"TRUE","xsce_cmdsrv_running":"FALSE"};
+var initStat = {};
 
 // MAIN ()
 
@@ -49,9 +51,17 @@ function main() {
 // Set jquery ajax calls not to cache in browser
   $.ajaxSetup({ cache: false });
 
+// declare generic ajax error handler called by all .fail events
+ $( document ).ajaxError(ajaxErrhandler);
+
 // get default help
   getHelp("Overview.rst");
   navButtonsEvents();
+
+  initStat["active"] = false;
+  initStat["error"] = false;
+  initStat["alerted"] = {};
+
 // Get Ansible facts and other data
   init();
 }
@@ -557,6 +567,15 @@ function setRadioButton(name, value){
 
 function initConfigVars()
 {
+  if ($.isEmptyObject(ansibleFacts)
+      || $.isEmptyObject(xsce_ini)
+      || $.isEmptyObject(effective_vars)
+      || $.isEmptyObject(config_vars)
+      ){
+      consoleLog("initConfigVars found empty data");
+      displayServerCommandStatus ("initConfigVars found empty data")
+      return;
+    }
   // handle exception where gui name distinct and no data
   // home page - / added when used in ansible
   if (! config_vars.hasOwnProperty('gui_desired_home_url')){
@@ -666,8 +685,8 @@ function changePasswordSuccess ()
   {
     //alert ("in getWhitelist");
     //consoleLog(data);
-    whlist_array = data['xsce_whitelist'];
-    whlist_str = whlist_array[0];
+    var whlist_array = data['xsce_whitelist'];
+    var whlist_str = whlist_array[0];
     for (var i = 1; i < whlist_array.length; i++) {
       whlist_str += '\n' + whlist_array[i];
     }
@@ -678,11 +697,11 @@ function changePasswordSuccess ()
 
   function setWhitelist ()
   {
-    //alert ("in setWhitelist");
-    whlist_ret = {}
-    whlist_array = $('#xsce_whitelist').val().split('\n');
+    //consoleLog ("in setWhitelist");
+    var whlist_ret = {}
+    var whlist_array = $('#xsce_whitelist').val().split('\n');
     whlist_ret['xsce_whitelist'] = whlist_array;
-    cmd = "SET-WHLIST " + JSON.stringify(whlist_ret);
+    var cmd = "SET-WHLIST " + JSON.stringify(whlist_ret);
     //consoleLog(cmd);
     sendCmdSrvCmd(cmd, genericCmdHandler);
     alert ("Saving Permitted URLs List.");
@@ -938,7 +957,13 @@ function procZimCatalog() {
 }
 
 function procOneCatalog(catalog){
-  if (Object.keys(catalog).length > 0){
+	  if ($.isEmptyObject(catalog)){
+      consoleLog("procOneCatalog found empty data");
+      displayServerCommandStatus ("procOneCatalog found empty data")
+      return;
+    }
+  else {
+  //if (Object.keys(catalog).length > 0){
     for (var id in catalog) {
       var lang = catalog[id].language;
       if (lang in langGroups)
@@ -1474,6 +1499,42 @@ function showAboutSummary()
   $( "#aboutSummaryText" ).html( html );
 }
 
+function getServerInfo() {
+	displayServerCommandStatus("Checking Server Connection");
+  resp = $.ajax({
+    type: 'GET',
+    cache: false,
+    global: false, // don't trigger global error handler
+    url: 'server-info.php',
+    dataType: 'json'
+  })
+  .done(function( data ) {
+    serverInfo.xsce_server_ip = data.xsce_server_ip;
+    serverInfo.xsce_client_ip = data.xsce_client_ip;
+    serverInfo.xsce_cmdsrv_running = data.xsce_cmdsrv_running;
+
+    consoleLog(serverInfo);
+    if (serverInfo.xsce_cmdsrv_running == "FALSE"){
+      displayServerCommandStatus("XSCE-CMDSRV is not running");
+      alert ("XSCE-CMDSRV is not running on the server");
+    }
+    else
+      displayServerCommandStatus("Successfully connected to Server");
+  })
+  .fail(getServerInfoError);
+
+  return resp;
+}
+
+function getServerInfoError (jqXHR, textStatus, errorThrown){
+  jsonErrhandler (jqXHR, textStatus, errorThrown); //check for json errors
+  serverInfo.xsce_server_found = "FALSE";
+  consoleLog("Connection to Server failed.");
+  displayServerCommandStatus('Connection to Server <span style="color:red">FAILED</span>.');
+  alert ("Connection to Server failed.\n Please make sure your network settings are correct,\n that the server is turned on,\n and that the web server is running.");
+}
+
+
 function formCommand(cmd_verb, args_name, args_obj)
 {
   cmd_args = {}
@@ -1496,14 +1557,27 @@ function sendCmdSrvCmd(command, callback, buttonId, errCallback, cmdArgs) {
   //   TODO  - add assignmentVar so can assign variable before running callback
   //alert ("in sendCmdSrvCmd(");
   //consoleLog ('buttonid = ' + buttonId);;
+
+  // skip command if init has already failed - not sure this works
+  if (initStat.active == true && initStat.error == true){
+  	var deferredObject = $.Deferred();
+  	logServerCommands (command, "failed", "Init already failed");
+  	return deferredObject.reject();
+  }
+
+  //consoleLog ("command: " + command);
+
+  cmdVerb = command.split(" ")[0];
+  logServerCommands (cmdVerb, "sent");
+
   if (buttonId === undefined)
   buttonId = "";
   else
     make_button_disabled('#' + buttonId, true);
 
-    resp = $.ajax({
+    var resp = $.ajax({
       type: 'POST',
-      url: 'cmd-service.php',
+      url: xsceCmdService,
       data: {
         command: command
       },
@@ -1511,19 +1585,19 @@ function sendCmdSrvCmd(command, callback, buttonId, errCallback, cmdArgs) {
       buttonId: buttonId
     })
     //.done(callback)
-    .done(function(data) {
+    .done(function(data, textStatus, jqXHR) {
     	var dataResp = data;
     	if ("Error" in dataResp){
-    	  consoleLog(dataResp["Error"]);
-    	  globalAjaxErrorFlag = true;
-    	  alert("Error: " + dataResp["Error"]);
+    	  cmdSrvError(cmdVerb, dataResp);
     	  if (typeof errCallback != 'undefined'){
     	    consoleLog(errCallback);
     	    errCallback(data, cmdArgs);
     	  }
     	}
-    	else
+    	else {
     	  callback(data);
+    	  logServerCommands (cmdVerb, "succeeded");
+    	}
     })
     .fail(jsonErrhandler)
     .always(function() {
@@ -1533,26 +1607,125 @@ function sendCmdSrvCmd(command, callback, buttonId, errCallback, cmdArgs) {
     return resp;
 }
 
+// Report errors that came from cmdsrv or cmd-service
+
+function cmdSrvError (cmdVerb, dataResp){
+	var errorText = dataResp["Error"];
+	consoleLog(errorText);
+  logServerCommands (cmdVerb, "failed", errorText);
+  cmdSrvErrorAlert (cmdVerb, dataResp)
+  initStat["error"] = true;
+}
+
+function cmdSrvErrorAlert (cmdVerb, dataResp){
+	var errorText = dataResp["Error"];
+	var alertText = cmdVerb + " FAILED and reported " + errorText;
+
+	if (initStat["active"] == false)
+	  alert(alertText);
+	else {
+		// during init only alert if flagged from server
+		if (("Alert" in dataResp) && ! (errorText in initStat["alerted"])){
+		  alert(alertText);
+		  initStat["alerted"][errorText] = true;
+		}
+  }
+}
+
+// Generic ajax error handler called by all .fail events unless global: false set
+
+function ajaxErrhandler (event, jqxhr, settings, thrownError) {
+	consoleLog("in .ajaxError");
+  consoleLog(event);
+  consoleLog(jqxhr);
+  consoleLog(settings);
+  consoleLog(thrownError);
+
+  // For commands sent to command server
+  if (settings.url == xsceCmdService){
+    var cmdstr = settings.data.split("command=")[1];
+    var cmdVerb = cmdstr.split(/[ +]/)[0];
+    consoleLog(cmdVerb);
+    logServerCommands (cmdVerb, "failed", jqxhr.statusText);
+    // see if we are connected to server
+    consoleLog(jqxhr.statusText, serverInfo.xsce_server_found);
+    //if (jqxhr.statusText == "error" && serverInfo.xsce_server_found == "TRUE"){
+    if (jqxhr.statusText == "error"){
+      consoleLog("calling getServerInfo");
+      getServerInfo();
+    }
+  }
+  if (initStat["active"] == true)
+    initStat["error"] = true;
+}
+
+// Error handler mostly for json errors, which should be bugs or bad data
+
 function jsonErrhandler (jqXHR, textStatus, errorThrown)
 {
-  alert ("in Errhandler: " + textStatus + ", " + errorThrown);
+  // only handle json parse errors here, others in ajaxErrHandler
+  if (textStatus == "parserror") {
+    //alert ("Json Errhandler: " + textStatus + ", " + errorThrown);
+    displayServerCommandStatus("Json Errhandler: " + textStatus + ", " + errorThrown);
+  }
   //consoleLog("In Error Handler logging jqXHR");
   consoleLog(textStatus);
   consoleLog(errorThrown);
   consoleLog(jqXHR);
-  globalAjaxErrorFlag = true;
-  consoleLog(globalAjaxErrorFlag);
+
   return false;
 }
+
 function consoleLog (msg)
 {
   console.log(msg); // for IE there can be no console messages unless in tools mode
 }
 
+function logServerCommands (command, status, extraData="")
+{
+  var msg = "";
+
+  switch (status) {
+    case "sent":
+        msg = "Command " + command + " sent to server";
+        break;
+    case "succeeded":
+        msg = command + ' <span style="color:green">SUCCEEDED</span>';
+        break;
+    case "failed":
+        msg = command + ' <span style="color:red">FAILED</span>';
+        if (extraData != "" && extraData != "error"){
+          msg += ' and returned ' + extraData;
+        }
+
+        break;
+
+  }
+  displayServerCommandStatus(msg);
+}
+
+function displayServerCommandStatus (msg)
+{
+  var initSelector = "#initLog";
+  var logSelector = "#serverCmdLog";
+  var now = new Date();
+
+  $(logSelector).prepend(now.toLocaleString() + ": " + msg + "<BR>");
+  if (initStat.active == true)
+    $(initSelector).prepend(now.toLocaleString() + ": " + msg + "<BR>");
+}
+
 function init ()
 {
-  $('#initDataModal').modal('show');
-  globalAjaxErrorFlag = false;
+  //$('#initDataModal').modal('show');
+
+  initStat["active"] = true;
+  initStat["error"] = false;
+  initStat["alerted"] = {};
+
+  displayServerCommandStatus("Starting init");
+
+  getServerInfo(); // see if we can connect
 
   $.when(
     sendCmdSrvCmd("GET-ANS-TAGS", getAnsibleTags),
@@ -1562,18 +1735,24 @@ function init ()
     sendCmdSrvCmd("GET-STORAGE-INFO", procSysStorageAll),
     waitDeferred(3000))
     .done(initDone)
-    .fail(function () {consoleLog("failed");})
+    .fail(function () {
+    	displayServerCommandStatus("Init Failed");
+    	consoleLog("Init failed");
+    	})
 }
 
 function initDone ()
 {
-	if (globalAjaxErrorFlag == false){
+	if (initStat["error"] == false){
 	  consoleLog("Init Finished Successfully");
+	  displayServerCommandStatus("Init Finished Successfully");
 	  $('#initDataModal').modal('hide');
   } else {
     consoleLog("Init Failed");
+    displayServerCommandStatus("Init Failed");
     $('#initDataModalResult').html("<b>There was an error on the Server.</b>");
   }
+  initStat["active"] = false;
 }
 
 function waitDeferred(msec) {
