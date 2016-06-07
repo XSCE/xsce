@@ -56,7 +56,8 @@ function main() {
 
 // get default help
   getHelp("Overview.rst");
-  navButtonsEvents();
+
+  //navButtonsEvents(); - now done after successful init
 
   initStat["active"] = false;
   initStat["error"] = false;
@@ -1746,11 +1747,13 @@ function initDone ()
 	if (initStat["error"] == false){
 	  consoleLog("Init Finished Successfully");
 	  displayServerCommandStatus("Init Finished Successfully");
-	  $('#initDataModal').modal('hide');
+	  // now turn on navigation
+	  navButtonsEvents();
+	  //$('#initDataModal').modal('hide');
   } else {
     consoleLog("Init Failed");
     displayServerCommandStatus("Init Failed");
-    $('#initDataModalResult').html("<b>There was an error on the Server.</b>");
+    //$('#initDataModalResult').html("<b>There was an error on the Server.</b>");
   }
   initStat["active"] = false;
 }
