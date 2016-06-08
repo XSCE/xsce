@@ -29,6 +29,7 @@ To manually install and experiment with these changes please do the following:
 * Install a minimal version of Fedora 21
 * Login using ssh as root
 * Issue the following commands:
+* 'yum update'
 * 'yum -y install git ansible'
 * 'mkdir /opt/schoolserver'
 * 'cd /opt/schoolserver' 
