@@ -1,15 +1,10 @@
-- name: Clone sugarizer repo
-  git: repo=https://github.com/llaske/sugarizer.git
-       dest={{ downloads_dir }}/sugarizer
-       update=yes
-       version=master
-  when: not {{ use_cache }} and not {{ no_network }}
-  tags:
-    - download2
-
-- name: Leave git pristine, but copy to target location for modification/install
-  synchronize: src={{ downloads_dir }}/sugarizer/
-               dest={{ sugarizer_location }}
+- name: Download the latest stable version of sugarizer from location under our control
+  get_url: url={{ xsce_download_url }}/{{ sugarizer_version }}
+           dest= {{ downloads_dir }}/{{ sugarizer_version }}
+  
+- name: Untar it to target location
+  unarchive: src={{ downloads_dir }}/{{ sugarizer_version }}
+             dest= {{ sugarizer_location }}
 
 - name: Install sugarizer required packages
   yum: name={{ item }}
