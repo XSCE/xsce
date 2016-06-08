@@ -1587,8 +1587,8 @@ function sendCmdSrvCmd(command, callback, buttonId, errCallback, cmdArgs) {
       buttonId: buttonId
     })
     //.done(callback)
-    .done(function(data, textStatus, jqXHR) {
-    	var dataResp = data;
+    .done(function(dataResp, textStatus, jqXHR) {
+    	//var dataResp = data;
     	if ("Error" in dataResp){
     	  cmdSrvError(cmdVerb, dataResp);
     	  if (typeof errCallback != 'undefined'){
@@ -1597,8 +1597,9 @@ function sendCmdSrvCmd(command, callback, buttonId, errCallback, cmdArgs) {
     	  }
     	}
     	else {
+    		var data = dataResp.Data;
     	  callback(data);
-    	  logServerCommands (cmdVerb, "succeeded");
+    	  logServerCommands (cmdVerb, "succeeded", "", dataResp.Resp_time);
     	}
     })
     .fail(jsonErrhandler)
@@ -1683,7 +1684,7 @@ function consoleLog (msg)
   console.log(msg); // for IE there can be no console messages unless in tools mode
 }
 
-function logServerCommands (command, status, extraData="")
+function logServerCommands (command, status, extraData="", respTime=0)
 {
   var msg = "";
 
@@ -1692,7 +1693,7 @@ function logServerCommands (command, status, extraData="")
         msg = "Command " + command + " sent to server";
         break;
     case "succeeded":
-        msg = command + ' <span style="color:green">SUCCEEDED</span>';
+        msg = command + ' <span style="color:green">SUCCEEDED</span> (' + Math.round(1000 * respTime) + ' ms)';
         break;
     case "failed":
         msg = command + ' <span style="color:red">FAILED</span>';
