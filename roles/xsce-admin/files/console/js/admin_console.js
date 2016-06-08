@@ -143,7 +143,7 @@ function configButtonsEvents() {
 
   $("#RUN-TAGS").click(function(){
     make_button_disabled("#RUN-TAGS", true);
-    tagList = "";
+    var tagList = "";
     $('#ansibleTags input').each( function(){
       if (this.type == "checkbox") {
         if (this.checked)
@@ -257,7 +257,7 @@ function utilButtonsEvents() {
     $('#jobStatTable input').each( function(){
       if (this.type == "checkbox")
         if (this.checked){
-          job_idArr = this.id.split('-');
+          var job_idArr = this.id.split('-');
           job_id = job_idArr[1];
 
           // cancelJobFunc returns the function to call not the result as needed by array.push()
@@ -332,7 +332,7 @@ function make_button_disabled(id, grey_out) {
 function xsce_hostnameVal()
 {
   //alert ("in xsce_hostnameVal");
-  xsce_hostname = $("#xsce_hostname").val();
+  var xsce_hostname = $("#xsce_hostname").val();
   consoleLog(xsce_hostname);
   if (xsce_hostname == ""){
     alert ("Host Name can not be blank.");
@@ -360,7 +360,7 @@ function xsce_hostnameVal()
 function xsce_domainVal()
 {
   //alert ("in xsce_domainVal");
-  xsce_domain = $("#xsce_domain").val();
+  var xsce_domain = $("#xsce_domain").val();
   consoleLog(xsce_domain);
   if (xsce_domain == ""){
     alert ("Domain Name can not be blank.");
@@ -371,7 +371,7 @@ function xsce_domainVal()
     return false;
   }
   // any regex match is invalid
-  domainRegex = /^[\.\-]|[\.\-]$|[^\.a-zA-Z0-9-]/;
+  var domainRegex = /^[\.\-]|[\.\-]$|[^\.a-zA-Z0-9-]/;
   if (domainRegex.test(xsce_domain)) {
     alert ("Domain Name can only have letters, numbers, dashes, and dots and may not have a dot or dash at beginning or end.");
     //$("#xsce_domain").val(config_vars['xsce_domain'])
@@ -486,7 +486,7 @@ function getAnsibleTags (data)
   ansibleTagsStr = data['ansible_tags'];
   ansibleTagsArr = ansibleTagsStr.split(',');
   var html = '<table width="80%"><tr>';
-  j = 0;
+  var j = 0;
   for (var i in ansibleTagsArr){
     html += '<td width="20%"><label><input type="checkbox" name="' + ansibleTagsArr[i] + '">' + ansibleTagsArr[i] + '</label></td>';
     if (j++ == 4){
@@ -525,7 +525,7 @@ function assignConfigVars (data)
   // Otherwise if effective_vars has a value use it
   $('#Configure input').each( function(){
     if (config_vars.hasOwnProperty(this.name)){
-      prop_val = config_vars[this.name];
+      var prop_val = config_vars[this.name];
       //consoleLog(this.name + "using config_vars");
     }
     else if (effective_vars.hasOwnProperty(this.name)){
@@ -561,7 +561,7 @@ function assignConfigVars (data)
 
 function setRadioButton(name, value){
   // id must follow the convention name-value
-  field_id = "#" + name + "-" + value;
+  var field_id = "#" + name + "-" + value;
   //consoleLog(field_id);
   $(field_id).prop('checked', true);
 }
@@ -611,7 +611,7 @@ function initStaticWanVars() {
 
 function setConfigVars ()
 {
-  cmd_args = {}
+  var cmd_args = {}
   //alert ("in setConfigVars");
   $('#Configure input').each( function(){
     if (this.type == "checkbox") {
@@ -630,7 +630,7 @@ function setConfigVars ()
       }
     });
     cmd_args['config_vars'] = config_vars;
-    cmd = "SET-CONF " + JSON.stringify(cmd_args);
+    var cmd = "SET-CONF " + JSON.stringify(cmd_args);
     sendCmdSrvCmd(cmd, genericCmdHandler);
     alert ("Saving Configuration.");
     return true;
@@ -646,12 +646,12 @@ function changePassword ()
       return false;
     }
 
-  cmd_args = {}
+  var cmd_args = {}
   cmd_args['user'] = $("#xsce_admin_user").val();
   cmd_args['oldpasswd'] = $("#xsce_admin_old_password").val();
   cmd_args['newpasswd'] = $("#xsce_admin_new_password").val();
 
-  cmd = "CHGPW " + JSON.stringify(cmd_args);
+  var cmd = "CHGPW " + JSON.stringify(cmd_args);
   sendCmdSrvCmd(cmd, changePasswordSuccess, "CHGPW");
   //alert ("Changing Password.");
   return true;
@@ -674,7 +674,7 @@ function changePasswordSuccess ()
     //alert ("in procXsceIni");
     consoleLog(data);
     xsce_ini = data;
-    jstr = JSON.stringify(xsce_ini, undefined, 2);
+    var jstr = JSON.stringify(xsce_ini, undefined, 2);
     var html = jstr.replace(/\n/g, "<br>").replace(/[ ]/g, "&nbsp;");
     $( "#xsceIni" ).html(html);
     //consoleLog(jqXHR);
@@ -712,7 +712,7 @@ function changePasswordSuccess ()
 
   function runAnsible (tags)
   {
-    command = formCommand("RUN-ANSIBLE", "tags", tags);
+    var command = formCommand("RUN-ANSIBLE", "tags", tags);
     //alert ("in runAnsible");
     consoleLog(command);
     sendCmdSrvCmd(command, genericCmdHandler);
@@ -725,8 +725,8 @@ function changePasswordSuccess ()
   function instZim(zim_id)
   {
     zimsScheduled.push(zim_id);
-    command = "INST-ZIMS"
-    cmd_args = {}
+    var command = "INST-ZIMS"
+    var cmd_args = {}
     cmd_args['zim_id'] = zim_id;
     cmd = command + " " + JSON.stringify(cmd_args);
     sendCmdSrvCmd(cmd, genericCmdHandler, "", instZimError, cmd_args);
@@ -746,7 +746,7 @@ function changePasswordSuccess ()
 
   function restartKiwix() // Restart Kiwix Server
   {
-    command = "RESTART-KIWIX";
+    var command = "RESTART-KIWIX";
     sendCmdSrvCmd(command, genericCmdHandler);
     alert ("Restarting Kiwix Server.");
     return true;
@@ -758,7 +758,7 @@ function changePasswordSuccess ()
     // remove any selections as catalog may have changed
     selectedZims = [];
 
-    command = "GET-KIWIX-CAT";
+    var command = "GET-KIWIX-CAT";
     sendCmdSrvCmd(command, procKiwixCatalog, "KIWIX-LIB-REFRESH");
     return true;
   }
@@ -855,7 +855,7 @@ function procZimGroups() {
           if ((zimsInstalled.indexOf(zimId) >= 0) || (zimsScheduled.indexOf(zimId) >= 0))
           html += 'disabled="disabled" checked="checked"';
           html += 'onChange="updateZimDiskSpace(this)"></label>'; // end input
-          zimDesc = zim.title + ' (' + zim.description + ') [' + zim.perma_ref + ']';
+          var zimDesc = zim.title + ' (' + zim.description + ') [' + zim.perma_ref + ']';
           html += '<span class="zim-desc ' + colorClass + '" >&nbsp;&nbsp;' + zimDesc + '</span>';
           html += '<span ' + colorClass2 + 'style="display:inline-block; width:120px;"> Date: ' + zim.date + '</span>';
           html += '<span ' + colorClass2 +'> Size: ' + readableSize(zim.size);
@@ -877,7 +877,7 @@ function getLangCodes() {
   //consoleLog ('ran sendCmdSrvCmd');
   //if (asyncFlag === undefined) asyncFlag = false;
 
-  resp = $.ajax({
+  var resp = $.ajax({
     type: 'GET',
     url: consoleJsonDir + 'lang_codes.json',
     dataType: 'json'
@@ -896,7 +896,7 @@ function readKiwixCatalog() { // Reads kiwix catalog from file system as json
   //consoleLog ('ran sendCmdSrvCmd');
   //if (asyncFlag === undefined) asyncFlag = false;
 
-  resp = $.ajax({
+  var resp = $.ajax({
     type: 'GET',
     url: consoleJsonDir + 'kiwix_catalog.json',
     dataType: 'json'
@@ -1007,7 +1007,7 @@ function sortZimLangs(){
       consoleLog('Language code ' + zimLangs[i] + ' not in langCodes.');
       continue;
     }
-    attr = {};
+    var attr = {};
     attr.locname = langCodes[zimLangs[i]]['locname'];
     attr.code = zimLangs[i];
     attr.engname = langCodes[zimLangs[i]]['engname'];
@@ -1020,7 +1020,7 @@ function sortZimLangs(){
 }
 
 function getRachelStat(){
-  command = "GET-RACHEL-STAT";
+  var command = "GET-RACHEL-STAT";
   sendCmdSrvCmd(command, procRachelStat);
   return true;
 }
@@ -1054,13 +1054,13 @@ function procRachelStat(data) {
   var moduleList = [];
 
   if (rachelStat["content_installed"] == true){
-    for (title in rachelStat.enabled) {
+    for (var title in rachelStat.enabled) {
       moduleList.push(title);
     }
 
     moduleList.sort();
 
-    for (idx in moduleList) {
+    for (var idx in moduleList) {
     	html += '<tr><td>' + moduleList[idx] + '</td><td>';
     	if (rachelStat.enabled[moduleList[idx]].enabled == true)
     	  html += htmlYes + '</td></tr>'
@@ -1142,7 +1142,7 @@ function delDownloadedFileList(id, sub_dir) {
 
 function getJobStat()
 {
-  command = "GET-JOB-STAT"
+  var command = "GET-JOB-STAT"
   sendCmdSrvCmd(command, procJobStat);
   return true;
 }
@@ -1156,12 +1156,12 @@ function procJobStat(data)
   data.forEach(function(entry) {
     //console.log(entry);
     html += "<tr>";
-    job_info = {};
+    var job_info = {};
 
     job_info['job_no'] = entry[0];
     html += "<td>" + entry[0] + "<BR>"; // job number
     // html +=  '<input type="checkbox" name="' gw_squid_whitelist + '" id="' xo-gw_squid_whitelist +'">';
-    jobId = "job_stat_id-" + entry[0];
+    var jobId = "job_stat_id-" + entry[0];
     html +=  '<input type="checkbox" id="' + jobId + '">';
     html += "</td>";
     job_info['command'] = entry[1];
@@ -1169,14 +1169,14 @@ function procJobStat(data)
 
     result = entry[2].replace(/(?:\r\n|\r|\n)/g, html_break); // change newline to BR
     // result = result.replace(html_break+html_break, html_break); // remove blank lines, but doesn't work
-    idx = result.indexOf(html_break);
+    var idx = result.indexOf(html_break);
     if (idx =0) result = result.substring(html_break.length); // strip off first newline
     idx = result.lastIndexOf(html_break);
     if (idx >=0) result = result.substring(0,idx); // strip off last newline
     job_info['result'] = result;
 
     idx = result.lastIndexOf(html_break);  // find 2nd to last newline
-    result_end = "";
+    var result_end = "";
     if (idx >=0) result_end = result.substring(0,idx + html_break.length);
     html += '<td> <div class = "statusJobResult">' + result + "</div></td>";
 
@@ -1209,8 +1209,8 @@ function procJobStat(data)
 
 function cancelJob(job_id)
 {
-  command = "CANCEL-JOB"
-  cmd_args = {}
+  var command = "CANCEL-JOB"
+  var cmd_args = {}
   cmd_args['job_id'] = job_id;
   cmd = command + " " + JSON.stringify(cmd_args);
   $.when(sendCmdSrvCmd(cmd, genericCmdHandler)).then(getJobStat);
@@ -1219,8 +1219,8 @@ function cancelJob(job_id)
 
 function cancelJobFunc(job_id)
 {
-  command = "CANCEL-JOB"
-  cmd_args = {}
+  var command = "CANCEL-JOB"
+  var cmd_args = {}
   cmd_args['job_id'] = job_id;
   cmd = command + " " + JSON.stringify(cmd_args);
   return $.Deferred( function () {
@@ -1231,7 +1231,7 @@ function cancelJobFunc(job_id)
 
 function getSysMem()
 {
-  command = "GET-MEM-INFO"
+  var command = "GET-MEM-INFO"
   sendCmdSrvCmd(command, procSysMem);
   return true;
 }
@@ -1240,7 +1240,7 @@ function procSysMem(data)
 {
   //alert ("in procSysMem");
   consoleLog(data);
-  sysMemory = data['system_memory'];
+  var sysMemory = data['system_memory'];
   var html = "";
   for (var i in sysMemory)
   html += sysMemory[i] + "<BR>"
@@ -1264,7 +1264,7 @@ function procDiskSpace(){
 
 function getSysStorage()
 {
-  command = "GET-STORAGE-INFO"
+  var command = "GET-STORAGE-INFO"
   sendCmdSrvCmd(command, procSysStorageAll);
   return true;
 }
@@ -1294,15 +1294,15 @@ function procSysStorage()
 
   var html = "";
   for (var i in sysStorage.raw) {
-    dev = sysStorage.raw[i];
+    var dev = sysStorage.raw[i];
     html += "<b>" + dev.device + "</b>";
     html += " " + dev.desc;
     html += " " + dev.type;
     html += " " + dev.size;
     html += ":<BR><BR>";
 
-    for (j in sysStorage.raw[i].blocks){
-      block = dev.blocks[j];
+    for (var j in sysStorage.raw[i].blocks){
+      var block = dev.blocks[j];
       html += block.part_dev;
       if (block.part_dev == 'unallocated')
       html += " " + block.size;
@@ -1418,7 +1418,7 @@ function sumCheckedZimDiskSpace(){
 }
 
 function getInetSpeed(){
-  command = "GET-INET-SPEED";
+  var command = "GET-INET-SPEED";
   sendCmdSrvCmd(command, procInetSpeed, "GET-INET-SPEED");
   $( "#intSpeed1" ).html("Working ...");
   //$('#myModal').modal('show');
@@ -1428,7 +1428,7 @@ function getInetSpeed(){
 function procInetSpeed(data){
   //alert ("in procInetSpeed");
   consoleLog(data);
-  intSpeed = data["internet_speed"];
+  var intSpeed = data["internet_speed"];
   var html = "";
   for (var i in intSpeed)
   html += intSpeed[i] + "<BR>"
@@ -1438,7 +1438,7 @@ function procInetSpeed(data){
 }
 
 function getInetSpeed2(){
-  command = "GET-INET-SPEED2"
+  var command = "GET-INET-SPEED2"
   sendCmdSrvCmd(command, procInetSpeed2, "GET-INET-SPEED2");
   $( "#intSpeed2" ).html("Working ...");
   return true;
@@ -1447,7 +1447,7 @@ function getInetSpeed2(){
 function procInetSpeed2(data){
   //alert ("in procInetSpeed2");
   consoleLog(data);
-  intSpeed = data["internet_speed"];
+  var intSpeed = data["internet_speed"];
   var html = "";
   for (var i in intSpeed)
   html += intSpeed[i] + "<BR>"
@@ -1459,7 +1459,7 @@ function procInetSpeed2(data){
 
 function rebootServer()
 {
-  command = "REBOOT"
+  var command = "REBOOT"
   sendCmdSrvCmd(command, genericCmdHandler);
   alert ("Reboot Initiated");
   return true;
@@ -1467,7 +1467,7 @@ function rebootServer()
 
 function poweroffServer()
 {
-  command = "POWEROFF"
+  var command = "POWEROFF"
   sendCmdSrvCmd(command, genericCmdHandler);
   alert ("Shutdown Initiated");
   return true;
@@ -1476,9 +1476,9 @@ function poweroffServer()
 function getHelp(arg)
 {
   $.get( "help/" + arg, function( data ) {
-    rst = data;
-    convert = new Markdown.getSanitizingConverter().makeHtml;
-    html = convert(rst);
+    var rst = data;
+    var convert = new Markdown.getSanitizingConverter().makeHtml;
+    var html = convert(rst);
     $( "#helpItem" ).html( html );
   });
   return true;
@@ -1503,7 +1503,7 @@ function showAboutSummary()
 
 function getServerInfo() {
 	displayServerCommandStatus("Checking Server Connection");
-  resp = $.ajax({
+  var resp = $.ajax({
     type: 'GET',
     cache: false,
     global: false, // don't trigger global error handler
@@ -1539,9 +1539,9 @@ function getServerInfoError (jqXHR, textStatus, errorThrown){
 
 function formCommand(cmd_verb, args_name, args_obj)
 {
-  cmd_args = {}
+  var cmd_args = {}
   cmd_args[args_name] = args_obj;
-  command = cmd_verb + " " + JSON.stringify(cmd_args);
+  var command = cmd_verb + " " + JSON.stringify(cmd_args);
   consoleLog(command);
 
   return command;
