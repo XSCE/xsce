@@ -4,7 +4,7 @@
 *  Connects DEALER socket to ipc:///run/cmdsrv_sock
 *  Sends command, expects response json back
 */
-
+$time_start = microtime(true);
 $request_timeout = 10000; //  REQUEST_TIMEOUT in msecs, (> 1000!)
 
 $command = $_POST['command'];
@@ -33,16 +33,26 @@ if (file_exists("/var/run/xsce-cmdsrv.pid")) {
     $events = $poll->poll($read, $write, $request_timeout);
     if ($events > 0) {
       $reply = $requester->recv();
+      if (strpos($reply, '"Error":') === false) {
+        $reply = '{"Data": ' . $reply;
+      }
     } else {
-    	$reply = '{"Error": "No Response from XSCE-CMDSRV in ' . $request_timeout . ' milliseconds"' . $alert_param . '}';
+    	$reply = '{"Error": "No Response from XSCE-CMDSRV in ' . $request_timeout . ' milliseconds"' . $alert_param;
     }
   } catch (Exception $e) {
-    $reply = '{"Error": "' . $e->getMessage() . '"' . $alert_param . '}';
+    $reply = '{"Error": "' . $e->getMessage() . '"' . $alert_param;
   }
 
 } else {
-    $reply = '{"Error": "XSCE-CMDSRV is not running."' . $alert_param . '}';
+    $reply = '{"Error": "XSCE-CMDSRV is not running."' . $alert_param;
 }
+
+$time_end = microtime(true);
+$time = $time_end - $time_start;
+
+$reply = $reply . ',"Resp_time": "' . $time . '"}';
+
+// $time = microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"]; php 5.4 up
 
 header('Content-type: application/json');
 echo $reply;
