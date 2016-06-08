@@ -5,6 +5,7 @@ owncloud_url: /owncloud
 owncloud_path: "/opt/owncloud"
 owncloud_data_dir: /library/owncloud/data
 owncloud_dl_url: https://download.owncloud.org/community/
+owncloud_src_file: owncloud-9.0.2.tar.bz2
 
 # we install on mysql with these setting or those from default_vars, etc.
 owncloud_dbname: owncloud
