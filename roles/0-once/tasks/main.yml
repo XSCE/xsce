@@ -61,4 +61,4 @@
   ignore_errors: true
 
 - include: selinux.yml
-  when: ansible_version >= '2' and ansible_selinux or ansible_version < '2' and ansible_selinux['status'] != 'disabled'
+  when: ansible_selinux is defined and ansible_version >= '2' and ansible_selinux or ansible_selinux['status'] is defined and ansible_version < '2' and ansible_selinux['status'] != 'disabled'
