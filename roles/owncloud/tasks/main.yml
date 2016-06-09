@@ -21,6 +21,7 @@
 - name: Copy it to permanent location /opt
   unarchive: src={{ downloads_dir }}/{{ owncloud_src_file }}  
              dest={{ owncloud_path }}
+             creates={{ owncloud_path }}/owncloud/version.php
 
 - name: in Centos, the following config dir is symlink to /etc/owncloud
   file: path=/etc/owncloud
