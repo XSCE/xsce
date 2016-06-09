@@ -50,6 +50,7 @@ cmdsrv_max_concurrent_jobs = 7
 # Derived Variables
 xsce_cmdsrv_path = xsce_base_path + "/xsce_cmdsrv"
 xsce_cmdsrv_pid_file = "/var/run/xsce-cmdsrv.pid"
+xsce_cmdsrv_ready_file = "/var/run/xsce-cmdsrv-ready"
 xsce_cmdsrv_dbpath = xsce_cmdsrv_path + "/" + xsce_cmdsrv_dbname
 
 # Constants - ToDo add to xsce_cmdsrv_config_file
@@ -159,6 +160,7 @@ def main():
     poll.register(workers_data, zmq.POLLIN)
 
     server_run = True
+    set_ready_flag("ON")
 
     while server_run == True:
         sockets = dict(poll.poll())
@@ -167,6 +169,7 @@ def main():
             tprint('sending message server received from client to worker %s id %s' % (msg, ident))
             if msg == "STOP":
                 # Tell the worker threads to shut down
+                set_ready_flag("OFF")
                 tprint('sending control message server received from client to worker %s id %s' % (msg, ident))
                 workers_control.send("EXIT")
                 clients.send_multipart([ident, '{"Status": "Stopping"}'])
@@ -1884,6 +1887,27 @@ def compute_vars():
     zim_dir = effective_vars['xsce_zim_path']
     zim_content_dir = zim_dir + "/content/"
     zim_index_dir = zim_dir + "/index/"
+
+def set_ready_flag(on_off):
+    if on_off == "ON":
+        try:
+            ready_file = open( xsce_cmdsrv_ready_file, "w" );
+            ready_file.write( "ready" );
+            ready_file.write( "\n" );
+            ready_file.close();
+        except OSError, e:
+            syslog.openlog( 'xsce_cmdsrv', 0, syslog.LOG_USER )
+            syslog.syslog( syslog.LOG_ALERT, "Writing Ready file: %s [%d]" % (e.strerror, e.errno) )
+            syslog.closelog()
+            raise
+    else:
+        try:
+            os.remove(xsce_cmdsrv_ready_file)
+        except OSError, e:
+            syslog.openlog( 'xsce_cmdsrv', 0, syslog.LOG_USER )
+            syslog.syslog( syslog.LOG_ALERT, "Removing Ready file: %s [%d]" % (e.strerror, e.errno) )
+            syslog.closelog()
+            pass # log and keep going; we're just trying to shut down
 
 def createDaemon(pidfilename):
     """Detach a process from the controlling terminal and run it in the
