@@ -28,7 +28,7 @@
 
 - name: Add autoconfig file
   template: src=autoconfig.php.j2
-            dest={{ owncloud_path }}/config/autoconfig.php
+            dest={{ owncloud_path }}/owncloud/config/autoconfig.php
             owner=apache
             group=apache
             mode=0640
