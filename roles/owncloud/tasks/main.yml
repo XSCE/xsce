@@ -18,11 +18,6 @@
   tags:
     - download2
 
-# the following unarchive module needs the target directory to exist
-- name: Create Owncloud directory
-  file: path={{ owncloud_path }}
-        state=directory
-
 - name: Copy it to permanent location /opt
   unarchive: src={{ downloads_dir }}/{{ owncloud_src_file }}  
              dest={{ owncloud_path }}
