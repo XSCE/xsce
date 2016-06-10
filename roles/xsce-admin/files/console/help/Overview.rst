@@ -44,6 +44,7 @@ Utilities
 
 * Change Password
 * Display Job Status
+* Display Commands Log
 * Display Ansible Facts
 * Display XSCE.INI File
 * Display System Memory
