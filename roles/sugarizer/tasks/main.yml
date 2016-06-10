@@ -4,7 +4,7 @@
   
 - name: Untar it to target location
   unarchive: src={{ downloads_dir }}/{{ sugarizer_version }}
-             dest= {{ sugarizer_location }}
+             dest={{ sugarizer_location }}
 
 - name: Install sugarizer required packages
   yum: name={{ item }}
