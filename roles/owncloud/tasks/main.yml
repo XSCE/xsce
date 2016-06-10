@@ -35,7 +35,7 @@
             mode=0640
 
 - name: Make apache owner
-  file: path={{ owncloud_path }}
+  file: path={{ owncloud_path }}/owncloud
         owner=apache
         group=apache
         recurse=yes
