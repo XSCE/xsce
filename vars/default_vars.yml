@@ -52,6 +52,7 @@ xsce_lan_enabled: True
 xsce_wan_enabled: True
 ssh_port: 22
 gui_wan: True
+gui_version: 2
 adm_cons_force_ssl: False
 adm_cons_allow_downloads: False
 
