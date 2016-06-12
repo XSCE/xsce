@@ -33,8 +33,15 @@
 - name: Create the express framework for node.js
   shell:  npm install
   args:
-     chdir: "{{ sugarizer_location }}/server" 
-     creates: "{{ sugarizer_location }}/server/node_modules"
+     chdir: "{{ sugarizer_location }}/sugarizer/server" 
+     creates: "{{ sugarizer_location }}/sugarizer/server/node_modules"
+  when: not is_F18
+
+- name: Create the express framework for node.js
+  shell:  npm install
+  args:
+     chdir: "{{ sugarizer_location }}/sugarizer/server" 
+  when: is_F18
 
 - name: enable services
   service: name={{ item.name }}
