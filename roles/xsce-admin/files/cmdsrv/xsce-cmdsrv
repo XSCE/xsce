@@ -50,6 +50,7 @@ cmdsrv_max_concurrent_jobs = 7
 # Derived Variables
 xsce_cmdsrv_path = xsce_base_path + "/xsce_cmdsrv"
 xsce_cmdsrv_pid_file = "/var/run/xsce-cmdsrv.pid"
+xsce_cmdsrv_ready_file = "/var/run/xsce-cmdsrv-ready"
 xsce_cmdsrv_dbpath = xsce_cmdsrv_path + "/" + xsce_cmdsrv_dbname
 
 # Constants - ToDo add to xsce_cmdsrv_config_file
@@ -81,6 +82,7 @@ running_job_count = 0
 
 ansible_running_flag = False
 daemon_mode = False
+init_error = False
 
 # Locking
 lock = threading.Lock() # for updating global variables
@@ -105,7 +107,21 @@ config_vars = {}
 def main():
     """Server routine"""
 
-    init()
+    #global daemon_mode
+    #daemon_mode = True # for testing
+
+    global init_error
+
+    # if not in daemon mode don't trap errors
+    if daemon_mode == False:
+        init()
+    else:
+        try:
+            init()
+        except:
+            init_error = True
+            log(syslog.LOG_INFO, 'XSCE Command Server Initialization Failed' )
+
     worker_data_url = "inproc://worker_data"
     worker_control_url = "inproc://worker_control"
     ipc_sock = "/run/cmdsrv_sock"
@@ -144,6 +160,7 @@ def main():
     poll.register(workers_data, zmq.POLLIN)
 
     server_run = True
+    set_ready_flag("ON")
 
     while server_run == True:
         sockets = dict(poll.poll())
@@ -152,6 +169,7 @@ def main():
             tprint('sending message server received from client to worker %s id %s' % (msg, ident))
             if msg == "STOP":
                 # Tell the worker threads to shut down
+                set_ready_flag("OFF")
                 tprint('sending control message server received from client to worker %s id %s' % (msg, ident))
                 workers_control.send("EXIT")
                 clients.send_multipart([ident, '{"Status": "Stopping"}'])
@@ -159,9 +177,14 @@ def main():
                 time.sleep(3)
                 server_run = False
             else:
-                tprint('sending data message server received from client to worker %s id %s' % (msg, ident))
-                log(syslog.LOG_INFO, 'Received CMD Message %s.' % msg )
-                workers_data.send_multipart([ident, msg])
+                # if in daemon mode report and init failed alwasy return same error message
+                if daemon_mode == True and init_error == True:
+                    msg = '{"Error": "XSCE-CMDSRV failed to initialize","Alert": "True"}'
+                    clients.send_multipart([ident, msg])
+                else:
+                    tprint('sending data message server received from client to worker %s id %s' % (msg, ident))
+                    log(syslog.LOG_INFO, 'Received CMD Message %s.' % msg )
+                    workers_data.send_multipart([ident, msg])
         if workers_data in sockets:
             ident, msg = workers_data.recv_multipart()
             tprint('Sending worker message to client %s id %s' % (msg[:60], ident))
@@ -595,19 +618,19 @@ def cmd_handler(cmd_msg):
     # commands that run scripts should check for malicious characters in cmd_args and return error if found
     # bad_command = validate_command(cmd_args)
 
-    # uncomment for testing
-    #resp = avail_cmds[cmd](cmd_info)
-
-    # uncomment for production
-    if cmd in avail_cmds:
-        try:
-            resp = avail_cmds[cmd](cmd_info)
-        except:
-            log(syslog.LOG_ERR, "Error: Unexpected error in Command %s." % cmd)
-            resp = '{"Error": "Unexpected error in Command ' + cmd + '"}'
+    # if not in daemon mode don't trap errors
+    if daemon_mode == False:
+        resp = avail_cmds[cmd](cmd_info)
     else:
-        log(syslog.LOG_ERR, "Error: Unknown Command %s." % cmd)
-        resp = '{"Error": "Unknown Command"}'
+        if cmd in avail_cmds:
+            try:
+                resp = avail_cmds[cmd](cmd_info)
+            except:
+                log(syslog.LOG_ERR, "Error: Unexpected error in Command %s." % cmd)
+                resp = '{"Error": "Unexpected error in Command ' + cmd + '"}'
+        else:
+            log(syslog.LOG_ERR, "Error: Unknown Command %s." % cmd)
+            resp = '{"Error": "Unknown Command"}'
 
     return (resp)
 
@@ -1655,7 +1678,7 @@ def get_ansible_tags():
         outp = subprocess.check_output(args)
     except subprocess.CalledProcessError as e:
         outp = e.output
-        
+
     # get just the tag list and remove final newline
     split = outp.split(splitter)
     ans_tags_str = split[1].split('\n')[0]
@@ -1865,6 +1888,27 @@ def compute_vars():
     zim_content_dir = zim_dir + "/content/"
     zim_index_dir = zim_dir + "/index/"
 
+def set_ready_flag(on_off):
+    if on_off == "ON":
+        try:
+            ready_file = open( xsce_cmdsrv_ready_file, "w" );
+            ready_file.write( "ready" );
+            ready_file.write( "\n" );
+            ready_file.close();
+        except OSError, e:
+            syslog.openlog( 'xsce_cmdsrv', 0, syslog.LOG_USER )
+            syslog.syslog( syslog.LOG_ALERT, "Writing Ready file: %s [%d]" % (e.strerror, e.errno) )
+            syslog.closelog()
+            raise
+    else:
+        try:
+            os.remove(xsce_cmdsrv_ready_file)
+        except OSError, e:
+            syslog.openlog( 'xsce_cmdsrv', 0, syslog.LOG_USER )
+            syslog.syslog( syslog.LOG_ALERT, "Removing Ready file: %s [%d]" % (e.strerror, e.errno) )
+            syslog.closelog()
+            pass # log and keep going; we're just trying to shut down
+
 def createDaemon(pidfilename):
     """Detach a process from the controlling terminal and run it in the
     background as a daemon.
@@ -1935,6 +1979,18 @@ if __name__ == "__main__":
            retCode = createDaemon( xsce_cmdsrv_pid_file )
            #retCode = createDaemon( sys.argv[1] ) # pass pid file
            daemon_mode = True
+
+    if len(sys.argv) == 1: # create pseudo pid file so php client can test for it
+        try:
+            pidfile = open( xsce_cmdsrv_pid_file, "w" );
+            pidfile.write( str( 0 ) );
+            pidfile.write( "\n" );
+            pidfile.close();
+        except OSError, e:
+            syslog.openlog( 'xsce_cmdsrv', 0, syslog.LOG_USER )
+            syslog.syslog( syslog.LOG_ALERT, "Writing PID file: %s [%d]" % (e.strerror, e.errno) )
+            syslog.closelog()
+            raise
 
     syslog.openlog( 'xsce_cmdsrv', 0, syslog.LOG_USER )
     log = syslog.syslog
