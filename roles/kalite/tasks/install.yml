@@ -37,6 +37,7 @@
 
 - name: Download khan assessments
   get_url: url="{{ khan_assessment_url }}" dest="{{ downloads_dir }}/khan_assessment.zip"
+  async: 2000
   tags:
     - download2
 
