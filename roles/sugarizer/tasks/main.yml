@@ -1,10 +1,15 @@
 - name: Download the latest stable version of sugarizer from location under our control
-  get_url: url={{ xsce_download_url }}/{{ sugarizer_version }}
-           dest= {{ downloads_dir }}/{{ sugarizer_version }}
+  get_url: url={{ xsce_download_url }}/{{ sugarizer_version }}.tar.gz
+           dest={{ downloads_dir }}/{{ sugarizer_version }}.tar.gz
   
 - name: Untar it to target location
-  unarchive: src={{ downloads_dir }}/{{ sugarizer_version }}
-             dest= {{ sugarizer_location }}
+  unarchive: src={{ downloads_dir }}/{{ sugarizer_version }}.tar.gz
+             dest={{ sugarizer_location }}
+
+- name: Create a symbolic link from generic url to version specific location
+  file: dest={{ sugarizer-location }}/sugarizer
+        src={{ sugarizer-location }}/{{ sugarizer_version }}
+        state=link
 
 - name: Install sugarizer required packages
   yum: name={{ item }}
@@ -28,8 +33,15 @@
 - name: Create the express framework for node.js
   shell:  npm install
   args:
-     chdir: "{{ sugarizer_location }}/server" 
-     creates: "{{ sugarizer_location }}/server/node_modules"
+     chdir: "{{ sugarizer_location }}/sugarizer/server" 
+     creates: "{{ sugarizer_location }}/sugarizer/server/node_modules"
+  when: not is_F18
+
+- name: Create the express framework for node.js
+  shell:  npm install
+  args:
+     chdir: "{{ sugarizer_location }}/sugarizer/server" 
+  when: is_F18
 
 - name: enable services
   service: name={{ item.name }}

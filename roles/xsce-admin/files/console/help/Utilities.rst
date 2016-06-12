@@ -16,6 +16,10 @@ Actions that will require more than a few seconds to complete are handled as lon
 
 Jobs that are no longer desired may be cancelled and doing so will cancel any jobs that were created as part of the same task.  To cancel a job check the box beside it and click **Cancel Checked Jobs**.
 
+###Display Commands Log
+
+Shows the commands sent from the browser application to the command server, any errors generated, and the response time if succeeded.
+
 ###Admin Tools
 
 Use these tools to administer, monitor, and evaluate server usage.
