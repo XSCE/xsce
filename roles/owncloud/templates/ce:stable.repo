@@ -1,7 +1,0 @@
-[ce_stable]
-name=ownCloud Server Version stable (CentOS_7)
-type=rpm-md
-baseurl=http://download.owncloud.org/download/repositories/stable/CentOS_7
-gpgcheck=1
-gpgkey=http://download.owncloud.org/download/repositories/stable/CentOS_7/repodata/repomd.xml.key
-enabled=1
