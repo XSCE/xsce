@@ -22,6 +22,13 @@
   unarchive: src={{ downloads_dir }}/{{ owncloud_src_file }}  
              dest={{ owncloud_path }}
              creates={{ owncloud_path }}/owncloud/version.php
+  when: not is_F18
+
+# ansible 1.4.1 does not have "creates"
+- name: Copy it to permanent location /opt
+  unarchive: src={{ downloads_dir }}/{{ owncloud_src_file }}  
+             dest={{ owncloud_path }}
+  when: is_F18
 
 - name: in Centos, the following config dir is symlink to /etc/owncloud
   file: path=/etc/owncloud
