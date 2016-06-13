@@ -103,6 +103,7 @@
   
 - name: Give apache permission to read config file
   file: path={{ moodle_base }}/config.php
+        src={{ moodle_base }}/config.php
         group=apache
         mode=0640
 
