@@ -95,7 +95,7 @@
     - option: description
       value: '"OwnCloud is a local server-based facility for sharing files, photos, contacts, calendars, etc."'
     - option: path
-      value: "{{ owncloud_path }}"
+      value: "{{ owncloud_path }}/owncloud"
     - option: source
       value: "{{ owncloud_src_file }}"
     - option: enabled
