@@ -19,12 +19,11 @@
   tags:
     - download2
 
-- name: Give apache permission to write moodle directory
+- name: Give apache permission to write moodle directory (config file)
   file: path={{ moodle_base }}
         group=apache
         mode=0775
         state=directory
-#        recurse=true
 
 - name: Give apache permission to write moodle data directory
   file: path={{ content_base }}/dbdata/moodle
@@ -102,6 +101,12 @@
   shell: '{{moodle_base}}/moodle_installer'
   when: moodle_enabled and config.stat.exists is defined and not config.stat.exists
   
+- name: Give apache permission to read config file
+  file: path={{ moodle_base }}/config.php
+        src={{ moodle_base }}/config.php
+        group=apache
+        mode=0640
+
 - name: add moodle to service list
   ini_file: dest='{{ service_filelist }}'
             section=moodle
