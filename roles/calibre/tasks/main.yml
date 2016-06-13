@@ -6,7 +6,7 @@
     mode=0755
   tags:
     download2
-  when: calibre_install and ansible_distribution == 'CentOS'
+  when: calibre_install and ansible_distribution == "CentOS"
 
 
 - name: Install calibre
@@ -22,7 +22,7 @@
   yum:  name={{ item }}
   with_items:
     - calibre
-  when: calibre_install and ansible_architecture == 'armv7l'
+  when: calibre_install and ansible_architecture != 'CentOS'
   tags: download
 
 - name: Create calibre service(s) and support scripts
