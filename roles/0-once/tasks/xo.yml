@@ -96,7 +96,7 @@
   lineinfile: backup=yes
               dest=/etc/fstab
               regexp='^/tmp*'
-              line='/tmp            /tmp            tmpfs         rw,size=400m 0 0'
+              line='/tmp            /tmp            tmpfs         rw,size=600m 0 0'
 
 - name: Disable graphical login
   file: path=/etc/systemd/system/default.target
