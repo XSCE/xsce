@@ -80,7 +80,7 @@
   set_fact:
     docker_install: True
     docker_enabled: True
-  when: schooltool_enabled
+  when: schooltool_enabled or schooltool_install
 
 # for various reasons the mysql service can not be enabled on fedora 20,
 # but 'mariadb', which is its real name can
