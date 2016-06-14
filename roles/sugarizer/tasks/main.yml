@@ -7,8 +7,8 @@
              dest={{ sugarizer_location }}
 
 - name: Create a symbolic link from generic url to version specific location
-  file: dest={{ sugarizer-location }}/sugarizer
-        src={{ sugarizer-location }}/{{ sugarizer_version }}
+  file: dest={{ sugarizer_location }}/sugarizer
+        src={{ sugarizer_location }}/{{ sugarizer_version }}
         state=link
 
 - name: Install sugarizer required packages
