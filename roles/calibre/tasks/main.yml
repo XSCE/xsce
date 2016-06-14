@@ -21,7 +21,7 @@
   yum:  name={{ item }}
   with_items:
     - calibre
-  when: calibre_install and ansible_architecture != 'CentOS'
+  when: calibre_install and ansible_distribution != 'CentOS'
   tags: download
 
 - name: Create calibre service(s) and support scripts
