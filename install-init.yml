@@ -10,6 +10,7 @@
 
   roles:
       - { role: 0-once, tags: ['once'] }
+      - { role: 1-prep, tags: ['prep'] }
       - { role: network, tags: ['network'] }
 
   tasks:
