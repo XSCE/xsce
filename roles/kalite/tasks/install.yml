@@ -44,6 +44,7 @@
 - name: wait until the file becomes available
   wait_for: path={{ downloads_dir }}/khan_assessment.zip
             state=present
+            timeout=2000
 
 - name: Install kalite with pip
   pip: name={{ item }}
