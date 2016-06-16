@@ -1,11 +1,12 @@
 // admin_console.js
-// copyright 2015 Tim Moody
+// copyright 2016 Tim Moody
 
 var today = new Date();
 var dayInMs = 1000*60*60*24;
 
 var xsceContrDir = "/etc/xsce/";
 var consoleJsonDir = "/common/assets/";
+var xsceCmdService = "cmd-service.php";
 var ansibleFacts = {};
 var ansibleTagsStr = "";
 var effective_vars = {};
@@ -19,7 +20,6 @@ var zimGroups = {}; // zim ids grouped by language and category
 var kiwixCatalog = {}; // catalog of kiwix zims, read from file downloaded from kiwix.org
 var kiwixCatalogDate = new Date; // date of download, stored in json file
 var installedZimCat = {}; // catalog of installed, and wip zims
-
 var rachelStat = {}; // installed, enabled and whether content is installed and which is enabled
 
 var zimsInstalled = []; // list of zims already installed
@@ -40,252 +40,282 @@ sysStorage.zims_selected_size = 0;
 // and because an error returned from the server is not an ajax error
 // flag must be set to false before use
 
-var globalAjaxErrorFlag = false;
+// defaults for ip addr of server and other info returned from server-info.php
+var serverInfo = {"xsce_server_ip":"","xsce_client_ip":"","xsce_server_found":"TRUE","xsce_cmdsrv_running":"FALSE"};
+var initStat = {};
+
+// MAIN ()
+
+function main() {
 
 // Set jquery ajax calls not to cache in browser
-$.ajaxSetup({ cache: false });
+  $.ajaxSetup({ cache: false });
+
+// declare generic ajax error handler called by all .fail events
+ $( document ).ajaxError(ajaxErrhandler);
 
 // get default help
-getHelp("Overview.rst");
+  getHelp("Overview.rst");
+
+  //navButtonsEvents(); - now done after successful init
+
+  initStat["active"] = false;
+  initStat["error"] = false;
+  initStat["alerted"] = {};
+
+// Get Ansible facts and other data
+  init();
+}
 
 // Set up nav
 
-$("ul.nav a").click(function (e) {
-  e.preventDefault();
-  $(this).tab('show');
-  console.log($(this));
-  if ($(this).is('[call-after]')) {
-    //if ($this).attr('call-after') !== undefined) {
-    console.log($(this).attr('call-after'));
-    if ($(this).is('[call-after-arg]'))
-    {
-      console.log($(this).attr('call-after-arg'));
-      window[$(this).attr('call-after')]($(this).attr('call-after-arg'));
+function navButtonsEvents() {
+  $("ul.nav a").click(function (e) {
+    e.preventDefault();
+    $(this).tab('show');
+    console.log($(this));
+    if ($(this).is('[call-after]')) {
+      //if ($this).attr('call-after') !== undefined) {
+      console.log($(this).attr('call-after'));
+      if ($(this).is('[call-after-arg]'))
+      {
+        console.log($(this).attr('call-after-arg'));
+        window[$(this).attr('call-after')]($(this).attr('call-after-arg'));
+      }
+      else
+        window[$(this).attr('call-after')]();
     }
     else
-      window[$(this).attr('call-after')]();
-  }
-  else
-    console.log(' no call-after');
-});
-
-// Get Ansible facts and other data
-init();
+      console.log(' no call-after');
+  });
+}
 
 // BUTTONS
 
 // Control Buttons
 
-$("#REBOOT").click(function(){
-  rebootServer();
-});
-
-$("#POWEROFF").click(function(){
-  poweroffServer();
-});
-
-
-// Configuration Buttons
-$("#Bad-CMD").click(function(){
-  sendCmdSrvCmd("XXX", testCmdHandler);
-});
-
-$("#Test-CMD").click(function(){
-  //sendCmdSrvCmd("TEST ;", testCmdHandler);
-  getJobStat();
-});
-
-$("#List-CMD").click(function(){
-	// xsce-cmdsrv-ctl LIST-LIBR '{"sub_dir":"downloads/zims"}'
-  sendCmdSrvCmd("LIST", listCmdHandler);
-});
-
-$("#SET-CONF-CMD").click(function(){
-  button_feedback("#SET-CONF-CMD", true);
-  setConfigVars();
-  button_feedback("#SET-CONF-CMD",false);
-});
-
-$("#SAVE-WHITELIST").click(function(){
-  button_feedback("#SAVE-WHITELIST", true);
-  setWhitelist();
-  button_feedback("#SAVE-WHITELIST", false);
-});
-
-$("#RUN-ANSIBLE").click(function(){
-  button_feedback("#RUN-ANSIBLE", true);
-  runAnsible("ALL-TAGS");
-  //runAnsible("addons");
-  button_feedback("#RUN-ANSIBLE", false);
-});
-
-$("#RUN-TAGS").click(function(){
-  button_feedback("#RUN-TAGS", true);
-  tagList = "";
-  $('#ansibleTags input').each( function(){
-    if (this.type == "checkbox") {
-      if (this.checked)
-      tagList += this.name + ',';
-    }
+function controlButtonsEvents() {
+  $("#REBOOT").click(function(){
+    rebootServer();
   });
-  if (tagList.length > 0)
-  tagList = tagList.substring(0, tagList.length - 1);
-  runAnsible(tagList);
-  //runAnsible("addons");
-  button_feedback("#RUN-TAGS", false);
-});
 
-$("#STOP").click(function(){
-  sendCmdSrvCmd("STOP", genericCmdHandler);
-});
-
-// Install Content Buttons
-
-$("#selectLangButton").click(function(){
-  procZimGroups();
-  $('#selectLangCodes').modal('hide');
-  $('#ZimLanguages2').hide();
-  procZimLangs(); // make top menu reflect selections
-});
-
-$("#selectLangButton2").click(function(){
-  procZimGroups();
-  $('#selectLangCodes').modal('hide');
-  $('#ZimLanguages2').hide();
-  procZimLangs(); // make top menu reflect selections
-});
-
-$("#moreLangButton").click(function(){
-  $('#ZimLanguages2').show();
-});
-
-$("#INST-ZIMS").click(function(){
-  var zim_id;
-  button_feedback("#INST-ZIMS", true);
-
-  $('#ZimDownload input').each( function(){
-    if (this.type == "checkbox")
-    if (this.checked){
-      zim_id = this.name;
-      if (zimsInstalled.indexOf(zim_id) == -1 && zimsScheduled.indexOf(zim_id) == -1)
-      instZim(zim_id);
-    }
+  $("#POWEROFF").click(function(){
+    poweroffServer();
   });
-  procZimGroups();
-  alert ("Selected Zims scheduled to be installed.\n\nPlease view Utilities->Display Job Status to see the results.");
-  button_feedback("#INST-ZIMS", false);
-});
+  console.log(' REBOOT and POWEROFF set');
+}
 
-$("#launchKaliteButton").click(function(){
-  var url = "http://" + window.location.host + ":8008";
-  //consoleLog(url);
-  window.open(url);
-});
+  // Configuration Buttons
 
-$("#ZIM-STATUS-REFRESH").click(function(){
-  getZimStat();
-});
+function configButtonsEvents() {
+  $("#Bad-CMD").click(function(){
+    sendCmdSrvCmd("XXX", testCmdHandler);
+  });
 
-$("#RESTART-KIWIX").click(function(){
-  restartKiwix();
-});
+  $("#Test-CMD").click(function(){
+    //sendCmdSrvCmd("TEST ;", testCmdHandler);
+    getJobStat();
+  });
 
-$("#KIWIX-LIB-REFRESH").click(function(){
-  getKiwixCatalog();
-});
+  $("#List-CMD").click(function(){
+  	// xsce-cmdsrv-ctl LIST-LIBR '{"sub_dir":"downloads/zims"}'
+    sendCmdSrvCmd("LIST", listCmdHandler);
+  });
 
-$("#DOWNLOAD-RACHEL").click(function(){
-	if (rachelStat.content_installed == true){
-	  var rc = confirm("RACHEL content is already in the library.  Are you sure you want to download again?");
-	  if (rc != true)
-	    return;
-	}
-  sendCmdSrvCmd("INST-RACHEL", genericCmdHandler, "DOWNLOAD-RACHEL");
-  alert ("RACHEL scheduled to be downloaded and installed.\n\nPlease view Utilities->Display Job Status to see the results.");
-});
+  $("#SET-CONF-CMD").click(function(){
+    make_button_disabled("#SET-CONF-CMD", true);
+    setConfigVars();
+    make_button_disabled("#SET-CONF-CMD",false);
+  });
 
-$("#DEL-DOWNLOADS").click(function(){
-	var r = confirm("Press OK to Delete Checked Files");
-  if (r != true)
-    return;
-	button_feedback("#DEL-DOWNLOADS", true);
-  delDownloadedFiles();
-  button_feedback("#DEL-DOWNLOADS", false);
-});
+  $("#SAVE-WHITELIST").click(function(){
+    make_button_disabled("#SAVE-WHITELIST", true);
+    setWhitelist();
+    make_button_disabled("#SAVE-WHITELIST", false);
+  });
 
-// Util Buttons
+  $("#RUN-ANSIBLE").click(function(){
+    make_button_disabled("#RUN-ANSIBLE", true);
+    runAnsible("ALL-TAGS");
+    //runAnsible("addons");
+    make_button_disabled("#RUN-ANSIBLE", false);
+  });
 
-$("#CHGPW").click(function(){
-	changePassword();
-});
-
-$("#JOB-STATUS-REFRESH").click(function(){
-	button_feedback("#JOB-STATUS-REFRESH", true);
-  getJobStat();
-  button_feedback("#JOB-STATUS-REFRESH", false);
-});
-
-$("#CANCEL-JOBS").click(function(){
-	var cmdList = [];
-  button_feedback("#CANCEL-JOBS", true);
-  $('#jobStatTable input').each( function(){
-    if (this.type == "checkbox")
-      if (this.checked){
-        job_idArr = this.id.split('-');
-        job_id = job_idArr[1];
-
-        // cancelJobFunc returns the function to call not the result as needed by array.push()
-        cmdList.push(cancelJobFunc(job_id));
-        if (job_status[job_id]["cmd_verb"] == "INST-ZIMS"){
-        	var zim_id = job_status[job_id]["cmd_args"]["zim_id"];
-        	//consoleLog (zim_id);
-          if (zimsScheduled.indexOf(zim_id) > -1){
-            zimsScheduled.pop(zim_id);
-            updateZimDiskSpaceUtil(zim_id, false)
-            procZimGroups();
-            //$( "input[name*='" + zim_id + "']" ).checked = false;
-          }
-        }
-        this.checked = false;
+  $("#RUN-TAGS").click(function(){
+    make_button_disabled("#RUN-TAGS", true);
+    var tagList = "";
+    $('#ansibleTags input').each( function(){
+      if (this.type == "checkbox") {
+        if (this.checked)
+        tagList += this.name + ',';
       }
+    });
+    if (tagList.length > 0)
+    tagList = tagList.substring(0, tagList.length - 1);
+    runAnsible(tagList);
+    //runAnsible("addons");
+    make_button_disabled("#RUN-TAGS", false);
   });
-  //consoleLog(cmdList);
-  $.when.apply($, cmdList).then(getJobStat, procZimCatalog);
-  alert ("Jobs marked for Cancellation.\n\nPlease click Refresh to see the results.");
-  button_feedback("#CANCEL-JOBS", false);
-});
 
-$("#GET-INET-SPEED").click(function(){
-  getInetSpeed();
-});
+  $("#STOP").click(function(){
+    sendCmdSrvCmd("STOP", genericCmdHandler);
+  });
+}
 
-$("#GET-INET-SPEED2").click(function(){
-  getInetSpeed2();
-});
+  // Install Content Buttons
 
-// Static Wan Fields
+function instContentButtonsEvents() {
+  $("#selectLangButton").click(function(){
+    procZimGroups();
+    $('#selectLangCodes').modal('hide');
+    $('#ZimLanguages2').hide();
+    procZimLangs(); // make top menu reflect selections
+  });
 
-$("#gui_static_wan").change(function(){
-  gui_static_wanVal();
-});
+  $("#selectLangButton2").click(function(){
+    procZimGroups();
+    $('#selectLangCodes').modal('hide');
+    $('#ZimLanguages2').hide();
+    procZimLangs(); // make top menu reflect selections
+  });
 
-$("#gui_static_wan_ip").on('blur', function(){
-  staticIpVal("#gui_static_wan_ip");
-});
+  $("#moreLangButton").click(function(){
+    $('#ZimLanguages2').show();
+  });
 
-$("#gui_static_wan_netmask").on('blur', function(){
-  staticIpVal("#gui_static_wan_netmask");
-});
+  $("#INST-ZIMS").click(function(){
+    var zim_id;
+    make_button_disabled("#INST-ZIMS", true);
 
-$("#gui_static_wan_gateway").on('blur', function(){
-  staticIpVal("#gui_static_wan_gateway");
-});
+    $('#ZimDownload input').each( function(){
+      if (this.type == "checkbox")
+      if (this.checked){
+        zim_id = this.name;
+        if (zimsInstalled.indexOf(zim_id) == -1 && zimsScheduled.indexOf(zim_id) == -1)
+        instZim(zim_id);
+      }
+    });
+    procZimGroups();
+    alert ("Selected Zims scheduled to be installed.\n\nPlease view Utilities->Display Job Status to see the results.");
+    make_button_disabled("#INST-ZIMS", false);
+  });
 
-$("#gui_static_wan_nameserver").on('blur', function(){
-  staticIpVal("#gui_static_wan_nameserver");
-});
+  $("#launchKaliteButton").click(function(){
+    var url = "http://" + window.location.host + ":8008";
+    //consoleLog(url);
+    window.open(url);
+  });
 
-function button_feedback(id, grey_out) {
+  $("#ZIM-STATUS-REFRESH").click(function(){
+    getZimStat();
+  });
+
+  $("#RESTART-KIWIX").click(function(){
+    restartKiwix();
+  });
+
+  $("#KIWIX-LIB-REFRESH").click(function(){
+    getKiwixCatalog();
+  });
+
+  $("#DOWNLOAD-RACHEL").click(function(){
+  	if (rachelStat.content_installed == true){
+  	  var rc = confirm("RACHEL content is already in the library.  Are you sure you want to download again?");
+  	  if (rc != true)
+  	    return;
+  	}
+    sendCmdSrvCmd("INST-RACHEL", genericCmdHandler, "DOWNLOAD-RACHEL");
+    alert ("RACHEL scheduled to be downloaded and installed.\n\nPlease view Utilities->Display Job Status to see the results.");
+  });
+
+  $("#DEL-DOWNLOADS").click(function(){
+  	var r = confirm("Press OK to Delete Checked Files");
+    if (r != true)
+      return;
+  	make_button_disabled("#DEL-DOWNLOADS", true);
+    delDownloadedFiles();
+    make_button_disabled("#DEL-DOWNLOADS", false);
+  });
+}
+
+  // Util Buttons
+
+function utilButtonsEvents() {
+  $("#CHGPW").click(function(){
+  	changePassword();
+  });
+
+  $("#JOB-STATUS-REFRESH").click(function(){
+  	make_button_disabled("#JOB-STATUS-REFRESH", true);
+    getJobStat();
+    make_button_disabled("#JOB-STATUS-REFRESH", false);
+  });
+
+  $("#CANCEL-JOBS").click(function(){
+  	var cmdList = [];
+    make_button_disabled("#CANCEL-JOBS", true);
+    $('#jobStatTable input').each( function(){
+      if (this.type == "checkbox")
+        if (this.checked){
+          var job_idArr = this.id.split('-');
+          job_id = job_idArr[1];
+
+          // cancelJobFunc returns the function to call not the result as needed by array.push()
+          cmdList.push(cancelJobFunc(job_id));
+          if (job_status[job_id]["cmd_verb"] == "INST-ZIMS"){
+          	var zim_id = job_status[job_id]["cmd_args"]["zim_id"];
+          	//consoleLog (zim_id);
+            if (zimsScheduled.indexOf(zim_id) > -1){
+              zimsScheduled.pop(zim_id);
+              updateZimDiskSpaceUtil(zim_id, false)
+              procZimGroups();
+              //$( "input[name*='" + zim_id + "']" ).checked = false;
+            }
+          }
+          this.checked = false;
+        }
+    });
+    //consoleLog(cmdList);
+    $.when.apply($, cmdList).then(getJobStat, procZimCatalog);
+    alert ("Jobs marked for Cancellation.\n\nPlease click Refresh to see the results.");
+    make_button_disabled("#CANCEL-JOBS", false);
+  });
+
+  $("#GET-INET-SPEED").click(function(){
+    getInetSpeed();
+  });
+
+  $("#GET-INET-SPEED2").click(function(){
+    getInetSpeed2();
+  });
+}
+
+function configFieldsEvents() {
+
+  // Static Wan Fields
+
+  $("#gui_static_wan").change(function(){
+    gui_static_wanVal();
+  });
+
+  $("#gui_static_wan_ip").on('blur', function(){
+    staticIpVal("#gui_static_wan_ip");
+  });
+
+  $("#gui_static_wan_netmask").on('blur', function(){
+    staticIpVal("#gui_static_wan_netmask");
+  });
+
+  $("#gui_static_wan_gateway").on('blur', function(){
+    staticIpVal("#gui_static_wan_gateway");
+  });
+
+  $("#gui_static_wan_nameserver").on('blur', function(){
+    staticIpVal("#gui_static_wan_nameserver");
+  });
+}
+
+function make_button_disabled(id, grey_out) {
 	// true means grey out the button and disable, false means the opposite
   if (grey_out){
   	$(id).prop('disabled', true);
@@ -302,7 +332,7 @@ function button_feedback(id, grey_out) {
 function xsce_hostnameVal()
 {
   //alert ("in xsce_hostnameVal");
-  xsce_hostname = $("#xsce_hostname").val();
+  var xsce_hostname = $("#xsce_hostname").val();
   consoleLog(xsce_hostname);
   if (xsce_hostname == ""){
     alert ("Host Name can not be blank.");
@@ -330,7 +360,7 @@ function xsce_hostnameVal()
 function xsce_domainVal()
 {
   //alert ("in xsce_domainVal");
-  xsce_domain = $("#xsce_domain").val();
+  var xsce_domain = $("#xsce_domain").val();
   consoleLog(xsce_domain);
   if (xsce_domain == ""){
     alert ("Domain Name can not be blank.");
@@ -341,7 +371,7 @@ function xsce_domainVal()
     return false;
   }
   // any regex match is invalid
-  domainRegex = /^[\.\-]|[\.\-]$|[^\.a-zA-Z0-9-]/;
+  var domainRegex = /^[\.\-]|[\.\-]$|[^\.a-zA-Z0-9-]/;
   if (domainRegex.test(xsce_domain)) {
     alert ("Domain Name can only have letters, numbers, dashes, and dots and may not have a dot or dash at beginning or end.");
     //$("#xsce_domain").val(config_vars['xsce_domain'])
@@ -456,7 +486,7 @@ function getAnsibleTags (data)
   ansibleTagsStr = data['ansible_tags'];
   ansibleTagsArr = ansibleTagsStr.split(',');
   var html = '<table width="80%"><tr>';
-  j = 0;
+  var j = 0;
   for (var i in ansibleTagsArr){
     html += '<td width="20%"><label><input type="checkbox" name="' + ansibleTagsArr[i] + '">' + ansibleTagsArr[i] + '</label></td>';
     if (j++ == 4){
@@ -495,7 +525,7 @@ function assignConfigVars (data)
   // Otherwise if effective_vars has a value use it
   $('#Configure input').each( function(){
     if (config_vars.hasOwnProperty(this.name)){
-      prop_val = config_vars[this.name];
+      var prop_val = config_vars[this.name];
       //consoleLog(this.name + "using config_vars");
     }
     else if (effective_vars.hasOwnProperty(this.name)){
@@ -522,7 +552,7 @@ function assignConfigVars (data)
     //console.log($(this).val());
     //consoleLog(this.name);
   });
-  
+
   //config_vars = data;
   //consoleLog(jqXHR);
   //initConfigVars()
@@ -531,17 +561,26 @@ function assignConfigVars (data)
 
 function setRadioButton(name, value){
   // id must follow the convention name-value
-  field_id = "#" + name + "-" + value;
+  var field_id = "#" + name + "-" + value;
   //consoleLog(field_id);
   $(field_id).prop('checked', true);
 }
 
 function initConfigVars()
 {
+  if ($.isEmptyObject(ansibleFacts)
+      || $.isEmptyObject(xsce_ini)
+      || $.isEmptyObject(effective_vars)
+      // || $.isEmptyObject(config_vars) is empty the first time
+      ){
+      consoleLog("initConfigVars found empty data");
+      displayServerCommandStatus ("initConfigVars found empty data")
+      return;
+    }
   // handle exception where gui name distinct and no data
   // home page - / added when used in ansible
   if (! config_vars.hasOwnProperty('gui_desired_home_url')){
-  	config_vars['gui_desired_home_url'] = "home";  
+  	config_vars['gui_desired_home_url'] = "home";
   	consoleLog("home url is " + config_vars['gui_desired_home_url']);
   }
   assignConfigVars();
@@ -560,6 +599,7 @@ function initConfigVars()
   $("#discoveredNetwork").html(html);
   if (typeof config_vars.gui_desired_network_role === "undefined")
   setRadioButton("gui_desired_network_role", xsce_ini.network.xsce_network_mode)
+  initStaticWanVars();
 }
 
 function initStaticWanVars() {
@@ -571,7 +611,7 @@ function initStaticWanVars() {
 
 function setConfigVars ()
 {
-  cmd_args = {}
+  var cmd_args = {}
   //alert ("in setConfigVars");
   $('#Configure input').each( function(){
     if (this.type == "checkbox") {
@@ -590,7 +630,7 @@ function setConfigVars ()
       }
     });
     cmd_args['config_vars'] = config_vars;
-    cmd = "SET-CONF " + JSON.stringify(cmd_args);
+    var cmd = "SET-CONF " + JSON.stringify(cmd_args);
     sendCmdSrvCmd(cmd, genericCmdHandler);
     alert ("Saving Configuration.");
     return true;
@@ -606,12 +646,12 @@ function changePassword ()
       return false;
     }
 
-  cmd_args = {}
+  var cmd_args = {}
   cmd_args['user'] = $("#xsce_admin_user").val();
   cmd_args['oldpasswd'] = $("#xsce_admin_old_password").val();
   cmd_args['newpasswd'] = $("#xsce_admin_new_password").val();
 
-  cmd = "CHGPW " + JSON.stringify(cmd_args);
+  var cmd = "CHGPW " + JSON.stringify(cmd_args);
   sendCmdSrvCmd(cmd, changePasswordSuccess, "CHGPW");
   //alert ("Changing Password.");
   return true;
@@ -634,7 +674,7 @@ function changePasswordSuccess ()
     //alert ("in procXsceIni");
     consoleLog(data);
     xsce_ini = data;
-    jstr = JSON.stringify(xsce_ini, undefined, 2);
+    var jstr = JSON.stringify(xsce_ini, undefined, 2);
     var html = jstr.replace(/\n/g, "<br>").replace(/[ ]/g, "&nbsp;");
     $( "#xsceIni" ).html(html);
     //consoleLog(jqXHR);
@@ -647,8 +687,8 @@ function changePasswordSuccess ()
   {
     //alert ("in getWhitelist");
     //consoleLog(data);
-    whlist_array = data['xsce_whitelist'];
-    whlist_str = whlist_array[0];
+    var whlist_array = data['xsce_whitelist'];
+    var whlist_str = whlist_array[0];
     for (var i = 1; i < whlist_array.length; i++) {
       whlist_str += '\n' + whlist_array[i];
     }
@@ -659,11 +699,11 @@ function changePasswordSuccess ()
 
   function setWhitelist ()
   {
-    //alert ("in setWhitelist");
-    whlist_ret = {}
-    whlist_array = $('#xsce_whitelist').val().split('\n');
+    //consoleLog ("in setWhitelist");
+    var whlist_ret = {}
+    var whlist_array = $('#xsce_whitelist').val().split('\n');
     whlist_ret['xsce_whitelist'] = whlist_array;
-    cmd = "SET-WHLIST " + JSON.stringify(whlist_ret);
+    var cmd = "SET-WHLIST " + JSON.stringify(whlist_ret);
     //consoleLog(cmd);
     sendCmdSrvCmd(cmd, genericCmdHandler);
     alert ("Saving Permitted URLs List.");
@@ -672,7 +712,7 @@ function changePasswordSuccess ()
 
   function runAnsible (tags)
   {
-    command = formCommand("RUN-ANSIBLE", "tags", tags);
+    var command = formCommand("RUN-ANSIBLE", "tags", tags);
     //alert ("in runAnsible");
     consoleLog(command);
     sendCmdSrvCmd(command, genericCmdHandler);
@@ -685,8 +725,8 @@ function changePasswordSuccess ()
   function instZim(zim_id)
   {
     zimsScheduled.push(zim_id);
-    command = "INST-ZIMS"
-    cmd_args = {}
+    var command = "INST-ZIMS"
+    var cmd_args = {}
     cmd_args['zim_id'] = zim_id;
     cmd = command + " " + JSON.stringify(cmd_args);
     sendCmdSrvCmd(cmd, genericCmdHandler, "", instZimError, cmd_args);
@@ -706,7 +746,7 @@ function changePasswordSuccess ()
 
   function restartKiwix() // Restart Kiwix Server
   {
-    command = "RESTART-KIWIX";
+    var command = "RESTART-KIWIX";
     sendCmdSrvCmd(command, genericCmdHandler);
     alert ("Restarting Kiwix Server.");
     return true;
@@ -714,11 +754,11 @@ function changePasswordSuccess ()
 
   function getKiwixCatalog() // Downloads kiwix catalog from kiwix
   {
-    button_feedback("#KIWIX-LIB-REFRESH", true);
+    make_button_disabled("#KIWIX-LIB-REFRESH", true);
     // remove any selections as catalog may have changed
     selectedZims = [];
 
-    command = "GET-KIWIX-CAT";
+    var command = "GET-KIWIX-CAT";
     sendCmdSrvCmd(command, procKiwixCatalog, "KIWIX-LIB-REFRESH");
     return true;
   }
@@ -745,7 +785,7 @@ function changePasswordSuccess ()
     })
     .always(function() {
       alert ("Kiwix Catalog has been downloaded.");
-      button_feedback("#KIWIX-LIB-REFRESH", false);
+      make_button_disabled("#KIWIX-LIB-REFRESH", false);
     })
   }
 
@@ -815,7 +855,7 @@ function procZimGroups() {
           if ((zimsInstalled.indexOf(zimId) >= 0) || (zimsScheduled.indexOf(zimId) >= 0))
           html += 'disabled="disabled" checked="checked"';
           html += 'onChange="updateZimDiskSpace(this)"></label>'; // end input
-          zimDesc = zim.title + ' (' + zim.description + ') [' + zim.perma_ref + ']';
+          var zimDesc = zim.title + ' (' + zim.description + ') [' + zim.perma_ref + ']';
           html += '<span class="zim-desc ' + colorClass + '" >&nbsp;&nbsp;' + zimDesc + '</span>';
           html += '<span ' + colorClass2 + 'style="display:inline-block; width:120px;"> Date: ' + zim.date + '</span>';
           html += '<span ' + colorClass2 +'> Size: ' + readableSize(zim.size);
@@ -837,7 +877,7 @@ function getLangCodes() {
   //consoleLog ('ran sendCmdSrvCmd');
   //if (asyncFlag === undefined) asyncFlag = false;
 
-  resp = $.ajax({
+  var resp = $.ajax({
     type: 'GET',
     url: consoleJsonDir + 'lang_codes.json',
     dataType: 'json'
@@ -856,7 +896,7 @@ function readKiwixCatalog() { // Reads kiwix catalog from file system as json
   //consoleLog ('ran sendCmdSrvCmd');
   //if (asyncFlag === undefined) asyncFlag = false;
 
-  resp = $.ajax({
+  var resp = $.ajax({
     type: 'GET',
     url: consoleJsonDir + 'kiwix_catalog.json',
     dataType: 'json'
@@ -919,7 +959,13 @@ function procZimCatalog() {
 }
 
 function procOneCatalog(catalog){
-  if (Object.keys(catalog).length > 0){
+	  if ($.isEmptyObject(catalog)){
+      consoleLog("procOneCatalog found empty data");
+      displayServerCommandStatus ("procOneCatalog found empty data")
+      return;
+    }
+  else {
+  //if (Object.keys(catalog).length > 0){
     for (var id in catalog) {
       var lang = catalog[id].language;
       if (lang in langGroups)
@@ -961,7 +1007,7 @@ function sortZimLangs(){
       consoleLog('Language code ' + zimLangs[i] + ' not in langCodes.');
       continue;
     }
-    attr = {};
+    var attr = {};
     attr.locname = langCodes[zimLangs[i]]['locname'];
     attr.code = zimLangs[i];
     attr.engname = langCodes[zimLangs[i]]['engname'];
@@ -974,7 +1020,7 @@ function sortZimLangs(){
 }
 
 function getRachelStat(){
-  command = "GET-RACHEL-STAT";
+  var command = "GET-RACHEL-STAT";
   sendCmdSrvCmd(command, procRachelStat);
   return true;
 }
@@ -1008,13 +1054,13 @@ function procRachelStat(data) {
   var moduleList = [];
 
   if (rachelStat["content_installed"] == true){
-    for (title in rachelStat.enabled) {
+    for (var title in rachelStat.enabled) {
       moduleList.push(title);
     }
 
     moduleList.sort();
 
-    for (idx in moduleList) {
+    for (var idx in moduleList) {
     	html += '<tr><td>' + moduleList[idx] + '</td><td>';
     	if (rachelStat.enabled[moduleList[idx]].enabled == true)
     	  html += htmlYes + '</td></tr>'
@@ -1096,7 +1142,7 @@ function delDownloadedFileList(id, sub_dir) {
 
 function getJobStat()
 {
-  command = "GET-JOB-STAT"
+  var command = "GET-JOB-STAT"
   sendCmdSrvCmd(command, procJobStat);
   return true;
 }
@@ -1110,12 +1156,12 @@ function procJobStat(data)
   data.forEach(function(entry) {
     //console.log(entry);
     html += "<tr>";
-    job_info = {};
+    var job_info = {};
 
     job_info['job_no'] = entry[0];
     html += "<td>" + entry[0] + "<BR>"; // job number
     // html +=  '<input type="checkbox" name="' gw_squid_whitelist + '" id="' xo-gw_squid_whitelist +'">';
-    jobId = "job_stat_id-" + entry[0];
+    var jobId = "job_stat_id-" + entry[0];
     html +=  '<input type="checkbox" id="' + jobId + '">';
     html += "</td>";
     job_info['command'] = entry[1];
@@ -1123,14 +1169,14 @@ function procJobStat(data)
 
     result = entry[2].replace(/(?:\r\n|\r|\n)/g, html_break); // change newline to BR
     // result = result.replace(html_break+html_break, html_break); // remove blank lines, but doesn't work
-    idx = result.indexOf(html_break);
+    var idx = result.indexOf(html_break);
     if (idx =0) result = result.substring(html_break.length); // strip off first newline
     idx = result.lastIndexOf(html_break);
     if (idx >=0) result = result.substring(0,idx); // strip off last newline
     job_info['result'] = result;
 
     idx = result.lastIndexOf(html_break);  // find 2nd to last newline
-    result_end = "";
+    var result_end = "";
     if (idx >=0) result_end = result.substring(0,idx + html_break.length);
     html += '<td> <div class = "statusJobResult">' + result + "</div></td>";
 
@@ -1163,8 +1209,8 @@ function procJobStat(data)
 
 function cancelJob(job_id)
 {
-  command = "CANCEL-JOB"
-  cmd_args = {}
+  var command = "CANCEL-JOB"
+  var cmd_args = {}
   cmd_args['job_id'] = job_id;
   cmd = command + " " + JSON.stringify(cmd_args);
   $.when(sendCmdSrvCmd(cmd, genericCmdHandler)).then(getJobStat);
@@ -1173,8 +1219,8 @@ function cancelJob(job_id)
 
 function cancelJobFunc(job_id)
 {
-  command = "CANCEL-JOB"
-  cmd_args = {}
+  var command = "CANCEL-JOB"
+  var cmd_args = {}
   cmd_args['job_id'] = job_id;
   cmd = command + " " + JSON.stringify(cmd_args);
   return $.Deferred( function () {
@@ -1185,7 +1231,7 @@ function cancelJobFunc(job_id)
 
 function getSysMem()
 {
-  command = "GET-MEM-INFO"
+  var command = "GET-MEM-INFO"
   sendCmdSrvCmd(command, procSysMem);
   return true;
 }
@@ -1194,7 +1240,7 @@ function procSysMem(data)
 {
   //alert ("in procSysMem");
   consoleLog(data);
-  sysMemory = data['system_memory'];
+  var sysMemory = data['system_memory'];
   var html = "";
   for (var i in sysMemory)
   html += sysMemory[i] + "<BR>"
@@ -1218,7 +1264,7 @@ function procDiskSpace(){
 
 function getSysStorage()
 {
-  command = "GET-STORAGE-INFO"
+  var command = "GET-STORAGE-INFO"
   sendCmdSrvCmd(command, procSysStorageAll);
   return true;
 }
@@ -1248,15 +1294,15 @@ function procSysStorage()
 
   var html = "";
   for (var i in sysStorage.raw) {
-    dev = sysStorage.raw[i];
+    var dev = sysStorage.raw[i];
     html += "<b>" + dev.device + "</b>";
     html += " " + dev.desc;
     html += " " + dev.type;
     html += " " + dev.size;
     html += ":<BR><BR>";
 
-    for (j in sysStorage.raw[i].blocks){
-      block = dev.blocks[j];
+    for (var j in sysStorage.raw[i].blocks){
+      var block = dev.blocks[j];
       html += block.part_dev;
       if (block.part_dev == 'unallocated')
       html += " " + block.size;
@@ -1372,7 +1418,7 @@ function sumCheckedZimDiskSpace(){
 }
 
 function getInetSpeed(){
-  command = "GET-INET-SPEED";
+  var command = "GET-INET-SPEED";
   sendCmdSrvCmd(command, procInetSpeed, "GET-INET-SPEED");
   $( "#intSpeed1" ).html("Working ...");
   //$('#myModal').modal('show');
@@ -1382,7 +1428,7 @@ function getInetSpeed(){
 function procInetSpeed(data){
   //alert ("in procInetSpeed");
   consoleLog(data);
-  intSpeed = data["internet_speed"];
+  var intSpeed = data["internet_speed"];
   var html = "";
   for (var i in intSpeed)
   html += intSpeed[i] + "<BR>"
@@ -1392,7 +1438,7 @@ function procInetSpeed(data){
 }
 
 function getInetSpeed2(){
-  command = "GET-INET-SPEED2"
+  var command = "GET-INET-SPEED2"
   sendCmdSrvCmd(command, procInetSpeed2, "GET-INET-SPEED2");
   $( "#intSpeed2" ).html("Working ...");
   return true;
@@ -1401,7 +1447,7 @@ function getInetSpeed2(){
 function procInetSpeed2(data){
   //alert ("in procInetSpeed2");
   consoleLog(data);
-  intSpeed = data["internet_speed"];
+  var intSpeed = data["internet_speed"];
   var html = "";
   for (var i in intSpeed)
   html += intSpeed[i] + "<BR>"
@@ -1413,7 +1459,7 @@ function procInetSpeed2(data){
 
 function rebootServer()
 {
-  command = "REBOOT"
+  var command = "REBOOT"
   sendCmdSrvCmd(command, genericCmdHandler);
   alert ("Reboot Initiated");
   return true;
@@ -1421,7 +1467,7 @@ function rebootServer()
 
 function poweroffServer()
 {
-  command = "POWEROFF"
+  var command = "POWEROFF"
   sendCmdSrvCmd(command, genericCmdHandler);
   alert ("Shutdown Initiated");
   return true;
@@ -1430,9 +1476,9 @@ function poweroffServer()
 function getHelp(arg)
 {
   $.get( "help/" + arg, function( data ) {
-    rst = data;
-    convert = new Markdown.getSanitizingConverter().makeHtml;
-    html = convert(rst);
+    var rst = data;
+    var convert = new Markdown.getSanitizingConverter().makeHtml;
+    var html = convert(rst);
     $( "#helpItem" ).html( html );
   });
   return true;
@@ -1455,11 +1501,47 @@ function showAboutSummary()
   $( "#aboutSummaryText" ).html( html );
 }
 
+function getServerInfo() {
+	displayServerCommandStatus("Checking Server Connection");
+  var resp = $.ajax({
+    type: 'GET',
+    cache: false,
+    global: false, // don't trigger global error handler
+    url: 'server-info.php',
+    dataType: 'json'
+  })
+  .done(function( data ) {
+    serverInfo.xsce_server_ip = data.xsce_server_ip;
+    serverInfo.xsce_client_ip = data.xsce_client_ip;
+    serverInfo.xsce_cmdsrv_running = data.xsce_cmdsrv_running;
+
+    consoleLog(serverInfo);
+    if (serverInfo.xsce_cmdsrv_running == "FALSE"){
+      displayServerCommandStatus("XSCE-CMDSRV is not running");
+      alert ("XSCE-CMDSRV is not running on the server");
+    }
+    else
+      displayServerCommandStatus("Successfully connected to Server");
+  })
+  .fail(getServerInfoError);
+
+  return resp;
+}
+
+function getServerInfoError (jqXHR, textStatus, errorThrown){
+  jsonErrhandler (jqXHR, textStatus, errorThrown); //check for json errors
+  serverInfo.xsce_server_found = "FALSE";
+  consoleLog("Connection to Server failed.");
+  displayServerCommandStatus('Connection to Server <span style="color:red">FAILED</span>.');
+  alert ("Connection to Server failed.\n Please make sure your network settings are correct,\n that the server is turned on,\n and that the web server is running.");
+}
+
+
 function formCommand(cmd_verb, args_name, args_obj)
 {
-  cmd_args = {}
+  var cmd_args = {}
   cmd_args[args_name] = args_obj;
-  command = cmd_verb + " " + JSON.stringify(cmd_args);
+  var command = cmd_verb + " " + JSON.stringify(cmd_args);
   consoleLog(command);
 
   return command;
@@ -1477,14 +1559,27 @@ function sendCmdSrvCmd(command, callback, buttonId, errCallback, cmdArgs) {
   //   TODO  - add assignmentVar so can assign variable before running callback
   //alert ("in sendCmdSrvCmd(");
   //consoleLog ('buttonid = ' + buttonId);;
+
+  // skip command if init has already failed - not sure this works
+  if (initStat.active == true && initStat.error == true){
+  	var deferredObject = $.Deferred();
+  	logServerCommands (command, "failed", "Init already failed");
+  	return deferredObject.reject();
+  }
+
+  //consoleLog ("command: " + command);
+
+  var cmdVerb = command.split(" ")[0];
+  logServerCommands (cmdVerb, "sent");
+
   if (buttonId === undefined)
   buttonId = "";
   else
-    button_feedback('#' + buttonId, true);
+    make_button_disabled('#' + buttonId, true);
 
-    resp = $.ajax({
+    var resp = $.ajax({
       type: 'POST',
-      url: 'cmd-service.php',
+      url: xsceCmdService,
       data: {
         command: command
       },
@@ -1492,48 +1587,148 @@ function sendCmdSrvCmd(command, callback, buttonId, errCallback, cmdArgs) {
       buttonId: buttonId
     })
     //.done(callback)
-    .done(function(data) {
-    	var dataResp = data;
+    .done(function(dataResp, textStatus, jqXHR) {
+    	//var dataResp = data;
     	if ("Error" in dataResp){
-    	  consoleLog(dataResp["Error"]);
-    	  globalAjaxErrorFlag = true;
-    	  alert("Error: " + dataResp["Error"]);
+    	  cmdSrvError(cmdVerb, dataResp);
     	  if (typeof errCallback != 'undefined'){
     	    consoleLog(errCallback);
     	    errCallback(data, cmdArgs);
     	  }
     	}
-    	else
+    	else {
+    		var data = dataResp.Data;
     	  callback(data);
+    	  logServerCommands (cmdVerb, "succeeded", "", dataResp.Resp_time);
+    	}
     })
     .fail(jsonErrhandler)
     .always(function() {
-      button_feedback('#' + this.buttonId, false);
+      make_button_disabled('#' + this.buttonId, false);
     });
 
     return resp;
 }
 
+// Report errors that came from cmdsrv or cmd-service
+
+function cmdSrvError (cmdVerb, dataResp){
+	var errorText = dataResp["Error"];
+	consoleLog(errorText);
+  logServerCommands (cmdVerb, "failed", errorText);
+  cmdSrvErrorAlert (cmdVerb, dataResp)
+  initStat["error"] = true;
+}
+
+function cmdSrvErrorAlert (cmdVerb, dataResp){
+	var errorText = dataResp["Error"];
+	var alertText = cmdVerb + " FAILED and reported " + errorText;
+
+	if (initStat["active"] == false)
+	  alert(alertText);
+	else {
+		// during init only alert if flagged from server
+		if (("Alert" in dataResp) && ! (errorText in initStat["alerted"])){
+		  alert(alertText);
+		  initStat["alerted"][errorText] = true;
+		}
+  }
+}
+
+// Generic ajax error handler called by all .fail events unless global: false set
+
+function ajaxErrhandler (event, jqxhr, settings, thrownError) {
+	consoleLog("in .ajaxError");
+  consoleLog(event);
+  consoleLog(jqxhr);
+  consoleLog(settings);
+  consoleLog(thrownError);
+
+  // For commands sent to command server
+  if (settings.url == xsceCmdService){
+    var cmdstr = settings.data.split("command=")[1];
+    var cmdVerb = cmdstr.split(/[ +]/)[0];
+    consoleLog(cmdVerb);
+    logServerCommands (cmdVerb, "failed", jqxhr.statusText);
+    // see if we are connected to server
+    consoleLog(jqxhr.statusText, serverInfo.xsce_server_found);
+    //if (jqxhr.statusText == "error" && serverInfo.xsce_server_found == "TRUE"){
+    if (jqxhr.statusText == "error"){
+      consoleLog("calling getServerInfo");
+      getServerInfo();
+    }
+  }
+  if (initStat["active"] == true)
+    initStat["error"] = true;
+}
+
+// Error handler mostly for json errors, which should be bugs or bad data
+
 function jsonErrhandler (jqXHR, textStatus, errorThrown)
 {
-  alert ("in Errhandler: " + textStatus + ", " + errorThrown);
+  // only handle json parse errors here, others in ajaxErrHandler
+  if (textStatus == "parserror") {
+    //alert ("Json Errhandler: " + textStatus + ", " + errorThrown);
+    displayServerCommandStatus("Json Errhandler: " + textStatus + ", " + errorThrown);
+  }
   //consoleLog("In Error Handler logging jqXHR");
   consoleLog(textStatus);
   consoleLog(errorThrown);
   consoleLog(jqXHR);
-  globalAjaxErrorFlag = true;
-  consoleLog(globalAjaxErrorFlag);
+
   return false;
 }
+
 function consoleLog (msg)
 {
   console.log(msg); // for IE there can be no console messages unless in tools mode
 }
 
+function logServerCommands (command, status, extraData="", respTime=0)
+{
+  var msg = "";
+
+  switch (status) {
+    case "sent":
+        msg = "Command " + command + " sent to server";
+        break;
+    case "succeeded":
+        msg = command + ' <span style="color:green">SUCCEEDED</span> (' + Math.round(1000 * respTime) + ' ms)';
+        break;
+    case "failed":
+        msg = command + ' <span style="color:red">FAILED</span>';
+        if (extraData != "" && extraData != "error"){
+          msg += ' and returned ' + extraData;
+        }
+
+        break;
+
+  }
+  displayServerCommandStatus(msg);
+}
+
+function displayServerCommandStatus (msg)
+{
+  var initSelector = "#initLog";
+  var logSelector = "#serverCmdLog";
+  var now = new Date();
+
+  $(logSelector).prepend(now.toLocaleString() + ": " + msg + "<BR>");
+  if (initStat.active == true)
+    $(initSelector).prepend(now.toLocaleString() + ": " + msg + "<BR>");
+}
+
 function init ()
 {
-  $('#initDataModal').modal('show');
-  globalAjaxErrorFlag = false;
+  //$('#initDataModal').modal('show');
+
+  initStat["active"] = true;
+  initStat["error"] = false;
+  initStat["alerted"] = {};
+
+  displayServerCommandStatus("Starting init");
+
+  getServerInfo(); // see if we can connect
 
   $.when(
     sendCmdSrvCmd("GET-ANS-TAGS", getAnsibleTags),
@@ -1543,18 +1738,26 @@ function init ()
     sendCmdSrvCmd("GET-STORAGE-INFO", procSysStorageAll),
     waitDeferred(3000))
     .done(initDone)
-    .fail(function () {consoleLog("failed");})
+    .fail(function () {
+    	displayServerCommandStatus('<span style="color:red">Init Failed</span>');
+    	consoleLog("Init failed");
+    	})
 }
 
 function initDone ()
 {
-	if (globalAjaxErrorFlag == false){
+	if (initStat["error"] == false){
 	  consoleLog("Init Finished Successfully");
-	  $('#initDataModal').modal('hide');
+	  displayServerCommandStatus('<span style="color:green">Init Finished Successfully</span>');
+	  // now turn on navigation
+	  navButtonsEvents();
+	  //$('#initDataModal').modal('hide');
   } else {
     consoleLog("Init Failed");
-    $('#initDataModalResult').html("<b>There was an error on the Server.</b>");
+    displayServerCommandStatus('<span style="color:red">Init Failed</span>');
+    //$('#initDataModalResult').html("<b>There was an error on the Server.</b>");
   }
+  initStat["active"] = false;
 }
 
 function waitDeferred(msec) {

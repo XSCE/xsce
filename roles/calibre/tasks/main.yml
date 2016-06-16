@@ -1,23 +1,28 @@
-#- name: Get calibre setup file
-#  get_url:
-#    url="{{ calibre_src_url }}"
-#    dest="{{ downloads_dir }}/calibre-installer.py"
-#    mode=0755
-#  tags:
-#    download2
-#
-#- name: Install calibre
-#  shell: "{{ downloads_dir }}/calibre-installer.py >> /dev/null"
-#  args:
-#    creates: /usr/bin/calibre-uninstall
-#  tags:
-#    download2
+- name: Get calibre setup file
+# the installer works for intel fedora, and Centos, and deals with dependencies
+  get_url:
+    url="{{ calibre_src_url }}"
+    dest="{{ downloads_dir }}/calibre-installer.py"
+    mode=0755
+  tags:
+    download2
+  when: calibre_install and ansible_distribution == "CentOS"
+
+
+- name: Install calibre
+  shell: "{{ downloads_dir }}/calibre-installer.py >> /dev/null"
+  args:
+    creates: /usr/bin/calibre-uninstall
+  tags:
+    download2
+  when: calibre_install and ansible_distribution == 'CentOS' 
 
 - name: Install Caibre rpms
+# the fedora rpm arm version, though older, takes care of dependencies, and exists
   yum:  name={{ item }}
   with_items:
     - calibre
-  when: calibre_install
+  when: calibre_install and ansible_distribution != 'CentOS'
   tags: download
 
 - name: Create calibre service(s) and support scripts

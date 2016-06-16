@@ -1,21 +1,34 @@
-- name: Get the stable release channel repo definition
-  template: src=ce:stable.repo dest=/etc/yum.repos.d/
-
+# we need to install the rpm in order to get the dependencies
 - name: Install owncloud package
   yum: pkg={{ item }} state=installed
   with_items:
-  - owncloud
+      - owncloud
   tags:
-    - download
+      - download
 
-- name: Use tar file for F18
-  include: F18.yml
-  when: is_F18
+- name: Remove /etc/owncloud to avoid confusion as we use the config in {{ owncloud_path }}/config/
+  file: path=/etc/owncloud
+        state=absent
 
-- name: Override owncloud path when using rpms
-  set_fact: 
-    owncloud_path: "/var/www/html/owncloud"
+# but we use the tar file to get the latest version
+
+- name: Get the owncloud software
+  get_url: url={{ xsce_download_url }}/{{ owncloud_src_file }}  dest={{ downloads_dir }}/{{ owncloud_src_file }}
+  when: not {{ use_cache }} and not {{ no_network }}
+  tags:
+    - download2
+
+- name: Copy it to permanent location /opt
+  unarchive: src={{ downloads_dir }}/{{ owncloud_src_file }}  
+             dest={{ owncloud_path }}
+             creates={{ owncloud_path }}/owncloud/version.php
   when: not is_F18
+
+# ansible 1.4.1 does not have "creates"
+- name: Copy it to permanent location /opt
+  unarchive: src={{ downloads_dir }}/{{ owncloud_src_file }}  
+             dest={{ owncloud_path }}
+  when: is_F18
 
 - name: in Centos, the following config dir is symlink to /etc/owncloud
   file: path=/etc/owncloud
@@ -23,13 +36,13 @@
 
 - name: Add autoconfig file
   template: src=autoconfig.php.j2
-            dest={{ owncloud_path }}/config/autoconfig.php
+            dest={{ owncloud_path }}/owncloud/config/autoconfig.php
             owner=apache
             group=apache
             mode=0640
 
 - name: Make apache owner
-  file: path={{ owncloud_path }}
+  file: path={{ owncloud_path }}/owncloud
         owner=apache
         group=apache
         recurse=yes
@@ -82,7 +95,7 @@
     - option: description
       value: '"OwnCloud is a local server-based facility for sharing files, photos, contacts, calendars, etc."'
     - option: path
-      value: "{{ owncloud_path }}"
+      value: "{{ owncloud_path }}/owncloud"
     - option: source
       value: "{{ owncloud_src_file }}"
     - option: enabled
