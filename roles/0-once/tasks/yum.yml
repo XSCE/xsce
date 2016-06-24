@@ -76,6 +76,9 @@
 - name: If version of Network manager has changed, subsequent nmcli commands will fail,restart now
   service: name=NetworkManager
            state=restarted
+  when: not installing
+# the above should use a handler - all reboots should wait until all 
+# mods are preformed
 
 - name: Install optional exFAT packages for CentOS
   shell: yum --enablerepo=li-nux-ro install exfat-utils fuse-exfat
