@@ -1,0 +1,41 @@
+#!/bin/bash -x
+# generate a zip file with data bound for upstream
+#
+# define the upstream location in filesystem tree
+UPENV=/library/upstream
+mkdir -p $UPENV
+
+# create places for current staging, and historic bundles
+mkdir -p $UPENV/staging
+mkdir -p $UPENV/history
+
+# get the UUID for this device
+UUID=`cat /etc/xsce/uuid`
+UUID_SNIP=${UUID:0:4}
+
+# create a sequence number
+if [ ! -f $UPENV/seq ]; then
+   SEQ="0000"
+else
+   SEQ=`cat $UPENV/seq`
+fi
+# increment and store next 
+NEXT=`printf "%05d" $((SEQ + 1))`
+echo $NEXT > $UPENV/seq
+YYMMDD=`date +%y%m%d`
+echo $UUID_SNIP-$SEQ-$YYMMDD
+
+# put interesting data into staging
+cp /etc/xsce/uuid $UPENV/staging
+uptime -p > $UPENV/staging/uptime
+vnstat > $UPENV/staging/vnstat
+grep -e admin /var/log/httpd/access* > $UPENV/staging/access.logs
+
+
+
+
+
+
+
+
+# vim: background=dark et ts=3
