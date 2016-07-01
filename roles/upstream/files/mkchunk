@@ -9,20 +9,22 @@ mkdir -p $UPENV
 mkdir -p $UPENV/staging
 mkdir -p $UPENV/history
 
+source ./upstream_functions
+
 # get the UUID for this device
 UUID=`cat /etc/xsce/uuid`
 UUID_SNIP=${UUID:0:4}
+YYMMDD=`date +%y%m%d`
 
 # create a sequence number
 if [ ! -f $UPENV/seq ]; then
    SEQ="0000"
 else
-   SEQ=`cat $UPENV/seq`
+   SEQ=`cat $UPENV/seq | cut -d" " -f1`
 fi
 # increment and store next 
 NEXT=`printf "%05d" $((SEQ + 1))`
-echo $NEXT > $UPENV/seq
-YYMMDD=`date +%y%m%d`
+echo "$NEXT $YYMMDD" > $UPENV/seq
 echo $UUID_SNIP-$SEQ-$YYMMDD
 
 # put interesting data into staging
