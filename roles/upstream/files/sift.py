@@ -18,6 +18,10 @@ if path.isfile(path.join(LOC,"data","downloads")):
 else: downloads = {}
 added = 0
 
+# get the UUID of this machine
+with open("/etc/xsce/uuid", "r") as infile:
+    uuid=infile.read()
+
 line_parser = apache_log_parser.make_parser("%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"")
 
 # traverse the apache logs
@@ -49,5 +53,6 @@ with open(path.join(LOC,"data","downloads"),"w") as outfile:
 outfile = open(path.join(LOC,"staging","downloads.csv"),'w')
 
 for key in sorted(downloads):
-    outfile.write("%s,%s,%s\n" % (downloads[key]["time"],\
-                downloads[key]["url"], downloads[key]["week"],))   
+    outfile.write("%s,%s,%s,%s\n" % (downloads[key]["time"],\
+                downloads[key]["week"],\
+                downloads[key]["url"], uuid.rstrip(), ))   
