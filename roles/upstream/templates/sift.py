@@ -50,9 +50,9 @@ with open(path.join(LOC,"data","downloads"),"w") as outfile:
     json.dump(downloads, outfile)
 
 # now create the final csv file
-outfile = open(path.join(LOC,"staging","downloads.csv"),'w')
+outfile = open(path.join(LOC,"staging","downloads_csv"),'w')
 
 for key in sorted(downloads):
-    outfile.write("%s,%s,%s,%s\n" % (downloads[key]["time"],\
+    outfile.write("%s,%s,%s,%s,\n" % (downloads[key]["time"],\
                 downloads[key]["week"],\
                 downloads[key]["url"], uuid.rstrip(), ))   
