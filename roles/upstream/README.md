@@ -25,7 +25,7 @@ A combination of scripts in bash and python create the zipped smartphone downloa
   * Then add the "upstream" software:
 ```
   echo "upstream_install: True" >> /opt/schoolserver/xsce/vars/local_vars.yml
-  echo "upstream_enabledl: True" >> /opt/schoolserver/xsce/vars/local_vars.yml
+  echo "upstream_enabled: True" >> /opt/schoolserver/xsce/vars/local_vars.yml
   cd /opt/schoolserver/xsce
   git remote add ghunt https://github.com/georgejhunt/xsce 
   git checkout -b upstream
