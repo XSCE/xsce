@@ -1,0 +1,5 @@
+#!/bin/bash -x
+# copy scripts to the upstream role in xsce git
+for f in `find /library/upstream -maxdepth 1 -type f`; do
+    cp $f /opt/schoolserver/xsce/roles/upstream/templates/
+done

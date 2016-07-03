@@ -1,5 +1,6 @@
 #!/bin/bash -x
 # generate a zip file with data bound for upstream
+
 #
 # define the upstream location in filesystem tree
 UPENV=/library/upstream
@@ -49,7 +50,8 @@ $UPENV/sift.py
 
 # now create the zip file 
 mv $UPENV/staging $UPENV/$ZIPNAME
-/bin/zip  -r $UPENV/history/$ZIPNAME.zip ./$ZIPNAME
+sleep 1
+/bin/zip  -r $UPENV/history/$ZIPNAME.zip $UPENV/$ZIPNAME
 if [ $? -eq 0 ]; then
    rm -rf $UPENV/$ZIPNAME
    mkdir -p $UPENV/staging

@@ -14,11 +14,16 @@ def application(environ, start_response):
     rc = subprocess.call(upenv + "/mkchunk")
     if rc != 0:
         status = '500 Internal Server Error'
-        headers = [('Content-type', 'html'),
+        headers = [('Content-type', 'html')]
         start_response(status, headers)
-        return ()
+        return()
 
     downloads_available = sorted(glob.glob(os.path.join(upenv,"history/*")))
+    if len(downloads_available) == 0:
+        status = '500 Internal Server Error'
+        headers = [('Content-type', 'html')]
+        start_response(status, headers)
+        return()
     last = downloads_available[-1]
     fd = open(last,"r")
     status = '200 OK'

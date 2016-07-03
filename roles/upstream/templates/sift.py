@@ -1,5 +1,6 @@
 #!/bin/env python
 # read apache logs, sifting for records we want to save
+
 import apache_log_parser
 import sys
 from os import path
@@ -27,12 +28,14 @@ line_parser = apache_log_parser.make_parser("%h %l %u %t \"%r\" %>s %b \"%{Refer
 # traverse the apache logs
 for fn in glob.glob('/var/log/httpd/access*'):
     for line in open(fn, 'r'):
+
+        # this find selects apache log records of interest
         if line.find('admin'):
+
             line_dict = line_parser(line)
+            # discard unsuccessful GETs or redirects
             if line_dict['request_method'] != "GET": continue
             if line_dict['status'] != "200": continue
-            print("%s,%s" % (line_dict['time_received_tz_isoformat'],
-                line_dict['request_url'],))
             # put the data in the dictionary
             key = line_dict['time_received_tz_isoformat'] + \
                 line_dict['request_url']
