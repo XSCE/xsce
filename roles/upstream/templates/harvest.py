@@ -6,9 +6,10 @@ import email
 import os
 import zipfile
 import json
+from time import sleep
 
 upenv = "/library/upstream"
-detach_dir = os.path.join(upenv,"html","zips")
+zips_dir = os.path.join(upenv,"html","zips")
 raw_dir = os.path.join(upenv,"html","raw_data")
 m = imaplib.IMAP4_SSL('imap.gmail.com')
 m.login('xscenet@gmail.com', 'immi96?Bronx')
@@ -71,7 +72,12 @@ for emailid in items:
             continue
 
         filename = part.get_filename()
-        att_path = os.path.join(detach_dir, filename)
+        original_zip_dir = filename[:-4]
+        # put insert the from into the zip file name
+        s=mail["From"]
+        sender = s[s.find("<")+1:s.find(">")]
+        filename = filename[:-4] + "-" + sender + '.zip'
+        att_path = os.path.join(zips_dir, filename)
 
         if not os.path.isfile(att_path) :
             print("writing: ",att_path)
@@ -80,14 +86,26 @@ for emailid in items:
             fp.close()
 
 # go through the zip files, and expand them if not already expanded
-for zf in glob.glob(detach_dir+"/*"):
+for zf in glob.glob(zips_dir+"/*"):
     # get the directory name we want in raw directory
-    raw_base = os.path.join(raw_dir,os.path.basename(zf)[ :-4])
+    raw_base = os.path.join(raw_dir,original_zip_dir)
     if not os.path.isdir(raw_base):
         with zipfile.ZipFile(zf,"r") as cpzip:
             cpzip.extractall(raw_dir)
         # now merge the data in the downloads.csv with our data_store at
-    merge_data(os.path.join(raw_base,"downloads_csv"))
+    csv = os.path.join(raw_base,"downloads_csv")
+    breakout = 0
+    while True:
+        if os.path.isfile(csv):
+            break
+        sleep(.2)
+        breakout += 1
+        if breakout > 10:
+            break
+    if breakout > 10:
+        print "failed to find %s" % csv
+        raise
+    merge_data(csv)
        
 
 # regenerate the publicly visible merged data from all reporters
