@@ -8,7 +8,7 @@ import zipfile
 import json
 from time import sleep
 
-upenv = "/library/upstream"
+upenv = "{{ content_base }}/upstream"
 zips_dir = os.path.join(upenv,"html","zips")
 raw_dir = os.path.join(upenv,"html","raw_data")
 m = imaplib.IMAP4_SSL('imap.gmail.com')

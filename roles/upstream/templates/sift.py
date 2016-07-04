@@ -10,7 +10,7 @@ from pprint import pprint
 import glob
 import json
 
-LOC='/library/upstream'
+LOC='{{ content_base }}/upstream'
 
 # fetch the dictionary of previous downloads if it exists
 if path.isfile(path.join(LOC,"data","downloads")):

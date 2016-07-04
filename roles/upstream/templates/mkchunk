@@ -3,16 +3,7 @@
 
 #
 # define the upstream location in filesystem tree
-UPENV=/library/upstream
-mkdir -p $UPENV
-
-# create places for current staging, and historic bundles
-mkdir -p $UPENV/staging
-mkdir -p $UPENV/history
-mkdir -p $UPENV/data
-mkdir -p $UPENV/html/zips
-mkdir -p $UPENV/html/raw_data
-
+UPENV={{ content_base}}/upstream
 
 # get the UUID for this device
 UUID=`cat /etc/xsce/uuid`
@@ -28,6 +19,7 @@ else
 fi
 # increment and store next 
 NEXT=`printf "%05d" $((SEQ + 1))`
+
 YYMMDD=`date +%y%m%d`
 # there may be many training situations where this run repeatedly
 # it's not an error, but we don't need a lot of empty bundles
