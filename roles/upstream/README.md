@@ -32,3 +32,20 @@ A combination of scripts in bash and python create the zipped smartphone downloa
   git pull ghunt upstream
   ./runtags upstream
 ```
+
+**Assumptions:**
+
+* The number of downloaded APK's will be less than 10000 on a per station basis. -- Until proven to be a problem, each upload will contain a full data set -- the zip deflate is very good at substituting a token for repeating text chunks. (estimated record size = 30 which implies zip file size of 300K)
+* Logrotate on the servers will make apache logs disappear. So a  json representation of a python dictionary will be used to accumulate and preserve data
+* The apache logs will be searched for ".apk", and GET, and status= 200 success, and added to the data set if found
+* Date-time + downloaded URL will the the dictionary key.
+* All available apache logs will be scanned, every time a zip file is to be generated, and each record "of interest" will be checked against the dictionary.
+* output records in csv have the following fields: date-time, week number, URL,UUID of server. ( week permits quick/dirty trend charts)
+* Initially, during the debug phase, the apache logs (full) will be included in the zip file.
+* There is nothing propritary about the uploaded data, and it does not need to be encrypted, or the download protected with password.
+*Currently, the xscenet@gmail.com account is accessed via a password, which is visible at github. I need to generate a ssl public/private key pair, and put it in place for the cloud to use.
+* The email address of the data collector is known at the time of harvesting email from the gmail server. It is capturesd and presented somewhere in the cloud presentation.
+* The zip file can easily contain additional information -- at this point it includes
+    * uptime
+    * vnstat
+    * apache logs
