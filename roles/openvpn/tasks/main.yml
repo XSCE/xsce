@@ -24,8 +24,7 @@
         mode=0755
 
 - name: Configure openvpn
-  template: backup=yes
-            src={{ item.src }}
+  template: src={{ item.src }}
             dest={{ item.dest }}
             owner={{ item.owner }}
             group=root
@@ -42,6 +41,7 @@
     - { src: 'xsce-vpn.conf.in', dest: '/etc/openvpn/xsce-vpn.conf.in', owner: "root" , mode: '0644' }
     - { src: 'xs-vpn', dest: '/usr/bin/xs-vpn', owner: "root" , mode: '0755' }
     - { src: 'xs-handle', dest: '/usr/bin/xs-handle', owner: "root" , mode: '0755' }
+    - { src: '15-openvpn', dest: '/etc/NetworkManager/dispatcher.d/', owner: "root" , mode: '0755' }
 
 - name: check for manually configured openvpn tunnel
   stat: path=/etc/openvpn/xsce-vpn.conf
