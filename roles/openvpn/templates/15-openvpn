@@ -11,7 +11,7 @@ if [ "$2" = "up" ]; then
     # (important at boot time without this the service still fails
     # time-out for dispatcher script is 3s (rhbz#1003695#8)
     sleep 2
-    /sbin/ip route list dev "$1" | grep -q '^default' > &&
+    /sbin/ip route list dev "$1" | grep -q '^default' &&
     # restart the services
     systemctl -q is-enabled openvpn@xscenet.service && systemctl restart openvpn@xscenet.service
 fi
