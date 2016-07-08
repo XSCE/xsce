@@ -24,7 +24,6 @@ is_F24: False
 
 # Set default for discovered hardware
 driver_name: nl80211
-wifi_id: none
 rpi_model: none
 xo_model: none
 rtc_id: none

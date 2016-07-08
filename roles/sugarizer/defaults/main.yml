@@ -1,4 +1,4 @@
 sugarizer_install: True
 sugarizer_enabled: False
-sugarizer_location: '/var/www/html/sugarizer'
-sugarizer_version: 'sugarizer-0.7.tar.gz'
+sugarizer_location: '/var/www/html'
+sugarizer_version: 'sugarizer-0.7'
