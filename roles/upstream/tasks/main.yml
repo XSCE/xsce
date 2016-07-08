@@ -45,7 +45,7 @@
     - option: name
       value: Upstream
     - option: description
-      value: '"Upstream is method of communicating usage information from the XSCE server to a centralized data collection location,  It uses a smart phone to download a zipped directory of information while offline, and then later, when connected to the internet, emails that package,as an attachment,upstream"'
+      value: '"Upstream is a method of communicating usage information from the XSCE server to a centralized data collection location.  It uses a smart phone to download a zipped directory of information while offline, and then later, when connected to the internet, emails that package, as an attachment, upstream"'
     - option: enabled
       value: "{{ upstream_enabled }}"
     - option: installed
