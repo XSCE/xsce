@@ -1,2 +1,3 @@
 upstream_install: False
 upstream_enabled: False
+acpower_enabled: False

@@ -1,0 +1,11 @@
+[Unit]
+Description=Puts heartbeat, startup, shutdown records into log
+After=syslog.target 
+
+[Service]
+PIDFile=/var/run/acpower.pid
+ExecStart=/usr/xs-heartbeat
+ExecStop=/usr/bin/kill -SIGINT $MAINPID
+
+[Install]
+WantedBy=multi-user.target

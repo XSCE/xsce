@@ -1,0 +1,8 @@
+#!/bin/bash -x
+# this makes an entry in the log every 5 minutes
+logger "xsce_startup
+trap "logger xsce_shutdown" -sigint
+while [ 0 ]; do
+   logger "xsce_tick"
+   sleep 300
+done
