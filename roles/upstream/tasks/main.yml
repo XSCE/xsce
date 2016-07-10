@@ -26,6 +26,7 @@
     - { src: 'acpower.service', dest: '/etc/systemd/system/', group: "root" , mode: '0644' }
     - { src: 'heartbeat', dest: '/usr/bin/', group: "root" , mode: '0755' }
     - { src: 'analyze-power', dest: '/usr/bin/', group: "root" , mode: '0755' }
+    - { src: 'xsce-acpower-init', dest: '/usr/libexec/', group: "root" , mode: '0755' }
   when: upstream_install == True
 
 - name: enable the downloading of data chunk
