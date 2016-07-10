@@ -17,19 +17,16 @@ A combination of scripts in bash and python create the zipped smartphone downloa
 
   * Upstream.wsgi -- A browser request to a url on the XSCE server (http://wikihealth.lan/data) stimulates this python program. This in turn calls a bash script which generates the zipped information package. The completed zip file is returned to the browser's request.
   * mkchunk -- Is a bash script which generates the zipped requested information. In doing its job, it calls another python script (sift.py), which parses the apache log files, and selects the web server downloads that are of interest
-  * sift.py -- Takes advantage of apache log parsing functions, to provide flexible and easy access to the desired information.
+  * sift.py -- Takes advantage of apache log parsing functions, to provide flexible and easy access to the desired information. The logs will be searched for any downloads of files in /library/content/wikimed.
   * harvest.py -- Runs in the cloud, and uses python imap libraries to access the gmail mail server, and fetch the uploaded email, and their attached zip files. It unzips and consolidates the information, and makes it available at http://xscenet.net/analytics
   
 **How to install Upstream on XSCE - Release-6.1**
   * Follow the normal install instructions at https://github.com/XSCE/xsce/wiki/XSCE-Installation.
-  * Then add the "upstream" software:
+  * Then install and enable the "upstream" software:
 ```
   echo "upstream_install: True" >> /opt/schoolserver/xsce/vars/local_vars.yml
   echo "upstream_enabled: True" >> /opt/schoolserver/xsce/vars/local_vars.yml
   cd /opt/schoolserver/xsce
-  git remote add ghunt https://github.com/georgejhunt/xsce 
-  git checkout -b upstream
-  git pull ghunt upstream
   ./runtags upstream
 ```
 
