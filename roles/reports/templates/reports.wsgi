@@ -7,7 +7,7 @@ import glob
 from wsgiref.simple_server import make_server
 
 def application(environ, start_response):
-    upenv = "{{ content_base }}/upstream"
+    upenv = "{{ content_base }}/reports"
     block_size = 1024
 
     # execute the bash script which generates the zip file

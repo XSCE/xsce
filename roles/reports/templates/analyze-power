@@ -12,7 +12,7 @@ from acrecord import Tools, tzlocal, tzutc
 
 tz = tzlocal()
 tzu = tzutc()
-LOC='/library/upstream'
+LOC='/library/reports'
 
 # fetch the dictionary of previous downloads if it exists
 if path.isfile(path.join(LOC,"data","downloads")):

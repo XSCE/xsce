@@ -5,11 +5,11 @@
         mode=0755
         state=directory
   with_items:
-    - "{{ content_base }}/upstream/html/raw_data"
-    - "{{ content_base }}/upstream/html/zips"
-    - "{{ content_base }}/upstream/history"
-    - "{{ content_base }}/upstream/staging"
-    - "{{ content_base }}/upstream/data"
+    - "{{ content_base }}/reports/html/raw_data"
+    - "{{ content_base }}/reports/html/zips"
+    - "{{ content_base }}/reports/history"
+    - "{{ content_base }}/reports/staging"
+    - "{{ content_base }}/reports/data"
 
 - name: Put files where they belong
   template: src={{ item.src }}
@@ -18,28 +18,28 @@
             group={{ item.group }}
             mode={{ item.mode }}
   with_items:
-    - { src: 'upstream.conf', dest: '/etc/httpd/conf.d/', group: "root" , mode: '0644' }
-    - { src: 'upstream.wsgi', dest: '{{ content_base }}/upstream', group: "root" , mode: '0644' }
-    - { src: 'sift.py', dest: '{{ content_base }}/upstream', group: "apache" , mode: '0755' }
-    - { src: 'harvest.py', dest: '{{ content_base }}/upstream', group: "apache" , mode: '0755' }
-    - { src: 'mkchunk', dest: '{{ content_base }}/upstream', group: "apache" , mode: '0755' }
+    - { src: 'reports.conf', dest: '/etc/httpd/conf.d/', group: "root" , mode: '0644' }
+    - { src: 'reports.wsgi', dest: '{{ content_base }}/reports', group: "root" , mode: '0644' }
+    - { src: 'sift.py', dest: '{{ content_base }}/reports', group: "apache" , mode: '0755' }
+    - { src: 'harvest.py', dest: '{{ content_base }}/reports', group: "apache" , mode: '0755' }
+    - { src: 'mkchunk', dest: '{{ content_base }}/reports', group: "apache" , mode: '0755' }
     - { src: 'acpower.service', dest: '/etc/systemd/system/', group: "root" , mode: '0644' }
-    - { src: 'heartbeat', dest: '{{ content_base }}/upstream', group: "root" , mode: '0755' }
-    - { src: 'analyze-power', dest: '{{ content_base }}/upstream', group: "root" , mode: '0755' }
+    - { src: 'heartbeat', dest: '{{ content_base }}/reports', group: "root" , mode: '0755' }
+    - { src: 'analyze-power', dest: '{{ content_base }}/reports', group: "root" , mode: '0755' }
     - { src: 'xsce-acpower-init', dest: '/usr/libexec/', group: "root" , mode: '0755' }
-    - { src: 'acrecord.py', dest: '{{ content_base }}/upstream', group: "root" , mode: '0755' }
-  when: upstream_install == True
+    - { src: 'acrecord.py', dest: '{{ content_base }}/reports', group: "root" , mode: '0755' }
+  when: reports_install == True
 
 - name: enable the downloading of data chunk
-  template: src='upstream.conf'
+  template: src='reports.conf'
             mode=0644
             dest=/etc/httpd/conf.d/
-  when: upstream_enabled
+  when: reports_enabled
 
 - name: remove config file to disable
-  file: path=/etc/httpd/conf.d/upstream.conf
+  file: path=/etc/httpd/conf.d/reports.conf
         state=absent
-  when: not upstream_enabled == True
+  when: not reports_enabled == True
 
 - name: Start periodic logging of acpower
   service: name=acpower
@@ -53,19 +53,19 @@
            enabled=no
   when: acpower_enabled != True
 
-- name: add upstream to service list
+- name: add reports to service list
   ini_file: dest='{{ service_filelist }}'
-            section=upstream
+            section=reports
             option='{{ item.option }}'
             value='{{ item.value }}'
   with_items:
     - option: name
       value: Upstream
     - option: description
-      value: '"Upstream is a method of communicating usage information from the XSCE server to a centralized data collection location.  It uses a smart phone to download a zipped directory of information while offline, and then later, when connected to the internet, emails that package, as an attachment, upstream"'
+      value: '"Upstream is a method of communicating usage information from the XSCE server to a centralized data collection location.  It uses a smart phone to download a zipped directory of information while offline, and then later, when connected to the internet, emails that package, as an attachment, reports"'
     - option: enabled
-      value: "{{ upstream_enabled }}"
+      value: "{{ reports_enabled }}"
     - option: installed
-      value: "{{ upstream_install }}"
+      value: "{{ reports_install }}"
     - option: acpower_enabled
       value: "{{ acpower_enabled }}"

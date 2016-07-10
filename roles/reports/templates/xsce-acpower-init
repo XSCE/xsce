@@ -16,7 +16,7 @@ PID_FILE="/var/run/acpower.pid"
 #OPTS="$PID_FILE "
 OPTS="--daemon "
 prog=heartbeat
-SERVER=/library/upstream/heartbeat
+SERVER=/library/reports/heartbeat
 RETVAL=0
 
 start() {

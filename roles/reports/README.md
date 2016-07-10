@@ -22,12 +22,12 @@ A combination of scripts in bash and python create the zipped smartphone downloa
   
 **How to install Upstream on XSCE - Release-6.1**
   * Follow the normal install instructions at https://github.com/XSCE/xsce/wiki/XSCE-Installation.
-  * Then install and enable the "upstream" software:
+  * Then install and enable the "reports" software:
 ```
-  echo "upstream_install: True" >> /opt/schoolserver/xsce/vars/local_vars.yml
-  echo "upstream_enabled: True" >> /opt/schoolserver/xsce/vars/local_vars.yml
+  echo "reports_install: True" >> /opt/schoolserver/xsce/vars/local_vars.yml
+  echo "reports_enabled: True" >> /opt/schoolserver/xsce/vars/local_vars.yml
   cd /opt/schoolserver/xsce
-  ./runtags upstream
+  ./runtags reports
 ```
 
 **Assumptions:**

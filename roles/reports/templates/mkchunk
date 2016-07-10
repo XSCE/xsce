@@ -1,9 +1,9 @@
 #!/bin/bash -x
-# generate a zip file with data bound for upstream
+# generate a zip file with data bound for reports
 
 #
-# define the upstream location in filesystem tree
-UPENV={{ content_base}}/upstream
+# define the reports location in filesystem tree
+UPENV={{ content_base}}/reports
 
 # get the UUID for this device
 UUID=`cat /etc/xsce/uuid`

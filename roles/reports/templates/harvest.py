@@ -11,7 +11,7 @@ from time import sleep
 # go get the password for interaction with xscenet@gmail.com
 with open("/root/.xscenet_gmail",'r') as passwd:
     credential = passwd.read()
-upenv = "{{ content_base }}/upstream"
+upenv = "{{ content_base }}/reports"
 zips_dir = os.path.join(upenv,"html","zips")
 raw_dir = os.path.join(upenv,"html","raw_data")
 m = imaplib.IMAP4_SSL('imap.gmail.com')
