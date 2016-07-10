@@ -22,7 +22,7 @@ RETVAL=0
 start() {
         # Start daemons.
         echo -n "Starting $prog: "
-        daemon --pidfile=${PID_FILE} $SERVER $OPTS
+        nohup  $SERVER $OPTS &
         RETVAL=$?
         return $RETVAL
 }

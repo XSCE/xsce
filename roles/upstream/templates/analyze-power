@@ -59,14 +59,15 @@ for ts,fn in sorted(filedata):
         if not started:
             last_heartbeat = epoch
             last_powerdown_epoch = epoch
+            last_powerup = epoch
             started = True
         # look for a start up record in the log
         nibbles = line.split()
         #pprint(nibbles)
         if nibbles[4] != 'root:': continue
         if  nibbles[5] == 'xsce_startup':
-            pass
-            print epoch, "startup. Downtime:" epoch - last_heartbeat,line[0:14]
+            last_powerup = epoch
+            print epoch, "startup. Downtime:", epoch - last_heartbeat,line[0:14]
             """
             if last_heartbeat == last_powerdown_epoch:
                 print 'normal shutdown'
@@ -74,10 +75,11 @@ for ts,fn in sorted(filedata):
                 print 'power interruption shutdown'
             """
         elif nibbles[5] == "xsce_tick":
-            print epoch,'tick',line[0:14]
+            #print epoch,'tick',line[0:14]
             last_heatbeat = epoch
         elif nibbles[5] == 'xsce_shutdown' :
-            print epoch, 'Normal system shutdown',line[0:14]
+            
+            print epoch, 'Normal system shutdown',line[0:14],"Powered seconds: ",epoch - last_poweerup
             last_heatbeat = epoch
             last_powerdown_epoch = epoch
     
