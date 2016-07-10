@@ -1,0 +1,56 @@
+#!/bin/bash -x
+# generate a zip file with data bound for reports
+
+#
+# define the reports location in filesystem tree
+UPENV={{ content_base}}/reports
+
+# get the UUID for this device
+UUID=`cat /etc/xsce/uuid`
+UUID_SNIP=${UUID:0:4}
+LAST_RUN=
+
+# create a sequence number
+if [ ! -f $UPENV/seq ]; then
+   SEQ="0000"
+else
+   SEQ=`cat $UPENV/seq | cut -d" " -f1`
+   LAST_RUN=`cat $UPENV/seq | cut -d" " -f2`
+fi
+# increment and store next 
+NEXT=`printf "%05d" $((SEQ + 1))`
+
+YYMMDD=`date +%y%m%d`
+# there may be many training situations where this run repeatedly
+# it's not an error, but we don't need a lot of empty bundles
+if [ $YYMMDD == $LAST_RUN ]; then
+   echo "Data bundle is up to date"
+   exit 0
+fi
+
+echo "$NEXT $YYMMDD" > $UPENV/seq
+ZIPNAME=$UUID_SNIP-$SEQ-$YYMMDD
+
+# put interesting data into staging
+cp /etc/xsce/uuid $UPENV/staging
+uptime -p > $UPENV/staging/uptime
+vnstat > $UPENV/staging/vnstat
+cp /var/log/httpd/access* $UPENV/staging
+
+# sift through the apache logs and generate the CSV
+$UPENV/sift.py
+
+# now create the zip file 
+mv $UPENV/staging $UPENV/$ZIPNAME
+sleep 1
+/bin/zip  -r $UPENV/history/$ZIPNAME.zip $UPENV/$ZIPNAME
+if [ $? -eq 0 ]; then
+   rm -rf $UPENV/$ZIPNAME
+   mkdir -p $UPENV/staging
+fi
+
+
+
+
+
+# vim: background=dark et ts=3

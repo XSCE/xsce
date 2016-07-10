@@ -1,0 +1,99 @@
+#!/bin/env python
+# read apache logs, sifting for records we want to save
+
+import sys
+from os import path
+import os
+import datetime
+from pprint import pprint
+import glob
+import json
+from acrecord import Tools, tzlocal, tzutc
+
+tz = tzlocal()
+tzu = tzutc()
+LOC='/library/reports'
+
+# fetch the dictionary of previous downloads if it exists
+if path.isfile(path.join(LOC,"data","downloads")):
+    strm = open(path.join(LOC,"data","downloads"),"r")
+    downloads = json.load(strm)
+else: downloads = {}
+added = 0
+
+# get the UUID of this machine
+with open("/etc/xsce/uuid", "r") as infile:
+    uuid=infile.read()
+
+# get the datetime tools
+tools = Tools()
+
+filedata = []
+# traverse the apache logs and get the date in first record
+#  The following will need to change for Fedora
+for fn in glob.glob('/var/log/messages*'):
+    for line in open(fn, 'r'):
+        datestr = line[0:15]
+        try:
+            dt= datetime.datetime.strptime(datestr,"%b %d %H:%M:%S")
+        except:
+            continue
+        dt = dt.replace(tzinfo=tz)
+        epoch = tools.tstamp(dt)
+        filedata.append( (epoch,fn) )
+        break
+        
+pprint(filedata)
+# traverse the apache logs 
+started = False
+for ts,fn in sorted(filedata):
+    for line in open(fn, 'r'):
+
+        datestr = line[0:15]
+        try:
+            dt= datetime.datetime.strptime(datestr,"%b %d %H:%M:%S")
+        except:
+            continue
+        dt = dt.replace(tzinfo=tz)
+        epoch = tools.tstamp(dt)
+        if not started:
+            last_heartbeat = epoch
+            last_powerdown_epoch = epoch
+            last_powerup = epoch
+            started = True
+        # look for a start up record in the log
+        nibbles = line.split()
+        #pprint(nibbles)
+        if nibbles[4] != 'root:': continue
+        if  nibbles[5] == 'xsce_startup':
+            last_powerup = epoch
+            print epoch, "startup. Downtime:", epoch - last_heartbeat,line[0:14]
+            """
+            if last_heartbeat == last_powerdown_epoch:
+                print 'normal shutdown'
+            else:
+                print 'power interruption shutdown'
+            """
+        elif nibbles[5] == "xsce_tick":
+            #print epoch,'tick',line[0:14]
+            last_heatbeat = epoch
+        elif nibbles[5] == 'xsce_shutdown' :
+            
+            print epoch, 'Normal system shutdown',line[0:14],"Powered seconds: ",epoch - last_poweerup
+            last_heatbeat = epoch
+            last_powerdown_epoch = epoch
+    
+# now store away the accumulated data
+
+with open(path.join(LOC,"data","downloads"),"w") as outfile:
+    json.dump(downloads, outfile)
+
+# now create the final csv file
+outfile = open(path.join(LOC,"staging","downloads_csv"),'w')
+
+for key in sorted(downloads):
+    outfile.write("%s,%s,%s,%s,\n" % (downloads[key]["time"],\
+                downloads[key]["week"],\
+                downloads[key]["url"], uuid.rstrip(), ))   
+
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 background=light
