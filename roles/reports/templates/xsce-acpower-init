@@ -1,0 +1,54 @@
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public
+# License along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+#  xsce-cmdsrv  This is the script that starts up the
+#               Command Server on the XSCE School server
+#
+#  Source function library
+. /etc/rc.d/init.d/functions
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+PID_FILE="/var/run/acpower.pid"
+#OPTS="$PID_FILE "
+OPTS="--daemon "
+prog=heartbeat
+SERVER=/library/reports/heartbeat
+RETVAL=0
+
+start() {
+        # Start daemons.
+        echo -n "Starting $prog: "
+        nohup  $SERVER $OPTS &
+        RETVAL=$?
+        return $RETVAL
+}
+
+stop() {
+        # Stop is handled by /usr/bin/xsce-cmdsrv-ctl STOP
+        RETVAL=1
+        return $RETVAL
+}
+
+# See how we were called.
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+
+  status)
+        status xsce-cmdsrv $PID_FILE
+        RETVAL=$?
+        ;;
+  *)
+        echo $"Usage: $0 {start|status}"
+        exit 1
+esac
+
+exit $RETVAL

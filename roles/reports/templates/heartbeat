@@ -1,0 +1,14 @@
+#!/bin/bash -x
+# this makes an entry in the log every 5 minutes
+cd /
+echo $$ > /var/run/acpower.pid
+logger xsce_startup
+trap record_shutdown -s SIGTERM
+record_shutdown() {
+   logger xsce_shutdown
+   exit 0
+}
+while [ 0 ]; do
+   logger xsce_tick
+   sleep 300
+done

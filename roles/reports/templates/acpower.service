@@ -1,0 +1,12 @@
+[Unit]
+Description=Puts heartbeat, startup, shutdown records into log
+After=syslog.target 
+
+[Service]
+PIDFile=/var/run/acpower.pid
+ExecStart=/usr/libexec/xsce-acpower-init start
+# docs say systemd sents sigterm
+#ExecStop=/usr/bin/kill -s SIGINT $MAINPID
+
+[Install]
+WantedBy=multi-user.target

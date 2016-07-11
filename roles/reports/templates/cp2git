@@ -1,0 +1,5 @@
+#!/bin/bash -x
+# copy scripts to the reports role in xsce git
+for f in `find /library/reports -maxdepth 1 -type f`; do
+    cp $f /opt/schoolserver/xsce/roles/reports/templates/
+done
