@@ -37,6 +37,8 @@
       value: '{{ ansible_local["local_facts"]["xsce_branch"] }}'
     - option: 'runtime_commit'
       value: '{{ ansible_local["local_facts"]["xsce_commit"] }}'
+    - option: 'xsce_uuid'
+      value: '{{ ansible_local["local_facts"]["xsce_uuid"] }}'
     - option: 'runtime_date'
       value: '{{ ansible_date_time["iso8601"] }}'
     - option: 'runtime_php'
@@ -45,6 +47,16 @@
       value: '{{ xsce_preload }}'
     - option: 'runtime_base_ver'
       value: '{{ xsce_base_ver }}'
+    - option: 'kernel'
+      value: '{{ ansible_kernel }}'
+    - option: 'memory_mb'
+      value: '{{ ansible_memtotal_mb }}'
+    - option: 'swap_mb'
+      value: '{{ ansible_swaptotal_mb }}'
+    - option: 'machine_id'
+      value: '{{ ansible_machine_id }}'
+    - option: 'product_id'
+      value: '{{ ansible_product_uuid }}'
 
 # Put all computed vars here so derive properly from any prior var file
 - name: Set port 80 for Admin Console
