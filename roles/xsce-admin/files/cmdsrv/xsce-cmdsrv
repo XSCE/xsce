@@ -281,7 +281,7 @@ def job_minder_thread(client_url, worker_control_url, context=None):
                 continue
 
             # don't create ansible job if one is running
-            if (job_info['cmd'] == "RUN-ANSIBLE" or job_info['cmd'] == "RESET-NETWORK") and ansible_running_flag == True:
+            if job_info['cmd'] in ["RUN-ANSIBLE", "RESET-NETWORK"] and ansible_running_flag == True:
                 continue
 
             # don't start job if at max allowed
@@ -419,7 +419,7 @@ def start_job(job_id, job_info, status='STARTED'):
     if job_id in prereq_jobs:
         prereq_jobs[job_id]['status'] = 'STARTED'
 
-    if job_info['cmd'] == "RUN-ANSIBLE" or job_info['cmd'] == "RESET-NETWORK":
+    if job_info['cmd'] in ["RUN-ANSIBLE", "RESET-NETWORK"]:
         ansible_running_flag = True
 
     if status == 'STARTED':
@@ -465,7 +465,7 @@ def end_job(job_id, job_info, status):
     upd_job_finished(job_id, job_output, status)
     os.remove(output_file)
 
-    if job_info['cmd'] == "RUN-ANSIBLE" or job_info['cmd'] == "RESET-NETWORK":
+    if job_info['cmd'] in ["RUN-ANSIBLE", "RESET-NETWORK"]:
         ansible_running_flag = False
         #if status == "SUCCEEDED":
         read_xsce_ini_file() # reread ini file after running ansible
@@ -982,7 +982,7 @@ def run_ansible(cmd_info): # create multiple jobs to run in succession
 
     else: # cmd is "RESET-NETWORK"
 
-        job_command = "/opt/schoolserver/xsce/xsce-network"
+        job_command = xsce_git_path + "/xsce-network"
 
     resp = request_job(cmd_info, job_command)
     return resp
