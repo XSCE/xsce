@@ -141,6 +141,13 @@ function configButtonsEvents() {
     make_button_disabled("#RUN-ANSIBLE", false);
   });
 
+  $("#RESET-NETWORK").click(function(){
+    make_button_disabled("#RESET-NETWORK", true);
+    resetNetwork();
+    //runAnsible("addons");
+    make_button_disabled("#RESET-NETWORK", false);
+  });
+
   $("#RUN-TAGS").click(function(){
     make_button_disabled("#RUN-TAGS", true);
     var tagList = "";
@@ -717,6 +724,16 @@ function changePasswordSuccess ()
     consoleLog(command);
     sendCmdSrvCmd(command, genericCmdHandler);
     alert ("Scheduling Ansible Run.");
+    return true;
+  }
+
+  function resetNetwork ()
+  {
+    var command = "RESET-NETWORK";
+    //alert ("in resetNetwork");
+    consoleLog(command);
+    sendCmdSrvCmd(command, genericCmdHandler);
+    alert ("Scheduling Network Reset.");
     return true;
   }
 
