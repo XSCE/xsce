@@ -137,7 +137,6 @@
 - name: CentOS
   set_fact:
     is_CentOS: True
-    no_NM_reload: True
   when: ansible_distribution == "CentOS"
 
 - name: Set kiwix source file name i686
