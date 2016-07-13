@@ -548,8 +548,18 @@ function assignConfigVars (data)
       if (this.type == "radio")
       prop_val = "";
     }
-    if (this.type == "checkbox")
-    $(this).prop('checked', config_vars[this.name]);
+    if (this.type == "checkbox"){
+      $(this).prop('checked', config_vars[this.name]);
+      var service = this.name.split("_enabled")[0];
+      var service_install = service + "_install";
+      var service_id = "." + service + "_service";
+      if (effective_vars.hasOwnProperty(service_install)){
+      	if (effective_vars[service_install])
+      	  $(service_id).show();
+      	else
+      	  $(service_id).hide();
+      }
+    }
     if (this.type == "text")
     this.value = config_vars[this.name];
     if (this.type == "radio"){

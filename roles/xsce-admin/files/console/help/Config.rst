@@ -100,6 +100,8 @@ The School Server has many individual pieces of software that incorporated into 
 
 You should **note** that a number of items below require content to be useful.  Enabling them turns them on, but you must also optain content using the **Install Content** menu or from a portable hard disk.
 
+Note some services listed below may not be installed and will not have a checkbox.
+
 ### For Students
 
 * **Services for XO Laptops** such as Registration, Backup, and the Activity Server
