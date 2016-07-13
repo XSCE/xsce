@@ -28,9 +28,9 @@ services --enabled="sshd"
 autopart --type=plain
 # Partition clearing information
 clearpart --all --initlabel --drives=sda
-part /library --fstype="ext4" --ondisk=sda --size=207872
-part / --fstype="ext4" --ondisk=sda --size=20480
-part /boot --fstype="vfat" --ondisk=sda --size=200 --fsoptions="umask=0077,shortname=winnt"
+part / --fstype="ext4" --ondisk=sda --size=113772
+part /boot --fstype="vfat" --ondisk=sda --size=500
+part /boot/efi --fstype="efi" --ondisk=sda --size=200 --fsoptions="umask=0077,shortname=winnt"
 
 %post
 # run xsce-network on first boot
