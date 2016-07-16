@@ -14,6 +14,10 @@ then
  exit
 fi
 
+if [ ! -f /etc/xsce/config_vars.yml ]
+   touch /etc/xsce/config_vars.yml
+fi
+
 export ANSIBLE_LOG_PATH="xsce-network.log"
 ansible-playbook -i ansible_hosts xsce-network.yml --connection=local
 echo "" >> xsce-network.log

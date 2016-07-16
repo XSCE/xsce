@@ -1,0 +1,22 @@
+#! /bin/bash
+
+if [ -e /.xsce-booted ] ; then
+    systemctl disable xsce-prep
+    exit 0
+fi
+
+# the vars/* are not found
+cd /opt/schoolserver/xsce/
+
+if [ -f  xsce-kickstart.log ] ; then
+    result=\`cat xsce-kickstart.log | grep failed=0 | awk '{print \$6}' | wc -l\`
+    if [ \$result -eq 1 ] ; then
+        # ran to completion
+        ./xsce-network > xsce-firstboot.log
+        touch /.xsce-booted
+        exit 0
+    fi
+fi
+./install-console > xsce-firstboot-full.log
+touch /.xsce-booted2
+exit 0
