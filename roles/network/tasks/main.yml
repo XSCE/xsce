@@ -44,11 +44,11 @@
   when: not domainname.changed and xsce_base_ver == gui_version
 
 ##### Start static ip address info for first run #####
-#- include static.yml
+#- include: static.yml
 #  when: 'xsce_wan_iface != "none" and wan_ip != "dhcp"'
 ##### End static ip address info
 
-- include hosts.yml
+- include: hosts.yml
   tags:
     - network
 
