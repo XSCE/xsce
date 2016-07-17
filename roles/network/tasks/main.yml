@@ -43,37 +43,6 @@
     xsce_prepped: True
   when: not domainname.changed and xsce_base_ver == gui_version
 
-#TODO: Use vars instead of hardcoded values
-- name: Configure short hostname in /etc/hosts
-  lineinfile: dest=/etc/hosts
-              regexp='^127\.0\.0\.1'
-              line='127.0.0.1            localhost.localdomain   localhost   {{ xsce_hostname }}'
-              owner=root
-              group=root
-              mode=0644
-
-- name: Remove fqdn in /etc/hosts without LAN
-  lineinfile: dest=/etc/hosts
-              regexp='^172\.18\.96\.1'
-              state=absent
-  when: xsce_lan_iface == "none" and not installing
-
-- name: Configure fqdn in /etc/hosts with LAN
-  lineinfile: dest=/etc/hosts
-              regexp='^172\.18\.96\.1'
-              line='172.18.96.1            {{ xsce_hostname }}.{{ xsce_domain }}      {{ xsce_hostname }}'
-              state=present
-  when: xsce_lan_iface != "none" and not installing
-
-- name: Configure fqdn in /etc/hosts appliance mode
-  lineinfile: dest=/etc/hosts
-              regexp='^127\.0\.0\.1'
-              line='127.0.0.1            localhost.localdomain   localhost {{ xsce_hostname }}.{{ xsce_domain }} {{ xsce_hostname }}'
-              owner=root
-              group=root
-              mode=0644
-  when: xsce_lan_iface == "none" and not installing
-
 ##### Start static ip address info for first run #####
 
 # supply an ifcfg if no gateway detected but wan_ip is set
@@ -99,6 +68,8 @@
   when: 'xsce_wan_iface != "none" and wan_ip != "dhcp"'
 
 ##### End static ip address info
+
+- include hosts.yml
 
 - include: named.yml
   when: not xsce_prepped
