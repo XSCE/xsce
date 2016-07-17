@@ -15,6 +15,7 @@ then
 fi
 
 if [ ! -f /etc/xsce/config_vars.yml ]
+then
    touch /etc/xsce/config_vars.yml
 fi
 
