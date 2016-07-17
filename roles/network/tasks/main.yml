@@ -100,11 +100,6 @@
 
 ##### End static ip address info
 
-- include: net_mods.yml
-  when: not xsce_prepped
-  tags:
-    - network 
-
 - include: named.yml
   when: not xsce_prepped
   tags:

@@ -22,6 +22,7 @@
 - include: yum.yml
 - include: cmdsrv.yml
 - include: patch_udev.yml
+- include: net_mods.yml
 
 # Put conditional includes for platforms here
 ##  DISCOVER PLATFORMS ######
