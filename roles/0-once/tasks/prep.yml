@@ -68,7 +68,7 @@
 
 - name: Install xsce-prep
   template: src=xsce-prep
-            dest=/usr/bin
+            dest=/usr/sbin
             owner=root
             group=root
             mode=0755
