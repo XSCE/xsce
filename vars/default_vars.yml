@@ -98,7 +98,7 @@ block_DNS: False
 
 # dansguardian
 dansguardian_install: True
-dansguardian_enabled: True
+dansguardian_enabled: False
 
 # squid
 squid_install: True
@@ -115,7 +115,7 @@ xsce_gateway_enabled: True
 
 # Home page
 # Default to the gui where the selection is made or override in localvars
-xsce_home_url: /admin
+xsce_home_url: none
 
 # you can change xsce_home_url in local_vars in order to get a different home page
 # these could be one of the following (assuming they are enabled):
@@ -153,7 +153,7 @@ usb_lib_install: True
 usb_lib_enabled: True
 
 # docker
-docker_install: True
+docker_install: False
 docker_enabled: False
 
 # Common UNIX printing system
@@ -163,7 +163,7 @@ cups_enabled: False
 # 5-XO-SERVICES
 
 # ejabberd
-ejabberd_install: True
+ejabberd_install: False
 ejabberd_enabled: False
 
 # idmgr and activity-server
@@ -249,7 +249,7 @@ sugarizer_enabled: False
 # 8-MGMT-TOOLS
 
 # schooltool
-schooltool_install: True
+schooltool_install: False
 schooltool_enabled: False
 
 # sugar-stats

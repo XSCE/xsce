@@ -22,4 +22,8 @@
   with_items:
             - content_dir.conf
             - xsce-home-page.conf
-  when: not installing
+
+- name: Default to /admin when first installed
+  set_fact:
+     xsce_home_url: '/admin'
+  when: installing and xsce_home_url == "none"
