@@ -54,7 +54,7 @@
 
 - name:  start the openvpn tunnel now
   shell: systemctl start openvpn@xscenet.service
-  when:  openvpn_enabled and not stat.exists is defined
+  when:  openvpn_enabled and not stat.exists is defined and not installing
 
 - name: make openvpn connection automatic
   lineinfile: dest=/etc/crontab
@@ -77,7 +77,7 @@
 - name:    stop  openvpn tunnel immediately
   shell:   systemctl stop openvpn@xscenet.service
   ignore_errors: True
-  when:    not openvpn_enabled
+  when:    not openvpn_enabled and not installing
 
 - name: Add openvpn to service list
   ini_file: dest='{{ service_filelist }}'
