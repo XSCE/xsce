@@ -103,10 +103,9 @@
   
 - name: Give apache permission to read config file
   file: path={{ moodle_base }}/config.php
-        src={{ moodle_base }}/config.php
         group=apache
         mode=0640
-  when: moodle_enabled
+        state=file
 
 - name: add moodle to service list
   ini_file: dest='{{ service_filelist }}'
