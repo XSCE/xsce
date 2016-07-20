@@ -15,6 +15,8 @@
 - name: Get the owncloud software
   get_url: url={{ xsce_download_url }}/{{ owncloud_src_file }}  dest={{ downloads_dir }}/{{ owncloud_src_file }}
   when: not {{ use_cache }} and not {{ no_network }}
+  async: 300
+  poll: 5
   tags:
     - download2
 
