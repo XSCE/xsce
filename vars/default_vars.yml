@@ -115,7 +115,7 @@ xsce_gateway_enabled: True
 
 # Home page
 # Default to the gui where the selection is made or override in localvars
-xsce_home_url:
+xsce_home_url: /home
 
 # you can change xsce_home_url in local_vars in order to get a different home page
 # these could be one of the following (assuming they are enabled):
