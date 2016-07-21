@@ -13,6 +13,11 @@
 - include: home-page.yml
   when: gui_desired_home_url is defined
 
+- name: Default to /admin when first installed
+  set_fact:
+     xsce_home_url: '/admin'
+  when: xsce_home_url == ""
+
 - name: Install home page and content config file
   template: src={{ item }}
             dest=/etc/httpd/conf.d/
@@ -22,8 +27,3 @@
   with_items:
             - content_dir.conf
             - xsce-home-page.conf
-
-- name: Default to /admin when first installed
-  set_fact:
-     xsce_home_url: '/admin'
-  when: installing and xsce_home_url == "none"
