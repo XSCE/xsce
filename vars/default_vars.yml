@@ -145,7 +145,7 @@ postgresql_install: True
 postgresql_enabled: False
 
 # authserver
-authserver_install: True
+authserver_install: False
 authserver_enabled: False
 
 # usb-lib
