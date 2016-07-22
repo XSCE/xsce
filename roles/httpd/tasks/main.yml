@@ -10,7 +10,6 @@
      - { src: 'proxy_ajp.conf.j2' , dest: '/etc/httpd/conf.d/proxy_ajp.conf', mode: '0644' }
      - { src: 'php.ini.j2' , dest: '/etc/php.ini' , mode: '0644' }
      - { src: 'xs-console.conf.j2' , dest: '/etc/httpd/conf.d/xs-console.conf', mode: '0644' }
-     - { src: 'xs-http.j2' , dest: '/etc/sudoers.d/xs-http', mode: '0640'}
 
 - name: Remove old config file
   file: path=/etc/httpd/conf.d/xs-2.4.conf
