@@ -106,6 +106,7 @@
         group=apache
         mode=0640
         state=file
+  when: moodle_enabled
 
 - name: add moodle to service list
   ini_file: dest='{{ service_filelist }}'
