@@ -94,6 +94,12 @@
     docker_enabled: True
   when: schooltool_enabled or schooltool_install
 
+- name: Turn on squid if capture_enabled
+  set_fact:
+    squid_install: True
+    squid_enabled: True
+  when: capture_enabled
+
 # for various reasons the mysql service can not be enabled on fedora 20,
 # but 'mariadb', which is its real name can
 # on fedora 18 we need to use 'mysqld'

@@ -20,6 +20,13 @@ else
   PHPLIB_DIR=/usr/lib/php
 fi
 
+if [ -d /usr/lib64/squid ]
+then
+  SQUID_DIR=/usr/lib64/squid
+else
+  SQUID_DIR=/usr/lib/squid
+fi
+
 if [ -f /proc/device-tree/mfg-data/MN ]
 then
   XO_VERSION=`cat /proc/device-tree/mfg-data/MN`
@@ -48,6 +55,7 @@ fi
 ANSIBLE_VERSION=$(ansible --version|head -n 1|cut -f 2 -d " ")
 cat <<EOF
 {"phplib_dir"             : "$PHPLIB_DIR",
+"squid_dir"               : "$SQUID_DIR",
 "xsce_branch"             : "$BRANCH",
 "xsce_commit"             : "$COMMIT",
 "xsce_uuid"               : "$UUID",

@@ -206,14 +206,14 @@ ident_timeout      10 seconds
 ##################################
 # config splash page
 # mind the wrap. this is one line:
-external_acl_type splash_page ttl=60 concurrency=100 %SRC /usr/lib64/squid/ext_session_acl -t 7200 -b /var/lib/squid/session.db
+external_acl_type splash_page ttl=60 concurrency=100 %SRC {{ squid_dir }}/ext_session_acl -t 7200 -b /var/lib/squid/session.db
 #
 acl existing_users external splash_page
 #
 http_access deny !existing_users
 #
 # # Deny page to display
-deny_info 511:/var/www/html/xs-portal existing_users
+deny_info 511:/var/www/html/{{ xsce_home_url }} existing_users
 ##################################
 
 http_access allow manager localhost
