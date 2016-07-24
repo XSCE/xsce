@@ -7,6 +7,7 @@
 - set_fact:
      xo_model: '{{ ansible_local["local_facts"]["xo_model"] }}'
      phplib_dir: '{{ ansible_local["local_facts"]["phplib_dir"] }}'
+     squid_dir: '{{ ansible_local["local_facts"]["squid_dir"] }}'
      xsce_base_ver: '{{ ansible_local["local_facts"]["xsce_base_ver"] }}'
      xsce_preload: '{{ ansible_local["local_facts"]["xsce_preload"] }}'
 
