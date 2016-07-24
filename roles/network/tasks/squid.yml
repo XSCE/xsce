@@ -60,6 +60,20 @@
         mode=0750
         state=directory
 
+- name: Create squid session database directory
+  file: path=/var/lib/squid/
+        owner=squid
+        group=squid
+        mode=0750
+        state=directory
+
+- name: Create squid session database
+  file: path=/var/lib/squid/session.db
+        owner=squid
+        group=squid
+        mode=0750
+        state=touch
+
 - include: dansguardian.yml
 
 - name: Stop Squid
