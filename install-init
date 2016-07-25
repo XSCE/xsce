@@ -10,8 +10,7 @@ fi
 
 if [ -f /etc/xsce/config_vars.yml ] && [ $BASE_VERSION == $GUI_VERSION ]
 then
-echo hi
-# exit 0
+ exit 0
 fi
 
 if [ ! -f install-init.yml ]
