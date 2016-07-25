@@ -206,8 +206,10 @@ ident_timeout      10 seconds
 {% if capture_enabled %}
 ##################################
 # config splash page
-# mind the wrap. this is one line:
-external_acl_type session ttl=3600 negative_ttl=0 children=1 concurrency=100 %SRC {{ squid_dir }}/ext_session_acl -t 60 -b /var/run/squid/session.db
+# without session.db, a restart will re-enable the splash -- for testing
+#external_acl_type session ttl=300 negative_ttl=0 children=1 concurrency=100 %SRC {{ squid_dir }}/ext_session_acl -t 3600 -b /var/run/squid/session.db
+external_acl_type session ttl=300 negative_ttl=0 children=1 concurrency=100 %SRC {{ squid_dir }}/ext_session_acl -t 60 
+#
 #
 acl existing_users external session
 #
