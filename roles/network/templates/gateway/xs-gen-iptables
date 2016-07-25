@@ -102,6 +102,9 @@ fi
 
 if [ -f /etc/sysconfig/xs_httpcache_on ]; then
     $IPTABLES  -t nat  -A PREROUTING -i $lan -p tcp --dport 80 ! -d 172.18.96.1 -j DNAT --to 172.18.96.1:3128
+{% if capture_enabled %}
+    $IPTABLES  -t nat  -A PREROUTING -i $lan -p tcp --dport 443 ! -d 172.18.96.1 -j DNAT --to 172.18.96.1:3128
+{% endif %}
 fi
 
 # Enable routing.
