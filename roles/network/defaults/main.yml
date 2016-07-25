@@ -10,4 +10,4 @@ host_channel: 6
 host_wireless_n: False
 host_country_code: US
 capture_enabled: False
-redirect_url: http//{{ xsce_hostname }}.{{ xsce_domain }}/redirect.php
+redirect_url: http://{{ xsce_hostname }}.{{ xsce_domain }}/redirect.php
