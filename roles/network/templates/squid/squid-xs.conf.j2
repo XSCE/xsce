@@ -211,7 +211,7 @@ ident_timeout      10 seconds
 external_acl_type session ttl=300 negative_ttl=0 children=1 concurrency=100 %SRC {{ squid_dir }}/ext_session_acl -t 60 
 #
 #
-acl existing_users external session
+acl session external session
 #
 http_access deny !session
 #
