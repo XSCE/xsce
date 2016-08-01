@@ -101,11 +101,14 @@
       value: "{{ kiwix_serve_enabled }}"
 
 - name: Copy xsce-make-kiwix-lib to /usr/bin
-  copy: src=xsce-make-kiwix-lib
-        dest=/usr/bin/xsce-make-kiwix-lib
+  copy: src={{ item.src }}
+        dest={{ item.dest }}
         mode=0755
         owner=root
         group=root
+  with_items:
+    - { src: 'xsce-make-kiwix-lib', dest: '/usr/bin/xsce-make-kiwix-lib'}
+    - { src: 'xsce-make-kiwix-lib.py', dest: '/usr/bin/xsce-make-kiwix-lib.py'}
 
 - name: Enable kiwix-serve service
   service: name=kiwix-serve
