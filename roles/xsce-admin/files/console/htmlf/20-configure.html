@@ -21,6 +21,7 @@
 				<button id="SAVE-WHITELIST" type="button" class="btn btn-lg btn-success">Update Permitted URLs List</button>
 				<button id="SET-CONF-CMD" type="button" class="btn btn-lg btn-success">Save Configuration</button>
 				<button id="RUN-ANSIBLE" type="button" class="btn btn-lg btn-danger">Install Configured Options</button>
+				<button id="RESET-NETWORK" type="button" class="btn btn-lg btn-danger">Reset Network Configuration</button>
 			</div>
 
 		</div> <!-- left column -->
@@ -148,135 +149,135 @@
 					<h2>Check Each Service to Enable</h2>
 					<form role="form" id="confServicesForm">
 						<h3>For Students</h3>
-						<div class="checkbox">
+						<div class="checkbox xo-services_service">
 							<label>
 								<input type="checkbox" name="xo-services_enabled" id="xo-services_enabled">Services for XO Laptops such as Registration, Backup, and the Activity Server
 							</label>
 						</div>
-						<div class="checkbox">
+						<div class="checkbox ejabberd_service">
 							<label>
 								<input type="checkbox" name="ejabberd_enabled" id="ejabberd_enabled">Chat and Collaboration Server for XO Laptops and Others
 							</label>
 						</div>
-						<div class="checkbox">
+						<div class="checkbox moodle_service">
 							<label>
 								<input type="checkbox" name="moodle_enabled" id="moodle_enabled">Moodle, a Courseware Manager and E-Learning Platform
 							</label>
 						</div>
-						<div class="checkbox">
+						<div class="checkbox kiwix_serve_service">
 							<label>
 								<input type="checkbox" name="kiwix_serve_enabled" id="kiwix_serve_enabled">Kiwix, serves Wikipediae and other content from sources below.  You must also install content.
 							</label>
 						</div>
-						<div class="checkbox">
+						<div class="checkbox kalite_service">
 							<label>
 								<input type="checkbox" name="kalite_enabled" id="kalite_enabled">Khan Academy Lite, downloads and serves Khan Academy videos.  You must also install content.
 							</label>
 						</div>
-						<div class="checkbox">
+						<div class="checkbox kalite_cron_service">
 							<label>
 								<input type="checkbox" name="kalite_cron_enabled" id="kalite_cron_enabled">Khan Academy Downloader, downloads Khan Academy videos.  You can turn this off if you don't plan to download videos.
 							</label>
 						</div>
-						<div class="checkbox">
+						<div class="checkbox iiab_service">
 							<label>
 								<input type="checkbox" name="iiab_enabled" id="iiab_enabled">Internet-in-a-Box, a collection of popular content such as the Wikipedia and Khan Academy.  You must also install content.
 							</label>
 						</div>
-						<div class="checkbox">
+						<div class="checkbox rachel_service">
 							<label>
 								<input type="checkbox" name="rachel_enabled" id="rachel_enabled">RACHEL, another collection of popular content including the Wikipedia and Khan Academy.  You must also install content.
 							</label>
 						</div>
-						<div class="checkbox">
+						<div class="checkbox calibre_service">
 							<label>
 								<input type="checkbox" name="calibre_enabled" id="calibre_enabled">Calibre, an E-Book Platform. You must also install content.
 							</label>
 						</div>
-						<div class="checkbox">
+						<div class="checkbox pathagar_service">
 							<label>
 								<input type="checkbox" name="pathagar_enabled" id="pathagar_enabled">Pathagar, another E-Book Platform. You must also install content.
 							</label>
 						</div>
-						<div class="checkbox">
+						<div class="checkbox sugarizer_service">
 							<label>
 								<input type="checkbox" name="sugarizer_enabled" id="sugarizer_enabled">Sugarizer provides SugarLabs activities directly on the server.
 							</label>
 						</div>
 						<h3>Media Sharing and Printing</h3>
-						<div class="checkbox">
+						<div class="checkbox elgg_service">
 							<label>
 								<input type="checkbox" name="elgg_enabled" id="elgg_enabled">ELGG, a Social Networking Platform for Student Blogging, File Sharing, and Collaboration
 							</label>
 						</div>
-						<div class="checkbox">
+						<div class="checkbox owncloud_service">
 							<label>
 								<input type="checkbox" name="owncloud_enabled" id="owncloud_enabled">OwnCloud is a local server-based facility for sharing files, photos, contacts, calendars, etc.
 							</label>
 						</div>
-						<div class="checkbox">
+						<div class="checkbox samba_service">
 							<label>
 								<input type="checkbox" name="samba_enabled" id="samba_enabled">SAMBA provides Network File Sharing
 							</label>
 						</div>
-						<div class="checkbox">
+						<div class="checkbox cups_service">
 							<label>
 								<input type="checkbox" name="cups_enabled" id="cups_enabled">CUPS provides support for printers.
 							</label>
 						</div>
 
 						<h3>For Monitoring and Administration</h3>
-						<div class="checkbox">
+						<div class="checkbox schooltool_service">
 							<label>
 								<input type="checkbox" name="schooltool_enabled" id="schooltool_enabled">SchoolTool is a School Administration System.
 							</label>
 						</div>
-						<div class="checkbox">
+						<div class="checkbox xovis_service">
 							<label>
 								<input type="checkbox" name="xovis_enabled" id="xovis_enabled">XO Visualization&mdash;Graphs of Student Usage Statistics.
 							</label>
 						</div>
-						<div class="form-group">
+						<div class="form-group xovis_service">
 							<label for="xovis_chart_heading">Title to Appear on XO Visualization Charts</label>
 							<input type="text" name="xovis_chart_heading" class="form-control" id="xovis_chart_heading" placeholder="Enter chart heading.">
 						</div>
-						<div class="checkbox">
+						<div class="checkbox sugar-stats_service">
 							<label>
 								<input type="checkbox" name="sugar-stats_enabled" id="sugar-stats_enabled">Collect statistics on the use of Sugar Activities.
 							</label>
 						</div>
 						<!--  removed ajenti -->
-						<div class="checkbox">
+						<div class="checkbox monit_service">
 							<label>
 								<input type="checkbox" name="monit_enabled" id="monit_enabled">Monit watches critical applications and restarts them if they fail.
 							</label>
 						</div>
-						<div class="checkbox">
+						<div class="checkbox munin_service">
 							<label>
 								<input type="checkbox" name="munin_enabled" id="munin_enabled">Munin collects and graphs system-level statistics.
 							</label>
 						</div>
-						<div class="checkbox">
+						<div class="checkbox vnstat_service">
 							<label>
 								<input type="checkbox" name="vnstat_enabled" id="vnstat_enabled">VnStat gathers and displays networking statistics.
 							</label>
 						</div>
-						<div class="checkbox">
+						<div class="checkbox awstats_service">
 							<label>
 								<input type="checkbox" name="awstats_enabled" id="awstats_enabled">AWStats graphs statistics on web server usage.
 							</label>
 						</div>
-						<div class="checkbox">
+						<div class="checkbox phpmyadmin_service">
 							<label>
 								<input type="checkbox" name="phpmyadmin_enabled" id="phpmyadmin_enabled">PhpMyadmin allows maintenance of mysql databases.
 							</label>
 						</div>
-						<div class="checkbox">
+						<div class="checkbox openvpn_service">
 							<label>
 								<input type="checkbox" name="openvpn_enabled" id="openvpn_enabled">Open VPN allows a secure connection between servers over the Internet for remote maintenance.
 							</label>
 						</div>
-						<div class="checkbox">
+						<div class="checkbox teamviewer_service">
 							<label>
 								<input type="checkbox" name="teamviewer_enabled" id="teamviewer_enabled">TeamViewer provides a secure connection for Remote Support and Online Meetings.
 							</label>

@@ -27,10 +27,14 @@ else
   XO_VERSION="none"
 fi
 
-if [ -f /.xsce_base_ver ]
+if [ -f /etc/xsce/xsce.env ]
 then
-  . /.xsce_base_ver
-  BASE="$VERSION"
+  . /etc/xsce/xsce.env
+  if [ -z $BASE_VERSION ]
+  then
+    BASE_VERSION="0"
+  fi
+  BASE="$BASE_VERSION"
 else
   BASE="0"
 fi

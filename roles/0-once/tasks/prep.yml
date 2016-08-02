@@ -65,3 +65,21 @@
             owner=root
             group=root
             mode=0755
+
+- name: Install xsce-prep
+  template: src=xsce-prep
+            dest=/usr/sbin
+            owner=root
+            group=root
+            mode=0755
+
+- name: Install xsce-prep.service
+  template: src=xsce-prep.service
+            dest=/usr/lib/systemd/system
+            owner=root
+            group=root
+            mode=0755
+
+- name: Enable xsce-prep service
+  service: name=xsce-prep
+           enabled=yes

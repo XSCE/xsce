@@ -62,7 +62,7 @@
 - name: Set has_internet_connection true if wget succeeded
   set_fact:
      has_internet_connection: True
-  when: internet_access_test
+  when: not internet_access_test|failed
 
 - name: Cleanup internet test file
   file: path=/tmp/heart-beat.txt

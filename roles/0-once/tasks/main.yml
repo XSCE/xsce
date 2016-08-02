@@ -1,3 +1,6 @@
+- include: selinux.yml
+  when: ansible_selinux is defined and ansible_version >= '2' and ansible_selinux or ansible_selinux['status'] is defined and ansible_version < '2' and ansible_selinux['status'] != 'disabled'
+
 - include: fl.yml
 - include: prep.yml
 - include: xsce_ini.yml
@@ -22,6 +25,7 @@
 - include: yum.yml
 - include: cmdsrv.yml
 - include: patch_udev.yml
+- include: net_mods.yml
 
 # Put conditional includes for platforms here
 ##  DISCOVER PLATFORMS ######
@@ -59,6 +63,3 @@
   copy: src=rtl8188eufw.bin dest=/lib/firmware/rtlwifi/
   when: wifi_id  ==  "tplink_WM725M" and xo_model == "none" and not rpi_model is defined
   ignore_errors: true
-
-- include: selinux.yml
-  when: ansible_selinux is defined and ansible_version >= '2' and ansible_selinux or ansible_selinux['status'] is defined and ansible_version < '2' and ansible_selinux['status'] != 'disabled'
