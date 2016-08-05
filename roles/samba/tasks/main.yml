@@ -26,13 +26,13 @@
   notify: restart smb
 
 - name: Ensure Samba is running and set to start on boot.
-  service: name=smb state=started enabled=yes
+  service: name=smbd state=started enabled=yes
   tags: 
     - samba
   when : samba_enabled
 
 - name: netbios name server is running and set to start on boot.
-  service: name=nmb state=started enabled=yes
+  service: name=nmbd state=started enabled=yes
   tags: 
     - samba
   when : samba_enabled
