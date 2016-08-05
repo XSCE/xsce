@@ -38,6 +38,12 @@
         group=root
   when: wifi_id  ==  "tplink_WM725M" and rpi_model == "rpi2"
 
+- name: pre-Install packages
+  package: name={{ item }}
+           state=latest
+  with_items:
+    - ntp
+
 - name: Add rpi rootfs resizing service
   template: src={{ item.src }}
             dest={{ item.dest }}

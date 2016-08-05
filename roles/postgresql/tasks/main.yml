@@ -27,7 +27,7 @@
   register: p
    
 - name: Initialize the postgres db
-  command:  su - postgres -c "/usr/bin/initdb -E 'UTF-8' --lc-collate='en_US.UTF-8' --lc-ctype='en_US.UTF-8' -D /library/pgsql-xs"
+  command:  su - postgres -c "/usr/lib/postgresql/9.4/bin/initdb -E 'UTF-8' --lc-collate='en_US.UTF-8' --lc-ctype='en_US.UTF-8' -D /library/pgsql-xs"
             creates=/library/pgsql-xs/pg_hba.conf
   when: p.stat.exists is defined and not p.stat.exists
 
