@@ -4,6 +4,10 @@
   tags:
     - download
 
+- name: Create non-privileged user
+  user: name=dhcpd
+        createhome=no
+
 - name: Configure dhcpd
   template: src={{ item.src }}
             dest={{ item.dest }}
