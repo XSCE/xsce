@@ -18,7 +18,8 @@
 
 - name: Install Caibre rpms
 # the fedora rpm arm version, though older, takes care of dependencies, and exists
-  yum:  name={{ item }}
+  package:  name={{ item }}
+            state=present
   with_items:
     - calibre
   when: calibre_install and ansible_distribution != 'CentOS'

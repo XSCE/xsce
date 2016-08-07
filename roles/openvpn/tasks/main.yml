@@ -50,7 +50,11 @@
 # note that ansible does not currently handle @ in a service name
 - name:  enable the openvpn tunnel at boot time
   shell: systemctl enable openvpn@xscenet.service
-  when:  openvpn_enabled and not stat.exists is defined
+  when:  openvpn_enabled and not stat.exists is defined and ansible_distribution != "Debian"
+
+- name:  enable the openvpn tunnel at boot time for Debian
+  shell: update-rc.d openvpn enable
+  when:  openvpn_enabled and not stat.exists is defined and ansible_distribution == "Debian"
 
 - name:  start the openvpn tunnel now
   shell: systemctl start openvpn@xscenet.service
@@ -72,7 +76,11 @@
 
 - name:    stop starting the openvpn tunnel at boot time
   shell:   systemctl disable openvpn@xscenet.service
-  when:    not openvpn_enabled
+  when:    not openvpn_enabled and ansible_distribution != "Debian"
+
+- name:    stop starting the openvpn tunnel at boot time for Debian
+  shell:   update-rc.d openvpn disable
+  when:    not openvpn_enabled and ansible_distribution == "Debian"
 
 - name:    stop  openvpn tunnel immediately
   shell:   systemctl stop openvpn@xscenet.service

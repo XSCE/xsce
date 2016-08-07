@@ -4,13 +4,13 @@
            state=present
   with_items:
     - python-psycopg2
-    - php-pgsql
+    - php5-pgsql
   tags:
     - download
 
-- name: Determine if moodle is already downloaded
+- name: see if moodle is already downloaded
   stat: path={{ moodle_base }}/config-dist.php
-  register: moodle
+  register: config_file
 
 - name: Download the latest moodle repo
   git: repo={{ moodle_repo_url }}
@@ -19,7 +19,7 @@
        force=yes
        version="MOODLE_{{ moodle_version }}_STABLE"
 #  ignore_errors: yes
-  when: not {{ use_cache }} and not {{ no_network }} and moodle.stat.exists is defined and not moodle.stat.exists
+  when: not {{ use_cache }} and not {{ no_network }} and config_file.exists is defined and not config_file.exists
   tags:
     - download2
 
@@ -56,7 +56,7 @@
 
 - name: Enable moodle
   file: path=/etc/apache2/sites-enabled/022-moodle.conf
-        src=/etc/apache2/sites-available/moodle.conf
+        src=/etc/apache2/sites-available/022-moodle.conf
         state=link
   when: moodle_enabled
 

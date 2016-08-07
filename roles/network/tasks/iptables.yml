@@ -4,6 +4,7 @@
 
 - name: Use larger hammer to disable firewalld (2 symbolic links involved)
   shell: "systemctl disable firewalld.service"
+  ignore_errors: yes
 
 - name: Mask firewalld service
   shell: 'systemctl mask firewalld'

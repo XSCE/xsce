@@ -972,9 +972,7 @@ def run_ansible(cmd_info): # create multiple jobs to run in succession
         return (cmd_error(msg="Ansible Command already Running."))
         #return ('{"Error": "Ansible Command already Running."}')
 
-    job_command = ansible_prefix + "ansible-playbook -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local"
-
-        job_command = "/usr/bin/ansible-playbook -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local"
+        job_command = ansible_prefix + "ansible-playbook -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local"
 
         if 'cmd_args' in cmd_info:
             tags = cmd_info['cmd_args']['tags']
