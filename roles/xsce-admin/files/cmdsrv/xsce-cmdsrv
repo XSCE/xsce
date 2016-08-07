@@ -54,7 +54,7 @@ xsce_cmdsrv_ready_file = "/var/run/xsce-cmdsrv-ready"
 xsce_cmdsrv_dbpath = xsce_cmdsrv_path + "/" + xsce_cmdsrv_dbname
 
 # Constants - ToDo add to xsce_cmdsrv_config_file
-squid_whitelist = "/etc/squid/sites.whitelist.txt"
+squid_whitelist = "/etc/squid3/sites.whitelist.txt"
 # for kiwix zims
 kiwix_catalog_file = "/etc/xsce/kiwix_catalog.json"
 zim_downloads_dir = "/library/downloads/zims/"
@@ -867,7 +867,7 @@ def get_storage_info_parted(dev):
 
 def get_storage_info_df(part_dev):
     part_prop = {}
-    outp = subprocess.check_output(["/usr/bin/df", part_dev, "-m"])
+    outp = subprocess.check_output(["/bin/df", part_dev, "-m"])
     str_array = outp.split('\n')
     params = str_array[1]
     parm_arr = params.split(' ')
