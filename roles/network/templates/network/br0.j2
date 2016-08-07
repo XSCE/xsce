@@ -2,7 +2,7 @@
 auto br0
 {% if gui_desired_network_role == "LanController" or gui_desired_network_role == "Gateway" %}
 iface br0 inet static
-    bridge_ports {% if xsce_lan_iface != "none" %}{{ xsce_lan_iface }}{% endif %} {% if discovered_wireless_iface != "none" %} {{ discovered_wireless_iface }}{% endif %}
+    bridge_ports {% if gui_desired_network_role == "LanController" %}eth0{% endif %} {% if discovered_wireless_iface != "none" %} {{ discovered_wireless_iface }}{% endif %}
 
     address {{ lan_ip }}
     netmask {{ lan_netmask }}
