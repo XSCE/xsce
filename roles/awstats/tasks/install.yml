@@ -3,9 +3,10 @@
            state=present
   with_items:
     - awstats
-    - mod_ssl
-    - mod_authnz_external
+    - apache2-utils
+    - libapache2-mod-authnz-external
     - pwauth
+    - openssl
   tags:
     - download
 
@@ -25,6 +26,16 @@
             group=root
             mode=0644
   when: awstats_enabled
+
+- name: See if awstats package installed a config file
+  stat: path=/etc/awstats/awstats.conf
+  register: awstats
+
+- debug: var=awstats
+
+- name: If there was a config file installed by package, move it aside
+  command: mv /etc/awstats/awstats.conf /etc/awstats/awstats.conf.dist
+  when: awstats.stat.islnk is defined and not awstats.stat.islnk
 
 - name: Enable Awstats
   file: src=/etc/apache2/sites-available/awstats.conf
@@ -52,6 +63,6 @@
   when: awstats_enabled
 
 - name: On first enabling of awstats, summarize httpd logs up to now
-  shell: /usr/bin/perl /usr/share/awstats/wwwroot/cgi-bin/awstats.pl -config=schoolserver -update
+  shell: /usr/bin/perl /usr/lib/cgi-bin/awstats.pl -config=schoolserver -update
   when: awstats_enabled
 

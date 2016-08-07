@@ -35,7 +35,6 @@
     - src: xs-authserver.service.j2
       dest: /etc/systemd/system/xs-authserver.service
       mode: 0644
-      mode: 0644
 
 - name: create database folder
   file: state=directory
