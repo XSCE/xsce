@@ -80,8 +80,8 @@
                    password=changeme
                    role_attr_flags=NOSUPERUSER,NOCREATEROLE,NOCREATEDB
                    state=present
-  sudo: yes
-  sudo_user: postgres
+  become: yes
+  become_user: postgres
 
 - name: Create database
   postgresql_db: name=moodle
@@ -89,8 +89,8 @@
                  owner=Admin
                  template=template0
                  state=present
-  sudo: yes
-  sudo_user: postgres
+  become: yes
+  become_user: postgres
 
 - name: Put a startup install script in place
   template: dest={{moodle_base}}

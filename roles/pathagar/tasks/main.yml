@@ -81,8 +81,8 @@
                    password={{ pathagar_db_password }}
                    role_attr_flags=NOSUPERUSER,NOCREATEROLE,NOCREATEDB
                    state=present
-  sudo: yes
-  sudo_user: postgres
+  become: yes
+  become_user: postgres
 
 - name: Stop postgresql
   service: name=postgresql
@@ -114,8 +114,8 @@
                  owner={{ pathagar_db_user }}
                  state=present
                  template=template0
-  sudo: yes
-  sudo_user: postgres
+  become: yes
+  become_user: postgres
 
 - name: Install XS custom settings for patahgar
   template: src=prod_settings.py
