@@ -8,6 +8,10 @@
   tags:
     - download
   
+- name: Put our own config file in place, to permit local lan admin
+  template: dest=/etc/cups/cupsd.conf
+            src=cupsd.conf
+
 - name: Enable services for cups
   service: name={{ item }}
            state=started
