@@ -41,13 +41,13 @@
 - name: Add autoconfig file
   template: src=autoconfig.php.j2
             dest={{ owncloud_path }}/owncloud/config/autoconfig.php
-            owner=apache
+            owner=www-data
             group=apache
             mode=0640
 
 - name: Make apache owner
   file: path={{ owncloud_path }}/owncloud
-        owner=apache
+        owner=www-data
         group=apache
         recurse=yes
         state=directory
@@ -55,7 +55,7 @@
 - name: Create data directory library
   file: path={{ item }}
         mode=0750
-        owner=apache
+        owner=www-data
         group=apache
         state=directory
   with_items:
