@@ -16,6 +16,13 @@
             value=1
   when: ansible_distribution != "Debian"
 
+- include: chrony.yml
+- include: prelim.yml
+- include: yum.yml
+# let the cmdsrv.yml in xsce-admin serve
+#- include: cmdsrv.yml
+- include: patch_udev.yml
+
 # Put conditional includes for platforms here
 ##  DISCOVER PLATFORMS ######
 - name: Discover if this is a rpi2 -- if so it has a bcm2709 processor

@@ -67,7 +67,7 @@
   package: name={{ item }}
            state=latest
   with_items:
-   - network-manager
+#   - network-manager
    - bash
    - iptables
 #   - glibc # CVE-2015-7547
