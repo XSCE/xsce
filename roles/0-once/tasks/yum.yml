@@ -70,6 +70,7 @@
   tags:
     - download
 
+<<<<<<< HEAD
 #- name: Update common packages
 #  package: name={{ item }}
 #           state=latest

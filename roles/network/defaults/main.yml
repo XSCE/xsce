@@ -2,6 +2,7 @@
 # The values here are default local variables.
 gui_wan_iface: "unset"
 gui_static_wan_ip: "unset"
+gui_desired_network_role: Gateway
 wondershaper_dspeed: "4096"
 wondershaper_upspeed: "1024"
 host_ssid: "XSCE"
