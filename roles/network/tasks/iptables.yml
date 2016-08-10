@@ -1,22 +1,3 @@
-- name: Disable firewalld service
-  service: name=firewalld
-           enabled=no
-
-- name: Use larger hammer to disable firewalld (2 symbolic links involved)
-  shell: "systemctl disable firewalld.service"
-  ignore_errors: yes
-
-- name: Mask firewalld service
-  shell: 'systemctl mask firewalld'
-  ignore_errors: yes
-  when: not installing
-
-- name: Stop firewalld service
-  service: name=firewalld
-           state=stopped
-  ignore_errors: yes
-  when: not installing
-
 - name: Remove iptables.service file from /etc
   file: path=/etc/systemd/system/iptables.service 
         state=absent

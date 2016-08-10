@@ -52,12 +52,8 @@
     - { src: 'named/school.internal.zone.in-addr.db.j2', dest: '/var/named-xs/school.internal.zone.in-addr.db' , owner: "bind" , mode: '0644'}
     - { src: 'named/dummy', dest: '/var/named-xs/data/dummy' , owner: "bind" , mode: '0644'}
 
-- name: modify the default debian named.service by adding directory	
-  file: path=/etc/systemd/system/bind9.service.d
-        state=directory
-
-- name: put the additional directives there
-  template: src=named/named.conf
-            dest=/etc/systemd/system/bind9.service.d/named.conf
+- name: substitute our unit file which uses $OPTIONS from sysconfig
+  template: src=named/bind9.service
+            dest=/etc/systemd/system/bind9.service
             mode=0644
   

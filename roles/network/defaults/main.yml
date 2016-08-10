@@ -9,4 +9,5 @@ host_wifi_mode: g
 host_channel: 6
 host_wireless_n: False
 host_country_code: US
+driver_name: nl80211
 network_config_dir: /etc/network/interfaces.d

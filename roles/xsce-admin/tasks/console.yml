@@ -61,7 +61,7 @@
 
 - name: Install admin-console config file
   template: src=console/xs-console.conf.j2
-            dest=/etc/apache2/conf-available/xs-console.conf
+            dest=/etc/apache2/sites-available/xs-console.conf
             owner=root
             group=root
             mode=0644

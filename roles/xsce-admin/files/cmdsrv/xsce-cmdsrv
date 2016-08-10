@@ -1552,7 +1552,11 @@ def init():
     # Opening a connection creates if not exist
     # No DB locking done in init as is single threaded
 
-    statinfo = os.stat(xsce_cmdsrv_dbpath)
+    try:
+        statinfo = os.stat(xsce_cmdsrv_dbpath)
+    except:
+        outp = subprocess.check_output(["/usr/bin/touch", xsce_cmdsrv_dbpath])
+        statinfo = os.stat(xsce_cmdsrv_dbpath)
     if statinfo.st_size == 0:
         conn = sqlite3.connect(xsce_cmdsrv_dbpath)
         conn.execute ("CREATE TABLE commands (cmd_msg text, create_datetime text)")
