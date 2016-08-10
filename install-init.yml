@@ -1,6 +1,6 @@
 ---
 - hosts: all
-  sudo: yes
+  become: yes
 
 # The var files read or included here are not needed, but might be in the future
 

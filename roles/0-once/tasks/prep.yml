@@ -77,7 +77,7 @@
 
 - name: Install xsce-prep.service
   template: src=xsce-prep.service
-            dest=/usr/lib/systemd/system
+            dest=/etc/systemd/system/
             owner=root
             group=root
             mode=0755

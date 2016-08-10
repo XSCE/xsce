@@ -7,6 +7,9 @@
   with_items:
     - /library/content
 
+- name: enable mod_rewrite
+  apache2_module: name=rewrite
+
 - include: xs-portal.yml
 - include: alt-home.yml
 
@@ -38,5 +41,3 @@
       - xsce-home-page.conf
   notify: restart apache
 
-- name: enable mod_rewrite
-  apache2_module: name=rewrite
