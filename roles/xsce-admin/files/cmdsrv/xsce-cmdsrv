@@ -973,6 +973,8 @@ def run_ansible(cmd_info): # create multiple jobs to run in succession
         return (cmd_error(msg="Ansible Command already Running."))
         #return ('{"Error": "Ansible Command already Running."}')
 
+    if cmd_info['cmd'] == "RUN-ANSIBLE":
+
         job_command = ansible_prefix + "ansible-playbook -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local"
 
         if 'cmd_args' in cmd_info:
@@ -1667,7 +1669,6 @@ def get_ansible_facts():
 
     command = ansible_prefix + "ansible localhost -i " + xsce_git_path + "/ansible_hosts  -m setup -o  --connection=local"
     args = shlex.split(command)
-    print(command)
     outp = subprocess.check_output(args)
     if (get_ansible_version() < '2'):
         splitter = 'success >> '
