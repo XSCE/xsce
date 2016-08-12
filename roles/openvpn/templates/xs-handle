@@ -10,3 +10,4 @@ if [ "$ans" == "" ]; then
 else
   echo $ans > /etc/xsce/handle 
 fi
+systemctl restart openvpn@xscenet

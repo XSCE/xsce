@@ -38,13 +38,13 @@
   when : samba_enabled
 
 - name: Disable Samba if that is wanted
-  service: name=smb state=stopped enabled=no
+  service: name=smbd state=stopped enabled=no
   tags: 
     - samba
   when : not samba_enabled
 
 - name: Disable Samba name server if that is wanted
-  service: name=nmb state=stopped enabled=no
+  service: name=nmbd state=stopped enabled=no
   tags: 
     - samba
   when : not samba_enabled

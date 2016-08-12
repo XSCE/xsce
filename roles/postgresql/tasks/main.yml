@@ -23,14 +23,14 @@
         state=directory
 
 - name: make sure that the en_US locale is enabled
-  lineinfile: path=/etc/locale.gen
+  lineinfile: dest=/etc/locale.gen
               regexp='^# en_US.UTF8'
               line='en_US.UTF8 UTF8'
-  when: ansible_distribution == Debian
+  when: ansible_distribution == "Debian"
 
 - name: generate the selected locales
   command: /usr/sbin/locale-gen
-  when: ansible_distribution == Debian
+  when: ansible_distribution == "Debian"
 
 - name: Discover if the postgresql database data directory has already been created
   stat: path="/library/pgsql-xs/base"
