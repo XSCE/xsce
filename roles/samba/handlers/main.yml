@@ -1,3 +1,3 @@
 ---
 - name: restart smb
-  command: service smb restart
+  command: service smbd restart
