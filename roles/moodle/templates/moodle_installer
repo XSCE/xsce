@@ -1,5 +1,5 @@
 #!/bin/bash -x
-sudo -u apache /usr/bin/php {{moodle_base}}/admin/cli/install.php \
+sudo -u www-data /usr/bin/php {{moodle_base}}/admin/cli/install.php \
 --wwwroot=http://schoolserver.lan/moodle --dataroot={{moodle_data}} \
 --dbtype=pgsql --dbname=moodle --dbuser=Admin --dbpass=changeme \
 --fullname=Your_School --shortname=School \

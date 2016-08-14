@@ -14,6 +14,9 @@
   tags:
     - download2
 
+- debug: var=config_file
+- debug: var=no_network
+
 - name: Download the latest moodle repo
   git: repo={{ moodle_repo_url }}
        dest={{ moodle_base }}
@@ -21,7 +24,7 @@
        force=yes
        version="MOODLE_{{ moodle_version }}_STABLE"
 #  ignore_errors: yes
-  when: not {{ use_cache }} and not {{ no_network }} and config_file.exists is defined and not config_file.exists
+  when: not {{ use_cache }} and not {{ no_network }} and config_file.stat.exists is defined and not config_file.stat.exists
   tags:
     - download2
 
