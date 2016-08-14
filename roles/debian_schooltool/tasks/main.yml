@@ -44,5 +44,5 @@
         state=link
 
 - name: build the schooltool from source
-  shell: command='cd {{ xsce_base }}/schooltool; make '
+  shell: command='$( cd {{ xsce_base }}/schooltool; /usr/bin/make ) '
 
