@@ -7,30 +7,20 @@
 #xsce_admin_passw_hash: 
 varible: value
 # 4-server-options
-postgresql_install: False
 authserver_install: False
 authserver_enabled: False
-dhcpd_install: False
-usb-lib_install: False
-dansguardian_install: False
 # 5-xoservices
 xo_services_install: False
 ejabberd_install: False
 idmgr_install: False
-activity_server_install: False
 # 6-generic-aps
 # 7-edu-aps
-moodle_install: False
 pathagar_install: False
-sugarizer_install: False
-schooltool_install: False
 # 8-mgmat-tools
 sugar-stats_install: False
 ajenti_install: False
 monit_install: False
 xovis_install: False
-phpmyadmin_install: False
 teamviewer_install: False
-sugar_stats_install: False
 
 

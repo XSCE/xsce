@@ -10,17 +10,20 @@
   tags:
     - download
 
+- name: enable cgi execution
+  command: a2enmod cgi
+
 - name: Create directory for awstat to use as intermediate summary storage
   file: path={{ item }}
         mode=0755
-        owner=apache
-        group=apache
+        owner=www-data
+        group=www-data
         state=directory
   with_items:
     - "{{ awstats_data_dir }}"
 
 - name: Install the Apache config for Advanced Web Statistics 
-  template: src=apache-awstats.conf
+  template: src=apache.conf
             dest=/etc/apache2/sites-available/awstats.conf
             owner=root
             group=root
