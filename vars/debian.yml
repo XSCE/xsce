@@ -17,7 +17,7 @@ idmgr_install: False
 # 7-edu-aps
 pathagar_install: False
 # 8-mgmat-tools
-sugar-stats_install: False
+sugar_stats_install: False
 ajenti_install: False
 monit_install: False
 xovis_install: False
