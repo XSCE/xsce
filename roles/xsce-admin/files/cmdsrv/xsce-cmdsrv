@@ -577,6 +577,8 @@ def cmd_handler(cmd_msg):
         "INST-RACHEL": install_rachel,
         "DEL-DOWNLOADS": del_downloads,
         "RESTART-KIWIX": restart_kiwix,
+        "START-VNC": start_vnc,
+        "STOP-VNC": stop_vnc,
         "REBOOT": reboot_server,
         "POWEROFF": poweroff_server,
         "CHGPW": change_password
@@ -1146,6 +1148,24 @@ def install_rachel(cmd_info):
 
 def restart_kiwix(cmd_info):
     rc = subprocess.call(["/usr/bin/systemctl", "restart", "kiwix-serve.service"])
+    #print rc
+    if rc == 0:
+        resp = cmd_success(cmd_info['cmd'])
+    else:
+        resp = cmd_error(cmd_info['cmd'])
+    return (resp)
+
+def start_vnc(cmd_info):
+    rc = subprocess.call(["/opt/schoolserver/xsce_cmdsrv/scripts/display-desktop.sh"])
+    #print rc
+    if rc == 0:
+        resp = cmd_success(cmd_info['cmd'])
+    else:
+        resp = cmd_error(cmd_info['cmd'])
+    return (resp)
+
+def stop_vnc(cmd_info):
+    rc = subprocess.call(["/opt/schoolserver/xsce_cmdsrv/scripts/secure-desktop.sh"])
     #print rc
     if rc == 0:
         resp = cmd_success(cmd_info['cmd'])

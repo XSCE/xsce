@@ -31,11 +31,6 @@
         owner=xsce-admin
         state=directory
 
-- name: make a bin directory for vnc
-  file: path=/home/xsce-admin/bin
-        owner=xsce-admin
-        state=directory
-
 - name: Put templated files in place
   template: src={{ item.src }}
             dest={{ item.dest }}
@@ -43,11 +38,10 @@
             mode=0755
   with_items:
      - { src: 'xstartup', dest: '/home/xsce-admin/.vnc/' }
-     - { src: 'display-desktop', dest: '/home/xsce-admin/bin/' }
-     - { src: 'secure-desktop', dest: '/home/xsce-admin/bin/' }
      - { src: 'vnc', dest: '/etc/init.d/' }
 
 - name: copy the password file -- binary confuses template module
   copy: src=passwd
         dest=/home/xsce-admin/.vnc
-         
+        mode=0700
+        owner=xsce-admin 
