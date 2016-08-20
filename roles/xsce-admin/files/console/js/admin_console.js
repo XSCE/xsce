@@ -1518,7 +1518,7 @@ function startVnc()
   sendCmdSrvCmd(command, genericCmdHandler);
   alert ("VNC desktop started");
   var vncIframe = "<iframe id=\"vncIframe\" src=\"/vnc/vnc.html\"></iframe>";
-  $(#desktop).append(vncIframe);
+  $( "#desktop" ).append(vncIframe);
   return true;
 }
 
@@ -1527,8 +1527,8 @@ function stopVnc()
   var command = "STOP-VNC";
   sendCmdSrvCmd(command, genericCmdHandler);
   alert ("Desktop no longer available remotely");
-  $(#vncIframe).src="about.blank";
-  $(#vncIframe).remove();
+  $( "#vncIframe" ).src="about.blank";
+  $( "vncIframe" ).remove();
   return true;
 }
 
