@@ -3,6 +3,7 @@
            state=present
   with_items:
         - tigervnc-server
+        - python-websockify
   when: ansible_distribution == "Fedora" or ansible_distribution == "CentOS"
   tags: download
 
@@ -37,11 +38,12 @@
             owner=xsce-admin
             mode=0755
   with_items:
-     - { src: 'xstartup', dest: '/home/xsce-admin/.vnc/' }
-     - { src: 'vnc', dest: '/etc/init.d/' }
+     - { src: 'cmdsrv/xstartup', dest: '/home/xsce-admin/.vnc/' }
+     - { src: 'cmdsrv/vnc', dest: '/etc/init.d/' }
+     - { src: 'cmdsrv/websockify.service', dest: '/etc/systemd/system/' }
 
 - name: copy the password file -- binary confuses template module
-  copy: src=passwd
+  copy: src=cmdsrv/passwd
         dest=/home/xsce-admin/.vnc
         mode=0700
         owner=xsce-admin 

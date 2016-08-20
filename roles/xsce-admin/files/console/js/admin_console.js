@@ -252,6 +252,18 @@ function utilButtonsEvents() {
   	changePassword();
   });
 
+  $("#START-VNC").click(function(){
+  	make_button_disabled("#START-VNC", true);
+  	startVnc();
+  	make_button_disabled("#STOP-VNC", false);
+  });
+
+  $("#STOP-VNC").click(function(){
+  	make_button_disabled("#STOP-VNC", true);
+  	stopVnc();
+  	make_button_disabled("#START-VNC", false);
+  });
+
   $("#JOB-STATUS-REFRESH").click(function(){
   	make_button_disabled("#JOB-STATUS-REFRESH", true);
     getJobStat();
@@ -1497,6 +1509,22 @@ function poweroffServer()
   var command = "POWEROFF"
   sendCmdSrvCmd(command, genericCmdHandler);
   alert ("Shutdown Initiated");
+  return true;
+}
+
+function startVnc()
+{
+  var command = "START-VNC";
+  sendCmdSrvCmd(command, genericCmdHandler);
+  alert ("VNC desktop started");
+  return true;
+}
+
+function stopVnc()
+{
+  var command = "STOP-VNC";
+  sendCmdSrvCmd(command, genericCmdHandler);
+  alert ("Desktop no longer available remotely");
   return true;
 }
 
