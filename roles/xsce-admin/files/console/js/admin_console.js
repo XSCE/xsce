@@ -1490,8 +1490,7 @@ function startVnc()
   var command = "START-VNC";
   sendCmdSrvCmd(command, genericCmdHandler);
   alert ("VNC desktop started");
-  var vncIframe = "<iframe id=\"vncIframe\" src=\"/vnc/vnc.html\"></iframe>";
-  $( "#desktop" ).append(vncIframe);
+  $( "#vncIframe" ).src = "/vnc/vnc.html";
   return true;
 }
 
