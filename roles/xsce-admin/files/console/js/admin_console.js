@@ -1516,11 +1516,9 @@ function startVnc()
 {
   var command = "START-VNC";
   sendCmdSrvCmd(command, genericCmdHandler);
-  alert ("VNC desktop started");
   var loc = window.location;
   var url = "http://" + loc.hostname + ":6080/vnc.html";
   $( "#vncIframe" ).prop("src", url); 
-  alert(url);
   return true;
 }
 
@@ -1529,7 +1527,7 @@ function stopVnc()
   var command = "STOP-VNC";
   sendCmdSrvCmd(command, genericCmdHandler);
   alert ("Desktop no longer available remotely");
-  $( "#vncIframe" ).src="about.blank";
+  $( "#vncIframe" ).prop("src","about.blank");
   $( "vncIframe" ).remove();
   return true;
 }
