@@ -19,16 +19,15 @@
 				<li><a href="#utilsStorage" call-after="getSysStorage">Display System Storage</a></li>
 				<li><a href="#utilsSpeedTest">Perform Internet Speed Test</a></li>
 				<li><a href="#utilsAnsTags">Run Ansible by Tag</a></li>
-				<li><a href="#utilsDesktop">Server Desktop</a></li>
+				<li><a href="#utilsDesktop">View Server's Screen</a></li>
 			</ul> <!-- End Status Sub Level Menu -->
 			<h2>Actions</h2>
 			<div class="action-buttons">
-				<button id="START-VNC" type="button" class="btn btn-lg btn-danger">Start Remote Desktop</button>
-				<button id="STOP-VNC" type="button" class="btn btn-lg btn-danger">Stop Remote Desktop</button>
+				<button id="START-VNC" type="button" class="btn btn-lg btn-danger">View Desktop (insecure)</button>
+				<button id="STOP-VNC" type="button" class="btn btn-lg btn-danger">Make Server Secure</button>
  			<!--
 			<button id="REBOOT" type="button" class="btn btn-lg btn-danger">REBOOT Server</button>
-			<button id="POWEROFF" type="button" class="btn btn-lg btn-danger">POWER OFF Server</button>
-
+			<button id="POWEROFF" type="button" class="btn btn-lg btn-danger">POWER OFF Server</button> 
 			-->
 			</div>
 		</div> <!-- left column -->
@@ -136,8 +135,8 @@
 					<button id="RUN-TAGS" type="button" class="btn btn-lg btn-danger">Run Ansible with Checked Tags</button>
 				</div> <!--  End utilsAnsTags pane -->
 				<div class="tab-pane" id="utilsDesktop"> <!-- Start desktop Pane -->
-					<h2>Local Version of Server's Desktop</h2>
-                                        <iframe id="vncIframe" src="about:blank"></iframe>
+					<h2>View of Server's Screen</h2>
+                                        <iframe id="vncIframe" src="about:blank"style="width:100%;height:768px"></iframe>
 				</div> <!--  End desktop pane -->
 			</div> <!-- End Container for Status Sub Menu Options Panes -->
 		</div> <!-- right column -->

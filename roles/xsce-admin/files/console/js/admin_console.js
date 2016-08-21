@@ -1517,7 +1517,10 @@ function startVnc()
   var command = "START-VNC";
   sendCmdSrvCmd(command, genericCmdHandler);
   alert ("VNC desktop started");
-  $( "#vncIframe" ).src = "/vnc/vnc.html";
+  var loc = window.location;
+  var url = "http://" + loc.hostname + ":6080/vnc.html";
+  $( "#vncIframe" ).prop("src", url); 
+  alert(url);
   return true;
 }
 
