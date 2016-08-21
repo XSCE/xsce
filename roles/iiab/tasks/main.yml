@@ -93,6 +93,17 @@
             group=root
             mode=0644
 
+- name: Create a link from sites-enabled to sites-available
+  file: src=/etc/apache2/sites-available/iiab.conf
+        dest=/etc/apache2/sites-enabled/iiab.conf
+        state=link
+  when: iiab_enabled
+
+- name: Remove the link from sites-enabled to sites-available
+  file: dest=/etc/apache2/sites-enabled/iiab.conf
+        state=absent
+  when: not iiab_enabled
+
 - name: Create link to cgi
   file: src=/usr/local/bin/iiab.wsgi
         dest=/var/www/html/iiab.wsgi
@@ -103,6 +114,16 @@
 - name: Restart httpd service
   service: name=apache2
            state=restarted
+
+- name: Create the knowledge data set folders
+  file: path=/library/knowledge/modules
+        state=directory
+        owner=www-data
+        group=www-data
+
+- name: copy the default.ini with our location of /library/knowledge
+  template: src=default.ini
+            dest=/usr/local/lib/python2.7/dist-packages/iiab/default.ini
 
 - name: add iiab to service list
   ini_file: dest='{{ service_filelist }}'
