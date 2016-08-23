@@ -141,6 +141,13 @@ function configButtonsEvents() {
     make_button_disabled("#RUN-ANSIBLE", false);
   });
 
+  $("#RESET-NETWORK").click(function(){
+    make_button_disabled("#RESET-NETWORK", true);
+    resetNetwork();
+    //runAnsible("addons");
+    make_button_disabled("#RESET-NETWORK", false);
+  });
+
   $("#RUN-TAGS").click(function(){
     make_button_disabled("#RUN-TAGS", true);
     var tagList = "";
@@ -553,8 +560,18 @@ function assignConfigVars (data)
       if (this.type == "radio")
       prop_val = "";
     }
-    if (this.type == "checkbox")
-    $(this).prop('checked', config_vars[this.name]);
+    if (this.type == "checkbox"){
+      $(this).prop('checked', config_vars[this.name]);
+      var service = this.name.split("_enabled")[0];
+      var service_install = service + "_install";
+      var service_id = "." + service + "_service";
+      if (effective_vars.hasOwnProperty(service_install)){
+      	if (effective_vars[service_install])
+      	  $(service_id).show();
+      	else
+      	  $(service_id).hide();
+      }
+    }
     if (this.type == "text")
     this.value = config_vars[this.name];
     if (this.type == "radio"){
@@ -729,6 +746,16 @@ function changePasswordSuccess ()
     consoleLog(command);
     sendCmdSrvCmd(command, genericCmdHandler);
     alert ("Scheduling Ansible Run.");
+    return true;
+  }
+
+  function resetNetwork ()
+  {
+    var command = "RESET-NETWORK";
+    //alert ("in resetNetwork");
+    consoleLog(command);
+    sendCmdSrvCmd(command, genericCmdHandler);
+    alert ("Scheduling Network Reset.");
     return true;
   }
 
