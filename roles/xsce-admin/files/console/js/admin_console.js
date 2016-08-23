@@ -1499,8 +1499,7 @@ function stopVnc()
 {
   var command = "STOP-VNC";
   sendCmdSrvCmd(command, genericCmdHandler);
-  alert ("Desktop no longer available remotely");
-  $( "#vncIframe" ).prop("src","about.blank");
+  $( "#vncIframe" ).prop("src","about:blank");
   $( "vncIframe" ).remove();
   return true;
 }
