@@ -1,0 +1,49 @@
+- name: Install vnc packages
+  yum: name={{ item }}
+           state=present
+  with_items:
+        - tigervnc-server
+        - python-websockify
+  when: ansible_distribution == "Fedora" or ansible_distribution == "CentOS"
+  tags: download
+
+- name: Download the noVNC source from our copy
+  get_url: url={{ xsce_download_url }}/{{ novnc_version }}.tar.gz
+           dest={{ downloads_dir }}
+  tags: download2
+
+- name: Expand novnc to our root directory
+  unarchive: src={{ downloads_dir }}/{{ novnc_version }}.tar.gz
+           dest={{ xsce_base }}
+           owner=xsce-admin
+
+- name: Create a link pointing to the current version
+  file: src={{ xsce_base }}/{{ novnc_version }}
+        dest={{ xsce_base }}/novnc
+        state=link  
+
+- name: Install the mate desktop for use with VNC
+  shell: 'yum -y groupinstall "MATE Desktop"'
+  when: ansible_distribution == "Fedora" or ansible_distribution == "CentOS"
+  tags: download
+
+- name: make the vnc directory
+  file: path=/home/xsce-admin/.vnc
+        owner=xsce-admin
+        state=directory
+
+- name: Put templated files in place
+  template: src={{ item.src }}
+            dest={{ item.dest }}
+            owner=xsce-admin
+            mode=0755
+  with_items:
+     - { src: 'cmdsrv/xstartup', dest: '/home/xsce-admin/.vnc/' }
+     - { src: 'cmdsrv/vnc', dest: '/etc/init.d/' }
+     - { src: 'cmdsrv/websockify.service', dest: '/etc/systemd/system/' }
+
+- name: copy the password file -- binary confuses template module
+  copy: src=cmdsrv/passwd
+        dest=/home/xsce-admin/.vnc
+        mode=0700
+        owner=xsce-admin 

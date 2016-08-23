@@ -1,0 +1,11 @@
+[Unit]
+Description=provides a TCP to web protocol proxy
+After=syslog.target network.target 
+
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/websockify --web={{ xsce_base}}/novnc 6080 localhost:5901
+
+[Install]
+WantedBy=multi-user.target

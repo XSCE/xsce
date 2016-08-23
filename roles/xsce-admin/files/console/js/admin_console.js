@@ -141,13 +141,6 @@ function configButtonsEvents() {
     make_button_disabled("#RUN-ANSIBLE", false);
   });
 
-  $("#RESET-NETWORK").click(function(){
-    make_button_disabled("#RESET-NETWORK", true);
-    resetNetwork();
-    //runAnsible("addons");
-    make_button_disabled("#RESET-NETWORK", false);
-  });
-
   $("#RUN-TAGS").click(function(){
     make_button_disabled("#RUN-TAGS", true);
     var tagList = "";
@@ -250,6 +243,18 @@ function instContentButtonsEvents() {
 function utilButtonsEvents() {
   $("#CHGPW").click(function(){
   	changePassword();
+  });
+
+  $("#START-VNC").click(function(){
+  	make_button_disabled("#START-VNC", true);
+  	startVnc();
+  	make_button_disabled("#STOP-VNC", false);
+  });
+
+  $("#STOP-VNC").click(function(){
+  	make_button_disabled("#STOP-VNC", true);
+  	stopVnc();
+  	make_button_disabled("#START-VNC", false);
   });
 
   $("#JOB-STATUS-REFRESH").click(function(){
@@ -548,18 +553,8 @@ function assignConfigVars (data)
       if (this.type == "radio")
       prop_val = "";
     }
-    if (this.type == "checkbox"){
-      $(this).prop('checked', config_vars[this.name]);
-      var service = this.name.split("_enabled")[0];
-      var service_install = service + "_install";
-      var service_id = "." + service + "_service";
-      if (effective_vars.hasOwnProperty(service_install)){
-      	if (effective_vars[service_install])
-      	  $(service_id).show();
-      	else
-      	  $(service_id).hide();
-      }
-    }
+    if (this.type == "checkbox")
+    $(this).prop('checked', config_vars[this.name]);
     if (this.type == "text")
     this.value = config_vars[this.name];
     if (this.type == "radio"){
@@ -734,16 +729,6 @@ function changePasswordSuccess ()
     consoleLog(command);
     sendCmdSrvCmd(command, genericCmdHandler);
     alert ("Scheduling Ansible Run.");
-    return true;
-  }
-
-  function resetNetwork ()
-  {
-    var command = "RESET-NETWORK";
-    //alert ("in resetNetwork");
-    consoleLog(command);
-    sendCmdSrvCmd(command, genericCmdHandler);
-    alert ("Scheduling Network Reset.");
     return true;
   }
 
@@ -1497,6 +1482,25 @@ function poweroffServer()
   var command = "POWEROFF"
   sendCmdSrvCmd(command, genericCmdHandler);
   alert ("Shutdown Initiated");
+  return true;
+}
+
+function startVnc()
+{
+  var command = "START-VNC";
+  sendCmdSrvCmd(command, genericCmdHandler);
+  var loc = window.location;
+  var url = "http://" + loc.hostname + ":6080/vnc.html";
+  $( "#vncIframe" ).prop("src", url); 
+  return true;
+}
+
+function stopVnc()
+{
+  var command = "STOP-VNC";
+  sendCmdSrvCmd(command, genericCmdHandler);
+  $( "#vncIframe" ).prop("src","about:blank");
+  $( "vncIframe" ).remove();
   return true;
 }
 

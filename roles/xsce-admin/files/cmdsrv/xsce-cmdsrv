@@ -281,7 +281,7 @@ def job_minder_thread(client_url, worker_control_url, context=None):
                 continue
 
             # don't create ansible job if one is running
-            if job_info['cmd'] in ["RUN-ANSIBLE", "RESET-NETWORK"] and ansible_running_flag == True:
+            if job_info['cmd'] == "RUN-ANSIBLE" and ansible_running_flag == True:
                 continue
 
             # don't start job if at max allowed
@@ -419,7 +419,7 @@ def start_job(job_id, job_info, status='STARTED'):
     if job_id in prereq_jobs:
         prereq_jobs[job_id]['status'] = 'STARTED'
 
-    if job_info['cmd'] in ["RUN-ANSIBLE", "RESET-NETWORK"]:
+    if job_info['cmd'] == "RUN-ANSIBLE":
         ansible_running_flag = True
 
     if status == 'STARTED':
@@ -465,7 +465,7 @@ def end_job(job_id, job_info, status):
     upd_job_finished(job_id, job_output, status)
     os.remove(output_file)
 
-    if job_info['cmd'] in ["RUN-ANSIBLE", "RESET-NETWORK"]:
+    if job_info['cmd'] == "RUN-ANSIBLE":
         ansible_running_flag = False
         #if status == "SUCCEEDED":
         read_xsce_ini_file() # reread ini file after running ansible
@@ -564,7 +564,6 @@ def cmd_handler(cmd_msg):
         "GET-MEM-INFO": get_mem_info,
         "GET-STORAGE-INFO": get_storage_info,
         "RUN-ANSIBLE": run_ansible,
-        "RESET-NETWORK": run_ansible,
         "GET-JOB-STAT": get_last_jobs_stat,
         "CANCEL-JOB": cancel_job,
         "GET-WHLIST": get_white_list,
@@ -578,6 +577,8 @@ def cmd_handler(cmd_msg):
         "INST-RACHEL": install_rachel,
         "DEL-DOWNLOADS": del_downloads,
         "RESTART-KIWIX": restart_kiwix,
+        "START-VNC": start_vnc,
+        "STOP-VNC": stop_vnc,
         "REBOOT": reboot_server,
         "POWEROFF": poweroff_server,
         "CHGPW": change_password
@@ -969,20 +970,14 @@ def run_ansible(cmd_info): # create multiple jobs to run in succession
         return (cmd_error(msg="Ansible Command already Running."))
         #return ('{"Error": "Ansible Command already Running."}')
 
-    if cmd_info['cmd'] == "RUN-ANSIBLE":
+    job_command = "/usr/bin/ansible-playbook -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local"
 
-        job_command = "/usr/bin/ansible-playbook -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local"
-
-        if 'cmd_args' in cmd_info:
-            tags = cmd_info['cmd_args']['tags']
-            if tags != "ALL-TAGS":
-                job_command += ' --tags="' +  tags +'"'
-        else:
-            return cmd_malformed(cmd_info['cmd'])
-
-    else: # cmd is "RESET-NETWORK"
-
-        job_command = xsce_git_path + "/xsce-network"
+    if 'cmd_args' in cmd_info:
+        tags = cmd_info['cmd_args']['tags']
+        if tags != "ALL-TAGS":
+            job_command += ' --tags="' +  tags +'"'
+    else:
+        return cmd_malformed(cmd_info['cmd'])
 
     resp = request_job(cmd_info, job_command)
     return resp
@@ -1153,6 +1148,24 @@ def install_rachel(cmd_info):
 
 def restart_kiwix(cmd_info):
     rc = subprocess.call(["/usr/bin/systemctl", "restart", "kiwix-serve.service"])
+    #print rc
+    if rc == 0:
+        resp = cmd_success(cmd_info['cmd'])
+    else:
+        resp = cmd_error(cmd_info['cmd'])
+    return (resp)
+
+def start_vnc(cmd_info):
+    rc = subprocess.call(["/opt/schoolserver/xsce_cmdsrv/scripts/display-desktop.sh"])
+    #print rc
+    if rc == 0:
+        resp = cmd_success(cmd_info['cmd'])
+    else:
+        resp = cmd_error(cmd_info['cmd'])
+    return (resp)
+
+def stop_vnc(cmd_info):
+    rc = subprocess.call(["/opt/schoolserver/xsce_cmdsrv/scripts/secure-desktop.sh"])
     #print rc
     if rc == 0:
         resp = cmd_success(cmd_info['cmd'])
