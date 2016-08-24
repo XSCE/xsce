@@ -100,6 +100,8 @@ The School Server has many individual pieces of software that incorporated into 
 
 You should **note** that a number of items below require content to be useful.  Enabling them turns them on, but you must also optain content using the **Install Content** menu or from a portable hard disk.
 
+Note some services listed below may not be installed and will not have a checkbox.
+
 ### For Students
 
 * **Services for XO Laptops** such as Registration, Backup, and the Activity Server
@@ -193,4 +195,8 @@ Saves all configuration variables so that they will be used when the follwing bu
 
 **Warning:** This option will **Reconfigure your Server**. It runs the Ansible configuration software using all configuration variables that have been saved with the above button.
 
-You should refresh your browser after running this.
+### Reset Network Configuration
+
+**Warning:** This option will **Reconfigure your Server's Networking Setup**. It clears the current network parameters and re-applies network configuration variables that have been saved with the Save Configuration button.
+
+**Note:** The last two Actions may not be run at the same time.  You should also refresh your browser after running either of them.

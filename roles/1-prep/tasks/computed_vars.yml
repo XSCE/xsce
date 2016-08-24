@@ -129,6 +129,16 @@
     is_F23: True
   when: ansible_distribution == "Fedora" and ansible_distribution_version == "23"
 
+- name: Fedora 24
+  set_fact:
+    is_F24: True
+  when: ansible_distribution == "Fedora" and ansible_distribution_version == "24"
+
+- name: CentOS
+  set_fact:
+    is_CentOS: True
+  when: ansible_distribution == "CentOS"
+
 - name: Set kiwix source file name i686
   set_fact:
      kiwix_src_file: "kiwix-linux-i686.tar.bz2"

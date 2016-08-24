@@ -12,13 +12,12 @@
   when: not installing
 
 - name: Create hidden xsce-prepped file
-  file: dest=/.xsce_base_ver
+  file: dest=/.xsce-prepped
         state=touch
 
 # If we got here we're done
-- name: Create hidden xsce-base file 
-  lineinfile: dest=/.xsce_base_ver
-              regexp='^VERSION=*'
-              line='VERSION="{{ gui_version }}"'
+- name: Record base gui version
+  lineinfile: dest=/etc/xsce/xsce.env
+              regexp='^BASE_VERSION=*'
+              line='BASE_VERSION="{{ gui_version }}"'
               state=present
-  when: not installing
