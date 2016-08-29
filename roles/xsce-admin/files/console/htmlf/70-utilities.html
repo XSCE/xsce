@@ -19,6 +19,7 @@
 				<li><a href="#utilsStorage" call-after="getSysStorage">Display System Storage</a></li>
 				<li><a href="#utilsSpeedTest">Perform Internet Speed Test</a></li>
 				<li><a href="#utilsAnsTags">Run Ansible by Tag</a></li>
+				<li><a href="#utilsResetNetwork">Troubleshoot Networking</a></li>
 			</ul> <!-- End Status Sub Level Menu -->
 			<!--
 			<h2>Actions</h2>
@@ -131,6 +132,11 @@
 					</form>
 					<button id="RUN-TAGS" type="button" class="btn btn-lg btn-danger">Run Ansible with Checked Tags</button>
 				</div> <!--  End utilsAnsTags pane -->
+				<div class="tab-pane" id="utilsResetNetwork"> <!-- Start utilsResetNetwork Pane -->
+					<h2>Troubleshoot Networking</h2>
+					<p><b>WARNING:</b> This option should only be used by EXPERTS. It is possible to leave the server without a usuable connection.</p>
+					<button id="RESET-NETWORK" type="button" class="btn btn-lg btn-danger">Reset Network Configuration</button>
+				</div> <!--  End utilsResetNetwork pane -->
 			</div> <!-- End Container for Status Sub Menu Options Panes -->
 		</div> <!-- right column -->
 	</div> <!-- End containing row -->
