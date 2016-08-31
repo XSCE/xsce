@@ -11,11 +11,15 @@
   tags:
     - download
 
+- name: Determine if xovis is already downloaded
+  stat: path={{ downloadds_dir }}/xovis/xxx
+  register: xovis
+
 - name: download the latest xovis repo
   git: repo={{ xovis_repo_url }}
        dest={{ downloads_dir }}/xovis
        depth=1
-  when: not {{ use_cache }} and not {{ no_network }}
+  when: not {{ use_cache }} and not {{ no_network }} and xovis.stat.exists is defined and not xovis.stat.exists
   tags:
     - download2
 

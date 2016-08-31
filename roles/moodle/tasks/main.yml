@@ -8,6 +8,10 @@
   tags:
     - download
 
+- name: Determine if moodle is already downloaded
+  stat: path={{ moodle_base }}/config-dist.php
+  register: moodle
+
 - name: Download the latest moodle repo
   git: repo={{ moodle_repo_url }}
        dest={{ moodle_base }}
@@ -15,7 +19,7 @@
        force=yes
        version="MOODLE_{{ moodle_version }}_STABLE"
 #  ignore_errors: yes
-  when: not {{ use_cache }} and not {{ no_network }}
+  when: not {{ use_cache }} and not {{ no_network }} and moodle.stat.exists is defined and not moodle.stat.exists
   tags:
     - download2
 
