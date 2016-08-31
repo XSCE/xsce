@@ -50,7 +50,6 @@ There are two tests that can be performed.  One downloads a 10M file and the oth
 
 This option is meant for experts mostly during testing.  It uses ansible to install software, but only installs selected items.  **Some combinations will not work together.**
 
-Actions
--------
+###Troubleshoot Networking
 
-The Control Actions are also here for convenience.
+This option is meant for experts mostly during testing and initial setup.  It clears out some of the networking parameters and runs only the networking portion of the install  **Take care as you can leave the server unreachable.**
