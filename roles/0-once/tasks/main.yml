@@ -1,3 +1,8 @@
+- name: Set flag for fedora 18
+  set_fact:
+    is_F18: True
+  when: ansible_distribution_release == "based on Fedora 18" or ansible_distribution_version == "18"
+
 - include: selinux.yml
   when: ansible_selinux is defined and ansible_version >= '2' and ansible_selinux or ansible_selinux['status'] is defined and ansible_version < '2' and ansible_selinux['status'] != 'disabled'
 
