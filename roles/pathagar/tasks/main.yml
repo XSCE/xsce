@@ -28,12 +28,16 @@
         group=apache
         mode=0755
 
+- name: Determine if pathagar has already been downloaded from git
+  stat: "{{ pathagar_src }}/settings.py"
+  register: pathagar
+
 - name: Clone pathagar repo
   git: repo=https://github.com/PathagarBooks/pathagar.git
        dest={{ pathagar_src }}
        update=yes
        version=master
-  when: not {{ use_cache }} and not {{ no_network }}
+  when: not {{ use_cache }} and not {{ no_network }} and pathagar.stat.exists is defined and not pathagar.stat.exists
   tags:
     - download2
 

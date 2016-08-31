@@ -22,13 +22,17 @@
        extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
   when: is_F18
 
+- name: Determine if kalite is already downloaded
+  stat: path={{ downloads_dir }}/ka-lite
+  register: kalite
+
 - name: Download the latest kalite repo
   git: repo={{ kalite_repo_url }}
        dest={{ downloads_dir }}/ka-lite
        depth=1
        version="0.13.x"
   ignore_errors: yes
-  when: not {{ use_cache }} and not {{ no_network }}
+  when: not {{ use_cache }} and not {{ no_network }} and kalite.stat.exists is defined an not kalite.stat.exists
   tags:
     - download2
 
