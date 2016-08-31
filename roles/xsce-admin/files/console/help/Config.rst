@@ -119,20 +119,14 @@ Note some services listed below may not be installed and will not have a checkbo
 
     The main reason you would not want this is if the server has very limited disk space.
 
-* **Khan Academy Lite** -  downloads and serves Khan Academy videos. You must also install content.
-* **Khan Academy Downloader** -  downloads Khan Academy videos. You can turn this off if you don't plan to download videos.
+* **Khan Academy Lite** -  serves Khan Academy videos and Exercises.  You must also install content.
+* **Khan Academy Downloader** -  This is onlyt the downloader portion of the appplication which may be turned off if you don't plan to download videos.
 
     Khan Academy is a famous source of instructional videos originally on math topics, but now spanning numerous subjects.  KA Lite is an offline version of these videos and accompanying exercises.
 
-* **Internet-in-a-Box** -  a collection of popular content such as the Wikipedia and Khan Academy. You must also install content.
+* **Open Street Maps** -  from the original Internet in a Box, this is a world map to 13 or 16 levels of zoom depending on the tiles you install. You must also install content.
 
-    IIAB, as it is known, is a prepackaged collection of important Internet content.  It has some overlap with Kiwix and KA Lite, but adds Open Street Maps, not found elsewhere.
-
-* **RACHEL** -  another collection of popular content including the Wikipedia and Khan Academy. You must also install content.
-
-    RACHEL is similar to IIAB, but different in that it uses smaller versions of the Wikipedia and Khan Academy so that it requires less disk space and it has material not found in the other collections.
-
-    RACHEL content can be downloaded and installed using the **Install Content** - **Get RACHEL** menu option.
+* **RACHEL** -  another collection of popular content from World Possible. You must also install content.
 
 * **Calibre** - an E-Book Platform. You must also install content.
 
