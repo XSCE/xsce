@@ -1156,7 +1156,11 @@ def restart_kiwix(cmd_info):
     return (resp)
 
 def start_vnc(cmd_info):
-    rc = subprocess.call(["/opt/schoolserver/xsce_cmdsrv/scripts/display-desktop.sh"])
+    if "cmd_args" in cmd_info.keys() and "REMOTE_ADDR" in cmd_info["cmd_args"].keys():
+        remote_addr =  cmd_info["cmd_args"]["REMOTE_ADDR"]
+        rc = subprocess.call(["scripts/display-desktop.sh", remote_addr])
+    else:
+        rc = subprocess.call(["scripts/display-desktop.sh"])
     #print rc
     if rc == 0:
         resp = cmd_success(cmd_info['cmd'])
@@ -1165,7 +1169,7 @@ def start_vnc(cmd_info):
     return (resp)
 
 def stop_vnc(cmd_info):
-    rc = subprocess.call(["/opt/schoolserver/xsce_cmdsrv/scripts/secure-desktop.sh"])
+    rc = subprocess.call(["scripts/secure-desktop.sh"])
     #print rc
     if rc == 0:
         resp = cmd_success(cmd_info['cmd'])

@@ -10,6 +10,10 @@ $request_timeout = 10000; //  REQUEST_TIMEOUT in msecs, (> 1000!)
 $command = $_POST['command'];
 //$command = "TEST";
 // echo "Command: $command <BR>";
+if (trim($command) == "START-VNC"){
+  $remote_addr = $_SERVER['REMOTE_ADDR'];
+  $command = $command . " {\"REMOTE_ADDR\": \"" . $remote_addr . "\"}";
+}
 
 $alert_param = ',"Alert": "True"';
 
