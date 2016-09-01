@@ -1521,8 +1521,9 @@ function startVnc()
 {
   var command = "START-VNC";
   sendCmdSrvCmd(command, genericCmdHandler);
+  var loc = window.location;
   var url = "http://" + loc.hostname + ":6080/vnc.html";
-  var loc = window.open(url,"_blank");
+  var resp = window.open(url,"_blank");
   return true;
 }
 
