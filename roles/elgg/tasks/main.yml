@@ -1,8 +1,12 @@
+- name: Determine if software is already downloaded
+  stat: path=/opt/elgg/install.php
+  register: elgg
+
 - name: Get the ELGG software
   git:  name=https://github.com/Elgg/Elgg
         version={{ elgg_version }}
         dest=/opt/elgg
-  when: not {{ use_cache }} and not {{ no_network }}
+  when: not {{ use_cache }} and not {{ no_network }} and elgg.stat.exists is defined and not elgg.stat.exists
   tags:
     - download2
 
