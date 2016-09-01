@@ -6,7 +6,7 @@ source /etc/init.d/functions
 
 unset VNCSERVERARGS
 VNCSERVERS="1:xsce-admin"
-VNCSERVERARGS[1]="-localhost -geometry 800x600"
+VNCSERVERARGS[1]="-localhost -geometry 1152x864"
 VNCSERVERARGS[2]="-geometry 1152x864"
 VNCSERVERARGS[3]="-geometry 1152x864"
 
