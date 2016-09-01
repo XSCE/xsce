@@ -102,6 +102,11 @@ function controlButtonsEvents() {
   $("#POWEROFF").click(function(){
     poweroffServer();
   });
+
+  $("#START-VNC").click(function(){
+    startVnc();
+  });
+
   console.log(' REBOOT and POWEROFF set');
 }
 
@@ -1516,9 +1521,8 @@ function startVnc()
 {
   var command = "START-VNC";
   sendCmdSrvCmd(command, genericCmdHandler);
-  var loc = window.location;
   var url = "http://" + loc.hostname + ":6080/vnc.html";
-  $( "#vncIframe" ).prop("src", url); 
+  var loc = window.open(url,"_blank");
   return true;
 }
 
