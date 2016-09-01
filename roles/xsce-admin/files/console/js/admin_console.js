@@ -1495,10 +1495,18 @@ function startVnc()
   var command = "START-VNC";
   sendCmdSrvCmd(command, genericCmdHandler);
   var loc = window.location;
-  var url = "http://" + loc.hostname + ":6080/vnc.html";
-  var win = window.open(url,'_blank');
+  var url = "http://" + loc.hostname + ":6080/vnc_auto.html?password=desktop";
+  var w = 1152;
+  var h = 864;
+  if (w > screen.width){
+     w = screen.width;
+  }
+  if (h > screen.height){
+     h = screen.height;
+  }
+  var win = window.open(url,"Server","menubar=no,resizeable=yes,scrollbars=yes,width=" + w + ",height=" + h);
   win.focus();
-  return true;
+  return false;
 }
 
 function stopVnc()

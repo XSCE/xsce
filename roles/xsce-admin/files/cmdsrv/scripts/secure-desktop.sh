@@ -2,9 +2,10 @@
 # close down the vnc remote desktop
 
 # delete any rules permitting 6080
-rules=`iptables -L INPUT --line-numbers |grep 6080|cut -d" " -f1`
-for rulenum in $rules; do
-  iptables -D INPUT $rulenum
+iptables -L INPUT |grep 6080
+while [ $? -eq 0 ];do
+  iptables -D INPUT 1
+  iptables -L INPUT  |grep 6080
 done
 
 /etc/init.d/vnc stop
