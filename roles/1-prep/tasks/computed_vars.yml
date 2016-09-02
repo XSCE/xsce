@@ -53,8 +53,6 @@
       value: '{{ ansible_memtotal_mb }}'
     - option: 'swap_mb'
       value: '{{ ansible_swaptotal_mb }}'
-    - option: 'machine_id'
-      value: '{{ ansible_machine_id }}'
     - option: 'product_id'
       value: '{{ ansible_product_uuid }}'
 
