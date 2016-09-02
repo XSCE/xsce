@@ -1536,8 +1536,6 @@ function stopVnc()
 {
   var command = "STOP-VNC";
   sendCmdSrvCmd(command, genericCmdHandler);
-  $( "#vncIframe" ).prop("src","about:blank");
-  $( "vncIframe" ).remove();
   return true;
 }
 
