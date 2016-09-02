@@ -1,5 +1,4 @@
     - name: Install MySQL
-      package: name={{ item }}
-               state=present
+      yum: name={{ item }}
       with_items:
         - mysql-server

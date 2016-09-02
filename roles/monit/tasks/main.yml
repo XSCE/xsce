@@ -1,6 +1,6 @@
 - name: Install monit package
-  package: name=monit
-           state=present
+  yum: name=monit
+       state=present
   tags:
     - download
 

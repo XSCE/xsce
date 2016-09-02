@@ -1,6 +1,10 @@
     - name: Install MySQL
+<<<<<<< HEAD
       package: name={{ item }}
                state=present
+=======
+      yum: name={{ item }}
+>>>>>>> parent of a1b9ecb... substitute package for yum module
       with_items:
         - MySQL-python
         - mysql

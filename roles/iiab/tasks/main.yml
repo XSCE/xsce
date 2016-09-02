@@ -1,6 +1,6 @@
 - name: Install IIAB required packages
-  package: name={{ item }}
-           state=present
+  yum: name={{ item }}
+       state=present
   with_items:
     - python-pip
     - gcc

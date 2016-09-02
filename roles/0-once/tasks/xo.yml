@@ -26,8 +26,8 @@
               state=absent
 
 - name: pre-Install packages
-  package: name={{ item }}
-           state=latest
+  yum: name={{ item }}
+       state=latest
   with_items:
    - usbmount
    - man
