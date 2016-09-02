@@ -1,6 +1,6 @@
 - name: Install dhcp package
-  package: name=dhcp
-           state=present
+  yum: name=dhcp
+       state=installed
   tags:
     - download
 

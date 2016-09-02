@@ -1,6 +1,6 @@
 - name: check pip is installed
-  package: name=python-pip
-           state=present
+  yum: name=python-pip
+       state=present
   tags:
     - download
 
@@ -16,8 +16,8 @@
        extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
 
 - name: install gunicorn
-  package: name=python-gunicorn
-           state=present
+  yum: name=python-gunicorn
+       state=present
   tags:
     - download
 

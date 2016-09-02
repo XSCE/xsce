@@ -1,6 +1,6 @@
 - name: Install avahi package
-  package: name={{ item }}
-           state=present
+  yum: name={{ item }}
+       state=present
   with_items:
    - nss-mdns
    - avahi

@@ -1,6 +1,6 @@
 - name: Install idmgr packages
-  package: name={{ item }}
-           state=present
+  yum: name={{ item }}
+       state=installed
   with_items:
    - ds-backup-server
    - idmgr

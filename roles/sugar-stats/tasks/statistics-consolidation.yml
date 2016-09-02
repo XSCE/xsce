@@ -1,6 +1,6 @@
 - name: Install python-pip package
-  package: name=python-pip
-           state=present
+  yum: name=python-pip
+       state=installed
   tags: 
     - download
 
@@ -16,8 +16,8 @@
        extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
 
 - name: Install required libraries
-  package: name={{ item }}
-           state=present
+  yum: name={{ item }}
+       state=installed
   with_items:
     - rrdtool-python
     - python-sqlalchemy

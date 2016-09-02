@@ -1,7 +1,7 @@
 ---
 - name: Install moodle required packages
-  package: name={{ item }}
-           state=present
+  yum: name={{ item }}
+       state=present
   with_items:
     - moodle-xs
     - python-psycopg2

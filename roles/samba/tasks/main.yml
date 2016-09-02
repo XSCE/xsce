@@ -10,8 +10,7 @@
 
 # Install and configure samba server (requires ports 137, 138, 139, 445 open).
 - name: Ensure Samba-related packages are installed.
-  package: name={{ item }} 
-           state=present
+  yum: pkg={{ item }} state=installed
   with_items:
   - samba
   - samba-client

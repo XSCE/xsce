@@ -1,6 +1,6 @@
 - name: Install munin package
-  package: name={{ item }}
-           state=present
+  yum: name={{ item }}
+       state=present
   with_items:
     - munin
     - munin-node

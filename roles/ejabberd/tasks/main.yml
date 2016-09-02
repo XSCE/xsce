@@ -1,6 +1,6 @@
 - name: Install ejabberd packages
-  package: name={{ item }}
-           state=present
+  yum: name={{ item }}
+       state=installed
   with_items:
    - ejabberd-2.1.11
   tags:

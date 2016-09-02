@@ -1,6 +1,6 @@
 - name: Install squid packages
-  package: name={{ item }}
-           state=present
+  yum: name={{ item }}
+       state=installed
   with_items:
     - squid
     - cadaver
