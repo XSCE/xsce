@@ -104,7 +104,15 @@ function controlButtonsEvents() {
   });
 
   $("#START-VNC").click(function(){
-    startVnc();
+  	make_button_disabled("#START-VNC", true);
+  	startVnc();
+  	make_button_disabled("#STOP-VNC", false);
+  });
+
+  $("#STOP-VNC").click(function(){
+  	make_button_disabled("#STOP-VNC", true);
+  	stopVnc();
+  	make_button_disabled("#START-VNC", false);
   });
 
   console.log(' REBOOT and POWEROFF set');
@@ -255,18 +263,6 @@ function instContentButtonsEvents() {
 function utilButtonsEvents() {
   $("#CHGPW").click(function(){
   	changePassword();
-  });
-
-  $("#START-VNC").click(function(){
-  	make_button_disabled("#START-VNC", true);
-  	startVnc();
-  	make_button_disabled("#STOP-VNC", false);
-  });
-
-  $("#STOP-VNC").click(function(){
-  	make_button_disabled("#STOP-VNC", true);
-  	stopVnc();
-  	make_button_disabled("#START-VNC", false);
   });
 
   $("#JOB-STATUS-REFRESH").click(function(){
