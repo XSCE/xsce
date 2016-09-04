@@ -15,10 +15,10 @@
   ignore_errors: True
   when: named_enabled
 
-- name: Stop dansguardian
-  service: name=dansguardian
-           state=stopped
-  when: not dansguardian_enabled
+#- name: Stop dansguardian
+#  service: name=dansguardian
+#          state=stopped
+# when: not dansguardian_enabled
 
 - name: Restart dansguardian
   service: name=dansguardian

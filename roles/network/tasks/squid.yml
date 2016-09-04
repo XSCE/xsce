@@ -3,8 +3,8 @@
        state=installed
   with_items:
     - squid
-    - cadaver
-    - dansguardian
+#    - cadaver
+#    - dansguardian
   tags:
     - download
 
@@ -60,7 +60,7 @@
         mode=0750
         state=directory
 
-- include: dansguardian.yml
+#- include: dansguardian.yml
 
 - name: Stop Squid
   service: name=squid

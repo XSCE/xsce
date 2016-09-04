@@ -119,7 +119,7 @@
   tags:
     - network
 
-- include: hostapd.yml
-  when: not installing
-  tags:
-    - network
+#- include: hostapd.yml
+#  when: not installing
+#  tags:
+#    - network
