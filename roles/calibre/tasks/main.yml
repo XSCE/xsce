@@ -8,7 +8,6 @@
     download2
   when: calibre_install and ansible_distribution == "CentOS"
 
-
 - name: Install calibre
   shell: "{{ downloads_dir }}/calibre-installer.py >> /dev/null"
   args:

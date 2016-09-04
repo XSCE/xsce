@@ -51,4 +51,5 @@ Utilities
 * Display System Storage
 * Perform Internet Speed Test
 * Run Ansible by Tag
-* Troubleshoot Networking
+* Reboot Server
+* Power Off Server
