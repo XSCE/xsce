@@ -9,7 +9,7 @@
 
 - name: Copy home index file
   copy: src=alt-home/index-no-tabs.html
-        dest=/var/www/html/home/index.html
+        dest=/var/www/html/home/index-static.html
         mode=0644
         owner=root
         group=root
