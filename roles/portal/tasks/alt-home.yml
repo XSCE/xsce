@@ -8,9 +8,11 @@
     - /var/www/html/home
 
 - name: Copy home index file
-  copy: src=alt-home/index-no-tabs.html
-        dest=/var/www/html/home/index-static.html
+  copy: src={{ item }}
+        dest=/var/www/html/home
         mode=0644
         owner=root
         group=root
         force=no
+  with_fileglob:
+        - alt-home/*
