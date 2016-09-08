@@ -53,6 +53,7 @@
     - /var/www/html/common/html
     - /var/www/html/common/images
     - /var/www/html/common/assets
+    - /var/www/html/common/menu-defs
 
 - name: Create olpc-scripts directory
   file: path={{ item }}
