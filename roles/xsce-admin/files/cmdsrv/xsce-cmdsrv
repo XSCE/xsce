@@ -1152,7 +1152,7 @@ def install_rachel(cmd_info):
     return resp
 
 def restart_kiwix(cmd_info):
-    rc = subprocess.call(["/usr/bin/systemctl", "restart", "kiwix-serve.service"])
+    rc = subprocess.call(["/usr/bin/xsce-make-kiwix-lib"])
     #print rc
     if rc == 0:
         resp = cmd_success(cmd_info['cmd'])
