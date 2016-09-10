@@ -1,6 +1,13 @@
 // home.js
 // copyright 2016 Tim Moody
 
+// debug
+
+if(typeof debug == 'undefined') {
+    debug = false;
+}
+
+
 // constants
 var zimVersionIdx = "/common/assets/zim_version_idx.json";
 var htmlBaseUrl = "/rachel/modules/";
@@ -177,5 +184,6 @@ function jsonErrhandler (jqXHR, textStatus, errorThrown)
 
 function consoleLog (msg)
 {
-	console.log(msg); // for IE there can be no console messages unless in tools mode
+	if (debug == true)
+	  console.log(msg); // for IE there can be no console messages unless in tools mode
 }
