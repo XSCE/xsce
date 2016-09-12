@@ -5,7 +5,7 @@
 *  Sends command, expects response json back
 */
 $time_start = microtime(true);
-$request_timeout = 10000; //  REQUEST_TIMEOUT in msecs, (> 1000!)
+$request_timeout = 30000; //  REQUEST_TIMEOUT in milliseconds
 
 $command = $_POST['command'];
 //$command = "TEST";
