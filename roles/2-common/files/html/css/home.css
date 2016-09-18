@@ -93,7 +93,7 @@ b { font-weight: bold; }
 
 .content-item ul {
     float: left;  /* float keeps ul from flowing under thumbnail,  */
-    width: 1000px; /* defining max available width keeps float from */
+    /* width: 1000px; commenting out as this was causing text to go outside content box in certain cases (9/15); defining max available width keeps float from */
                   /* squishing multiple columns too closely */
     margin: 10px 0 10px 0;
     font-size: 80%;
