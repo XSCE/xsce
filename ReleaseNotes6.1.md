@@ -4,7 +4,6 @@
 * Calibre -- A tool for managing a library of eBooks, modifyiing their file formats, adding search terms, and making them availabe online.
 * Wordpress -- A content management system which gives students experience with editing wiki pages, blogs, menuing systems, and which is widely used.
 * Dokuwiki -- An alternate wiki system, similar to wordpress, but less popular, which makes transferring wiki materials easy from one school server to another.
-* Schooltool -- An administrative tool for teachers and principals to record student rosters, grade books,  school calendars, and make some or all this information available online, and in printed form.
 * Sugarizer -- Makes some of the sugar activities available to browser clients on laptops, and smart phones/tablets.
 * CUPS -- Common Unix Printing System provides the ability to connect to and share network or USB connected printers.
 
