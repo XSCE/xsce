@@ -102,6 +102,11 @@ function controlButtonsEvents() {
   $("#POWEROFF").click(function(){
     poweroffServer();
   });
+
+  $("#REMOTE").click(function(){
+    remoteToggle();
+  });
+
   console.log(' REBOOT and POWEROFF set');
 }
 
@@ -1498,6 +1503,20 @@ function poweroffServer()
   sendCmdSrvCmd(command, genericCmdHandler);
   alert ("Shutdown Initiated");
   return true;
+}
+
+function remoteToggle()
+{
+  var command = "REMOTE-TOGGLE"
+  sendCmdSrvCmd(command, remoteToggleHandler);
+  alert ("Remote Toggled");
+  return true;
+}
+
+function remoteToggleHandler(data)
+{ 
+   var openvpn = data["openvpn_allowed"];
+   alert ("returned openvpn: " + openvpn);
 }
 
 function getHelp(arg)
