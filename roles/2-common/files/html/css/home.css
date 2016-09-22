@@ -28,7 +28,7 @@ b { font-weight: bold; }
     display: block;
     height: 120px;
     width:100%;
-    background: #000 url('../images/iiab_banner4.png') no-repeat 0 0;
+    background: #000 url('/common/images/iiab_banner4.png') no-repeat 0 0;
     border-radius: 5px;
     margin: auto;
 }
@@ -52,7 +52,7 @@ b { font-weight: bold; }
 /* BEGIN index modules                       */
 /*-------------------------------------------*/
 .content-item {
-    padding: 10px;
+    padding: 10px 0 10px 0;
     border: 1px solid #aaa;
     border-radius: 5px;
     margin-bottom: 2px;
@@ -63,10 +63,20 @@ b { font-weight: bold; }
 .content-item:after  { content: " "; display: table; clear: both; }
 .content-item { *zoom: 1; }
 
+.content-icon {
+	  display: table-cell;
+	  padding: 0 10px 0 10px;
+}
+
+.content-cell {
+	  display: table-cell;
+	  vertical-align:top;
+	  padding: 0 10px 0 10px;
+}
 .content-item img {
     width: 120px;
-    margin-right: 10px;
-    margin-bottom: 32px;
+    /*margin-right: 10px;
+    margin-bottom: 32px;*/
     border-radius: 5px;
     float: left;
 }
@@ -118,7 +128,7 @@ b { font-weight: bold; }
 
 .content-item .smallblurb {
     font-size: 80%;
-    margin-left: 130px;
+    /* margin-left: 130px;*/
 }
 
 .content-item input[type="text"] { width: 20em; margin-left: 2px; }

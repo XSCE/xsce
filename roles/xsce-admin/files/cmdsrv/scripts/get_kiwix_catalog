@@ -29,7 +29,7 @@ jsonPath = "/etc/xsce/"
 
 # input file
 
-kiwixLibUrl = 'http://www.kiwix.org/library.xml'
+kiwixLibUrl = 'http://download.kiwix.org/library/library.xml'
 zimKiwixUrl = "http://download.kiwix.org/portable/"
 zimKiwixPrefix = "kiwix-0.9+"
 
