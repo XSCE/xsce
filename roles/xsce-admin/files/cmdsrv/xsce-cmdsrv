@@ -580,6 +580,8 @@ def cmd_handler(cmd_msg):
         "RESTART-KIWIX": restart_kiwix,
         "REBOOT": reboot_server,
         "POWEROFF": poweroff_server,
+        "REMOTE-TOGGLE": remote_toggle,
+        "GET-REMOTE": get_remote_settings,
         "CHGPW": change_password
         }
 
@@ -1170,6 +1172,16 @@ def poweroff_server(cmd_info):
     outp = subprocess.Popen(["scripts/poweroff.sh"])
     return (resp)
 
+def remote_toggle(cmd_info):
+    #resp = cmd_success_msg(cmd_info['cmd'], 'Power Off Initiated')
+    outp = subprocess.Popen(["scripts/remote_toggle.sh"])
+    resp = get_remote_settings(cmd_info)
+    return (resp)
+
+def get_remote_settings(cmd_info):
+    outp = subprocess.check_output(["scripts/get_remote_settings.sh"])
+    return (outp)
+    
 def change_password(cmd_info):
     #print cmd_info['cmd_args']
     try:
