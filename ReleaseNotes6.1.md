@@ -24,7 +24,7 @@ If you want to enable a service, you must browse to http://schoolserver.lan/admi
 The install instructions have not changed much since release-6.0. Please refer to https://github.com/XSCE/xsce/wiki/XSCE-Installation for the overall process -- Noting the following:
 
 * On FC22, add "yum" to the installs prior to running the ansible playbook i.e.
-  
+```
     yum install -y git yum ansible1.9
     cd /opt
     mkdir /opt/schoolserver
@@ -32,5 +32,5 @@ The install instructions have not changed much since release-6.0. Please refer t
     git clone https://github.com/XSCE/xsce --branch release-6.1 --depth 1
     cd xsce
     ./install-console
-
+```
 
