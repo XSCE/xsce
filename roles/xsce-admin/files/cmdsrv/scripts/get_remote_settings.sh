@@ -10,5 +10,4 @@ if [ -f /etc/xsce/ssh_allowed ]; then
 else
   ssh=False
 fi
-rtn="{\"openvpn_allowed\":\"$vpn\",'ssh_allowed':\"$ssh\"}"
-echo $rtn
+echo \{\"openvpn_allowed\":\"$vpn\",\"ssh_allowed\":\"$ssh\"\}

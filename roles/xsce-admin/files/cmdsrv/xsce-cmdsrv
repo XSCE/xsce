@@ -1180,7 +1180,8 @@ def remote_toggle(cmd_info):
 
 def get_remote_settings(cmd_info):
     outp = subprocess.check_output(["scripts/get_remote_settings.sh"])
-    return (outp)
+    #resp = json_array("remote",outp)
+    return (outp.strip())
     
 def change_password(cmd_info):
     #print cmd_info['cmd_args']
