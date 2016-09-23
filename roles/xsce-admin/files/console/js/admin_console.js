@@ -1508,15 +1508,17 @@ function poweroffServer()
 function remoteToggle()
 {
   var command = "REMOTE-TOGGLE"
-  sendCmdSrvCmd(command, remoteToggleHandler);
+  sendCmdSrvCmd(command, remoteToggleHandler,"REMOTE",remoteToggleHandler);
   alert ("Remote Toggled");
   return true;
 }
 
 function remoteToggleHandler(data)
 { 
+   consoleLog(data);
    var openvpn = data["openvpn_allowed"];
    alert ("returned openvpn: " + openvpn);
+   return true;
 }
 
 function getHelp(arg)
