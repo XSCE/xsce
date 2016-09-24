@@ -1508,16 +1508,50 @@ function poweroffServer()
 function remoteToggle()
 {
   var command = "REMOTE-TOGGLE"
-  sendCmdSrvCmd(command, remoteToggleHandler,"REMOTE",remoteToggleHandler);
-  alert ("Remote Toggled");
+  sendCmdSrvCmd(command, remoteToggleHandler,"REMOTE");
+  //alert ("Remote Toggled");
   return true;
 }
 
+function remoteSetCurrent()
+{
+  var command = "GET-REMOTE"
+  sendCmdSrvCmd(command, remoteToggleHandler);
+  return true;
+}
+
+function remoteWarn(enabled)
+{
+  if ( enabled == "True" ){
+    var html = "Remote Administration has been turned ON. SSH and openvpn deamons are now permitted. <br>To function correctly, openvpn service must also be started via checkbox in Configure->Services->Openvpn.<br>In future if you want to disable remote maintenance and product improvement, click on the DISABLE Remote Access.";
+    $("#warning").html(html);
+    $("#warning").prop("class", "btn btn-danger");
+    $("#warning").prop("style","align='center'");
+
+  } else {
+    var html = "Remote Administration has been turned OFF. OpenVPN and ssh deamons are now off. <br>In future if you want to re-enable remote maintenance and product improvement, click on the ENABLE Remote Access button.<br>Openvpn requires that the service be enabled via checkbox on the Configure->Services page";
+    $("#warning").html(html);
+    $("#warning").prop("class","btn btn-success");
+    $("#warning").prop("style","align='center'");
+  }
+}
+
+function remoteSetButton(enabled)
+{
+  if ( enabled == "True" ){
+    $("#R-LABEL").html("DISABLE Remote Access");
+    $("#REMOTE").prop("class", "btn btn-lg btn-success");
+  } else {
+    $("#R-LABEL").html("ENABLE Remote Access");
+    $("#REMOTE").prop("class","btn btn-lg btn-danger");
+  }
+}
 function remoteToggleHandler(data)
 { 
    consoleLog(data);
-   var openvpn = data["openvpn_allowed"];
-   alert ("returned openvpn: " + openvpn);
+   var ssh = data["ssh_allowed"];
+   remoteWarn(ssh);
+   remoteSetButton(ssh);
    return true;
 }
 
@@ -1769,11 +1803,12 @@ function displayServerCommandStatus (msg)
 function init ()
 {
   //$('#initDataModal').modal('show');
-
+ 
   initStat["active"] = true;
   initStat["error"] = false;
   initStat["alerted"] = {};
 
+  remoteSetCurrent(); // set the color,button text, warning for REMOTE access  
   displayServerCommandStatus("Starting init");
 
   getServerInfo(); // see if we can connect
