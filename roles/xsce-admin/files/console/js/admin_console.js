@@ -102,6 +102,19 @@ function controlButtonsEvents() {
   $("#POWEROFF").click(function(){
     poweroffServer();
   });
+
+  $("#START-VNC").click(function(){
+  	make_button_disabled("#START-VNC", true);
+  	startVnc();
+  	make_button_disabled("#STOP-VNC", false);
+  });
+
+  $("#STOP-VNC").click(function(){
+  	make_button_disabled("#STOP-VNC", true);
+  	stopVnc();
+  	make_button_disabled("#START-VNC", false);
+  });
+
   console.log(' REBOOT and POWEROFF set');
 }
 
@@ -1497,6 +1510,32 @@ function poweroffServer()
   var command = "POWEROFF"
   sendCmdSrvCmd(command, genericCmdHandler);
   alert ("Shutdown Initiated");
+  return true;
+}
+
+function startVnc()
+{
+  var command = "START-VNC";
+  sendCmdSrvCmd(command, genericCmdHandler);
+  var loc = window.location;
+  var url = "http://" + loc.hostname + ":6080/vnc_auto.html?password=desktop";
+  var w = 1152;
+  var h = 864;
+  if (w > screen.width){
+     w = screen.width;
+  }
+  if (h > screen.height){
+     h = screen.height;
+  }
+  var win = window.open(url,"Server","menubar=no,resizeable=yes,scrollbars=yes,width=" + w + ",height=" + h);
+  win.focus();
+  return false;
+}
+
+function stopVnc()
+{
+  var command = "STOP-VNC";
+  sendCmdSrvCmd(command, genericCmdHandler);
   return true;
 }
 

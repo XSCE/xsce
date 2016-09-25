@@ -1,0 +1,69 @@
+#!/bin/bash
+#
+# description: Starts and stops vncserver. \
+#	       used to provide remote X administration services.
+source /etc/init.d/functions
+
+unset VNCSERVERARGS
+VNCSERVERS="1:xsce-admin"
+VNCSERVERARGS[1]=" -localhost -geometry 1152x864"
+VNCSERVERARGS[2]="-geometry 1152x864"
+VNCSERVERARGS[3]="-geometry 1152x864"
+
+start() {
+    echo -n $"Starting VNC server: "
+    ulimit -S -c 0 >/dev/null 2>&1
+
+    if [ ! -d /tmp/.X11-unix ]
+    then
+        mkdir -m 1777 /tmp/.X11-unix || :
+    fi
+    for display in ${VNCSERVERS}
+    do
+        echo -n "${display} "
+	unset BASH_ENV ENV
+	DISP="${display%%:*}"
+	export USER="${display##*:}"
+	export VNCUSERARGS="${VNCSERVERARGS[${DISP}]}"
+        su - ${USER} -c "cd ~${USER} && [ -f .vnc/passwd ] && vncserver :${DISP} ${VNCUSERARGS}"
+    done
+}
+
+stop() {
+    echo -n $"Shutting down VNC server: "
+    for display in ${VNCSERVERS}
+    do
+        echo -n "${display} "
+	unset BASH_ENV ENV
+	export USER="${display##*:}"
+	su ${USER} -c "vncserver -kill :${display%%:*}" >/dev/null 2>&1
+    done
+}
+
+# See how we were called.
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart|reload)
+	stop
+	sleep 3
+	start
+	;;
+  condrestart)
+	if [ -f /var/lock/subsys/vncserver ]; then
+	    stop
+	    sleep 3
+	    start
+	fi
+	;;
+  status)
+	status Xvnc
+	;;
+  *)
+	echo $"Usage: $0 {start|stop|restart|condrestart|status}"
+	exit 1
+esac
