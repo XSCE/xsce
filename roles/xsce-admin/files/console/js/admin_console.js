@@ -34,6 +34,9 @@ var langGroups = {"en":"eng"}; // language codes to treat as a single code
 var selectedLangs = []; // languages selected by gui for display of content
 var selectedZims = [];
 var sysStorage = {};
+var openvpn_enabled = 'false';
+var teamviewer_enabled = 'false';
+var remote_admin_allowed = 'false';
 sysStorage.zims_selected_size = 0;
 
 // because jquery does not percolate .fail conditions in async chains
@@ -103,8 +106,8 @@ function controlButtonsEvents() {
     poweroffServer();
   });
 
-  $("#REMOTE").click(function(){
-    remoteToggle();
+  $("#REMOTE-ADMIN-CTL").click(function(){
+    remoteContol();
   });
 
   console.log(' REBOOT and POWEROFF set');
@@ -1505,19 +1508,41 @@ function poweroffServer()
   return true;
 }
 
-function remoteToggle()
+function remoteControl()
 {
-  var command = "REMOTE-TOGGLE"
-  sendCmdSrvCmd(command, remoteToggleHandler,"REMOTE");
-  //alert ("Remote Toggled");
+  var cmd_args = {};
+  var cmd_args = {};
+  var command = "REMOTE-ADMIN-CTL"
+  if (remote_admin_allowed){
+     cmd_args['activate'] = 'false';
+     remote_admin_allowed = 'false';
+  } else {
+     cmd_args['activate'] = 'true';
+     remote_admin_allowed = 'true';
+  }
+  sendCmdSrvCmd(command, remoteControlHandler,"REMOTE-ADMIN-CTL",,cmd_args);
+  //alert ("RemoteControl cmd sent");
   return true;
 }
 
 function remoteSetCurrent()
 {
-  var command = "GET-REMOTE"
-  sendCmdSrvCmd(command, remoteToggleHandler);
+  var command = "GET-REMOTE-ADMIN-STATUS"
+  sendCmdSrvCmd(command, remoteStatusHandler);
   return true;
+}
+
+function remoteStatusHandler(data)
+{ 
+   consoleLog(data);
+   // set the globals
+   openvpn_enabled = data["openvpn_enabled"];
+   teamviewer_enabled = data["teamviewer_enabled"];
+   remote_admin_allowed = data["remote_admin_allowed"];
+
+   remoteWarn(ssh);
+   remoteSetButton(ssh);
+   return true;
 }
 
 function remoteWarn(enabled)
@@ -1546,7 +1571,7 @@ function remoteSetButton(enabled)
     $("#REMOTE").prop("class","btn btn-lg btn-danger");
   }
 }
-function remoteToggleHandler(data)
+function remoteConrolHandler(data)
 { 
    consoleLog(data);
    var ssh = data["ssh_allowed"];
