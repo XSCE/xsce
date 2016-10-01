@@ -86,9 +86,6 @@
   template: src=elgg.conf dest=/etc/httpd/conf.d/elgg.conf
   when: mysql_enabled and elgg_enabled
 
-- name: Change permissions on engine directory so apache can write
-  file: path=/opt/elgg/ owner=apache mode=0755 state=directory
-
 - name: Create an upload directory that Apache can write in or elgg
   file: path={{ elgg_upload_path }} state=directory owner=apache
 
