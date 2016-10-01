@@ -1,0 +1,8 @@
+RewriteEngine on
+
+Alias /daloradius /opt/schoolserver/daloradius
+<Directory /opt/schoolserver/daloradius>
+    Options Indexes FollowSymLinks
+    AllowOverride All
+    Require all granted
+</Directory>
