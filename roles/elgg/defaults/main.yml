@@ -9,8 +9,8 @@ elgg_enabled: False
 
 # following variables used in elgg engine/settings.php template
 timezone: America/New_York
-dbuser: elgguser
-dbpassword: "{{ elgg_mysql_password }}"
+dbuser: Admin
+dbpassword: changeme
 dbname: elggdb
 dbhost: localhost
 dbprefix: elgg_

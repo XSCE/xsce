@@ -78,7 +78,7 @@
 
 #- use template to fix up settings in engine/settings.php with our variables substituted into engine/settings.example.php
 - name: Substitute our parameters in engine/settings.example.php
-  template: src="/opt/{{ elgg_xx }}/engine/settings.example.php"
+  template: src="settings.php.j2"
             dest="/opt/{{ elgg_xx }}/engine/settings.php"
             owner=apache
 
