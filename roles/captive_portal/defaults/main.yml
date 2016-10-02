@@ -1,0 +1,7 @@
+---
+# The values here are default local variables.
+captive_portal: True
+freeradius_db_password: g0adm1n
+freeradius_admin_user: xsce-admin
+freeradius_admin_password: g0adm1n
+freeradius_secret: g0adm1n

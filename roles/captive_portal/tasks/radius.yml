@@ -11,6 +11,9 @@
 - name: Create a new database with name radius
   mysql_db: name=radius state=present
 
+- name: Create the radius user
+  mysql_user: name=radius password={{ freeradius_db_password }} priv=*.*:SELECT state=present
+
 - name: Copy database dump file setup.sql to remote host...
   template: src=radius/setup.sql.j2 dest=/tmp/setup.sql
 

@@ -1,0 +1,7 @@
+[captive-portal]
+name=captive-portal
+failovermethod=priority
+baseurl=http://people.sugarlabs.org/anish/captive-portal-repo/
+enabled=1
+metadata_expire=1d
+gpgcheck=0

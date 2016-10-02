@@ -1,0 +1,8 @@
+- include: radius.yml
+  when: not xsce_prepped
+  tags:
+    - radius
+
+- name: ask systemd to reread the unit files, picks up changes done
+  shell: systemctl daemon-reload
+  when: not installing

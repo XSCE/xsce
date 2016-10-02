@@ -1,0 +1,4 @@
+#!/bin/sh
+#
+#Allow IP masquerading through this box
+/usr/sbin/iptables -t nat -A POSTROUTING -o "{{ xsce_wan_iface }}" -j MASQUERADE

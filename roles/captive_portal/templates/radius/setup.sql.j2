@@ -11,11 +11,11 @@
 #
 #  Create default administrator for RADIUS
 #
-CREATE USER 'radius'@'localhost';
-SET PASSWORD FOR 'radius'@'localhost' = PASSWORD('{{ freeradius_db_password }}');
+# CREATE USER 'radius'@'localhost';
+# SET PASSWORD FOR 'radius'@'localhost' = PASSWORD('{{ freeradius_db_password }}');
 
 # The server can read any table in SQL
-GRANT SELECT ON radius.* TO 'radius'@'localhost';
+# GRANT SELECT ON radius.* TO 'radius'@'localhost';
 
 # The server can write to the accounting and post-auth logging table.
 #

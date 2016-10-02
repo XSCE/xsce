@@ -16,6 +16,13 @@
             owner=root
             mode=0666
 
+- name: Install captive-portal repo
+  template: backup=yes
+            dest=/etc/yum.repos.d/captive-portal.repo
+            src=captive-portal.repo
+            owner=root
+            mode=0666
+
 - name: Install rpmfusion-free-updates repo -- for exfat
   template: dest=/etc/yum.repos.d/rpmfusion-free-updates.repo
             src=rpmfusion-free-updates.repo

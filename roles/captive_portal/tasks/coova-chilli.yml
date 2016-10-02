@@ -1,0 +1,26 @@
+- name: Install coova-chilli and dependencies
+  yum: name={{ item }}
+       state=installed
+  with_items:
+    - coova-chilli
+    - haserl
+  tags:
+    - download
+
+- name: Copy coova-chilli config files
+  template: src={{ item.src }} 
+            dest={{ item.dest }}
+            owner={{ item.owner }}
+            group={{ item.group }}
+            mode={{ item.mode }}
+  with_items:
+    - src: 'chilli/config.j2'
+      dest: '/etc/chilli/config'
+      owner: 'root'
+      group: 'root'
+      mode: '0755'
+    - src: 'chilli/ipup.sh.j2'
+      dest: '/etc/chilli/ipup.sh'
+      owner: 'root'
+      group: 'root'
+      mode: '0755'

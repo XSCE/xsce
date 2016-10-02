@@ -10,8 +10,8 @@
 #   Local Network Configurations
 # 
 
-HS_WANIF=enp3s0            # WAN Interface toward the Internet
-HS_LANIF=br0		   # Subscriber Interface for client devices
+HS_WANIF="{{ xsce_wan_iface }}"            # WAN Interface toward the Internet
+HS_LANIF="{{ xsce_lan_iface }}"		   # Subscriber Interface for client devices
 #HS_NETWORK=10.1.0.0	   # HotSpot Network (must include HS_UAMLISTEN)
 HS_NETWORK=172.18.100.0	   # HotSpot Network (must include HS_UAMLISTEN)
 HS_NETMASK=255.255.0.0   # HotSpot Network Netmask
@@ -39,7 +39,7 @@ HS_NASID=nas01
 HS_RADIUS=localhost
 HS_RADIUS2=localhost
 # HS_UAMALLOW=www.coova.org
-HS_RADSECRET=testing123    # Set to be your RADIUS shared secret
+HS_RADSECRET={{ freeradius_secret }}    # Set to be your RADIUS shared secret
 HS_UAMSECRET=change-me     # Set to be your UAM secret
 HS_UAMALIASNAME=chilli
 
@@ -152,7 +152,7 @@ HS_UAMHOMEPAGE=http://\$HS_UAMLISTEN:\$HS_UAMPORT/www/coova.html
 # The up.sh script will allow these local ports to be used, while the default
 # is to block all unwanted traffic to the tun/tap. 
 #
-HS_TCP_PORTS="80 443 8008 3000"
+HS_TCP_PORTS="22 80 443 8008 3000"
 HS_UDP_PORTS="1701"
 
 ###
