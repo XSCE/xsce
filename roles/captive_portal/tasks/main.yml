@@ -21,12 +21,16 @@
 
 - name: Stop dhcpd
   service: name=dhcpd state=stopped
+  when: (not squid_enabled) and (not dansduardian_enabled)
 
 - name: Start radiusd
   service: name=radiusd state=started
+  when: (not squid_enabled) and (not dansduardian_enabled)
 
 - name: Start coova-chilli
   service: name=chilli state=started
+  when: (not squid_enabled) and (not dansduardian_enabled)
 
 - name: Restart apache
   service: name=httpd state=restarted
+  when: (not squid_enabled) and (not dansduardian_enabled)
