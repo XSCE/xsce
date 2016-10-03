@@ -5,3 +5,7 @@ freeradius_db_password: g0adm1n
 freeradius_admin_user: xsce-admin
 freeradius_admin_password: g0adm1n
 freeradius_secret: g0adm1n
+daloradius_src_file: daloradius
+daloradius_path: /opt
+freeradius_db_setup: False
+daloradius_db_setup: False

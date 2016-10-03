@@ -8,6 +8,10 @@
   tags:
     - download
 
+- name: Remove the radius database if it exists
+  mysql_db: name=radius state=absent
+  ignore_errors: yes
+
 - name: Create a new database with name radius
   mysql_db: name=radius state=present
 
