@@ -1,6 +1,6 @@
 #! /bin/bash
 
-if [ -e /.xsce-booted ] ; then
+if [ -e /.xsce-booted* ] ; then
     systemctl disable xsce-prep
     exit 0
 fi
