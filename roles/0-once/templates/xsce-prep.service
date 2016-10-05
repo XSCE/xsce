@@ -6,6 +6,7 @@ After=network.target local-fs.target
 Type=forking
 PIDFile=/var/run/xsce-prep.pid
 ExecStart=/sbin/xsce-prep 
+TimeoutSec=600
 
 [Install]
 WantedBy=multi-user.target
