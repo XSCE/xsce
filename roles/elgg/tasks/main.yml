@@ -1,14 +1,29 @@
-- name: Determine if software is already downloaded
-  stat: path=/opt/elgg/install.php
-  register: elgg
-
-- name: Get the ELGG software
-  git:  name=https://github.com/Elgg/Elgg
-        version={{ elgg_version }}
-        dest=/opt/elgg
-  when: not {{ use_cache }} and not {{ no_network }} and elgg.stat.exists is defined and not elgg.stat.exists
+- name: download current version from our copy
+  get_url: url={{ xsce_download_url }}/elgg-{{ elgg_version }}.zip
+           dest={{ downloads_dir }}
+  when: not {{ use_cache }} and not {{ no_network }} 
   tags:
     - download2
+
+- name: Determine if software is already expanded
+  stat: path=/opt/elgg/index.php
+  register: elgg
+
+- name: Expand it to our location
+  unarchive: dest=/opt/
+             src={{ downloads_dir }}/elgg-{{ elgg_version }}.zip
+  when: elgg.stat.exists is defined and not elgg.stat.exists
+
+- name: change ownership
+  file: path=/opt/elgg-{{elgg_version }}
+        owner=apache
+        recurse=yes
+
+- name: Create a link to the versioned elgg folder
+  file: src=./elgg-{{ elgg_version }}
+        dest=/opt/elgg
+        state=link
+        force=true
 
 # elggdb.sql obtained with mysqldump --skip-add-drop-table elggdb > elggdb.sql
 
@@ -47,7 +62,7 @@
   copy: src="/opt/{{ elgg_xx }}/install/config/htaccess.dist"
         dest="/opt/{{ elgg_xx }}/.htaccess"
         mode=0644
-        owner=root
+        owner=apache
         group=root
 
 - name: Modify .htaccess to have RewriteBase as our directory
@@ -63,16 +78,13 @@
 
 #- use template to fix up settings in engine/settings.php with our variables substituted into engine/settings.example.php
 - name: Substitute our parameters in engine/settings.example.php
-  template: src="/opt/{{ elgg_xx }}/engine/settings.example.php"
+  template: src="settings.php.j2"
             dest="/opt/{{ elgg_xx }}/engine/settings.php"
             owner=apache
 
 - name: Install config file for elgg in Apache
   template: src=elgg.conf dest=/etc/httpd/conf.d/elgg.conf
   when: mysql_enabled and elgg_enabled
-
-- name: Change permissions on engine directory so apache can write
-  file: path=/opt/elgg/engine/ owner=apache mode=0755 state=directory
 
 - name: Create an upload directory that Apache can write in or elgg
   file: path={{ elgg_upload_path }} state=directory owner=apache
