@@ -8,6 +8,6 @@ FSLABEL=CentOS-7-XSCE-6.1-LIVE
 CACHE=/opt/schoolserver/yum-packages-CentOS
 LOG=xsce-spin.log
 
-livecd-creator -c $KSCFG -f 6.1-b$FSLABEL --title $FSLABEL --product=CentOS --releasever=7 --cache=$CACHE
+livecd-creator -c $KSCFG -f release-$FSLABEL --title $FSLABEL --product=CentOS --releasever=7 --cache=$CACHE
 #| tee -a $LOG
 
