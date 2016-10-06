@@ -1,13 +1,15 @@
-- name: download current version from our copy
-  get_url: url={{ xsce_download_url }}/elgg-{{ elgg_version }}.zip
-           dest={{ downloads_dir }}
-  when: not {{ use_cache }} and not {{ no_network }} 
-  tags:
-    - download2
-
 - name: Determine if software is already expanded
   stat: path=/opt/elgg/index.php
   register: elgg
+  tags:
+    - download2
+
+- name: download current version from our copy
+  get_url: url={{ xsce_download_url }}/elgg-{{ elgg_version }}.zip
+           dest={{ downloads_dir }}
+  when: not {{ use_cache }} and not {{ no_network }} and elgg.stat.exists is defined and not elgg.stat.exists
+  tags:
+    - download2
 
 - name: Expand it to our location
   unarchive: dest=/opt/
