@@ -4,7 +4,6 @@ After=network.target local-fs.target
 
 [Service]
 Type=forking
-PIDFile=/var/run/xsce-prep.pid
 ExecStart=/sbin/xsce-prep 
 TimeoutSec=600
 
