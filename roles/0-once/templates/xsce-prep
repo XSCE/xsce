@@ -1,6 +1,6 @@
 #! /bin/bash
 
-if [ -e /.xsce-booted ] ; then
+if [ -e /.xsce-booted* ] ; then
     systemctl disable xsce-prep
     exit 0
 fi
@@ -9,8 +9,8 @@ fi
 cd /opt/schoolserver/xsce/
 
 if [ -f  xsce-kickstart.log ] ; then
-    result=\`cat xsce-kickstart.log | grep failed=0 | awk '{print \$6}' | wc -l\`
-    if [ \$result -eq 1 ] ; then
+    result=`cat xsce-kickstart.log | grep failed=1 | awk '{print $6}' | wc -l`
+    if [ $result = 0 ] ; then
         # ran to completion
         ./xsce-network > xsce-firstboot.log
         touch /.xsce-booted
