@@ -107,7 +107,7 @@ function controlButtonsEvents() {
   });
 
   $("#REMOTE-ADMIN-CTL").click(function(){
-    remoteContol();
+    remoteControl();
   });
 
   console.log(' REBOOT and POWEROFF set');
@@ -1520,19 +1520,23 @@ function remoteControl()
      cmd_args['activate'] = 'true';
      remote_admin_allowed = 'true';
   }
-  sendCmdSrvCmd(command, remoteControlHandler,"REMOTE-ADMIN-CTL",,cmd_args);
+  sendCmdSrvCmd(command, remoteControlHandler,"REMOTE-ADMIN-CTL",errRemoteCallback,cmd_args);
   //alert ("RemoteControl cmd sent");
   return true;
+}
+
+function errRemoteCallback(){
+  alert("error in remote_admin_ctl");
 }
 
 function remoteSetCurrent()
 {
   var command = "GET-REMOTE-ADMIN-STATUS"
-  sendCmdSrvCmd(command, remoteStatusHandler);
+  sendCmdSrvCmd(command, remoteControlHandler);
   return true;
 }
 
-function remoteStatusHandler(data)
+function remoteControlHandler(data)
 { 
    consoleLog(data);
    // set the globals
@@ -1540,21 +1544,21 @@ function remoteStatusHandler(data)
    teamviewer_enabled = data["teamviewer_enabled"];
    remote_admin_allowed = data["remote_admin_allowed"];
 
-   remoteWarn(ssh);
-   remoteSetButton(ssh);
+   remoteWarn(remote_admin_allowed);
+   remoteSetButton(remote_admin_allowed);
    return true;
 }
 
 function remoteWarn(enabled)
 {
   if ( enabled == "True" ){
-    var html = "Remote Administration has been turned ON. SSH and openvpn deamons are now permitted. <br>To function correctly, openvpn service must also be started via checkbox in Configure->Services->Openvpn.<br>In future if you want to disable remote maintenance and product improvement, click on the DISABLE Remote Access.";
+    var html = "Remote Administration has been turned ON. Openvpn and Teamviewer are now permitted. <br>Openvpn or Teamviewer services must also be started via checkbox in Configure->Services->Openvpn.<br>";
     $("#warning").html(html);
     $("#warning").prop("class", "btn btn-danger");
     $("#warning").prop("style","align='center'");
 
   } else {
-    var html = "Remote Administration has been turned OFF. OpenVPN and ssh deamons are now off. <br>In future if you want to re-enable remote maintenance and product improvement, click on the ENABLE Remote Access button.<br>Openvpn requires that the service be enabled via checkbox on the Configure->Services page";
+    var html = "Remote Administration has been turned OFF. OpenVPN and Teamviewer deamons are now off. <br>In future if you want to re-enable remote maintenance and product improvement, click on the ENABLE Remote Access button.";
     $("#warning").html(html);
     $("#warning").prop("class","btn btn-success");
     $("#warning").prop("style","align='center'");
@@ -1574,7 +1578,7 @@ function remoteSetButton(enabled)
 function remoteConrolHandler(data)
 { 
    consoleLog(data);
-   var ssh = data["ssh_allowed"];
+   remote_admin_allowed = data["remote_admin_allowed"];
    remoteWarn(ssh);
    remoteSetButton(ssh);
    return true;
