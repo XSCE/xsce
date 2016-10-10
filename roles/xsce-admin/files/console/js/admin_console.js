@@ -34,6 +34,9 @@ var langGroups = {"en":"eng"}; // language codes to treat as a single code
 var selectedLangs = []; // languages selected by gui for display of content
 var selectedZims = [];
 var sysStorage = {};
+var openvpn_enabled = 'false';
+var teamviewer_enabled = 'false';
+var remote_admin_allowed = 'false';
 sysStorage.zims_selected_size = 0;
 
 // because jquery does not percolate .fail conditions in async chains
@@ -102,6 +105,15 @@ function controlButtonsEvents() {
   $("#POWEROFF").click(function(){
     poweroffServer();
   });
+
+  $("#REMOTE-ADMIN-CTL").click(function(){
+<<<<<<< HEAD
+    remoteControl();
+=======
+    remoteContol();
+>>>>>>> 3841784263b646d717e045c6966fb72266bda8f4
+  });
+
   console.log(' REBOOT and POWEROFF set');
 }
 
@@ -1500,6 +1512,114 @@ function poweroffServer()
   return true;
 }
 
+function remoteControl()
+{
+  var cmd_args = {};
+  var cmd_args = {};
+  var command = "REMOTE-ADMIN-CTL"
+  if (remote_admin_allowed){
+     cmd_args['activate'] = 'false';
+     remote_admin_allowed = 'false';
+  } else {
+     cmd_args['activate'] = 'true';
+     remote_admin_allowed = 'true';
+  }
+<<<<<<< HEAD
+  sendCmdSrvCmd(command, remoteControlHandler,"REMOTE-ADMIN-CTL",errRemoteCallback,cmd_args);
+=======
+  sendCmdSrvCmd(command, remoteControlHandler,"REMOTE-ADMIN-CTL",,cmd_args);
+>>>>>>> 3841784263b646d717e045c6966fb72266bda8f4
+  //alert ("RemoteControl cmd sent");
+  return true;
+}
+
+<<<<<<< HEAD
+function errRemoteCallback(){
+  alert("error in remote_admin_ctl");
+}
+
+function remoteSetCurrent()
+{
+  var command = "GET-REMOTE-ADMIN-STATUS"
+  sendCmdSrvCmd(command, remoteControlHandler);
+  return true;
+}
+
+function remoteControlHandler(data)
+=======
+function remoteSetCurrent()
+{
+  var command = "GET-REMOTE-ADMIN-STATUS"
+  sendCmdSrvCmd(command, remoteStatusHandler);
+  return true;
+}
+
+function remoteStatusHandler(data)
+>>>>>>> 3841784263b646d717e045c6966fb72266bda8f4
+{ 
+   consoleLog(data);
+   // set the globals
+   openvpn_enabled = data["openvpn_enabled"];
+   teamviewer_enabled = data["teamviewer_enabled"];
+   remote_admin_allowed = data["remote_admin_allowed"];
+
+<<<<<<< HEAD
+   remoteWarn(remote_admin_allowed);
+   remoteSetButton(remote_admin_allowed);
+=======
+   remoteWarn(ssh);
+   remoteSetButton(ssh);
+>>>>>>> 3841784263b646d717e045c6966fb72266bda8f4
+   return true;
+}
+
+function remoteWarn(enabled)
+{
+  if ( enabled == "True" ){
+<<<<<<< HEAD
+    var html = "Remote Administration has been turned ON. Openvpn and Teamviewer are now permitted. <br>Openvpn or Teamviewer services must also be started via checkbox in Configure->Services->Openvpn.<br>";
+=======
+    var html = "Remote Administration has been turned ON. SSH and openvpn deamons are now permitted. <br>To function correctly, openvpn service must also be started via checkbox in Configure->Services->Openvpn.<br>In future if you want to disable remote maintenance and product improvement, click on the DISABLE Remote Access.";
+>>>>>>> 3841784263b646d717e045c6966fb72266bda8f4
+    $("#warning").html(html);
+    $("#warning").prop("class", "btn btn-danger");
+    $("#warning").prop("style","align='center'");
+
+  } else {
+<<<<<<< HEAD
+    var html = "Remote Administration has been turned OFF. OpenVPN and Teamviewer deamons are now off. <br>In future if you want to re-enable remote maintenance and product improvement, click on the ENABLE Remote Access button.";
+=======
+    var html = "Remote Administration has been turned OFF. OpenVPN and ssh deamons are now off. <br>In future if you want to re-enable remote maintenance and product improvement, click on the ENABLE Remote Access button.<br>Openvpn requires that the service be enabled via checkbox on the Configure->Services page";
+>>>>>>> 3841784263b646d717e045c6966fb72266bda8f4
+    $("#warning").html(html);
+    $("#warning").prop("class","btn btn-success");
+    $("#warning").prop("style","align='center'");
+  }
+}
+
+function remoteSetButton(enabled)
+{
+  if ( enabled == "True" ){
+    $("#R-LABEL").html("DISABLE Remote Access");
+    $("#REMOTE").prop("class", "btn btn-lg btn-success");
+  } else {
+    $("#R-LABEL").html("ENABLE Remote Access");
+    $("#REMOTE").prop("class","btn btn-lg btn-danger");
+  }
+}
+function remoteConrolHandler(data)
+{ 
+   consoleLog(data);
+<<<<<<< HEAD
+   remote_admin_allowed = data["remote_admin_allowed"];
+=======
+   var ssh = data["ssh_allowed"];
+>>>>>>> 3841784263b646d717e045c6966fb72266bda8f4
+   remoteWarn(ssh);
+   remoteSetButton(ssh);
+   return true;
+}
+
 function getHelp(arg)
 {
   $.get( "help/" + arg, function( data ) {
@@ -1748,11 +1868,12 @@ function displayServerCommandStatus (msg)
 function init ()
 {
   //$('#initDataModal').modal('show');
-
+ 
   initStat["active"] = true;
   initStat["error"] = false;
   initStat["alerted"] = {};
 
+  remoteSetCurrent(); // set the color,button text, warning for REMOTE access  
   displayServerCommandStatus("Starting init");
 
   getServerInfo(); // see if we can connect
