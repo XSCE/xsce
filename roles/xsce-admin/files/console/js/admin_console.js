@@ -107,11 +107,7 @@ function controlButtonsEvents() {
   });
 
   $("#REMOTE-ADMIN-CTL").click(function(){
-<<<<<<< HEAD
     remoteControl();
-=======
-    remoteContol();
->>>>>>> 3841784263b646d717e045c6966fb72266bda8f4
   });
 
   console.log(' REBOOT and POWEROFF set');
@@ -1514,26 +1510,22 @@ function poweroffServer()
 
 function remoteControl()
 {
-  var cmd_args = {};
-  var cmd_args = {};
+  var args = '';
   var command = "REMOTE-ADMIN-CTL"
-  if (remote_admin_allowed){
-     cmd_args['activate'] = 'false';
-     remote_admin_allowed = 'false';
+  consoleLog('remote_admin_allowed' + remote_admin_allowed);
+  if (remote_admin_allowed == 'True'){
+     args = 'False';
+     remote_admin_allowed = 'False';
   } else {
-     cmd_args['activate'] = 'true';
-     remote_admin_allowed = 'true';
+     args = 'True';
+     remote_admin_allowed = 'True';
   }
-<<<<<<< HEAD
-  sendCmdSrvCmd(command, remoteControlHandler,"REMOTE-ADMIN-CTL",errRemoteCallback,cmd_args);
-=======
-  sendCmdSrvCmd(command, remoteControlHandler,"REMOTE-ADMIN-CTL",,cmd_args);
->>>>>>> 3841784263b646d717e045c6966fb72266bda8f4
+//  sendCmdSrvCmd(command, remoteControlHandler,"REMOTE-ADMIN-CTL",errRemoteCallback,cmd_args);
+    formCommand(command,'activate',args);
   //alert ("RemoteControl cmd sent");
   return true;
 }
 
-<<<<<<< HEAD
 function errRemoteCallback(){
   alert("error in remote_admin_ctl");
 }
@@ -1546,16 +1538,6 @@ function remoteSetCurrent()
 }
 
 function remoteControlHandler(data)
-=======
-function remoteSetCurrent()
-{
-  var command = "GET-REMOTE-ADMIN-STATUS"
-  sendCmdSrvCmd(command, remoteStatusHandler);
-  return true;
-}
-
-function remoteStatusHandler(data)
->>>>>>> 3841784263b646d717e045c6966fb72266bda8f4
 { 
    consoleLog(data);
    // set the globals
@@ -1563,34 +1545,21 @@ function remoteStatusHandler(data)
    teamviewer_enabled = data["teamviewer_enabled"];
    remote_admin_allowed = data["remote_admin_allowed"];
 
-<<<<<<< HEAD
    remoteWarn(remote_admin_allowed);
    remoteSetButton(remote_admin_allowed);
-=======
-   remoteWarn(ssh);
-   remoteSetButton(ssh);
->>>>>>> 3841784263b646d717e045c6966fb72266bda8f4
    return true;
 }
 
 function remoteWarn(enabled)
 {
   if ( enabled == "True" ){
-<<<<<<< HEAD
     var html = "Remote Administration has been turned ON. Openvpn and Teamviewer are now permitted. <br>Openvpn or Teamviewer services must also be started via checkbox in Configure->Services->Openvpn.<br>";
-=======
-    var html = "Remote Administration has been turned ON. SSH and openvpn deamons are now permitted. <br>To function correctly, openvpn service must also be started via checkbox in Configure->Services->Openvpn.<br>In future if you want to disable remote maintenance and product improvement, click on the DISABLE Remote Access.";
->>>>>>> 3841784263b646d717e045c6966fb72266bda8f4
     $("#warning").html(html);
     $("#warning").prop("class", "btn btn-danger");
     $("#warning").prop("style","align='center'");
 
   } else {
-<<<<<<< HEAD
     var html = "Remote Administration has been turned OFF. OpenVPN and Teamviewer deamons are now off. <br>In future if you want to re-enable remote maintenance and product improvement, click on the ENABLE Remote Access button.";
-=======
-    var html = "Remote Administration has been turned OFF. OpenVPN and ssh deamons are now off. <br>In future if you want to re-enable remote maintenance and product improvement, click on the ENABLE Remote Access button.<br>Openvpn requires that the service be enabled via checkbox on the Configure->Services page";
->>>>>>> 3841784263b646d717e045c6966fb72266bda8f4
     $("#warning").html(html);
     $("#warning").prop("class","btn btn-success");
     $("#warning").prop("style","align='center'");
@@ -1610,11 +1579,7 @@ function remoteSetButton(enabled)
 function remoteConrolHandler(data)
 { 
    consoleLog(data);
-<<<<<<< HEAD
    remote_admin_allowed = data["remote_admin_allowed"];
-=======
-   var ssh = data["ssh_allowed"];
->>>>>>> 3841784263b646d717e045c6966fb72266bda8f4
    remoteWarn(ssh);
    remoteSetButton(ssh);
    return true;

@@ -1,21 +1,21 @@
 - name: Install httpd required packages
-  package: name={{ item }}
-           state=present
+  yum: name={{ item }}
+       state=present
   with_items:
     - httpd
     - php
 
 - name: Install packages for console
-  package: name={{ item }}
-           state=present
+  yum: name={{ item }}
+       state=present
   with_items:
     - mod_ssl
     - mod_authnz_external
     - pwauth
 
 - name: Install packages for cmdsrv
-  package: name={{ item }}
-           state=present
+  yum: name={{ item }}
+       state=present
   with_items:
     - gcc
     - gcc-c++
