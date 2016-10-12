@@ -328,10 +328,6 @@ function configFieldsEvents() {
   $("#gui_static_wan_nameserver").on('blur', function(){
     staticIpVal("#gui_static_wan_nameserver");
   });
-  // openvpn events
-  $("#handle").on('blur', function(){
-    openvpn_handle_change();
-  });
 }
 function make_button_disabled(id, grey_out) {
 	// true means grey out the button and disable, false means the opposite
@@ -458,13 +454,6 @@ function staticIpVal(fieldId) {
     }
     else
       return true;
-}
-
-function openvpn_handle_change(){
-  var handle=$("#handle").val();
-  handle = handle.replace(/ /g,'_');
-  $("#handle").val(handle);
-  alert("openvpn_handle_change");
 }
 
 //var testCmdHandler = function (data, textStatus, jqXHR) is not necessary
