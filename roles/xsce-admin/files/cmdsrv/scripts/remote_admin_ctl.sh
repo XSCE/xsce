@@ -18,6 +18,7 @@ if [ "$1" == "True" ]; then
   fi
   sed -i -e 's/^REMOTE_ADMIN_ALLOWED.*/REMOTE_ADMIN_ALLOWED=True/' /etc/xsce/xsce.env
   if [ "$openvpn_enabled" == "True" ];then
+     if [ -f /etc/openvpn/xsce-vpn.conf ]; then
      systemctl enable openvpn@xscenet
      systemctl start openvpn@xscenet
   fi
