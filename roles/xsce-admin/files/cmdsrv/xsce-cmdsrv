@@ -616,7 +616,7 @@ def cmd_handler(cmd_msg):
     cmd_info['cmd_msg'] = cmd_msg
     cmd_info['cmd'] = cmd
     cmd_info['cmd_args'] = cmd_args
-    print (cmd_info)
+    #print (cmd_info)
 
     # commands that run scripts should check for malicious characters in cmd_args and return error if found
     # bad_command = validate_command(cmd_args)

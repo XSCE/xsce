@@ -1832,7 +1832,6 @@ function displayServerCommandStatus (msg)
 function init ()
 {
   //$('#initDataModal').modal('show');
- 
   initStat["active"] = true;
   initStat["error"] = false;
   initStat["alerted"] = {};
