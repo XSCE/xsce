@@ -328,8 +328,11 @@ function configFieldsEvents() {
   $("#gui_static_wan_nameserver").on('blur', function(){
     staticIpVal("#gui_static_wan_nameserver");
   });
+  // openvpn events
+  $("#handle").on('blur', function(){
+    openvpn_handle_change();
+  });
 }
-
 function make_button_disabled(id, grey_out) {
 	// true means grey out the button and disable, false means the opposite
   if (grey_out){
@@ -455,6 +458,13 @@ function staticIpVal(fieldId) {
     }
     else
       return true;
+}
+
+function openvpn_handle_change(){
+  var handle=$("#handle").val();
+  handle = handle.replace(/ /g,'_');
+  $("#handle").val(handle);
+  alert("openvpn_handle_change");
 }
 
 //var testCmdHandler = function (data, textStatus, jqXHR) is not necessary
@@ -1510,44 +1520,41 @@ function poweroffServer()
 
 function remoteControl()
 {
-  var args = '';
-  var command = "REMOTE-ADMIN-CTL"
-  consoleLog('remote_admin_allowed' + remote_admin_allowed);
+  var cmd_args = {};
+  consoleLog('old remote_admin_allowed: ' + remote_admin_allowed);
   if (remote_admin_allowed == 'True'){
-     args = 'False';
+     cmd_args['activate'] = 'False';
      remote_admin_allowed = 'False';
   } else {
-     args = 'True';
+     cmd_args['activate'] = 'True';
      remote_admin_allowed = 'True';
   }
-//  sendCmdSrvCmd(command, remoteControlHandler,"REMOTE-ADMIN-CTL",errRemoteCallback,cmd_args);
-    formCommand(command,'activate',args);
-  //alert ("RemoteControl cmd sent");
+  var command = "REMOTE-ADMIN-CTL " + JSON.stringify(cmd_args);
+  sendCmdSrvCmd(command, genericCmdHandler);
+  //alert ("RemoteControl cmd: " + command);
+  remoteSetCurrent();
   return true;
 }
 
-function errRemoteCallback(){
-  alert("error in remote_admin_ctl");
-}
-
-function remoteSetCurrent()
-{
-  var command = "GET-REMOTE-ADMIN-STATUS"
-  sendCmdSrvCmd(command, remoteControlHandler);
-  return true;
-}
-
-function remoteControlHandler(data)
+function remoteStatusHandler(data)
 { 
    consoleLog(data);
    // set the globals
    openvpn_enabled = data["openvpn_enabled"];
    teamviewer_enabled = data["teamviewer_enabled"];
    remote_admin_allowed = data["remote_admin_allowed"];
+   var handle = data['handle'];
 
    remoteWarn(remote_admin_allowed);
    remoteSetButton(remote_admin_allowed);
    return true;
+}
+
+function remoteSetCurrent()
+{
+  var command = "GET-REMOTE-ADMIN-STATUS";
+  sendCmdSrvCmd(command, remoteStatusHandler);
+  return true;
 }
 
 function remoteWarn(enabled)
@@ -1575,14 +1582,6 @@ function remoteSetButton(enabled)
     $("#R-LABEL").html("ENABLE Remote Access");
     $("#REMOTE").prop("class","btn btn-lg btn-danger");
   }
-}
-function remoteConrolHandler(data)
-{ 
-   consoleLog(data);
-   remote_admin_allowed = data["remote_admin_allowed"];
-   remoteWarn(ssh);
-   remoteSetButton(ssh);
-   return true;
 }
 
 function getHelp(arg)
@@ -1864,6 +1863,7 @@ function initDone ()
 	  displayServerCommandStatus('<span style="color:green">Init Finished Successfully</span>');
 	  // now turn on navigation
 	  navButtonsEvents();
+          configFieldsEvents();
 	  //$('#initDataModal').modal('hide');
   } else {
     consoleLog("Init Failed");

@@ -32,3 +32,5 @@ else
   systemctl stop teamviewer
   systemctl disable teamviewer
 fi
+exit 0
+

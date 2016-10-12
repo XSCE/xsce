@@ -79,6 +79,11 @@
   ignore_errors: True
   when:    not openvpn_enabled and not installing
 
+- name:    Set the handle
+  template: src=openvpn_handle
+            dest=/etc/xsce/handle
+  when: handle is defined
+
 - name: Add openvpn to service list
   ini_file: dest='{{ service_filelist }}'
             section=openvpn

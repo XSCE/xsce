@@ -580,8 +580,8 @@ def cmd_handler(cmd_msg):
         "RESTART-KIWIX": restart_kiwix,
         "REBOOT": reboot_server,
         "POWEROFF": poweroff_server,
-        "REMOTE-ADMIN-CTL": remote_admin_ctl, #true/false
-        "GET-REMOTE-ADMIN-STATUS": get_remote_admin_status, #returns activated
+        "REMOTE-ADMIN-CTL": remote_admin_ctl, #activate:True/False
+        "GET-REMOTE-ADMIN-STATUS": get_remote_admin_status,
         "CHGPW": change_password
         }
 
@@ -616,7 +616,7 @@ def cmd_handler(cmd_msg):
     cmd_info['cmd_msg'] = cmd_msg
     cmd_info['cmd'] = cmd
     cmd_info['cmd_args'] = cmd_args
-    #print (cmd_info)
+    print (cmd_info)
 
     # commands that run scripts should check for malicious characters in cmd_args and return error if found
     # bad_command = validate_command(cmd_args)
@@ -1174,10 +1174,13 @@ def poweroff_server(cmd_info):
 
 def remote_admin_ctl(cmd_info):
     try:
-        bool_activate = cmd_info['cmd_args']['activate']
-        outp = subprocess.Popen(["scripts/remote_admin_ctl.sh",bool_activate])
-        resp = get_remote_admin_status(cmd_info)
-        return (resp)
+        if 'cmd_args' in cmd_info and 'activate' in cmd_info['cmd_args']:
+            bool_activate = cmd_info['cmd_args']['activate']
+            print("activate:" + bool_activate)
+            outp = subprocess.Popen(["scripts/remote_admin_ctl.sh",bool_activate])
+            return cmd_success("REMOTE-ADMIN-CTL")
+        else:
+            print('cmd_info error')
     except:
         return cmd_malformed(cmd_info['cmd'])
 
