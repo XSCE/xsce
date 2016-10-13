@@ -1,0 +1,100 @@
+- name: Install radius packages
+  yum: name={{ item }}
+       state=installed
+  with_items:
+    - freeradius
+    - freeradius-mysql
+    - freeradius-utils
+  tags:
+    - download
+
+- name: Remove the radius database if it exists
+  mysql_db: name=radius state=absent
+  ignore_errors: yes
+
+- name: Create a new database with name radius
+  mysql_db: name=radius state=present
+
+- name: Create the radius user
+  mysql_user: name=radius password={{ freeradius_db_password }} priv=*.*:SELECT state=present
+
+- name: Copy database dump file setup.sql to remote host...
+  template: src=radius/setup.sql.j2 dest=/tmp/setup.sql
+
+- name: ... and restore it to database radius
+  mysql_db: name=radius state=import target=/tmp/setup.sql
+
+- name: Copy database dump file schema.sql to remote host and restore it to database radius
+  template: src=radius/schema.sql.j2 dest=/tmp/schema.sql
+  
+- name: ... and restore it to database radius
+  mysql_db: name=radius state=import target=/tmp/schema.sql
+
+- name: Copy config file templates
+  template: src={{ item.src }}
+            dest={{ item.dest }}
+            owner={{ item.owner }}
+            group={{ item.group }}
+            mode={{ item.mode }}
+  with_items:
+    - src: 'radius/sql.j2'
+      dest: '/etc/raddb/mods-available/sql'
+      owner: 'root'
+      group: 'root'
+      mode: '0755'
+    - src: 'radius/clients.conf.j2'
+      dest: '/etc/raddb/clients.conf'
+      owner: 'root'
+      group: 'root'
+      mode: '0755'
+    - src: 'radius/inner-tunnel'
+      dest: '/etc/raddb/sites-available/inner-tunnel'
+      owner: 'root'
+      group: 'root'
+      mode: '0755'
+    - src: 'radius/chillispot.conf'
+      dest: '/etc/raddb/mods-config/sql/counter/mysql/chillispot.conf'
+      owner: 'root'
+      group: 'root'
+      mode: '0755'
+
+- name: Copy config files
+  file: src={{ item.src }}
+        dest={{ item.dest }}
+        owner={{ item.owner }}
+        group={{ item.group }}
+        mode={{ item.mode }}
+  with_items: 
+    - src: 'radius/default' 
+      dest: '/etc/raddb/sites-available/default' 
+      owner: 'root'
+      group: 'root' 
+      mode: '0755'
+    - src: 'radius/radiusd.conf'
+      dest: '/etc/raddb/radiusd.conf'
+      owner: 'root'
+      group: 'root'
+      mode: '0755'
+
+
+- name: Add coovachilli counters
+  lineinfile: dest=/etc/raddb/mods-available/sqlcounter line="$INCLUDE ${modconfdir}/sql/counter/${modules.sql.dialect}/chillispot.conf"
+
+- name: Symlink sql mod
+  file: src=/etc/raddb/mods-available/sql dest=/etc/raddb/mods-enabled/sql state=link
+
+- name: Symlink sqlcounter mod
+  file: src=/etc/raddb/mods-available/sqlcounter dest=/etc/raddb/mods-enabled/sqlcounter state=link
+
+- name: Change ownership of config and log directories
+  shell: touch /var/log/radius/radutmp; chown -R radiusd:radiusd /etc/raddb; chown -R radiusd:radiusd /var/log/radius
+
+- name: Create Admin user in radius MySQL database
+  shell: echo "INSERT INTO radcheck (UserName, Attribute, Value, Op) VALUES ('{{ freeradius_admin_user }}', 'Cleartext-Password', '{{ freeradius_admin_password }}', ':=');" | mysql -u root -p{{ mysql_root_password }} radius
+
+- name: Include Coovachilli
+  include: coova-chilli.yml
+
+- name: Include Daloradius
+  include: daloradius.yml
+

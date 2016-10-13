@@ -1,0 +1,35 @@
+- name: Get the daloradius software
+  get_url: url=http://people.sugarlabs.org/anish/daloradius-0.9-9.tar.gz  dest={{ downloads_dir }}/{{ daloradius_src_file }}
+  when: not {{ use_cache }} and not {{ no_network }}
+  async: 300
+  poll: 5
+  tags:
+    - download2
+
+- name: Copy it to permanent location /opt
+  unarchive: src={{ downloads_dir }}/{{ daloradius_src_file }}  
+             dest={{ daloradius_path }}
+
+- name: Change ownership of daloradius directory
+  shell: chown -R apache:apache "{{ daloradius_path }}/daloradius-0.9-9/"
+
+- name: Change permissions of daloradius.conf.php
+  shell: chmod 644 "{{ daloradius_path }}/daloradius-0.9-9/library/daloradius.conf.php"
+
+- name: Copy database dump file mysql-daloradius.sql to remote host and restore it to database radius
+  template: src="{{ daloradius_path }}/daloradius-0.9-9/contrib/db/mysql-daloradius.sql"  dest=/tmp/mysql-daloradius.sql
+  
+- name: ... and restore it to database radius
+  mysql_db: name=radius state=import target=/tmp/mysql-daloradius.sql
+
+- name: Copy the daloradius apache conf file into apache conf directory
+  template: src=daloradius/daloradius.conf.j2 dest=/etc/httpd/conf.d/daloradius.conf
+
+- name: Edit daloradius.conf.php with correct values - CONFIG_DB_USER
+  lineinfile:  dest="{{ daloradius_path }}/daloradius-0.9-9/library/daloradius.conf.php" regexp=CONFIG_DB_USER line="$configValues['CONFIG_DB_USER'] = 'radius';"
+
+- name: Edit daloradius.conf.php with correct values - CONFIG_DB_PASS
+  lineinfile:  dest="{{ daloradius_path }}/daloradius-0.9-9/library/daloradius.conf.php" regexp=CONFIG_DB_PASS line="$configValues['CONFIG_DB_PASS'] = '{{ freeradius_db_password }}';"
+
+- name: Edit daloradius.conf.php with correct values - CONFIG_MAINT_TEST_USER_RADIUSSECRET
+  lineinfile:  dest="{{ daloradius_path }}/daloradius-0.9-9/library/daloradius.conf.php" regexp=CONFIG_MAINT_TEST_USER_RADIUSSECRET line="$configValues['CONFIG_MAINT_TEST_USER_RADIUSSECRET'] = '{{ freeradius_secret }}';"

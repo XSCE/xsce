@@ -1,0 +1,39 @@
+- include: radius.yml
+  when: not xsce_prepped
+  tags:
+    - radius
+
+- name: Edit freeradius service file to ensure that it starts after mysql
+  lineinfile: dest=/etc/systemd/system/multi-user.target.wants/radiusd.service regexp="^(After=.* network.target)" line="\1 mariadb.service" backrefs=yes 
+
+- name: ask systemd to reread the unit files, picks up changes done
+  shell: systemctl daemon-reload
+  when: not installing
+
+- name: Enable radiusd if squid, dansguardian disabled
+  service: name=radiusd enabled=yes
+  when: (not squid_enabled) and (not dansguardian_enabled)
+
+- name: Enable coova-chilli if squid, dansguardian disabled
+  service: name=chilli enabled=yes
+  when: (not squid_enabled) and (not dansguardian_enabled)
+
+- name: Disable dhcpd
+  service: name=dhcpd enabled=no
+  when: (not squid_enabled) and (not dansguardian_enabled)
+
+- name: Stop dhcpd
+  service: name=dhcpd state=stopped
+  when: (not squid_enabled) and (not dansguardian_enabled)
+
+- name: Start radiusd
+  service: name=radiusd state=started
+  when: (not squid_enabled) and (not dansguardian_enabled)
+
+- name: Start coova-chilli
+  service: name=chilli state=started
+  when: (not squid_enabled) and (not dansguardian_enabled)
+
+- name: Restart apache
+  service: name=httpd state=restarted
+  when: (not squid_enabled) and (not dansguardian_enabled)
