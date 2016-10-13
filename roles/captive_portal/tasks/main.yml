@@ -3,6 +3,9 @@
   tags:
     - radius
 
+- name: Edit freeradius service file to ensure that it starts after mysql
+  lineinfile: dest=/etc/systemd/system/multi-user.target.wants/radiusd.service regexp="^(After=.* network.target)" line="\1 mariadb.service" backrefs=yes 
+
 - name: ask systemd to reread the unit files, picks up changes done
   shell: systemctl daemon-reload
   when: not installing

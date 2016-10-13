@@ -9,8 +9,11 @@
 ###
 #   Local Network Configurations
 # 
-
-HS_WANIF="{{ xsce_wan_iface }}"            # WAN Interface toward the Internet
+{% if xsce_wan_iface != "none" %}
+HS_WANIF=            # WAN Interface toward the Internet
+{% else %}
+HS_WANIF={{ xsce_wan_iface }}            # WAN Interface toward the Internet
+{% endif %}
 HS_LANIF="{{ xsce_lan_iface }}"		   # Subscriber Interface for client devices
 #HS_NETWORK=10.1.0.0	   # HotSpot Network (must include HS_UAMLISTEN)
 HS_NETWORK=172.18.100.0	   # HotSpot Network (must include HS_UAMLISTEN)
@@ -162,8 +165,8 @@ HS_MODE=hotspot
 HS_TYPE=coovachilli
 # HS_RADAUTH=1812
 # HS_RADACCT=1813
-HS_ADMUSR=radius
-HS_ADMPWD=radpass
+HS_ADMUSR={{ freeradius_admin_user }}
+HS_ADMPWD={{ freeradius_admin_password }}
 
 
 ###
