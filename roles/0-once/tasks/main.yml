@@ -24,7 +24,9 @@
 - include: fedora.yml
   when: ansible_distribution == "Fedora"
 
-# - include: fix_ansible_version.yml
+- include: fix_ansible_version.yml
+  when: ansible_distribution == "Fedora" and ansible_distribution_version <= "23"
+
 - include: chrony.yml
 - include: prelim.yml
 - include: yum.yml
