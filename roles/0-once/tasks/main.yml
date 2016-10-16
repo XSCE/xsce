@@ -6,6 +6,43 @@
 - include: selinux.yml
   when: ansible_selinux is defined and ansible_version >= '2' and ansible_selinux or ansible_selinux['status'] is defined and ansible_version < '2' and ansible_selinux['status'] != 'disabled'
 
+- name: Set mysqld service name to mysqld for fedora 18
+  set_fact:
+    mysql_service: mysqld
+    no_NM_reload: True
+    is_F18: True
+  when: ansible_distribution_release == "based on Fedora 18" or ansible_distribution_version == "18"
+
+- name: Fedora 20
+  set_fact:
+    is_F20: True
+  when: ansible_distribution == "Fedora" and ansible_distribution_version == "20"
+
+- name: Fedora 21
+  set_fact:
+    is_F21: True
+  when: ansible_distribution == "Fedora" and ansible_distribution_version == "21"
+
+- name: Fedora 22
+  set_fact:
+    is_F22: True
+  when: ansible_distribution == "Fedora" and ansible_distribution_version == "22"
+
+- name: Fedora 23
+  set_fact:
+    is_F23: True
+  when: ansible_distribution == "Fedora" and ansible_distribution_version == "23"
+
+- name: Fedora 24
+  set_fact:
+    is_F24: True
+  when: ansible_distribution == "Fedora" and ansible_distribution_version == "24"
+
+- name: CentOS
+  set_fact:
+    is_CentOS: True
+  when: ansible_distribution == "CentOS"
+
 - include: fl.yml
 - include: prep.yml
 - include: xsce_ini.yml
