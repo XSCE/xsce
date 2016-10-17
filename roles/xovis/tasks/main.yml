@@ -14,6 +14,8 @@
 - name: Determine if xovis is already downloaded
   stat: path={{ downloadds_dir }}/xovis/xxx
   register: xovis
+  tags:
+    - download2
 
 - name: download the latest xovis repo
   git: repo={{ xovis_repo_url }}
