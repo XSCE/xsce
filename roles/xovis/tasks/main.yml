@@ -12,7 +12,7 @@
     - download
 
 - name: Determine if xovis is already downloaded
-  stat: path={{ downloadds_dir }}/xovis/xxx
+  stat: path={{ downloads_dir }}/xovis/xxx
   register: xovis
   tags:
     - download2
