@@ -13,10 +13,11 @@
 # but we use the tar file to get the latest version
 
 - name: Get the owncloud software
-  get_url: url={{ xsce_download_url }}/{{ owncloud_src_file }}  dest={{ downloads_dir }}/{{ owncloud_src_file }}
+  get_url: 
+    url: "{{ xsce_download_url }}/{{ owncloud_src_file }}"
+    dest: "{{ downloads_dir }}"
+    timeout: 300
   when: not {{ use_cache }} and not {{ no_network }}
-  async: 300
-  poll: 5
   tags:
     - download2
 
