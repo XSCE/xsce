@@ -9,11 +9,6 @@
 - include: fl.yml
 - include: prep.yml
 - include: xsce_ini.yml
-- name: Keep yum cache
-  ini_file: dest=/etc/yum.conf
-            section=main
-            option=keepcache
-            value=1
 
 - include: xo.yml
   when: xo_model != "none" or osbuilder is defined
@@ -21,16 +16,16 @@
 - include: centos.yml
   when: ansible_distribution == "CentOS"
 
+- include: yum.yml
+- include: chrony.yml
+- include: cmdsrv.yml
+
 - include: fedora.yml
   when: ansible_distribution == "Fedora"
 
 - include: fix_ansible_version.yml
-  when: ansible_distribution == "Fedora" and ansible_distribution_version <= "23"
 
-- include: chrony.yml
 - include: prelim.yml
-- include: yum.yml
-- include: cmdsrv.yml
 - include: patch_udev.yml
 - include: net_mods.yml
 
