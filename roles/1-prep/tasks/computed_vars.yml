@@ -50,6 +50,8 @@
       value: '{{ xsce_preload }}'
     - option: 'runtime_base_ver'
       value: '{{ xsce_base_ver }}'
+    - option: 'runtime_gui_version'
+      value: '{{ gui_version }}'
     - option: 'kernel'
       value: '{{ ansible_kernel }}'
     - option: 'memory_mb'
