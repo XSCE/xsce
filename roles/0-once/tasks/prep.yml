@@ -1,7 +1,3 @@
-- name: Since f22, dnf has replaced yum, but ansible works with yum
-  command: dnf install -y yum
-  when: ansible_distribution == "Fedora" and ansible_distribution_version|int >= 22
-
 - name: Install xsce-extra repos
   template: backup=yes
             dest=/etc/yum.repos.d/xsce-extra.repo

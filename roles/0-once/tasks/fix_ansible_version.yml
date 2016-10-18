@@ -11,4 +11,4 @@
     - /etc/yum.repos.d/fedora.repo
     - /etc/yum.repos.d/fedora-updates.repo
     - /etc/yum.repos.d/fedora-updates-testing.repo
-  when: ansible_distribution == "Fedora"
+  when: ansible_distribution == "Fedora" and ansible_distribution_version <= "23"
