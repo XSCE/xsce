@@ -1,14 +1,14 @@
-- name: install yum deps for arm!!!
+- name: workaround F23 install yum deps!!!
   shell: dnf install -y python-urlgrabber pyxattr yum-metadata-parser
-  when: ansible_distribution == "Fedora" and ansible_machine == "armv7l" and ansible_distribution_version|int <= 23
+  when: ansible_distribution == "Fedora" and ansible_distribution_version|int <= 23
 
-- name: install yum from Fedora 23 for arm!!!
+- name: workaround F22 install yum from Fedora 23 for arm!!!
   shell: dnf install -y https://kojipkgs.fedoraproject.org//packages/yum/3.4.3/506.fc23/noarch/yum-3.4.3-506.fc23.noarch.rpm
   when: ansible_distribution == "Fedora" and ansible_machine == "armv7l" and ansible_distribution_version|int == 22
 
-- name: install yum if it has been dropped from our distribution -- Fedora 22 uses dnf!!!
+- name: install yum if it has been dropped from our distribution -- Fedora 22+ uses dnf!!!
   shell: dnf install -y yum
-  when: ansible_distribution == "Fedora" and ansible_distribution_version|int <= 24 and ansible_machine != "armv7l"
+  when: ansible_distribution == "Fedora" and ansible_distribution_version|int <= 24
 
 - name: Install yum packages
   yum: name={{ item }}
