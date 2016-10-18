@@ -84,6 +84,6 @@
             group=root
             mode=0755
 
-- name: Enable xsce-prep service
+- name: Don't enable xsce-prep service
   service: name=xsce-prep
-           enabled=yes
+           enabled=no
