@@ -1,3 +1,6 @@
+xsce_base_ver: 2
+gui_version: 1
+
 NUC6_firmware_needed: False
 is_F18: False
 is_F20: False
@@ -5,8 +8,6 @@ is_F21: False
 is_F22: False
 is_F23: False
 is_F24: False
-xsce_base_ver: 0
-gui_version: 1
 udev_needs_patch: False
 installing: True
 xsce_lan_iface: "none"
