@@ -68,3 +68,10 @@
   copy: src=rtl8188eufw.bin dest=/lib/firmware/rtlwifi/
   when: wifi_id  ==  "tplink_WM725M" and xo_model == "none" and not rpi_model is defined
   ignore_errors: true
+
+- name: Record base version
+  lineinfile: dest=/etc/xsce/xsce.env
+              regexp='^BASE_VERSION=*'
+              line='BASE_VERSION="{{ xsce_base_ver }}"'
+              state=present
+

@@ -18,6 +18,6 @@
 # If we got here we're done
 - name: Record base gui version
   lineinfile: dest=/etc/xsce/xsce.env
-              regexp='^BASE_VERSION=*'
-              line='BASE_VERSION="{{ gui_version }}"'
+              regexp='^GUI_VERSION=*'
+              line='GUI_VERSION="{{ gui_version }}"'
               state=present
