@@ -1,6 +1,7 @@
 - name: Download the latest stable version of sugarizer from location under our control
   get_url: url={{ xsce_download_url }}/{{ sugarizer_version }}.tar.gz
            dest={{ downloads_dir }}/{{ sugarizer_version }}.tar.gz
+           timeout=100
   
 - name: Untar it to target location
   unarchive: src={{ downloads_dir }}/{{ sugarizer_version }}.tar.gz
