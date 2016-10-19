@@ -72,6 +72,10 @@
               line='BASE_VERSION="{{ xsce_base_ver }}"'
               state=present
 
+- name: Remove preload to force fresh downloading in stage2
+  file: path-/.preload
+        state=absent
+
 - include: selinux.yml
   when: ansible_selinux is defined and ansible_version >= '2' and ansible_selinux or ansible_selinux['status'] is defined and ansible_version < '2' and ansible_selinux['status'] != 'disabled'
 
