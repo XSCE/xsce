@@ -563,7 +563,7 @@ def cmd_handler(cmd_msg):
         "SET-CONF": set_config_vars,
         "GET-MEM-INFO": get_mem_info,
         "GET-SPACE-AVAIL": get_space_avail,
-        "GET-STORAGE-INFO": get_storage_info,
+        "GET-STORAGE-INFO": get_storage_info_lite,
         "RUN-ANSIBLE": run_ansible,
         "RESET-NETWORK": run_ansible,
         "GET-JOB-STAT": get_last_jobs_stat,
@@ -785,6 +785,14 @@ def get_space_avail(cmd_info):
     else:
         resp = cmd_error(cmd_info['cmd'], "No root partition found")
     return (resp)
+
+def get_storage_info_lite(cmd_info):
+    outp = subprocess.check_output(["/usr/bin/df", "-l"])
+    json_outp = json_array("system_fs", outp)
+    return (json_outp)
+
+# the following does not work on lvm or raid or iso usb drives
+# we wil fix later
 
 def get_storage_info(cmd_info):
     system_storage = []
