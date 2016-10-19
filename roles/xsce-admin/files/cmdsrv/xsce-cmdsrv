@@ -781,6 +781,35 @@ def get_mem_info(cmd_info):
     json_outp = json_array("system_memory", outp)
     return (json_outp)
 
+def get_space_avail(cmd_info):
+    space_avail = {}
+    space_avail['library_on_root'] = True
+    libr_attr = {}
+    cmd = "/usr/bin/df -m"
+    cmd_args = shlex.split(cmd)
+    outp = subprocess.check_output(cmd_args)
+    dev_arr = outp.split('\n')
+    for dev_str in dev_arr[1:-1]:
+       dev_attr = dev_str.split()
+       if dev_attr[5] == '/':
+           space_avail['root'] = parse_df_str(dev_str)
+       if dev_attr[5] == '/library':
+           space_avail['library'] = parse_df_str(dev_str)
+           space_avail['library_on_root'] = False
+    if ('root' in space_avail):
+        resp = json.dumps(space_avail)
+    else:
+        resp = cmd_error(cmd_info['cmd'], "No root partition found")
+    return (resp)
+
+def get_storage_info_lite(cmd_info):
+    outp = subprocess.check_output(["/usr/bin/df", "-lh"])
+    json_outp = json_array("system_fs", outp)
+    return (json_outp)
+
+# the following does not work on lvm or raid or iso usb drives
+# we wil fix later
+
 def get_storage_info(cmd_info):
     system_storage = []
     cmd = "lsblk -aP -o NAME,FSTYPE,TYPE,SIZE,MOUNTPOINT,LABEL,UUID,PARTLABEL,PARTUUID,MODEL"
