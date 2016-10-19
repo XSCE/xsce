@@ -1298,10 +1298,26 @@ function procDiskSpace(){
 function getSysStorage()
 {
   var command = "GET-STORAGE-INFO"
-  sendCmdSrvCmd(command, procSysStorage);
+  sendCmdSrvCmd(command, procSysStorageLite);
   return true;
 }
 
+function procSysStorageLite(data)
+{
+  //alert ("in procSysStorage");
+
+  consoleLog(data);
+  var sysStorageRpt = data['system_fs'];
+  var html = "";
+  for (var i in sysStorageRpt)
+    html += sysStorageRpt[i] + "<BR>"
+
+  $( "#sysStorage" ).html(html);
+  //consoleLog(jqXHR);
+  return true;
+}
+
+// need to rewrite the function below for lvm, etc.
 function procSysStorage()
 {
   //alert ("in procSysStorage");
