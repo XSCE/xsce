@@ -787,7 +787,7 @@ def get_space_avail(cmd_info):
     return (resp)
 
 def get_storage_info_lite(cmd_info):
-    outp = subprocess.check_output(["/usr/bin/df", "-l"])
+    outp = subprocess.check_output(["/usr/bin/df", "-lh"])
     json_outp = json_array("system_fs", outp)
     return (json_outp)
 
