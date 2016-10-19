@@ -59,18 +59,18 @@
   tags:
     - download
 
-- name: Update common packages
-  yum: name={{ item }}
-       state=latest
-  with_items:
-   - NetworkManager
-   - bash
-   - iptables
-   - vim-minimal # ejabberd erlang does not update this properly
-   - dbus-glib   # NM does not update this properly
-   - glibc # CVE-2015-7547
-  tags:
-    - download
+#- name: Update common packages
+#  yum: name={{ item }}
+#       state=latest
+#  with_items:
+#   - NetworkManager
+#   - bash
+#   - iptables
+#   - vim-minimal # ejabberd erlang does not update this properly
+#   - dbus-glib   # NM does not update this properly
+#   - glibc # CVE-2015-7547
+#  tags:
+#    - download
 
 # instuctions state to start with a fully updated system before starting, stop using
 # ansible as a crutch for developers not following the directions and taking short-cuts
