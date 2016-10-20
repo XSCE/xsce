@@ -70,7 +70,7 @@
               state=present
 
 - name: Remove preload to force fresh downloading in stage2
-  file: path-/.preload
+  file: path=/.preload
         state=absent
 
 - include: selinux.yml
