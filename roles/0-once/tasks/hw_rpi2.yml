@@ -4,6 +4,7 @@
             owner:root
             group:root
             mode:0644
+           
   when: rtc_id is defined and rtc_id != "none"
 
 - name: Use compiled hostapd, and wpa_supplicant if tplink WM725M
@@ -51,3 +52,8 @@
 - name: Enable rootfs resizing service
   service: name=xsce-rpi-root-resize
            enabled=yes
+
+- name: Enlarge the /tmp directory so that url_get does not error out
+  lineinfile: dest=/etc/fstab
+              regexp='^none'
+              line='none            /tmp            tmpfs         rw,size=800m 0 0'
