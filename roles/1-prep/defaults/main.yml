@@ -4,7 +4,8 @@ new_gui_version: 2
 new_menu_version: 2
 
 # These entries should never be changed in this file.
-# These are defaults for boolean routines, 
+# These are defaults for boolean routines
+new_menu: False
 installing: False
 exFAT_enabled: False
 no_NM_reload: False

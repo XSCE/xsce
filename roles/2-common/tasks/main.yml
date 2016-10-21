@@ -1,6 +1,6 @@
 - include: sysctl.yml
 - include: html.yml
-  when: not xsce_preload
+  when: new_menu
 
 # If we got here we're done
 - name: Record menu version
