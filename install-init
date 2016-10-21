@@ -5,10 +5,10 @@ NEW_VERSION="1"
 if [ -f /etc/xsce/xsce.env ]
 then
  . /etc/xsce/xsce.env
- NEW_VERSION=`cat $XSCE_DIR/roles/0-once/defaults/main.yml | grep xsce_base_ver | awk -F ": " '{print $2}'`
+ NEW_VERSION=`cat $XSCE_DIR/roles/0-once/defaults/main.yml | grep new_base_ver | awk -F ": " '{print $2}'`
 fi
 
-if [ -f /etc/xsce/config_vars.yml ] && [ $BASE_VERSION == $NEW_VERSION ]
+if [ -f /etc/xsce/config_vars.yml ] && [ "$BASE_VERSION" == "$NEW_VERSION" ]
 then
  exit 0
 fi
