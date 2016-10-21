@@ -11,6 +11,7 @@
   roles:
       - { role: 0-once, tags: ['once'] }
       - { role: iptables, tags: ['once'] }
+      - { role: dhcpd, tags: ['once'] }
       - { role: wondershaper, tags: ['once'] }
  
   tasks:
