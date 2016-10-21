@@ -9,6 +9,6 @@
   command: "/usr/bin/kalite manage unpack_assessment_zip {{ downloads_dir }}/khan_assessment.zip"
   environment:
      KALITE_HOME: "{{ kalite_root }}"
-  async: 900
+  async: 1800
   poll: 10
   when: not khan_assessment_installed.stat.exists or khan_assessment_installed.stat.size < 20000
