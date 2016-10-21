@@ -1,9 +1,10 @@
 - include: sysctl.yml
 - include: html.yml
+  when: not xsce_preload
 
 # If we got here we're done
-- name: Record base gui version
+- name: Record menu version
   lineinfile: dest=/etc/xsce/xsce.env
-              regexp='^GUI_VERSION=*'
-              line='GUI_VERSION="{{ new_gui_version }}"'
+              regexp='^MENU_VERSION=*'
+              line='MENU_VERSION="{{ new_menu_version }}"'
               state=present
