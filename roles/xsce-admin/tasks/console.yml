@@ -83,3 +83,10 @@
         owner=root
         group=root
         mode=0644
+
+- name: Create symlink from assets to xsce.ini
+  file: src=/etc/xsce/xsce.ini
+        dest=/var/www/html/common/assets/xsce.ini
+        owner=root
+        group=root
+        state=link
