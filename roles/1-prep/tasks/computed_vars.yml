@@ -38,7 +38,7 @@
 - name: Found New Menu
   set_fact:
      new_menu: True
-  when: '"new_menu_ver|int" > "xsce_menu_ver|int"'
+  when: "{{ new_menu_version }} > {{ xsce_menu_ver }}"
 
 - name: Set exFAT enabled for XOs
   set_fact:
@@ -79,6 +79,8 @@
       value: '{{ ansible_swaptotal_mb }}'
     - option: 'product_id'
       value: '{{ ansible_product_uuid }}'
+    - option: 'New_Menu'
+      value: '{{ new_menu }}'
 
 # Put all computed vars here so derive properly from any prior var file
 - name: Set port 80 for Admin Console
