@@ -1,2 +1,9 @@
 - include: sysctl.yml
 - include: html.yml
+
+# If we got here we're done
+- name: Record base gui version
+  lineinfile: dest=/etc/xsce/xsce.env
+              regexp='^GUI_VERSION=*'
+              line='GUI_VERSION="{{ new_gui_version }}"'
+              state=present

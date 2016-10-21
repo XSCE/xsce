@@ -35,8 +35,14 @@ then
     BASE_VERSION="0"
   fi
   BASE="$BASE_VERSION"
+  if [ -z $GUI_VERSION ]
+  then
+    GUI_VERSION="0"
+  fi
+  GUI="$GUI_VERSION"
 else
   BASE="0"
+  GUI="0"
 fi
 
 if [ -f /.preload ]
@@ -53,6 +59,7 @@ cat <<EOF
 "xsce_uuid"               : "$UUID",
 "xo_model"                : "$XO_VERSION",
 "xsce_base_ver"           : "$BASE",
+"xsce_gui_ver"            : "$GUI",
 "ansble_version"	  : "$ANSIBLE_VERSION",
 "xsce_preload"            : "$PRELOAD"}
 EOF
