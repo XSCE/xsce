@@ -3,3 +3,4 @@ dependencies:
    - { role: xsce-admin, tags: ['services','xsce-admin','base'] }
    - { role: openvpn, tags: ['openvpn'] }
    - { role: network, tags: ['services','base','network'], when: not gui_desired_network_role is defined }
+   - { role: portal, tags: ['portal'] }
