@@ -52,12 +52,6 @@
   tags:
     - network
 
-#- include: squid.yml
-#  when: not xsce_prepped
-#  tags:
-#    - squid
-#    - network
-
 - include: avahi.yml
   tags:
     - network
