@@ -70,12 +70,6 @@
 #    - squid
 #    - network
 
-#- include: iptables.yml
-#  when: not xsce_prepped
-#  tags:
-#    - iptables
-#    - network
-
 - include: avahi.yml
   tags:
     - network
