@@ -88,4 +88,3 @@
   when: exFAT_enabled == "True" and ansible_distribution == "CentOS"
 
 #- include: roles/network/tasks/squid.yml
-#- include: roles/network/tasks/named.yml
