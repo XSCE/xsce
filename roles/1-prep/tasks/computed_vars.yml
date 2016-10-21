@@ -35,9 +35,9 @@
     - download
     - download2
 
-- name: Turn off preload when updating  
+- name: Found New Menu
   set_fact:
-     xsce_preload: False
+     new_menu: True
   when: new_menu_ver|int > xsce_menu_ver|int
 
 - name: Set exFAT enabled for XOs
