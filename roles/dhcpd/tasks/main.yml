@@ -11,8 +11,7 @@
             group=root
             mode={{ item.mode }}
   with_items:
-   - { src: 'dhcp/dhcpd-xs.conf.j2', dest: '/etc/dhcpd-xs.conf', mode: '0644' }
-   - { src: 'dhcp/dhcpd.service', dest: '/etc/systemd/system/dhcpd.service', mode: '0755' }
+   - { src: 'dhcpd.service', dest: '/etc/systemd/system/dhcpd.service', mode: '0644' }
 
 - name: Create dhcpd needed files
   command: touch /var/lib/dhcpd/dhcpd.leases
