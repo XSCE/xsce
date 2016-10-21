@@ -9,10 +9,9 @@
   - vars/local_vars.yml
 
   roles:
-      - { role: 0-once, tags: ['once'] }
       - { role: 1-prep, tags: ['prep'] }
-      - { role: network, tags: ['network'] }
-
+      - { role: 0-once, tags: ['once'] }
+ 
   tasks:
 
   - name: See if default config_vars.yml exists
