@@ -70,12 +70,6 @@
 #    - squid
 #    - network
 
-#- include: wondershaper.yml
-#  when: not xsce_prepped
-#  tags:
-#    - wondershaper
-#    - network
-
 #- include: iptables.yml
 #  when: not xsce_prepped
 #  tags:

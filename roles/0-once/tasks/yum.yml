@@ -87,8 +87,7 @@
   shell: yum --enablerepo=li-nux-ro install exfat-utils fuse-exfat
   when: exFAT_enabled == "True" and ansible_distribution == "CentOS"
 
-- include: roles/network/iptables.yml
-- include: roles/network/squid.yml
-- include: roles/network/dhcpd.yml
-- include: roles/network/named.yml
-- include: roles/network/wondershaper.yml
+#- include: roles/network/tasks/iptables.yml
+#- include: roles/network/tasks/squid.yml
+#- include: roles/network/tasks/dhcpd.yml
+#- include: roles/network/tasks/named.yml
