@@ -57,6 +57,9 @@
    - wget
    - openssl   #FC 18 does not supply, but pear requires
    - linux-firmware # grab wifi firmware
+   - avahi
+   - avahi-tools
+   - nss-mdns
   tags:
     - download
 
