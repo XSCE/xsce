@@ -1,6 +1,6 @@
 # use these as a tag a release at a point in time
 xsce_base_ver: 2
-gui_version: 2
+new_gui_version: 2
 
 # These entries should never be changed in this file.
 # These are defaults for boolean routines, 
