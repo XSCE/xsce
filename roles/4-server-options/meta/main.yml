@@ -2,7 +2,7 @@ dependencies:
     - { role: sshd, tags: ['services','sshd','base'] }
     - { role: openvpn, tags: ['options','openvpn'], when: openvpn_install }
     - { role: 2-common, tags: ['common','base'] } 
-    - { role: portal, tags: ['portal'] }
+    - { role: portal, tags: ['portal','base'] }
     - { role: network, tags: ['services','base','network'], when: gui_desired_network_role is defined }
     - { role: postgresql, tags: ['services','postgresql','base'], when: postgresql_install }
     - { role: authserver,  tags: ['services','authserver','base'], when: authserver_install }
