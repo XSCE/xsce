@@ -38,7 +38,7 @@
 - name: Found New Menu
   set_fact:
      new_menu: True
-  when: new_menu_ver|int > xsce_menu_ver|int
+  when: '"new_menu_ver|int" > "xsce_menu_ver|int"'
 
 - name: Set exFAT enabled for XOs
   set_fact:
