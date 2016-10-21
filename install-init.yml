@@ -12,6 +12,7 @@
       - { role: 0-once, tags: ['once'] }
       - { role: iptables, tags: ['once'] }
       - { role: dhcpd, tags: ['once'] }
+      - { role: squid, tags: ['once'] }
       - { role: wondershaper, tags: ['once'] }
       - { role: named, tags: ['once'] }
  
