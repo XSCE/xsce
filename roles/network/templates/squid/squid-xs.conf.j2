@@ -203,6 +203,23 @@ persistent_request_timeout  1 minute
 client_lifetime    1 hour
 ident_timeout      10 seconds
 
+{% if capture_enabled %}
+##################################
+# config splash page
+# without session.db, a restart will re-enable the splash -- for testing
+#external_acl_type session ttl=300 negative_ttl=0 children=1 concurrency=100 %SRC {{ squid_dir }}/ext_session_acl -t 3600 -b /var/run/squid/session.db
+external_acl_type session ttl=300 negative_ttl=0 children=1 concurrency=100 %SRC {{ squid_dir }}/ext_session_acl -t 60 
+#
+#
+acl session external session
+#
+http_access deny !session
+#
+# # Deny page to display
+deny_info {{ redirect_url }} session
+##################################
+{% endif %}
+
 http_access allow manager localhost
 http_access deny manager
 

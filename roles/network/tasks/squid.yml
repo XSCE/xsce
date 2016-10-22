@@ -45,6 +45,11 @@
       owner: 'root'
       group: 'root'
       mode: '0755'
+    - src: 'squid/redirect.php'
+      dest: '/var/www/html/redirect.php'
+      owner: 'root'
+      group: 'root'
+      mode: '0755'
 
 - name: Create squid cache directory
   file: path=/library/cache
@@ -59,6 +64,13 @@
         group=squid
         mode=0750
         state=directory
+
+- name: Create squid session database directory
+  file: path=/var/run/squid/session.db
+        owner=squid
+        group=squid
+        mode=0750
+        state=touch
 
 - include: dansguardian.yml
 

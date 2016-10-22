@@ -106,6 +106,15 @@
   tags:
     - network
 
+- name: Configure misc
+  template: src={{ item.src }}
+            dest={{ item.dest }}
+            owner=root
+            group=root
+            mode={{ item.mode }}
+  with_items:
+   - { src: 'gateway/portal.j2', dest: '/etc/xsce/portal', mode: '0644' }
+
 - include: computed_services.yml
   tags:
     - network
