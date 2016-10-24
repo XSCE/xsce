@@ -63,12 +63,6 @@
   when: wifi_id  ==  "tplink_WM725M" and xo_model == "none" and not rpi_model is defined
   ignore_errors: true
 
-- name: Record base version
-  lineinfile: dest=/etc/xsce/xsce.env
-              regexp='^BASE_VERSION=*'
-              line='BASE_VERSION="{{ xsce_base_ver }}"'
-              state=present
-
 - name: Remove preload to force fresh downloading in stage2
   file: path=/.preload
         state=absent
