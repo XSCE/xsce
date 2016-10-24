@@ -1,0 +1,17 @@
+---
+- hosts: all
+  sudo: yes
+
+# The var files read or included here are not needed, but might be in the future
+
+  vars_files:
+  - vars/default_vars.yml
+  - vars/local_vars.yml
+
+  roles:
+      - { role: 1-prep, tags: ['2-common'] }
+      - { role: 2-common, tags: ['2-common'] }
+ 
+  tasks:
+  - name: Install Menu Complete
+    command: echo Install Menu Complete
