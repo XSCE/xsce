@@ -16,7 +16,8 @@
             group=root
             mode={{ item.mode }}
   with_items:
-   - { src: 'dhcp/dhcpd-env.j2' , dest: '/etc/sysconfig/dhcpd' , mode: '0755' }
+   - { src: 'dhcp/dhcpd-env.j2' , dest: '/etc/sysconfig/dhcpd' , mode: '0644' }
+   - { src: 'dhcp/dhcpd-xs.conf.j2' , dest: '/etc/dhcpd-xs.conf' , mode: '0644' }
   when: dhcpd_enabled
 
 - name: Copy named  file
@@ -26,8 +27,8 @@
             group=root
             mode={{ item.mode }}
   with_items:
-   - { src: 'named/school.local.zone.db' , dest: '/var/named-xs/' , mode: '0755' }
-   - { src: 'named/school.internal.zone.db' , dest: '/var/named-xs/' , mode: '0755' }
+   - { src: 'roles/named/templates/school.local.zone.db' , dest: '/var/named-xs/' , mode: '0644' }
+   - { src: 'roles/named/templates/school.internal.zone.db' , dest: '/var/named-xs/' , mode: '0644' }
 
 - name: Enable iptables service
   service: name=iptables
@@ -70,7 +71,7 @@
             group={{ item.group }}
             mode={{ item.mode }}
   with_items:
-    - src: 'squid/squid-xs.conf.j2'
+    - src: 'roles/squid/templates/squid-xs.conf.j2'
       dest: '/etc/squid/squid-xs.conf'
       owner: 'squid'
       group: 'squid'
@@ -106,7 +107,6 @@
             mode='0755'
   with_items:
    - { 0: 'gateway/xs-gen-iptables', 1: '/usr/bin/xs-gen-iptables' }
-   - { 0: 'gateway/check-LAN', 1: '/usr/bin/check-LAN' }
 
 - name: Add squid to service list
   ini_file: dest='{{ service_filelist }}'

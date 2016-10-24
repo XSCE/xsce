@@ -1,3 +1,9 @@
+- include: detected_network.yml
+  when: not installing
+  tags:
+    - network
+    - network-discover
+
 - include: computed_network.yml
   when: not installing
   tags:
@@ -41,7 +47,7 @@
 - name: Domain name did not change setting xsce_prepped
   set_fact: 
     xsce_prepped: True
-  when: not domainname.changed and xsce_base_ver == gui_version
+  when: not domainname|changed and xsce_base_ver|int == new_base_ver|int
 
 ##### Start static ip address info for first run #####
 #- include: static.yml
@@ -50,36 +56,6 @@
 
 - include: hosts.yml
   tags:
-    - network
-
-- include: named.yml
-  when: not xsce_prepped
-  tags:
-    - named
-    - network
-
-- include: dhcpd.yml
-  when: not xsce_prepped
-  tags:
-    - dhcpd
-    - network
-
-- include: squid.yml
-  when: not xsce_prepped
-  tags:
-    - squid
-    - network
-
-- include: wondershaper.yml
-  when: not xsce_prepped
-  tags:
-    - wondershaper
-    - network
-
-- include: iptables.yml
-  when: not xsce_prepped
-  tags:
-    - iptables
     - network
 
 - include: avahi.yml
