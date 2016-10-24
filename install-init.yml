@@ -15,6 +15,7 @@
       - { role: squid, tags: ['once'] }
       - { role: wondershaper, tags: ['once'] }
       - { role: named, tags: ['once'] }
+      - { role: 0-once-done, tags: ['once'] }
  
   tasks:
 
