@@ -3,7 +3,6 @@
       with_items:
         - MySQL-python
         - mysql
-        - php-mysql
         - php-gd
         - php-imap
         - php-ldap
