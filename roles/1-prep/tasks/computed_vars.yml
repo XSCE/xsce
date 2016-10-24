@@ -158,6 +158,11 @@
     is_F24: True
   when: ansible_distribution == "Fedora" and ansible_distribution_version == "24"
 
+- name: Fedora 25
+  set_fact:
+    is_F25: True
+  when: ansible_distribution == "Fedora" and ansible_distribution_version == "25"
+
 - name: CentOS
   set_fact:
     is_CentOS: True
