@@ -10,7 +10,7 @@
   service: enabled=no
            name=hostapd.service
            state=stopped
-  when: xsce_wireless_lan_iface == "none" or xsce_network_mode == "Appliance" or not hostapd_enabled
+  when: xsce_wireless_lan_iface == "none" or xsce_network_mode == "Appliance" or not hostapd_enabled and not installing
 
 - name: Use custom systemd unit file to start hostapd
   template: src=hostapd/hostapd.service.j2
@@ -21,12 +21,18 @@
 
 - name: ask systemd to reread the unit files for hostapd
   shell: systemctl daemon-reload
+  when: not installing
 
 - name: Enable the Access Point Hostapd program
   service: enabled=yes
            name=hostapd.service
-           state=restarted
   when: xsce_wireless_lan_iface != "none" and xsce_network_mode != "Appliance" and hostapd_enabled
+
+- name: Restart the Access Point Hostapd program
+  service: enabled=yes
+           name=hostapd.service
+           state=restarted
+  when: xsce_wireless_lan_iface != "none" and xsce_network_mode != "Appliance" and hostapd_enabled and not installing
 
 - name: Checking if slave is active waiting 10 seconds
   shell: "sleep {{ hostapd_wait }} | brctl show | grep {{ xsce_wireless_lan_iface }}"
@@ -38,6 +44,6 @@
 - name: Restart hostapd if slave is inactive
   service: name=hostapd.service
            state=restarted
-  when: xsce_lan_iface == "br0" and item|trim == ""
+  when: xsce_lan_iface == "br0" and item|trim == "" and not installing
   with_items:
       - "{{ wifi_slave.stdout }}"
