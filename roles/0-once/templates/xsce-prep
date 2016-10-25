@@ -1,22 +1,54 @@
 #! /bin/bash
+BASE_VERSION="0"
+MENU_VERSION="0"
+GUI_VERSION="0"
+NEW_MENU_VERSION="1"
+NEW_BASE_VERSION="1"
+NEW_GUI_VERSION="1"
 
 if [ -e /.xsce-booted* ] ; then
     systemctl disable xsce-prep
     exit 0
 fi
 
+if [ -f /etc/xsce/xsce.env ]
+then
+ . /etc/xsce/xsce.env
+ NEW_BASE_VERSION=`cat $XSCE_DIR/roles/0-once/defaults/main.yml | grep new_base_ver | awk -F ": " '{print $2}'`
+ NEW_MENU_VERSION=`cat $XSCE_DIR/roles/1-prep/defaults/main.yml | grep new_menu_version | awk -F ": " '{print $2}'`
+ NEW_GUI_VERSION=`cat $XSCE_DIR/roles/1-prep/defaults/main.yml | grep new_gui_version | awk -F ": " '{print $2}'`
+fi
+
 # the vars/* are not found
 cd /opt/schoolserver/xsce/
 
-if [ -f  xsce-kickstart.log ] ; then
-    result=`cat xsce-kickstart.log | grep failed=1 | awk '{print $6}' | wc -l`
-    if [ $result = 0 ] ; then
-        # ran to completion
-        ./xsce-network > xsce-firstboot.log
-        touch /.xsce-booted
-        exit 0
-    fi
+# ran to completion
+if [ -f /etc/xsce/config_vars.yml ] && [ "$GUI_VERSION" == "$NEW_GUI_VERSION" ]
+then
+ touch /.xsce-booted
+ ./xsce-network > xsce-firstboot.log
+ exit 0
 fi
-./install-console > xsce-firstboot-full.log
-touch /.xsce-booted2
-exit 0
+
+# 2-common ran but install-console not completed
+# might be a bit racey
+if [ -f /etc/xsce/config_vars.yml ] && [ "$MENU_VERSION" == "$NEW_MENU_VERSION" ]\
+ && [ "$BASE_VERSION" == "$NEW_BASE_VERSION" ] && [ "$GUI_VERSION" != "$NEW_GUI_VERSION" ]
+then
+ touch /.xsce-booted2
+ ./install-console > xsce-firstboot2.log
+ exit 0
+fi
+
+# 2-common not run short-circuit to just networking
+if [ -f /etc/xsce/config_vars.yml ] && [ "$MENU_VERSION" != "$NEW_MENU_VERSION" ]\
+ && [ "$BASE_VERSION" == "$NEW_BASE_VERSION" ] && [ "$GUI_VERSION" != "$NEW_GUI_VERSION" ]
+then
+ touch /.xsce-booted3
+ ./xsce-network > xsce-firstboot3.log
+ echo "Menu & Console NOT configured" >> xsce-firstboot3.log  
+ exit 0
+else
+ echo "install-init not completed can't configure networking" >  xsce-firstboot3.log
+ exit 0
+fi
