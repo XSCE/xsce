@@ -67,6 +67,14 @@
   file: path=/.preload
         state=absent
 
+- name: Editing /etc/sysconfig/selinux
+  lineinfile: state=present
+              backrefs=yes
+              regexp='^SELINUX='
+              line='SELINUX=disabled'
+              dest=/etc/sysconfig/selinux
+  when: ansible_distribution == "CentOS" or ansible_distribution == "Fedora"
+ 
 - include: selinux.yml
   when: ansible_selinux is defined and ansible_version >= '2' and ansible_selinux or ansible_selinux['status'] is defined and ansible_version < '2' and ansible_selinux['status'] != 'disabled'
 
