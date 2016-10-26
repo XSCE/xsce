@@ -69,6 +69,20 @@
   tags:
     - network
 
+- include: ifcfg_lan.yml
+  tags:
+    - network
+
+- include: enable_wan.yml
+  when: not installing and not xsce_demo_mode
+  tags:
+    - network
+
+- include: ifcfg_enable.yml
+  when: not installing
+  tags:
+    - network
+
 - name: Create xs network flags
   template: src=network/{{ item }}.j2
             dest=/etc/sysconfig/{{ item }}
