@@ -43,6 +43,7 @@
            state=latest
   with_items:
     - ntp
+    - uuid-runtime
 
 - name: Add rpi rootfs resizing service
   template: src={{ item.src }}
