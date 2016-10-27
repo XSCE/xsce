@@ -1,0 +1,23 @@
+- name: Stop postgresql service
+  service: name=postgresql-xs
+           state=stopped
+           enabled=no
+  when: not postgresql_enabled
+
+- name: Start postgresql service
+  service: name=postgresql-xs
+           enabled=yes
+           state=started
+  when: postgresql_enabled
+
+- name: Disable the MySQL service
+  service: name={{ mysql_service }}
+           enabled=no
+           state=stopped
+  when: not mysql_enabled
+
+- name: Enable the MySQL service
+  service: name={{ mysql_service }}
+           enabled=yes
+           state=enabled
+  when: mysql_enabled
