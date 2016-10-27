@@ -41,10 +41,10 @@
   service: name=tmp.mount
            enabled=no
 
-- name: Mask network.service
+- name: Mask tmp.mount
   shell: 'systemctl mask tmp.mount'
 
 - name: Remove tmpfs for /tmp
   lineinfile: dest=/etc/fstab
-              regexp='^/tmp*'
+              regexp='/tmp'
               state=absent
