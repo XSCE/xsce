@@ -76,7 +76,6 @@
                state=stopped
       when: not mysql_enabled
 
-
     - name: add mysql to service list
       ini_file: dest='{{ service_filelist }}'
                     section=mysql
