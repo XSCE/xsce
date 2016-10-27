@@ -1,8 +1,4 @@
-- name: Set flag for fedora 18
-  set_fact:
-    is_F18: True
-  when: ansible_distribution_release == "based on Fedora 18" or ansible_distribution_version == "18"
-
+- include: roles/1-prep/tasks/distros.yml
 - include: fl.yml
 - include: prep.yml
 - include: xsce_ini.yml
