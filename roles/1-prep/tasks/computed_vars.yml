@@ -97,7 +97,6 @@
 
 - name: Turn on mysql if elgg or rachel enabled
   set_fact:
-    mysql_install: True
     mysql_enabled: True
   when: elgg_enabled or rachel_enabled or owncloud_enabled or phpmyadmin_enabled or wordpress_enabled
 
@@ -110,7 +109,6 @@
 # There might be other db's
 - name: Turn on postgresql if moodle or pathagar enabled
   set_fact:
-    postgresql_install: True
     postgresql_enabled: True
   when: moodle_enabled or pathagar_enabled
 
@@ -137,3 +135,7 @@
      kiwix_src_file: "kiwix-server-0.9-linux-armv5tejl.tar.bz2"
      kiwix_src_bin_only: True
   when: ansible_machine == "armv7l"
+
+- include: db-prep.yml
+  when: not installing
+
