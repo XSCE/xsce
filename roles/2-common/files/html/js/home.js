@@ -106,7 +106,7 @@ function calcHtmlLink(module){
 }
 
 function calcKaliteLink(module){
-	var href = host + ':8008/';
+	var href = host + ':8008';
 
 	var html = calcLink(href,module);
 	return html
