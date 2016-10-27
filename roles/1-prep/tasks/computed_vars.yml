@@ -135,7 +135,3 @@
      kiwix_src_file: "kiwix-server-0.9-linux-armv5tejl.tar.bz2"
      kiwix_src_bin_only: True
   when: ansible_machine == "armv7l"
-
-- include: db-prep.yml
-  when: not installing
-
