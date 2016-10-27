@@ -19,5 +19,5 @@
 - name: Enable the MySQL service
   service: name={{ mysql_service }}
            enabled=yes
-           state=enabled
+           state=started
   when: mysql_enabled
