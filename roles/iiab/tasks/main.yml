@@ -122,7 +122,7 @@
         group=www-data
 
 - name: copy the default.ini with our location of /library/knowledge
-  template: src=default.ini
+  template: src=defaults.ini
             dest=/usr/local/lib/python2.7/dist-packages/iiab/default.ini
 
 - name: add iiab to service list
