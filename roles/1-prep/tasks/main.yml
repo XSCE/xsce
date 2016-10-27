@@ -2,3 +2,5 @@
 - include: computed_vars.yml
 - include: raspberry_pi_2.yml
   when: rpi_model != "none"
+- include: db-prep.yml
+  when: not installing
