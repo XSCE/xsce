@@ -1,5 +1,5 @@
 dependencies:
-   - include: roles/mysql/taskes/setup.yml
+   - { role: mysql-prep, tags: ['mysql','elgg','dokuwiki','wordpress','calibre'] }
    - { role: elgg, tags: ['generic','elgg'], when: elgg_install }
    - { role: owncloud, tags: ['generic','owncloud'], when: owncloud_install }
    - { role: dokuwiki, tags: ['generic','dokuwiki'], when: dokuwiki_install }
