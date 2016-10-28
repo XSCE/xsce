@@ -23,6 +23,6 @@
       tags:
         - download
 
-- include: setup.yml
-  when: not installing
-- include: service.yml
+    - include: setup.yml
+      when: not installing
+    - include: service.yml
