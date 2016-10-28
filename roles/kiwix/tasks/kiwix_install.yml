@@ -31,7 +31,6 @@
         mode=0644
         owner=root
         group=root
-        force=no
   when: kiwix_first_pass
 
 # we get a whole web server for intel but only the kiwix execs for arm
