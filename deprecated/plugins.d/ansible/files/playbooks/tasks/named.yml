@@ -23,7 +23,6 @@
     - /var/named-xs/data
     - /etc/sysconfig/olpc-scripts/domain_config.d
 
->>>>>>> substitute package for yum module:roles/network/tasks/named.yml
 - name: Configure named
   template: src=${item.src}
             dest=${item.dest}

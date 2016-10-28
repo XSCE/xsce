@@ -17,17 +17,20 @@
    - yum-utils
    - createrepo
    - libselinux-python
+  when: ansible_distribution != "Debian"
   tags:
     - download
 
 - name: Create local yum repo
   shell: createrepo {{ yum_packages_dir }}
+  when: ansible_distribution != "Debian"
 
 - name: Install local repo file.
   template: dest=/etc/yum.repos.d/xsce-local.repo
             src=local.repo
             owner=root
             mode=0644
+  when: ansible_distribution != "Debian"
 
 - name: Install common packages
   package: name={{ item }}
@@ -42,9 +45,9 @@
    - net-tools
    - openssh-server
    - sudo
-   - syslog
+   - inetutils-syslogd
    - logrotate
-   - xml-common
+#   - xml-common
    - make
    - tar
    - unzip
@@ -53,16 +56,21 @@
    - bridge-utils
    - usbutils
    - hostapd
-   - wpa_supplicant
+   - wpasupplicant
    - wget
    - openssl   #FC 18 does not supply, but pear requires
+<<<<<<< HEAD
    - linux-firmware # grab wifi firmware
    - avahi
    - avahi-tools
    - nss-mdns
+=======
+#   - linux-firmware # grab wifi firmware--Debian installs non-free automatically
+>>>>>>> merge conflict over yum cache
   tags:
     - download
 
+<<<<<<< HEAD
 #- name: Update common packages
 #  package: name={{ item }}
 #           state=latest
@@ -75,6 +83,20 @@
 #   - glibc # CVE-2015-7547
 #  tags:
 #    - download
+=======
+- name: Update common packages
+  package: name={{ item }}
+           state=latest
+  with_items:
+   - network-manager
+   - bash
+   - iptables
+#   - glibc # CVE-2015-7547
+   - libc-bin
+   - libc6
+  tags:
+    - download
+>>>>>>> capture some progress
 
 # instuctions state to start with a fully updated system before starting, stop using
 # ansible as a crutch for developers not following the directions and taking short-cuts
