@@ -13,10 +13,11 @@ fi
 
 ./install-init
 ./install-menu
+./install-console
 
 if [ ! -f $PLAYBOOK ]
 then
- echo "XSCE Playbook not found."
+ echo "XSCE $PLAYBOOK Playbook not found."
  echo "Please run this command from the top level of the git repo."
  echo "Exiting."
  exit
