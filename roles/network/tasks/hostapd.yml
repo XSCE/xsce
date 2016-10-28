@@ -10,7 +10,7 @@
   service: enabled=no
            name=hostapd.service
            state=stopped
-  when: xsce_wireless_lan_iface == "none" or xsce_network_mode == "Appliance" or not hostapd_enabled and not installing
+  when: (xsce_wireless_lan_iface == "none" or xsce_network_mode == "Appliance" or not hostapd_enabled) and not installing
 
 - name: Use custom systemd unit file to start hostapd
   template: src=hostapd/hostapd.service.j2
@@ -39,7 +39,7 @@
   ignore_errors: True
   changed_when: False
   register: wifi_slave
-  when: xsce_lan_iface == "br0" and xsce_wireless_lan_iface != "none"
+  when: xsce_lan_iface == "br0" and xsce_wireless_lan_iface != "none" and not installing
 
 - name: Restart hostapd if slave is inactive
   service: name=hostapd.service
