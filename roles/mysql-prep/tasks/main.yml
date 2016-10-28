@@ -1,1 +1,2 @@
 - include: roles/mysql/tasks/setup.yml
+  when: not installing
