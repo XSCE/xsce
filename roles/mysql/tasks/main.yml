@@ -24,4 +24,5 @@
         - download
 
 - include: setup.yml
+  when: not installing
 - include: service.yml
