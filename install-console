@@ -1,10 +1,8 @@
 #!/bin/bash
+PLAYBOOK="xsce-base.yml"
+INVENTORY="ansible_hosts"
 
 # copy var files to /etc/xsce for subsequent use
-
-./install-init
-./install-menu
-
 # if not the first run, repo location is here
 
 if [ -f /etc/xsce/xsce.env ]
@@ -13,8 +11,10 @@ then
   cd $XSCE_DIR
 fi
 
-PLAYBOOK="xsce-base.yml"
-INVENTORY="ansible_hosts"
+./install-init
+./install-menu
+
+
 SELINUX_BEFORE=""
 SELINUX_AFTER=""
 

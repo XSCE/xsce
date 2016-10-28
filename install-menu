@@ -7,6 +7,7 @@ if [ -f /etc/xsce/xsce.env ]
 then
  . /etc/xsce/xsce.env
  NEW_VERSION=`cat $XSCE_DIR/roles/1-prep/defaults/main.yml | grep new_menu_version | awk -F ": " '{print $2}'`
+ cd $XSCE_DIR
 fi
 
 if [ -f /etc/xsce/config_vars.yml ] && [ "$MENU_VERSION" == "$NEW_VERSION" ]
