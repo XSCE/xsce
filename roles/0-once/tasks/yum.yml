@@ -11,8 +11,8 @@
   when: ansible_distribution == "Fedora" and ansible_distribution_version|int <= 25
 
 - name: Install yum packages
-  yum: name={{ item }}
-       state=present
+  package: name={{ item }}
+           state=present
   with_items:
    - yum-utils
    - createrepo
@@ -30,8 +30,8 @@
             mode=0644
 
 - name: Install common packages
-  yum: name={{ item }}
-       state=present
+  package: name={{ item }}
+           state=present
   with_items:
    - acpid
    - mlocate
@@ -64,8 +64,8 @@
     - download
 
 #- name: Update common packages
-#  yum: name={{ item }}
-#       state=latest
+#  package: name={{ item }}
+#           state=latest
 #  with_items:
 #   - NetworkManager
 #   - bash
