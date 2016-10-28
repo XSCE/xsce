@@ -70,7 +70,6 @@
   tags:
     - download
 
-<<<<<<< HEAD
 #- name: Update common packages
 #  package: name={{ item }}
 #           state=latest
@@ -83,20 +82,6 @@
 #   - glibc # CVE-2015-7547
 #  tags:
 #    - download
-=======
-- name: Update common packages
-  package: name={{ item }}
-           state=latest
-  with_items:
-   - network-manager
-   - bash
-   - iptables
-#   - glibc # CVE-2015-7547
-   - libc-bin
-   - libc6
-  tags:
-    - download
->>>>>>> capture some progress
 
 # instuctions state to start with a fully updated system before starting, stop using
 # ansible as a crutch for developers not following the directions and taking short-cuts
