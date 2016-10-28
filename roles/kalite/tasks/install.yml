@@ -36,7 +36,9 @@
     - download2
 
 - name: Download khan assessments
-  get_url: url={{ khan_assessment_url }} dest={{ downloads_dir }}/khan_assessment.zip
+  #get_url: url={{ khan_assessment_url }} dest={{ downloads_dir }}/khan_assessment.zip
+  # perhaps wget will be restartable -- repeated timeout is irksome
+  shell: 'wget -c  -O {{ downloads_dir }}/khan_assessment.zip {{ khan_assessment_url }}'
   async: 4000
   tags:
     - download2
