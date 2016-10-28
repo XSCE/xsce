@@ -1,8 +1,12 @@
 - name: Install dhcp package
-  yum: name=dhcp
-       state=installed
+  package: name=isc-dhcp-server
+           state=present
   tags:
     - download
+
+- name: Create non-privileged user
+  user: name=dhcpd
+        createhome=no
 
 - name: Configure dhcpd
   template: src={{ item.src }}
@@ -17,6 +21,7 @@
 - name: Create dhcpd needed files
   command: touch /var/lib/dhcpd/dhcpd.leases
            creates=/var/lib/dhcpd/dhcpd.leases
+  when: ansible_distribution != "Debian"
 
 - name: Check leases permissions
   file: path=/var/lib/dhcpd/dhcpd.leases
@@ -24,3 +29,4 @@
         group=dhcpd
         mode=0644
         state=file
+  when: ansible_distribution != "Debian"

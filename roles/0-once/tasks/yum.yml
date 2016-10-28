@@ -3,7 +3,7 @@
   when: ansible_distribution == "Fedora" and ansible_machine == "armv7l" and ansible_distribution_version|int >= 22
 
 - name: install yum from Fedora 23 for arm!!!
-  shell: dnf install -y https://kojipkgs.fedoraproject.org//packages/yum/3.4.3/506.fc23/noarch/yum-3.4.3-506.fc23.noarch.rpm
+  shell: dnf install -y https://kojipkgs.fedoraproject.org//packages/yum/3.4.3/506.fc23/noarch/yum-3.4.3-506.fc23.noarch.rpm python-dnf 
   when: ansible_distribution == "Fedora" and ansible_machine == "armv7l" and ansible_distribution_version|int >= 22
 
 - name: install yum if it has been dropped from our distribution -- Fedora 22 uses dnf!!!
@@ -11,26 +11,29 @@
   when: ansible_distribution == "Fedora" and ansible_distribution_version|int >= 22 and ansible_machine != "armv7l"
 
 - name: Install yum packages
-  yum: name={{ item }}
-       state=present
+  package: name={{ item }}
+           state=present
   with_items:
    - yum-utils
    - createrepo
+  when: ansible_distribution != "Debian"
   tags:
     - download
 
 - name: Create local yum repo
   shell: createrepo {{ yum_packages_dir }}
+  when: ansible_distribution != "Debian"
 
 - name: Install local repo file.
   template: dest=/etc/yum.repos.d/xsce-local.repo
             src=local.repo
             owner=root
             mode=0644
+  when: ansible_distribution != "Debian"
 
 - name: Install common packages
-  yum: name={{ item }}
-       state=present
+  package: name={{ item }}
+           state=present
   with_items:
    - acpid
    - mlocate
@@ -42,9 +45,9 @@
    - net-tools
    - openssh-server
    - sudo
-   - syslog
+   - inetutils-syslogd
    - logrotate
-   - xml-common
+#   - xml-common
    - make
    - tar
    - unzip
@@ -53,23 +56,23 @@
    - bridge-utils
    - usbutils
    - hostapd
-   - wpa_supplicant
+   - wpasupplicant
    - wget
    - openssl   #FC 18 does not supply, but pear requires
-   - linux-firmware # grab wifi firmware
+#   - linux-firmware # grab wifi firmware--Debian installs non-free automatically
   tags:
     - download
 
 - name: Update common packages
-  yum: name={{ item }}
-       state=latest
+  package: name={{ item }}
+           state=latest
   with_items:
-   - NetworkManager
+#   - network-manager
    - bash
    - iptables
-   - vim-minimal # ejabberd erlang does not update this properly
-   - dbus-glib   # NM does not update this properly
-   - glibc # CVE-2015-7547
+#   - glibc # CVE-2015-7547
+   - libc-bin
+   - libc6
   tags:
     - download
 

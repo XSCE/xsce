@@ -1,14 +1,13 @@
 - name: Install IIAB required packages
-  yum: name={{ item }}
-       state=present
+  package: name={{ item }}
+           state=present
   with_items:
     - python-pip
     - gcc
-    - python-devel
-    - xz-devel
-    - mod_wsgi
-    - mod_xsendfile
-    - wget
+    - python-dev
+    - liblzma-dev
+    - libapache2-mod-wsgi
+    - libapache2-mod-xsendfile
   tags:
     - download
 
@@ -89,21 +88,42 @@
 - name: Copy IIAB config file
   template: backup=yes
             src=iiab.conf.j2
-            dest=/etc/httpd/conf.d/iiab.conf
+            dest=/etc/apache2/sites-available/iiab.conf
             owner=root
             group=root
             mode=0644
 
+- name: Create a link from sites-enabled to sites-available
+  file: src=/etc/apache2/sites-available/iiab.conf
+        dest=/etc/apache2/sites-enabled/iiab.conf
+        state=link
+  when: iiab_enabled
+
+- name: Remove the link from sites-enabled to sites-available
+  file: dest=/etc/apache2/sites-enabled/iiab.conf
+        state=absent
+  when: not iiab_enabled
+
 - name: Create link to cgi
-  file: src=/bin/iiab.wsgi
+  file: src=/usr/local/bin/iiab.wsgi
         dest=/var/www/html/iiab.wsgi
         owner=root
         group=root
         state=link
 
 - name: Restart httpd service
-  service: name=httpd
+  service: name=apache2
            state=restarted
+
+- name: Create the knowledge data set folders
+  file: path=/library/knowledge/modules
+        state=directory
+        owner=www-data
+        group=www-data
+
+- name: copy the default.ini with our location of /library/knowledge
+  template: src=defaults.ini
+            dest=/usr/local/lib/python2.7/dist-packages/iiab/default.ini
 
 - name: add iiab to service list
   ini_file: dest='{{ service_filelist }}'

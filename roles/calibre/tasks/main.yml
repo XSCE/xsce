@@ -6,8 +6,7 @@
     mode=0755
   tags:
     download2
-  when: calibre_install and ansible_distribution == "CentOS"
-
+  when: ansible_architecture != "armv7l"
 
 - name: Install calibre
   shell: "{{ downloads_dir }}/calibre-installer.py >> /dev/null"
@@ -19,7 +18,8 @@
 
 - name: Install Caibre rpms
 # the fedora rpm arm version, though older, takes care of dependencies, and exists
-  yum:  name={{ item }}
+  package:  name={{ item }}
+            state=present
   with_items:
     - calibre
   when: calibre_install and ansible_distribution != 'CentOS'

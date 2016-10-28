@@ -10,7 +10,8 @@
 
 # Install and configure samba server (requires ports 137, 138, 139, 445 open).
 - name: Ensure Samba-related packages are installed.
-  yum: pkg={{ item }} state=installed
+  package: name={{ item }} 
+           state=present
   with_items:
   - samba
   - samba-client
@@ -25,25 +26,25 @@
   notify: restart smb
 
 - name: Ensure Samba is running and set to start on boot.
-  service: name=smb state=started enabled=yes
+  service: name=smbd state=started enabled=yes
   tags: 
     - samba
   when : samba_enabled
 
 - name: netbios name server is running and set to start on boot.
-  service: name=nmb state=started enabled=yes
+  service: name=nmbd state=started enabled=yes
   tags: 
     - samba
   when : samba_enabled
 
 - name: Disable Samba if that is wanted
-  service: name=smb state=stopped enabled=no
+  service: name=smbd state=stopped enabled=no
   tags: 
     - samba
   when : not samba_enabled
 
 - name: Disable Samba name server if that is wanted
-  service: name=nmb state=stopped enabled=no
+  service: name=nmbd state=stopped enabled=no
   tags: 
     - samba
   when : not samba_enabled

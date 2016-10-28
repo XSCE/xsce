@@ -54,7 +54,7 @@ xsce_cmdsrv_ready_file = "/var/run/xsce-cmdsrv-ready"
 xsce_cmdsrv_dbpath = xsce_cmdsrv_path + "/" + xsce_cmdsrv_dbname
 
 # Constants - ToDo add to xsce_cmdsrv_config_file
-squid_whitelist = "/etc/squid/sites.whitelist.txt"
+squid_whitelist = "/etc/squid3/sites.whitelist.txt"
 # for kiwix zims
 kiwix_catalog_file = "/etc/xsce/kiwix_catalog.json"
 zim_downloads_dir = "/library/downloads/zims/"
@@ -66,6 +66,10 @@ zim_index_dir = "/library/zims/index/"
 rachel_downloads_dir = "/library/downloads/"
 rachel_working_dir = "/library/working/"
 rachel_version = 'rachelusb_32EN_3_1_5'
+
+# disto variables
+output = subprocess.check_output(["/usr/bin/which","ansible"])
+ansible_prefix = os.path.dirname(output)+'/'
 
 # Global Variables
 last_command_rowid = 0
@@ -127,7 +131,7 @@ def main():
     ipc_sock = "/run/cmdsrv_sock"
     client_url = "ipc://" + ipc_sock
 
-    owner = pwd.getpwnam("apache")
+    owner = pwd.getpwnam("www-data")
     group = grp.getgrnam("xsce-admin")
 
     # Prepare our context and sockets
@@ -864,7 +868,7 @@ def get_storage_info_parted(dev):
 
 def get_storage_info_df(part_dev):
     part_prop = {}
-    outp = subprocess.check_output(["/usr/bin/df", part_dev, "-m"])
+    outp = subprocess.check_output(["/bin/df", part_dev, "-m"])
     str_array = outp.split('\n')
     params = str_array[1]
     parm_arr = params.split(' ')
@@ -971,7 +975,7 @@ def run_ansible(cmd_info): # create multiple jobs to run in succession
 
     if cmd_info['cmd'] == "RUN-ANSIBLE":
 
-        job_command = "/usr/bin/ansible-playbook -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local"
+        job_command = ansible_prefix + "ansible-playbook -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local"
 
         if 'cmd_args' in cmd_info:
             tags = cmd_info['cmd_args']['tags']
@@ -1551,7 +1555,11 @@ def init():
     # Opening a connection creates if not exist
     # No DB locking done in init as is single threaded
 
-    statinfo = os.stat(xsce_cmdsrv_dbpath)
+    try:
+        statinfo = os.stat(xsce_cmdsrv_dbpath)
+    except:
+        outp = subprocess.check_output(["/usr/bin/touch", xsce_cmdsrv_dbpath])
+        statinfo = os.stat(xsce_cmdsrv_dbpath)
     if statinfo.st_size == 0:
         conn = sqlite3.connect(xsce_cmdsrv_dbpath)
         conn.execute ("CREATE TABLE commands (cmd_msg text, create_datetime text)")
@@ -1659,7 +1667,7 @@ def read_xsce_vars():
 def get_ansible_facts():
     global ansible_facts
 
-    command = "/usr/bin/ansible localhost -i " + xsce_git_path + "/ansible_hosts  -m setup -o  --connection=local"
+    command = ansible_prefix + "ansible localhost -i " + xsce_git_path + "/ansible_hosts  -m setup -o  --connection=local"
     args = shlex.split(command)
     outp = subprocess.check_output(args)
     if (get_ansible_version() < '2'):
@@ -1674,10 +1682,10 @@ def get_ansible_tags():
     global ansible_tags
 
     if (get_ansible_version() < '2'):
-        command = "/usr/bin/ansible-playbook -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local --tags=???"
+        command = ansible_prefix + "ansible-playbook -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local --tags=???"
         splitter = 'values: '
     else:
-        command = "/usr/bin/ansible-playbook -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local --list-tags"
+        command = ansible_prefix + "ansible-playbook -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local --list-tags"
         splitter = 'TASK TAGS: '
 
     args = shlex.split(command)

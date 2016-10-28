@@ -7,3 +7,8 @@ Alias /admin "{{ admin_console_path }}"
     AuthExternal pwauth
     require valid-user
 </Directory>
+
+<IfModule mod_authnz_external.c>
+    AddExternalAuth pwauth /usr/sbin/pwauth
+    SetExternalAuthMethod pwauth pipe
+</IfModule>

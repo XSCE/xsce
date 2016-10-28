@@ -1,16 +1,19 @@
 ---
 - name: Install moodle required packages
-  yum: name={{ item }}
-       state=present
+  package: name={{ item }}
+           state=present
   with_items:
     - python-psycopg2
-    - php-pgsql
+    - php5-pgsql
   tags:
     - download
 
-- name: Determine if moodle is already downloaded
+- name: see if moodle is already downloaded
   stat: path={{ moodle_base }}/config-dist.php
-  register: moodle
+  register: config_file
+
+- debug: var=config_file
+- debug: var=no_network
 
 - name: Download the latest moodle repo
   git: repo={{ moodle_repo_url }}
@@ -19,43 +22,49 @@
        force=yes
        version="MOODLE_{{ moodle_version }}_STABLE"
 #  ignore_errors: yes
-  when: not {{ use_cache }} and not {{ no_network }} and moodle.stat.exists is defined and not moodle.stat.exists
+  when: not {{ use_cache }} and not {{ no_network }} and config_file.stat.exists is defined and not config_file.stat.exists
   tags:
     - download2
 
 - name: Give apache permission to write moodle directory (config file)
   file: path={{ moodle_base }}
-        group=apache
+        group=www-data
         mode=0775
         state=directory
 
 - name: Give apache permission to write moodle data directory
   file: path={{ content_base }}/dbdata/moodle
-        owner=apache
+        owner=www-data
         mode=0775
         state=directory
 
 - name: Create a moodle data dir with apache permission to write 
   file: path={{ moodle_data }}
-        owner=apache
+        owner=www-data
         group=apache
         mode=0770
         state=directory
 
 - name: Remove stock moodle conf
-  file: path='/etc/httpd/conf.d/moodle.conf'
+  file: path='/etc/apache2/sites-available/moodle.conf'
         state=absent
 
-- name: Enable moodle
+- name: Put moodle config file in place
   template: src=022-moodle.j2
-            dest=/etc/httpd/conf.d/022-moodle.conf
+            dest=/etc/apache2/sites-available/022-moodle.conf
             owner=root
             group=root
             mode=0644
   when: moodle_enabled
 
+- name: Enable moodle
+  file: path=/etc/apache2/sites-enabled/022-moodle.conf
+        src=/etc/apache2/sites-available/022-moodle.conf
+        state=link
+  when: moodle_enabled
+
 - name: Disable moodle
-  file: path=/etc/httpd/conf.d/022-moodle.conf
+  file: path=/etc/apache2/sites-enabled/022-moodle.conf
         state=absent
   when: not moodle_enabled
 
@@ -72,8 +81,8 @@
                    password=changeme
                    role_attr_flags=NOSUPERUSER,NOCREATEROLE,NOCREATEDB
                    state=present
-  sudo: yes
-  sudo_user: postgres
+  become: yes
+  become_user: postgres
 
 - name: Create database
   postgresql_db: name=moodle
@@ -81,8 +90,8 @@
                  owner=Admin
                  template=template0
                  state=present
-  sudo: yes
-  sudo_user: postgres
+  become: yes
+  become_user: postgres
 
 - name: Put a startup install script in place
   template: dest={{moodle_base}}
@@ -93,8 +102,8 @@
   service: name=postgresql-xs
            state=restarted
 
-- name: Restart httpd
-  service: name=httpd
+- name: Restart apache
+  service: name=apache2
            state=restarted
 
 - name: see if the config.php file exists

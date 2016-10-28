@@ -107,6 +107,11 @@
     is_F18: True
   when: ansible_distribution_release == "based on Fedora 18" or ansible_distribution_version == "18"
 
+- name: Set mysql service name to mysql for debian
+  set_fact:
+    mysql_service: mysql
+  when: ansible_distribution == "Debian" 
+
 - name: Fedora 20
   set_fact:
     is_F20: True

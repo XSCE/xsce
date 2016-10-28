@@ -9,6 +9,14 @@
   register: rpiconfig
   when: rtc_id != "none"
 
+- name: Add a udev rule to transfer hwclock to system clock at dev creation
+  template: src=92-rtc-i2c.rules
+            dest=/etc/udev/rules.d/92-rtc-i2c.rules
+            owner=root
+            group=root
+            mode=0644
+  when: rtc_id != "none"
+
 - name: Reboot if the config.txt was changed
   command: /sbin/reboot
   when: rpiconfig.changed
