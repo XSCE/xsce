@@ -1,0 +1,22 @@
+- name: Remove iptables.service file from /etc
+  file: path=/etc/systemd/system/iptables.service 
+        state=absent
+
+- name: Remove iptables-xs.service file from /etc
+  file: path=/etc/systemd/system/iptables-xs.service 
+        state=absent
+
+- name: Install iptables service package
+  package: name=iptables-persistent
+           state=present
+  tags:
+    - download
+
+- name: Install iptables services
+  template: src={{ item.0 }}
+            dest={{ item.1 }}
+            owner='root'
+            group='root'
+            mode={{ item.2 }}
+  with_items:
+   - { 0: 'iptables-config', 1: '/etc/sysconfig/iptables-config', 2: '0644' }

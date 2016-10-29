@@ -1,6 +1,6 @@
 ---
 - hosts: all
-  sudo: yes
+  become: yes
 
   vars_files:
   - vars/default_vars.yml
@@ -9,6 +9,4 @@
 
   roles:
       - { role: 1-prep, tags: ['prep','platform','base'] }
-      - { role: 2-common, tags: ['common','base'] }
       - { role: 3-base-server, tags: ['base'] }
-      - { role: openvpn, tags: ['openvpn'] }

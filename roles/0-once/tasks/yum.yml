@@ -1,50 +1,53 @@
-- name: install yum deps for arm!!!
+- name: workaround F23 install yum deps!!!
   shell: dnf install -y python-urlgrabber pyxattr yum-metadata-parser
-  when: ansible_distribution == "Fedora" and ansible_machine == "armv7l" and ansible_distribution_version|int >= 22
+  when: ansible_distribution == "Fedora" and ansible_distribution_version|int <= 23
 
-- name: install yum from Fedora 23 for arm!!!
+- name: workaround F22 install yum from Fedora 23 for arm!!!
   shell: dnf install -y https://kojipkgs.fedoraproject.org//packages/yum/3.4.3/506.fc23/noarch/yum-3.4.3-506.fc23.noarch.rpm
-  when: ansible_distribution == "Fedora" and ansible_machine == "armv7l" and ansible_distribution_version|int >= 22
+  when: ansible_distribution == "Fedora" and ansible_machine == "armv7l" and ansible_distribution_version|int == 22
 
-- name: install yum if it has been dropped from our distribution -- Fedora 22 uses dnf!!!
+- name: install yum if it has been dropped from our distribution -- Fedora 22+ uses dnf!!!
   shell: dnf install -y yum
-  when: ansible_distribution == "Fedora" and ansible_distribution_version|int >= 22 and ansible_machine != "armv7l"
+  when: ansible_distribution == "Fedora" and ansible_distribution_version|int <= 25
 
 - name: Install yum packages
-  yum: name={{ item }}
-       state=present
+  package: name={{ item }}
+           state=present
   with_items:
    - yum-utils
    - createrepo
+   - libselinux-python
+  when: ansible_distribution != "Debian"
   tags:
     - download
 
 - name: Create local yum repo
   shell: createrepo {{ yum_packages_dir }}
+  when: ansible_distribution != "Debian"
 
 - name: Install local repo file.
   template: dest=/etc/yum.repos.d/xsce-local.repo
             src=local.repo
             owner=root
             mode=0644
+  when: ansible_distribution != "Debian"
 
 - name: Install common packages
-  yum: name={{ item }}
-       state=present
+  package: name={{ item }}
+           state=present
   with_items:
    - acpid
    - mlocate
    - rsync
    - htop
-   - etckeeper
    - python-passlib
    - usbmount
    - net-tools
    - openssh-server
    - sudo
-   - syslog
+   - inetutils-syslogd
    - logrotate
-   - xml-common
+#   - xml-common
    - make
    - tar
    - unzip
@@ -53,25 +56,33 @@
    - bridge-utils
    - usbutils
    - hostapd
-   - wpa_supplicant
+   - wpasupplicant
    - wget
    - openssl   #FC 18 does not supply, but pear requires
+<<<<<<< HEAD
    - linux-firmware # grab wifi firmware
+   - avahi
+   - avahi-tools
+   - nss-mdns
+=======
+#   - linux-firmware # grab wifi firmware--Debian installs non-free automatically
+>>>>>>> merge conflict over yum cache
   tags:
     - download
 
-- name: Update common packages
-  yum: name={{ item }}
-       state=latest
-  with_items:
-   - NetworkManager
-   - bash
-   - iptables
-   - vim-minimal # ejabberd erlang does not update this properly
-   - dbus-glib   # NM does not update this properly
-   - glibc # CVE-2015-7547
-  tags:
-    - download
+<<<<<<< HEAD
+#- name: Update common packages
+#  package: name={{ item }}
+#           state=latest
+#  with_items:
+#   - NetworkManager
+#   - bash
+#   - iptables
+#   - vim-minimal # ejabberd erlang does not update this properly
+#   - dbus-glib   # NM does not update this properly
+#   - glibc # CVE-2015-7547
+#  tags:
+#    - download
 
 # instuctions state to start with a fully updated system before starting, stop using
 # ansible as a crutch for developers not following the directions and taking short-cuts

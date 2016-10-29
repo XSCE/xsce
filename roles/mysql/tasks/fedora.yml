@@ -1,4 +1,17 @@
     - name: Install MySQL
-      yum: name={{ item }}
+      package: name={{ item }}
+               state=present
       with_items:
         - mysql-server
+
+    - name: Install MySQL
+      yum: name={{ item }}
+      with_items:
+        - php-mysql
+      when: not is_F25
+
+    - name: Install MySQL
+      yum: name={{ item }}
+      with_items:
+        - php-common
+      when: is_F25

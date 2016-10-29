@@ -1,0 +1,10 @@
+- name: Install MySQL
+  package: name={{ item }}
+           state=present
+  with_items:
+    - mariadb-server
+    - mariadb-client
+
+- name: set the service name
+  set_fact:
+     mysql_service: mysql

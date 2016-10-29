@@ -3,6 +3,10 @@
         password={{ xsce_admin_passw_hash }}
         update_password=on_create
         
+- name: Create a wheel group
+  group: name=wheel
+         state=present
+
 - name: Add user to wheel group
   user: name={{ xsce_admin_user }} groups=wheel
   

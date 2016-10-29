@@ -1,13 +1,10 @@
-- name: Since f22, dnf has replaced yum, but ansible works with yum
-  command: dnf install -y yum
-  when: ansible_distribution == "Fedora" and ansible_distribution_version|int >= 22
-
 - name: Install xsce-extra repos
   template: backup=yes
             dest=/etc/yum.repos.d/xsce-extra.repo
             src=xsce-extra.repo
             owner=root
             mode=0666
+  when: ansible_distribution != "Debian"
 
 - name: Install xsce-testing repos
   template: backup=yes
@@ -15,6 +12,7 @@
             src=xsce-testing.repo
             owner=root
             mode=0666
+  when: ansible_distribution != "Debian"
 
 - name: Install rpmfusion-free-updates repo -- for exfat
   template: dest=/etc/yum.repos.d/rpmfusion-free-updates.repo
@@ -79,11 +77,11 @@
 
 - name: Install xsce-prep.service
   template: src=xsce-prep.service
-            dest=/usr/lib/systemd/system
+            dest=/etc/systemd/system/
             owner=root
             group=root
             mode=0755
 
-- name: Enable xsce-prep service
+- name: Don't enable xsce-prep service
   service: name=xsce-prep
-           enabled=yes
+           enabled=no

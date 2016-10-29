@@ -1,5 +1,6 @@
 - name: Install docker
-  yum:  name={{ item }}
+  package:  name={{ item }} 
+            state=present
   with_items:
     - docker
     - python-docker-py

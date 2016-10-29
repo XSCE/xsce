@@ -54,7 +54,7 @@ xsce_cmdsrv_ready_file = "/var/run/xsce-cmdsrv-ready"
 xsce_cmdsrv_dbpath = xsce_cmdsrv_path + "/" + xsce_cmdsrv_dbname
 
 # Constants - ToDo add to xsce_cmdsrv_config_file
-squid_whitelist = "/etc/squid/sites.whitelist.txt"
+squid_whitelist = "/etc/squid3/sites.whitelist.txt"
 # for kiwix zims
 kiwix_catalog_file = "/etc/xsce/kiwix_catalog.json"
 zim_downloads_dir = "/library/downloads/zims/"
@@ -66,6 +66,10 @@ zim_index_dir = "/library/zims/index/"
 rachel_downloads_dir = "/library/downloads/"
 rachel_working_dir = "/library/working/"
 rachel_version = 'rachelusb_32EN_3_1_5'
+
+# disto variables
+output = subprocess.check_output(["/usr/bin/which","ansible"])
+ansible_prefix = os.path.dirname(output)+'/'
 
 # Global Variables
 last_command_rowid = 0
@@ -127,7 +131,7 @@ def main():
     ipc_sock = "/run/cmdsrv_sock"
     client_url = "ipc://" + ipc_sock
 
-    owner = pwd.getpwnam("apache")
+    owner = pwd.getpwnam("www-data")
     group = grp.getgrnam("xsce-admin")
 
     # Prepare our context and sockets
@@ -562,7 +566,8 @@ def cmd_handler(cmd_msg):
         "GET-CONF": get_config_vars,
         "SET-CONF": set_config_vars,
         "GET-MEM-INFO": get_mem_info,
-        "GET-STORAGE-INFO": get_storage_info,
+        "GET-SPACE-AVAIL": get_space_avail,
+        "GET-STORAGE-INFO": get_storage_info_lite,
         "RUN-ANSIBLE": run_ansible,
         "RESET-NETWORK": run_ansible,
         "GET-JOB-STAT": get_last_jobs_stat,
@@ -764,6 +769,35 @@ def get_mem_info(cmd_info):
     json_outp = json_array("system_memory", outp)
     return (json_outp)
 
+def get_space_avail(cmd_info):
+    space_avail = {}
+    space_avail['library_on_root'] = True
+    libr_attr = {}
+    cmd = "/usr/bin/df -m"
+    cmd_args = shlex.split(cmd)
+    outp = subprocess.check_output(cmd_args)
+    dev_arr = outp.split('\n')
+    for dev_str in dev_arr[1:-1]:
+       dev_attr = dev_str.split()
+       if dev_attr[5] == '/':
+           space_avail['root'] = parse_df_str(dev_str)
+       if dev_attr[5] == '/library':
+           space_avail['library'] = parse_df_str(dev_str)
+           space_avail['library_on_root'] = False
+    if ('root' in space_avail):
+        resp = json.dumps(space_avail)
+    else:
+        resp = cmd_error(cmd_info['cmd'], "No root partition found")
+    return (resp)
+
+def get_storage_info_lite(cmd_info):
+    outp = subprocess.check_output(["/usr/bin/df", "-lh"])
+    json_outp = json_array("system_fs", outp)
+    return (json_outp)
+
+# the following does not work on lvm or raid or iso usb drives
+# we wil fix later
+
 def get_storage_info(cmd_info):
     system_storage = []
     cmd = "lsblk -aP -o NAME,FSTYPE,TYPE,SIZE,MOUNTPOINT,LABEL,UUID,PARTLABEL,PARTUUID,MODEL"
@@ -864,16 +898,21 @@ def get_storage_info_parted(dev):
 
 def get_storage_info_df(part_dev):
     part_prop = {}
-    outp = subprocess.check_output(["/usr/bin/df", part_dev, "-m"])
+    outp = subprocess.check_output(["/bin/df", part_dev, "-m"])
     str_array = outp.split('\n')
-    params = str_array[1]
-    parm_arr = params.split(' ')
-    parm_arr = [a for a in parm_arr if a not in ['']]
-    part_prop['size_in_megs'] = parm_arr[1]
-    part_prop['avail_in_megs'] = parm_arr[3]
-    part_prop['mount_point'] = parm_arr[5]
+    part_prop = parse_df_str(str_array[1])
     #print part_prop
     return (part_prop)
+
+def parse_df_str(df_str):
+    dev_attr = {}
+    dev_attr_array = df_str.split()
+    dev_attr_array = [a for a in dev_attr_array if a not in ['']]
+    dev_attr['dev'] = dev_attr_array[0]
+    dev_attr['size_in_megs'] = dev_attr_array[1]
+    dev_attr['avail_in_megs'] = dev_attr_array[3]
+    dev_attr['mount_point'] = dev_attr_array[5]
+    return (dev_attr)
 
 def get_inet_speed(cmd_info):
     outp = subprocess.check_output(["scripts/get_inet_speed"])
@@ -971,7 +1010,7 @@ def run_ansible(cmd_info): # create multiple jobs to run in succession
 
     if cmd_info['cmd'] == "RUN-ANSIBLE":
 
-        job_command = "/usr/bin/ansible-playbook -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local"
+        job_command = ansible_prefix + "ansible-playbook -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local"
 
         if 'cmd_args' in cmd_info:
             tags = cmd_info['cmd_args']['tags']
@@ -1551,7 +1590,11 @@ def init():
     # Opening a connection creates if not exist
     # No DB locking done in init as is single threaded
 
-    statinfo = os.stat(xsce_cmdsrv_dbpath)
+    try:
+        statinfo = os.stat(xsce_cmdsrv_dbpath)
+    except:
+        outp = subprocess.check_output(["/usr/bin/touch", xsce_cmdsrv_dbpath])
+        statinfo = os.stat(xsce_cmdsrv_dbpath)
     if statinfo.st_size == 0:
         conn = sqlite3.connect(xsce_cmdsrv_dbpath)
         conn.execute ("CREATE TABLE commands (cmd_msg text, create_datetime text)")
@@ -1659,7 +1702,7 @@ def read_xsce_vars():
 def get_ansible_facts():
     global ansible_facts
 
-    command = "/usr/bin/ansible localhost -i " + xsce_git_path + "/ansible_hosts  -m setup -o  --connection=local"
+    command = ansible_prefix + "ansible localhost -i " + xsce_git_path + "/ansible_hosts  -m setup -o  --connection=local"
     args = shlex.split(command)
     outp = subprocess.check_output(args)
     if (get_ansible_version() < '2'):
@@ -1674,10 +1717,10 @@ def get_ansible_tags():
     global ansible_tags
 
     if (get_ansible_version() < '2'):
-        command = "/usr/bin/ansible-playbook -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local --tags=???"
+        command = ansible_prefix + "ansible-playbook -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local --tags=???"
         splitter = 'values: '
     else:
-        command = "/usr/bin/ansible-playbook -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local --list-tags"
+        command = ansible_prefix + "ansible-playbook -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local --list-tags"
         splitter = 'TASK TAGS: '
 
     args = shlex.split(command)

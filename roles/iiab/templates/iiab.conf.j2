@@ -5,8 +5,8 @@ XSendFilePath /
 
 WSGIScriptAlias /iiab /var/www/html/iiab.wsgi
 
-Alias /iiabstatic /usr/lib/python2.7/site-packages/iiab/static
+Alias /iiabstatic /usr/local/lib/python2.7/dist-packages/iiab/static
 
-<Directory /usr/lib/python2.7/site-packages/iiab/static>
+<Directory /usr/local/lib/python2.7/dist-packages/iiab/static>
 	require all granted
 </Directory>

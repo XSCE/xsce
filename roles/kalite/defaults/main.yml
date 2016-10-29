@@ -15,4 +15,6 @@ kalite_server_port: 8008
 kalite_enabled: False
 kalite_cron_enabled: False
 khan_assessment_install: True
-khan_assessment_url: "http://pantry.learningequality.org/downloads/ka-lite/0.16/content/khan_assessment.zip"
+khan_assessment_url: "http://pantry.learningequality.org/downloads/ka-lite/0.15/content/khan_assessment.zip"
+# debian puts installed stuff in /usr/local
+ka_prefix: /usr/local
