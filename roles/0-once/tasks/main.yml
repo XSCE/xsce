@@ -10,7 +10,7 @@
   when: ansible_distribution == "CentOS"
 
 - include: packages.yml
-  when: not ansible1 and ansible_distribution == "Fedora"
+  when: not ansible1
 
 - include: yum.yml
 #exclude this once the package port is done
