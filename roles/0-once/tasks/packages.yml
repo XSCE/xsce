@@ -1,5 +1,5 @@
 - name: install dnf packages for ansible!!!
-  shell: dnf install -y dnf-python2 libselinux-python
+  shell: dnf install -y python2-dnf libselinux-python
   when: ansible_distribution == "Fedora" and ansible_distribution_version|int <= 25
 
 #- name: Install yum packages
