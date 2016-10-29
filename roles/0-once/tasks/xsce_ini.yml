@@ -37,6 +37,8 @@
 
 - name:	Ansible	Version
   set_fact: 
+     ansible_ver: '{{ ansible_local["local_facts"]["ansble_version"] }}'
      ansible1: False
-  when:	'{{ ansible_local["local_facts"]["ansble_version"] }}' != "1.9.6"
+     when: ansible_ver != "1.9.6"
+
 
