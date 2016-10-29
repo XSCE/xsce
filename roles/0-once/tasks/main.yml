@@ -13,8 +13,7 @@
   when: not ansible1 and ansible_distribution == "Fedora"
 
 - include: yum.yml
-#exclude this once the package port is done
-#  when: ansible1
+  when: ansible1 and not ansible_distribution == "CentOS" 
 
 - include: chrony.yml
 - include: cmdsrv.yml
