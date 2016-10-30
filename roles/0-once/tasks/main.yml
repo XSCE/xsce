@@ -3,17 +3,9 @@
     is_F18: True
   when: ansible_distribution_release == "based on Fedora 18" or ansible_distribution_version == "18"
 
-- include: selinux.yml
-  when: ansible_selinux is defined and ansible_version >= '2' and ansible_selinux or ansible_selinux['status'] is defined and ansible_version < '2' and ansible_selinux['status'] != 'disabled'
-
 - include: fl.yml
 - include: prep.yml
 - include: xsce_ini.yml
-- name: Keep yum cache
-  ini_file: dest=/etc/yum.conf
-            section=main
-            option=keepcache
-            value=1
 
 - include: xo.yml
   when: xo_model != "none" or osbuilder is defined
@@ -21,14 +13,16 @@
 - include: centos.yml
   when: ansible_distribution == "CentOS"
 
+- include: yum.yml
+- include: chrony.yml
+- include: cmdsrv.yml
+
 - include: fedora.yml
   when: ansible_distribution == "Fedora"
 
 - include: fix_ansible_version.yml
-- include: chrony.yml
+
 - include: prelim.yml
-- include: yum.yml
-- include: cmdsrv.yml
 - include: patch_udev.yml
 - include: net_mods.yml
 
@@ -68,3 +62,17 @@
   copy: src=rtl8188eufw.bin dest=/lib/firmware/rtlwifi/
   when: wifi_id  ==  "tplink_WM725M" and xo_model == "none" and not rpi_model is defined
   ignore_errors: true
+
+- name: Record base version
+  lineinfile: dest=/etc/xsce/xsce.env
+              regexp='^BASE_VERSION=*'
+              line='BASE_VERSION="{{ xsce_base_ver }}"'
+              state=present
+
+- name: Remove preload to force fresh downloading in stage2
+  file: path=/.preload
+        state=absent
+
+- include: selinux.yml
+  when: ansible_selinux is defined and ansible_version >= '2' and ansible_selinux or ansible_selinux['status'] is defined and ansible_version < '2' and ansible_selinux['status'] != 'disabled'
+
