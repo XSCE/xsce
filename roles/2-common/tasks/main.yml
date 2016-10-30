@@ -1,2 +1,10 @@
 - include: sysctl.yml
 - include: html.yml
+  when: new_menu
+
+# If we got here we're done
+- name: Record menu version
+  lineinfile: dest=/etc/xsce/xsce.env
+              regexp='^MENU_VERSION=*'
+              line='MENU_VERSION="{{ new_menu_version }}"'
+              state=present
