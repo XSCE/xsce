@@ -31,6 +31,8 @@
 - name: Determine if pathagar has already been downloaded from git
   stat: path="{{ pathagar_src }}/settings.py"
   register: pathagar
+  tags:
+    - download2
 
 - name: Clone pathagar repo
   git: repo=https://github.com/PathagarBooks/pathagar.git

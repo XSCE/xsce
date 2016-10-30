@@ -11,6 +11,8 @@
 - name: Determine if moodle is already downloaded
   stat: path={{ moodle_base }}/config-dist.php
   register: moodle
+  tags:
+    - download2
 
 - name: Download the latest moodle repo
   git: repo={{ moodle_repo_url }}

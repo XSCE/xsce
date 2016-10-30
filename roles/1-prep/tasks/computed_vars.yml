@@ -9,6 +9,7 @@
      phplib_dir: '{{ ansible_local["local_facts"]["phplib_dir"] }}'
      xsce_base_ver: '{{ ansible_local["local_facts"]["xsce_base_ver"] }}'
      xsce_preload: '{{ ansible_local["local_facts"]["xsce_preload"] }}'
+     ansible_ver: '{{ ansible_local["local_facts"]["ansble_version"] }}'
 
 - name: Defaulting xsce_base_ver
   set_fact:
@@ -33,6 +34,8 @@
             option='{{ item.option }}'
             value='{{ item.value }}'
   with_items:
+    - option: 'ansible_version'
+      value: '{{ ansible_local["local_facts"]["ansble_version"] }}'
     - option: 'runtime_branch'
       value: '{{ ansible_local["local_facts"]["xsce_branch"] }}'
     - option: 'runtime_commit'
