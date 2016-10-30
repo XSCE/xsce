@@ -5,3 +5,4 @@ sudo -u apache /usr/bin/php {{moodle_base}}/admin/cli/install.php \
 --fullname=Your_School --shortname=School \
 --adminuser=admin --adminpass=changeme \
 --non-interactive --agree-license
+chown apahce:apache {{ moodle_base }}/config.php
