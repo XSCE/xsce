@@ -562,7 +562,8 @@ def cmd_handler(cmd_msg):
         "GET-CONF": get_config_vars,
         "SET-CONF": set_config_vars,
         "GET-MEM-INFO": get_mem_info,
-        "GET-STORAGE-INFO": get_storage_info,
+        "GET-SPACE-AVAIL": get_space_avail,
+        "GET-STORAGE-INFO": get_storage_info_lite,
         "RUN-ANSIBLE": run_ansible,
         "RESET-NETWORK": run_ansible,
         "GET-JOB-STAT": get_last_jobs_stat,
@@ -764,6 +765,35 @@ def get_mem_info(cmd_info):
     json_outp = json_array("system_memory", outp)
     return (json_outp)
 
+def get_space_avail(cmd_info):
+    space_avail = {}
+    space_avail['library_on_root'] = True
+    libr_attr = {}
+    cmd = "/usr/bin/df -m"
+    cmd_args = shlex.split(cmd)
+    outp = subprocess.check_output(cmd_args)
+    dev_arr = outp.split('\n')
+    for dev_str in dev_arr[1:-1]:
+       dev_attr = dev_str.split()
+       if dev_attr[5] == '/':
+           space_avail['root'] = parse_df_str(dev_str)
+       if dev_attr[5] == '/library':
+           space_avail['library'] = parse_df_str(dev_str)
+           space_avail['library_on_root'] = False
+    if ('root' in space_avail):
+        resp = json.dumps(space_avail)
+    else:
+        resp = cmd_error(cmd_info['cmd'], "No root partition found")
+    return (resp)
+
+def get_storage_info_lite(cmd_info):
+    outp = subprocess.check_output(["/usr/bin/df", "-lh"])
+    json_outp = json_array("system_fs", outp)
+    return (json_outp)
+
+# the following does not work on lvm or raid or iso usb drives
+# we wil fix later
+
 def get_storage_info(cmd_info):
     system_storage = []
     cmd = "lsblk -aP -o NAME,FSTYPE,TYPE,SIZE,MOUNTPOINT,LABEL,UUID,PARTLABEL,PARTUUID,MODEL"
@@ -866,14 +896,19 @@ def get_storage_info_df(part_dev):
     part_prop = {}
     outp = subprocess.check_output(["/usr/bin/df", part_dev, "-m"])
     str_array = outp.split('\n')
-    params = str_array[1]
-    parm_arr = params.split(' ')
-    parm_arr = [a for a in parm_arr if a not in ['']]
-    part_prop['size_in_megs'] = parm_arr[1]
-    part_prop['avail_in_megs'] = parm_arr[3]
-    part_prop['mount_point'] = parm_arr[5]
+    part_prop = parse_df_str(str_array[1])
     #print part_prop
     return (part_prop)
+
+def parse_df_str(df_str):
+    dev_attr = {}
+    dev_attr_array = df_str.split()
+    dev_attr_array = [a for a in dev_attr_array if a not in ['']]
+    dev_attr['dev'] = dev_attr_array[0]
+    dev_attr['size_in_megs'] = dev_attr_array[1]
+    dev_attr['avail_in_megs'] = dev_attr_array[3]
+    dev_attr['mount_point'] = dev_attr_array[5]
+    return (dev_attr)
 
 def get_inet_speed(cmd_info):
     outp = subprocess.check_output(["scripts/get_inet_speed"])
