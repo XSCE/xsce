@@ -4,14 +4,18 @@
 FIX=x`cat /etc/fstab | grep squid.img` 
 if [ "$FIX" = "x" ]
 then
- dd if=/dev/zero of=/library/squid.img bs=1 count=0 seek=$@
+ dd if=/dev/zero of=/library/squid.img bs=1 count=0 seek="$@" > /dev/null
  expect -f $XSCE_DIR/roles/squid/templates/mkcache.exp "`which mkfs.ext4` /library/squid.img" 
  echo "/library/squid.img /library/cache ext4 defaults 0 0" >> /etc/fstab 
+ sync
+ sleep 2
  mount -a 
 else
  systemctl stop squid
- umount /library/cache
- dd if=/dev/zero of=/library/squid.img bs=1 count=0 seek=$@
+ umount -d /library/cache 2&>1 > /dev/null
+ dd if=/dev/zero of=/library/squid.img bs=1 count=0 seek="$@" > /dev/null
  expect -f $XSCE_DIR/roles/squid/templates/mkcache.exp "`which mkfs.ext4` /library/squid.img"
+ sync
+ sleep 2
  mount -a
 fi
