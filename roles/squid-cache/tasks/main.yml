@@ -2,7 +2,7 @@
   shell: "{{xsce_dir}}/roles/squid/templates/mkcache {{ new_squid_cache }}"
   when: squid_cache != new_squid_cache
 
-- name: Record base gui version
+- name: Record SQUID Cache Size
   lineinfile: dest=/etc/xsce/xsce.env
               regexp='^SQUID_CACHE=*'
               line='SQUID_CACHE="{{ new_squid_cache }}"'
