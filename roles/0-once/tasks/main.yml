@@ -1,7 +1,7 @@
-- include: roles/1-prep/tasks/distros.yml
 - include: fl.yml
 - include: prep.yml
 - include: xsce_ini.yml
+- include: "{{xsce_dir}}/roles/1-prep/tasks/distros.yml"
 
 - include: xo.yml
   when: xo_model != "none" or osbuilder is defined
