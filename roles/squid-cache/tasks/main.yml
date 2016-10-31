@@ -1,14 +1,9 @@
 - name: Size up the /library/cache image
-  shell: {{XSCE_DIR}}/roles/squid/templates/mkcache {{ new_squid_cache }}
+  shell: "{{xsce_dir}}/roles/squid/templates/mkcache {{ new_squid_cache }}"
   when: squid_cache != new_squid_cache
-  tags:
-   - squidcache
 
 - name: Record base gui version
   lineinfile: dest=/etc/xsce/xsce.env
               regexp='^SQUID_CACHE=*'
               line='SQUID_CACHE="{{ new_squid_cache }}"'
               state=present
-  tags:
-   - squidcache
-
