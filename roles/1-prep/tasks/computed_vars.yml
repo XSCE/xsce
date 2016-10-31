@@ -13,6 +13,11 @@
      xsce_preload: '{{ ansible_local["local_facts"]["xsce_preload"] }}'
      ansible_ver: '{{ ansible_local["local_facts"]["ansble_version"] }}'
 
+- name: Ansible Version
+  set_fact: 
+     ansible1: False
+  when: ansible_ver != "1.9.6"
+
 - name: Defaulting xsce_base_ver
   set_fact:
      xsce_base_ver: 0
@@ -51,8 +56,6 @@
             option='{{ item.option }}'
             value='{{ item.value }}'
   with_items:
-    - option: 'ansible_version'
-      value: '{{ ansible_local["local_facts"]["ansble_version"] }}'
     - option: 'runtime_branch'
       value: '{{ ansible_local["local_facts"]["xsce_branch"] }}'
     - option: 'runtime_commit'
@@ -82,6 +85,8 @@
     - option: 'New_Menu'
       value: '{{ new_menu }}'
 
+- include: distros.yml
+
 # Put all computed vars here so derive properly from any prior var file
 - name: Set port 80 for Admin Console
   set_fact:
@@ -95,7 +100,6 @@
 
 - name: Turn on mysql if elgg or rachel enabled
   set_fact:
-    mysql_install: True
     mysql_enabled: True
   when: elgg_enabled or rachel_enabled or owncloud_enabled or phpmyadmin_enabled or wordpress_enabled
 
@@ -108,7 +112,6 @@
 # There might be other db's
 - name: Turn on postgresql if moodle or pathagar enabled
   set_fact:
-    postgresql_install: True
     postgresql_enabled: True
   when: moodle_enabled or pathagar_enabled
 
@@ -117,51 +120,6 @@
     docker_install: True
     docker_enabled: True
   when: schooltool_enabled or schooltool_install
-
-# for various reasons the mysql service can not be enabled on fedora 20,
-# but 'mariadb', which is its real name can
-# on fedora 18 we need to use 'mysqld'
-
-- name: Set mysqld service name to mariadb by default
-  set_fact:
-    mysql_service: mariadb
-
-- name: Set mysqld service name to mysqld for fedora 18
-  set_fact:
-    mysql_service: mysqld
-    no_NM_reload: True
-    is_F18: True
-  when: ansible_distribution_release == "based on Fedora 18" or ansible_distribution_version == "18"
-
-- name: Fedora 20
-  set_fact:
-    is_F20: True
-  when: ansible_distribution == "Fedora" and ansible_distribution_version == "20"
-
-- name: Fedora 21
-  set_fact:
-    is_F21: True
-  when: ansible_distribution == "Fedora" and ansible_distribution_version == "21"
-
-- name: Fedora 22
-  set_fact:
-    is_F22: True
-  when: ansible_distribution == "Fedora" and ansible_distribution_version == "22"
-
-- name: Fedora 23
-  set_fact:
-    is_F23: True
-  when: ansible_distribution == "Fedora" and ansible_distribution_version == "23"
-
-- name: Fedora 24
-  set_fact:
-    is_F24: True
-  when: ansible_distribution == "Fedora" and ansible_distribution_version == "24"
-
-- name: CentOS
-  set_fact:
-    is_CentOS: True
-  when: ansible_distribution == "CentOS"
 
 - name: Set kiwix source file name i686
   set_fact:

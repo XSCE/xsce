@@ -1,0 +1,55 @@
+- name: install dnf packages for ansible!!!
+  shell: dnf install -y python2-dnf libselinux-python
+  when: ansible_distribution == "Fedora" and ansible_distribution_version|int <= 25
+
+#- name: Install yum packages
+#  yum: name={{ item }}
+#       state=present
+#  with_items:
+#   - yum-utils
+#   - createrepo
+#  tags:
+#    - download
+
+#- name: Create local yum repo
+#  shell: createrepo {{ yum_packages_dir }}
+
+#- name: Install local repo file.
+#  template: dest=/etc/yum.repos.d/xsce-local.repo
+#            src=local.repo
+#            owner=root
+#            mode=0644
+
+- name: Install packages Ansible-2.1
+  package: name={{ item }}
+           state=present
+  with_items:
+   - acpid
+   - mlocate
+   - rsync
+   - htop
+   - python-passlib
+   - usbmount
+   - net-tools
+   - openssh-server
+   - sudo
+   - syslog
+   - logrotate
+   - xml-common
+   - make
+   - tar
+   - unzip
+   - bzip2
+   - i2c-tools
+   - bridge-utils
+   - usbutils
+   - hostapd
+   - wpa_supplicant
+   - wget
+   - openssl   #FC 18 does not supply, but pear requires
+   - linux-firmware # grab wifi firmware
+   - avahi
+   - avahi-tools
+   - nss-mdns
+  tags:
+    - download

@@ -1,5 +1,5 @@
 - name: Copy dansguardian config file
-  template: src=squid/dansguardian.conf.j2
+  template: src=dansguardian.conf.j2
             dest=/etc/dansguardian/dansguardian.conf
             owner=dansguardian
             group=dansguardian
@@ -7,7 +7,7 @@
   when: ansible_distribution != "CentOS"
 
 - name: Copy dansguardian config file for CentOS
-  template: src=squid/dansguardian.conf.centos.j2
+  template: src=dansguardian.conf.centos.j2
             dest=/etc/dansguardian/dansguardian.conf
             owner=dansguardian
             group=vscan

@@ -1,19 +1,20 @@
-- name: Set flag for fedora 18
-  set_fact:
-    is_F18: True
-  when: ansible_distribution_release == "based on Fedora 18" or ansible_distribution_version == "18"
-
+- include: roles/1-prep/tasks/distros.yml
 - include: fl.yml
 - include: prep.yml
 - include: xsce_ini.yml
 
-- include: xo.yml
-  when: xo_model != "none" or osbuilder is defined
+#- include: xo.yml
+#  when: xo_model != "none" or osbuilder is defined
 
 - include: centos.yml
   when: ansible_distribution == "CentOS"
 
+- include: packages.yml
+  when: not ansible1
+
 - include: yum.yml
+  when: ansible1 and not ansible_distribution == "CentOS" 
+
 - include: chrony.yml
 - include: cmdsrv.yml
 
@@ -63,15 +64,17 @@
   when: wifi_id  ==  "tplink_WM725M" and xo_model == "none" and not rpi_model is defined
   ignore_errors: true
 
-- name: Record base version
-  lineinfile: dest=/etc/xsce/xsce.env
-              regexp='^BASE_VERSION=*'
-              line='BASE_VERSION="{{ xsce_base_ver }}"'
-              state=present
-
 - name: Remove preload to force fresh downloading in stage2
   file: path=/.preload
         state=absent
 
+- name: Editing /etc/sysconfig/selinux
+  lineinfile: state=present
+              backrefs=yes
+              regexp='^SELINUX='
+              line='SELINUX=disabled'
+              dest=/etc/sysconfig/selinux
+  when: ansible_distribution == "CentOS" or ansible_distribution == "Fedora"
+ 
 - include: selinux.yml
   when: ansible_selinux is defined and ansible_version >= '2' and ansible_selinux or ansible_selinux['status'] is defined and ansible_version < '2' and ansible_selinux['status'] != 'disabled'

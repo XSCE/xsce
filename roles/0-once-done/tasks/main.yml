@@ -1,0 +1,5 @@
+- name: Record base version
+  lineinfile: dest=/etc/xsce/xsce.env
+              regexp='^BASE_VERSION=*'
+              line='BASE_VERSION="{{ new_base_ver }}"'
+              state=present

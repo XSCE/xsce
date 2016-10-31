@@ -36,3 +36,15 @@
 - name: Disable wpa_supplicant
   service: name=wpa_supplicant
            enabled=no
+
+- name: Disable tmp.mount
+  service: name=tmp.mount
+           enabled=no
+
+- name: Mask tmp.mount
+  shell: 'systemctl mask tmp.mount'
+
+- name: Remove tmpfs for /tmp
+  lineinfile: dest=/etc/fstab
+              regexp='/tmp'
+              state=absent

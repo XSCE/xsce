@@ -1,11 +1,14 @@
 #!/bin/bash
 BASE_VERSION="0"
 NEW_VERSION="1"
+PLAYBOOK="install-init.yml"
+INVENTORY="ansible_hosts"
 
 if [ -f /etc/xsce/xsce.env ]
 then
  . /etc/xsce/xsce.env
  NEW_VERSION=`cat $XSCE_DIR/roles/0-once/defaults/main.yml | grep new_base_ver | awk -F ": " '{print $2}'`
+ cd $XSCE_DIR
 fi
 
 if [ -f /etc/xsce/config_vars.yml ] && [ "$BASE_VERSION" == "$NEW_VERSION" ]
@@ -13,7 +16,7 @@ then
  exit 0
 fi
 
-if [ ! -f install-init.yml ]
+if [ ! -f $PLAYBOOK ]
 then
  echo "XSCE Playbook not found."
  echo "Please run this command from the top level of the git repo."
@@ -24,8 +27,6 @@ fi
 # Mark local_vars as do not track to preserve local changes
 git update-index --assume-unchanged vars/local_vars.yml
 
-PLAYBOOK="install-init.yml"
-INVENTORY="ansible_hosts"
 
 XSCE_DIR=`pwd`
 export ANSIBLE_LOG_PATH="$XSCE_DIR/xsce-install.log"

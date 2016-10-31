@@ -1,18 +1,15 @@
 #!/bin/bash
+PLAYBOOK=xsce-tags.yml
 
 # copy var files to /etc/xsce for subsequent use
-
-./install-init
-
 # if not the first run, repo location is here
-
 if [ -f /etc/xsce/xsce.env ]
 then
   . /etc/xsce/xsce.env
   cd $XSCE_DIR
 fi
 
-if [ ! -f xsce.yml ]
+if [ ! -f $PLAYBOOK ]
 then
  echo "XSCE Playbook not found."
  echo "Please run this command from the top level of the git repo."
@@ -20,21 +17,18 @@ then
  exit
 fi
 
+./install-init
+
 tags=$(echo $1 | tr "," "\n")
-
 found="N"
-
 for tag in $tags
 do
   if [ "$tag" == "prep" ]
   then
     found="Y"
   fi
-
 done
-
 # echo $found
-
 taglist=$1
 
 if [ "$found" == "N" ]
@@ -50,4 +44,4 @@ if [ $# -ne 1 ]; then
 	exit 1
 fi
 export ANSIBLE_LOG_PATH="$XSCE_DIR/xsce-debug.log"
-ansible-playbook -i ansible_hosts xsce.yml --connection=local --tags="""$taglist"""
+ansible-playbook -i ansible_hosts $PLAYBOOK --connection=local --tags="""$taglist"""

@@ -1,0 +1,31 @@
+
+
+# monitor-connection-files defaults to no with F21, F18-F20 defaults to yes
+- name: Re-read network config files
+  shell: nmcli con reload
+  when: not installing and not no_NM_reload
+
+# test point, we should always have one with any kind of starting point
+# no ifcfg = supply
+# had but not WAN = rename and edit if wired, skip wifi gateway.
+# test point, confirm onboot=no is OK everywhere
+
+- name: Enabling pre-existing ifcfg-WAN file
+  shell: nmcli conn up id xsce-WAN
+  when: has_WAN and xsce_wan_iface != "none" and not installing and not xsce_demo_mode
+
+- name: Enabling ifcfg-LAN file
+  shell: nmcli conn up id xsce-LAN
+  ignore_errors: True
+  when: xsce_lan_iface != "none" and not installing and not xsce_demo_mode
+
+# we could do the DEVICE name stuff for a cleaner looking nmcli 
+- name: Enabling ifcfg slaves
+  shell: nmcli conn up id "System {{ item|trim }}"
+  ignore_errors: True
+  when: xsce_lan_iface == "br0" and item|trim != xsce_wireless_lan_iface and item|trim != xsce_wan_iface and not xsce_demo_mode
+  with_items:
+      - "{{ lan_list_result.stdout_lines }}"
+
+# testpoint confirm with 'nmcli c show' 'brctl show'
+

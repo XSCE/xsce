@@ -12,6 +12,8 @@ is_F21: False
 is_F22: False
 is_F23: False
 is_F24: False
+is_F25: False
+ansbile1: True
 
 installing: True
 
@@ -22,3 +24,6 @@ xsce_wan_iface: "none"
 gui_port: 80
 xsce_prepped: False
 wifi_id: none
+
+wondershaper_dspeed: "4096"
+wondershaper_upspeed: "1024"
