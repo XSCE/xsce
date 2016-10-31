@@ -45,10 +45,16 @@ then
     MENU_VERSION="0"
   fi
   MENU="$MENU_VERSION"
+  if [ -z $SQUID_CACHE ]
+  then
+    $SQUID_CACHE="0"
+  fi
+  SQUID="$SQUID_CACHE"
 else
   BASE="0"
   GUI="0"
   MENU="0"
+  SQUID="0"
 fi
 
 if [ -f /.preload ]
@@ -69,4 +75,5 @@ cat <<EOF
 "xsce_menu_ver"           : "$MENU",
 "ansble_version"          : "$ANSIBLE_VERSION",
 "xsce_preload"            : "$PRELOAD"}
+"squid_cache"             : "$SQUID"}
 EOF

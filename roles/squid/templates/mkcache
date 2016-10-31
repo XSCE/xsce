@@ -1,0 +1,17 @@
+
+#!/bin/bash
+. /etc/xsce/xsce.env
+FIX=x`cat /etc/fstab | grep squid.img` 
+if [ "$FIX" = "x" ]
+then
+ dd if=/dev/zero of=/library/squid.img bs=1 count=0 seek=$@
+ expect -f $XSCE_DIR/roles/squid/templates/mkcache.exp "mkfs.ext4 /library/squid.img" 
+ echo "/library/squid.img /library/cache ext4 defaults 0 0" >> /etc/fstab 
+ mount -a 
+else
+ systemctl stop squid
+ umount /library/cache
+ dd if=/dev/zero of=/library/squid.img bs=1 count=0 seek=$@
+ expect -f $XSCE_DIR/roles/squid/templates/mkcache.exp "mkfs.ext4 /library/squid.img" 
+ mount -a
+fi

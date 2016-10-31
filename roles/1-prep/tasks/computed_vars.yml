@@ -12,6 +12,7 @@
      xsce_menu_ver: '{{ ansible_local["local_facts"]["xsce_menu_ver"] }}'
      xsce_preload: '{{ ansible_local["local_facts"]["xsce_preload"] }}'
      ansible_ver: '{{ ansible_local["local_facts"]["ansble_version"] }}'
+     squid_cache: '{{ ansible_local["local_facts"]["squid_cache"] }}'
 
 - name: Defaulting xsce_base_ver
   set_fact:
