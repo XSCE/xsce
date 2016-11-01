@@ -8,7 +8,7 @@
 
 - name: install yum if it has been dropped from our distribution -- Fedora 22+ uses dnf!!!
   shell: dnf install -y yum
-  when: ansible_distribution == "Fedora" and ansible_distribution_version|int <= 25 not is_F18
+  when: ansible_distribution == "Fedora" and ansible_distribution_version|int <= 25 and not is_F18
 
 - name: Install yum packages
   yum: name={{ item }}
