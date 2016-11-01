@@ -60,6 +60,7 @@
    - avahi
    - avahi-tools
    - nss-mdns
+   - expect
   tags:
     - download
 
