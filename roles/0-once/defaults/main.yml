@@ -1,5 +1,5 @@
 # Keep in sync with 1-prep
-new_base_ver: 2
+new_base_ver: 3
 
 # must keep roles/xsce-admin/defaults/main.yml sync'd
 admin_console_path: "{{ xsce_base }}/admin_console"
