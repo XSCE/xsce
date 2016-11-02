@@ -1,0 +1,13 @@
+    - name: add mysql to service list
+      ini_file: dest='{{ service_filelist }}'
+                    section=mysql
+                    option='{{ item.option }}'
+                    value='{{ item.value }}'
+      with_items:
+            - option: name
+              value: mysql-database
+            - option: description
+              value: '"mySQL is a widely used database service on the Internet which runs on many platforms, and is often offered and available at hosting Internet Service Providers"'
+            - option: enabled
+              value: "{{ mysql_enabled }}"
+

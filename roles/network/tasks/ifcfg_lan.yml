@@ -1,0 +1,19 @@
+- name: Configuring LAN interface as xsce_lan_iface
+  template: src=network/ifcfg.j2
+            dest=/etc/sysconfig/network-scripts/ifcfg-LAN
+  when: xsce_lan_iface != "none"
+
+# can be more than one wired interface
+- name: Wired enslaving ## lan_list_result ## to Bridge
+  template: src=network/ifcfg-slave.j2
+            dest=/etc/sysconfig/network-scripts/ifcfg-{{ item|trim }}
+  when: xsce_lan_iface == "br0" and item|trim != xsce_wireless_lan_iface and item|trim != xsce_wan_iface
+  with_items:
+      - "{{ lan_list_result.stdout_lines }}"
+
+- name: WiFi enslaving {{ xsce_wireless_lan_iface }} to Bridge
+  template: src=network/wifi-slave.j2
+            dest=/etc/sysconfig/network-scripts/ifcfg-{{ xsce_wireless_lan_iface }}
+  when: xsce_lan_iface == "br0" and xsce_wireless_lan_iface != "none"
+  tags:
+    - network
