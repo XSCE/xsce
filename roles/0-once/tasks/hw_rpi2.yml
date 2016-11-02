@@ -6,6 +6,14 @@
             mode=0644
   when: rtc_id is defined and rtc_id != "none"
 
+- name: Download wifi firmware
+  get_url: url="{{ xsce_download_url }}/wifi-firmware.tgz"  
+           dest={{ downloads_dir}}/
+
+- name: Put it in firmware directory (pi3 need it, pi2 does not)
+  unarchive: src={{ downloads_dir}}/wifi-firmware.tgz
+             dest=/lib/firmware/
+  
 - name: Use compiled hostapd, and wpa_supplicant if tplink WM725M
   set_fact:
      driver_name: rtl871xdrv
