@@ -1,0 +1,4 @@
+expect_before "mke2fs 1.42.9 (28-Dec-2013)"
+expect_before "/library/squid.img is not a block special device."
+expect_before "Proceed anyway? (y,n)"  
+send "y\r"

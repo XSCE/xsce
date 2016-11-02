@@ -1,0 +1,2 @@
+- include: "{{xsce_dir}}/roles/mysql/tasks/setup.yml"
+  when: not installing

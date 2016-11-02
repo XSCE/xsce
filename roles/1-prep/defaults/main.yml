@@ -1,10 +1,10 @@
 # use these as a tag a release at a point in time
-new_base_ver: 2
 new_gui_version: 2
 new_menu_version: 2
 
 # These entries should never be changed in this file.
 # These are defaults for boolean routines
+new_squid_cache: 0
 new_menu: False
 installing: False
 exFAT_enabled: False
@@ -23,6 +23,7 @@ is_F21: False
 is_F22: False
 is_F23: False
 is_F24: False
+is_F25: False
 
 # Set default for discovered hardware
 driver_name: nl80211
