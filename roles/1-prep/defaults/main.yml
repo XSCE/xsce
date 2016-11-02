@@ -5,6 +5,7 @@ new_menu_version: 2
 # These entries should never be changed in this file.
 # These are defaults for boolean routines
 new_squid_cache: 0
+ansbile1: True
 new_menu: False
 installing: False
 exFAT_enabled: False

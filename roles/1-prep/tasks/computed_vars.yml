@@ -14,6 +14,11 @@
      ansible_ver: '{{ ansible_local["local_facts"]["ansble_version"] }}'
      squid_cache: '{{ ansible_local["local_facts"]["squid_cache"] }}'
 
+- name: Ansible Version
+  set_fact: 
+     ansible1: False
+  when: ansible_ver != "1.9.6"
+
 - name: Defaulting xsce_base_ver
   set_fact:
      xsce_base_ver: 0
@@ -52,8 +57,6 @@
             option='{{ item.option }}'
             value='{{ item.value }}'
   with_items:
-    - option: 'ansible_version'
-      value: '{{ ansible_local["local_facts"]["ansble_version"] }}'
     - option: 'runtime_branch'
       value: '{{ ansible_local["local_facts"]["xsce_branch"] }}'
     - option: 'runtime_commit'

@@ -32,3 +32,13 @@
       value: '{{ ansible_date_time["iso8601"] }}'
     - option: 'install_xo'
       value: '{{ xo_model }}'
+    - option: 'ansible_version'
+      value: '{{ ansible_local["local_facts"]["ansble_version"] }}'
+
+- name:	Ansible	Version
+  set_fact: 
+     ansible_ver: '{{ ansible_local["local_facts"]["ansble_version"] }}'
+     ansible1: False
+     when: ansible_ver != "1.9.6"
+
+
