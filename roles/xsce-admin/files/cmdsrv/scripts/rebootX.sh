@@ -1,6 +1,6 @@
 #!/bin/sh
 
-/usr/bin/sleep 3
-/usr/sbin/reboot
+/bin/sleep 3
+/sbin/reboot
 
 exit 0
