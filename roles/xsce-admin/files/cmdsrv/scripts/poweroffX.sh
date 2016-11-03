@@ -1,6 +1,6 @@
 #!/bin/sh
 
-/usr/bin/sleep 3
-/usr/sbin/shutdown -P now
+/bin/sleep 3
+/sbin/shutdown -P now
 
 exit 0
