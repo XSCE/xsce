@@ -1756,6 +1756,12 @@ def get_incomplete_jobs():
         job_info = {}
         parse = cmd_msg.split(' ')
         job_info['cmd'] = parse[0]
+
+        try:
+            job_info['cmd_args'] = json.loads(parse[1])
+        except IndexError:
+            job_info['cmd_args'] =  {}
+
         job_info['cmd_args'] = json.loads(parse[1])
         job_info['cmd_rowid'] = cmd_rowid
         job_info['job_command'] = job_command
