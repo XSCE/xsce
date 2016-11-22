@@ -577,6 +577,7 @@ def cmd_handler(cmd_msg):
         "GET-CONF": get_config_vars,
         "SET-CONF": set_config_vars,
         "GET-MEM-INFO": get_mem_info,
+        "GET-SPACE-AVAIL": get_space_avail,
         "GET-STORAGE-INFO": get_storage_info,
         "RUN-ANSIBLE": run_ansible,
         "RESET-NETWORK": run_ansible,
@@ -785,7 +786,7 @@ def get_space_avail(cmd_info):
     space_avail = {}
     space_avail['library_on_root'] = True
     libr_attr = {}
-    cmd = "/usr/bin/df -m"
+    cmd = df_program + " -m"
     cmd_args = shlex.split(cmd)
     outp = subprocess.check_output(cmd_args)
     dev_arr = outp.split('\n')
@@ -922,6 +923,16 @@ def get_storage_info_df(part_dev):
     #print part_prop
     return (part_prop)
 
+def parse_df_str(df_str):
+    dev_attr = {}
+    dev_attr_array = df_str.split()
+    dev_attr_array = [a for a in dev_attr_array if a not in ['']]
+    dev_attr['dev'] = dev_attr_array[0]
+    dev_attr['size_in_megs'] = dev_attr_array[1]
+    dev_attr['avail_in_megs'] = dev_attr_array[3]
+    dev_attr['mount_point'] = dev_attr_array[5]
+    return (dev_attr)
+
 def get_inet_speed(cmd_info):
     outp = subprocess.check_output(["scripts/get_inet_speed"])
     json_outp = json_array("internet_speed", outp)
@@ -939,7 +950,7 @@ def get_white_list(cmd_info):
         whlist = stream.read()
         stream.close()
     except IOError:
-        whlist = []
+        whlist = "[]"
 
     #resp = '{"xsce_whitelist": "' + whlist + '"}'
     resp = json_array("xsce_whitelist", whlist)
