@@ -1,6 +1,6 @@
 [Unit]
 Description=Moodle Course Management OLPC edition
-After=httpd.service
+After={{ apache_service }}.service
 
 [Service]
 Type=oneshot

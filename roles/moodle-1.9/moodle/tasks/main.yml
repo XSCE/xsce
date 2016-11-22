@@ -1,7 +1,7 @@
 ---
 - name: Install moodle required packages
-  yum: name={{ item }}
-       state=present
+  package: name={{ item }}
+           state=present
   with_items:
     - moodle-xs
     - python-psycopg2
@@ -9,7 +9,7 @@
     - download
 
 - name: Remove stock moodle conf
-  file: path='/etc/httpd/conf.d/moodle.conf'
+  file: path='/etc/{{ apache_config_dir }}/moodle.conf'
         state=absent
 
 - name: Configure moodle
@@ -21,7 +21,7 @@
             mode={{ item.mode }}
   with_items:
     - src: '020-xsce-moodle.conf.j2'
-      dest: '/etc/httpd/conf.d/020-xsce-moodle.conf'
+      dest: '/etc/{{ apache_config_dir }}/020-xsce-moodle.conf'
       mode: '0655'
     - src: 'moodle-xs.service.j2'
       dest: '/etc/systemd/system/moodle-xs.service'
@@ -43,8 +43,8 @@
                    password=apache
                    role_attr_flags=NOSUPERUSER,NOCREATEROLE,NOCREATEDB
                    state=present
-  sudo: yes
-  sudo_user: postgres
+  become: yes
+  become_user: postgres
 
 - name: Create database
   postgresql_db: name=moodle-xs
@@ -63,7 +63,7 @@
            state=restarted
 
 - name: Restart httpd
-  service: name=httpd
+  service: name={{ apache_service }}
            state=restarted
 
 - name: Enable moodle service

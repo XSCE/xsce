@@ -1,3 +1,0 @@
-127.0.0.1               localhost.local localhost @@BASEDNSNAME4@@
-::1                     localhost6.localdomain6 localhost6
-@@IPADDR@@		@@BASEDNSNAME2@@ @@BASEDNSNAME3@@

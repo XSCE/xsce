@@ -1,6 +1,6 @@
 - name: Install monit package
-  yum: name=monit
-       state=present
+  package: name=monit
+           state=present
   tags:
     - download
 
@@ -21,6 +21,7 @@
             mode=0755
   with_items: watchdog
   register: monit_config
+  when: false
   until: monit_config | success 
   retries: 5
   delay: 1

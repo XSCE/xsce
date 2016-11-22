@@ -1,6 +1,0 @@
-##  DISCOVER ADAPTERS   ######
-# If an rtc is included in a raspberry pi device the user must identify it in
-# vars/local_vars.yml via a declaration similar to "rtc_id: ds3231" (lower case required)
-#
-# Note that raspberry pi cpu discovery occurs in roles/0-prep/tasks/main.yml
-

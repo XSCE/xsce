@@ -1,3 +1,0 @@
-#!/bin/bash
-# get the firewall information for each network interface
-iptables -L -v 2>&1

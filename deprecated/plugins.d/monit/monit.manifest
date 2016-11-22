@@ -1,7 +1,0 @@
-/etc/monitrc.in
-/usr/share/xs-config/cfg/etc/monit.d/httpd
-/usr/share/xs-config/cfg/etc/monit.d/ejabberd
-/usr/share/xs-config/cfg/etc/monit.d/sshd
-/usr/share/xs-config/cfg/etc/monit.d/squid
-/usr/share/xs-config/cfg/etc/monit.d/postgresql
-/usr/share/xs-config/cfg/etc/monit.d/idmgr

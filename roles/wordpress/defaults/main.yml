@@ -1,7 +1,7 @@
 wordpress_src: wordpress_4.3.1.tar.gz
 wp_db_name: xsce_wp
 wp_db_user: xsce_wp
-wp_db_user_password: hdyeKCmQR2U6DjOT
+wp_db_user_password: changeme
 wordpress_install: True
 wordpress_enabled: True
 wp_install_path: /library

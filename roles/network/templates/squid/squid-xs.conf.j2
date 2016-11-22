@@ -19,19 +19,19 @@ icp_port 0
 #acl manager proto cache_object
 
 # any match on url regular expression is immediately permitted
-acl allow_urlregex url_regex -i "/etc/squid/allowregex.rules"
+acl allow_urlregex url_regex -i "/etc/{{ proxy }}/allowregex.rules"
 http_access allow allow_urlregex
 
 # a match on reqular expression denies access (enabled by gw_squid_whitelist variable)
-acl deny_urlregex url_regex -i "/etc/squid/denyregex.rules"
+acl deny_urlregex url_regex -i "/etc/{{ proxy }}/denyregex.rules"
 
 # any match of ip address is immediately permitted
-acl f_dstaddress dst "/etc/squid/dstaddress.rules"
+acl f_dstaddress dst "/etc/{{ proxy }}/dstaddress.rules"
 http_access allow f_dstaddress
 
 ## domain names:
 # define a group of domains that may be denied below
-acl whitelist dstdomain "/etc/squid/sites.whitelist.txt"
+acl whitelist dstdomain "/etc/{{ proxy }}/sites.whitelist.txt"
 
 
 acl school src 172.18.0.0/16
@@ -138,8 +138,8 @@ cache_dir ufs /library/cache 200 16 128
 # What logformat should be used for debugging ?  in trial ?
 logformat squid  %ts.%03tu %6tr %>a %Ss/%03>Hs %<st %rm %ru %un %Sh/%<A %mt
 
-access_log /var/log/squid/access.log
-cache_log /var/log/squid/cache.log
+access_log /var/log/{{ proxy }}/access.log
+cache_log /var/log/{{ proxy }}/cache.log
 # log_mime_hdrs on
 # following squid verb log_access discontinued in current squid 150213 -gh
 #log_access allow all
@@ -155,7 +155,7 @@ strip_query_terms on
 client_netmask 255.255.255.0
 
 #  This is the default, and wired into the init.d script
-pid_filename /var/run/squid.pid
+pid_filename /var/run/{{ proxy }}.pid
 
 debug_options ALL,1
 

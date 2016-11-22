@@ -1,11 +1,17 @@
 - name: Copy RACHEL httpd conf file
   template: src=rachel.conf.j2
-            dest=/etc/httpd/conf.d/rachel.conf
+            dest=/etc/{{ apache_config_dir }}/rachel.conf
 
-- name: Remove RACHEL httpd conf file if we are disabled
-  file: path=/etc/httpd/conf.d/rachel.conf
+- name: enable Rachel
+  file: path=/etc/apache2/sites-enabled/rachel.conf
+        src=/etc/apache2/sites-available/rachel.conf
+        state=link
+  when: rachel_enabled and is_debian
+
+- name: Remove RACHEL conf file if we are disabled
+  file: path=/etc/apache2/sites-enabled/rachel.conf
         state=absent
-  when: not rachel_enabled
+  when: not rachel_enabled and is_debian
 
 # This probably doesn't work, but we can't get search to work either
 - name: Create link to rachel mysql db from mysql data dir
@@ -25,6 +31,6 @@
   service: name={{ mysql_service }}
            state=restarted
 
-- name: Restart httpd service
-  service: name=httpd
+- name: Restart apache2 service
+  service: name={{ apache_service }}
            state=restarted

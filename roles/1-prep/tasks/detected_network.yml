@@ -53,12 +53,11 @@
   when: discovered_wan_iface != "none" and gw_active_test.stdout == "0"
 
 - name: Test for internet access
-  get_url:
-    url: "{{ xsce_download_url }}/heart-beat.txt"
-    dest: /tmp/heart-beat.txt
-    timeout: 10
-  register: internet_access_test
+  get_url: url="{{ xsce_download_url }}/heart-beat.txt" dest=/tmp/heart-beat.txt
   ignore_errors: True
+#  async: 10
+#  poll: 2
+  register: internet_access_test
 
 - name: Set has_internet_connection true if wget succeeded
   set_fact:
@@ -151,7 +150,8 @@
      wifi1: "{{ item|trim }}"
      discovered_wireless_iface: "{{ item|trim }}"
   when: item|trim != "" and item|trim != discovered_wan_iface
-  with_items: wireless_list1.stdout_lines
+  with_items: 
+      - "{{ wireless_list1.stdout_lines }}"
 
 # WIRELESS -- Sigh... Not all drivers update /proc/net/wireless correctly
 - name: Look for any wireless interfaces take 2

@@ -118,9 +118,10 @@
 - name: Setting has ifcfg gw based on device if found
   set_fact:
     has_ifcfg_gw: "{{ item|trim }}"
-  when: ifcfg_dhcp_device.stdout_lines is defined and item|trim != ""
+  when: dhcp_good and ifcfg_dhcp_device is defined and item|trim != ""
   with_items:
       - "{{ ifcfg_dhcp_device.stdout_lines }}"
+  ignore_errors: True
 
 # wired devices with no wire plugged in fail here
 - name: Disconnect wired devices

@@ -47,8 +47,12 @@
 # If there are several log files from load balancing servers :
 # Example: "/pathtotools/logresolvemerge.pl *.log |"
 #
-LogFile="/usr/share/awstats/tools/logresolvemerge.pl /var/log/httpd/access_log* |"
 
+{% if is_debian %}
+LogFile="/usr/share/awstats/tools/logresolvemerge.pl /var/log/{{ apache_service }}/access.log* |"
+{% else %}
+LogFile="/usr/share/awstats/tools/logresolvemerge.pl /var/log/httpd/access_log* |"
+{% endif %}
 
 # Enter the log file type you want to analyze.
 # Possible values:
@@ -236,7 +240,7 @@ DirIcons="/awstatsicons"
 # Possible values: 0 or 1
 # Default: 0
 #
-AllowToUpdateStatsFromBrowser=0
+AllowToUpdateStatsFromBrowser=1
 
 
 # AWStats saves and sorts its database on a month basis (except if using

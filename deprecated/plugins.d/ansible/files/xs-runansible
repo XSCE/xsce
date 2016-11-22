@@ -1,5 +1,0 @@
-#!/bin/bash
-pushd .
-cd /usr/share/xs-config/cfg/ansible/
-ansible-playbook -i ansible_hosts ansiblexs.yml --connection=local $1
-popd

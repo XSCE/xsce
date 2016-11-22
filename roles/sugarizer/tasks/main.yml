@@ -1,11 +1,22 @@
 - name: Download the latest stable version of sugarizer from location under our control
   get_url: url={{ xsce_download_url }}/{{ sugarizer_version }}.tar.gz
            dest={{ downloads_dir }}/{{ sugarizer_version }}.tar.gz
-           timeout=100
   
 - name: Untar it to target location
   unarchive: src={{ downloads_dir }}/{{ sugarizer_version }}.tar.gz
              dest={{ sugarizer_location }}
+ 
+# repeated memory errors using ansible unarchive -- swapfile size fixes
+- name: increase swap (could go in common)
+  lineinfile: dest=etc/dphys_swapfile
+              regexp=^CONF_SWAPSIZE
+              line=CONF_SWAPSIZE=512
+  when: is_debian and rtc_id != "none"
+
+- name: resrtart the swap daemon
+  service: name=dphys_swapfile
+           state=restarted
+  when: is_debian and rtc_id != "none"
 
 - name: Create a symbolic link from generic url to version specific location
   file: dest={{ sugarizer_location }}/sugarizer
@@ -13,7 +24,8 @@
         state=link
 
 - name: Install sugarizer required packages
-  yum: name={{ item }}
+  package: name={{ item }} 
+           state=present
   with_items:
     - nodejs
     - npm
@@ -29,7 +41,13 @@
             mode=0644
   with_items:
      - { src: 'sugarizer.service.j2' , dest: '/etc/systemd/system/sugarizer.service'}
-     - { src: 'sugarizer.ini' , dest: '{{ sugarizer_location }}/server' }
+     - { src: 'sugarizer.ini' , dest: '{{ sugarizer_location }}/sugarizer/server' }
+#     - { src: 'sugarizer.conf' , dest: '/etc/apache2/sites-available' }
+
+#- name: Create the symlink enabling the rewrite
+#  file: src=/etc/apache2/sites-available/sugarizer.conf
+#        dest=/etc/apache2/sites-enabled/sugarizer.conf
+#        state=link
 
 - name: Create the express framework for node.js
   shell:  npm install

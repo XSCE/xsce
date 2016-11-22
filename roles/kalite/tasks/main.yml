@@ -25,9 +25,15 @@
 
 - include: install-f18.yml
   when: not kalite_installed.stat.exists and is_F18
+  tags:
+    - download
+    - download2
 
 - include: install.yml
-  when: not kalite_installed.stat.exists and not is_F18
+  when: kalite_installed is defined and not kalite_installed.stat.exists and not is_F18
+  tags:
+    - download
+    - download2
 
 - name: ask systemd to reread the unit files
   shell: systemctl daemon-reload

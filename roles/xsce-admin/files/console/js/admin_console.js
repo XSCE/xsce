@@ -34,9 +34,6 @@ var langGroups = {"en":"eng"}; // language codes to treat as a single code
 var selectedLangs = []; // languages selected by gui for display of content
 var selectedZims = [];
 var sysStorage = {};
-sysStorage.root = {};
-sysStorage.library = {};
-sysStorage.library.partition = false; // no separate library partition
 sysStorage.zims_selected_size = 0;
 
 // because jquery does not percolate .fail conditions in async chains
@@ -105,6 +102,19 @@ function controlButtonsEvents() {
   $("#POWEROFF").click(function(){
     poweroffServer();
   });
+
+  $("#START-VNC").click(function(){
+  	make_button_disabled("#START-VNC", true);
+  	startVnc();
+  	make_button_disabled("#STOP-VNC", false);
+  });
+
+  $("#STOP-VNC").click(function(){
+  	make_button_disabled("#STOP-VNC", true);
+  	stopVnc();
+  	make_button_disabled("#START-VNC", false);
+  });
+
   console.log(' REBOOT and POWEROFF set');
 }
 
@@ -217,7 +227,7 @@ function instContentButtonsEvents() {
   });
 
   $("#ZIM-STATUS-REFRESH").click(function(){
-    refreshZimStat();
+    getZimStat();
   });
 
   $("#RESTART-KIWIX").click(function(){
@@ -793,28 +803,25 @@ function changePasswordSuccess ()
     return true;
   }
 
-  function refreshZimStat(){
+  function getZimStat(){
   	// Retrieve installed and wip zims and refresh screen
     // Remove any unprocessed selections
     selectedZims = [];
 
-    $.when(getSpaceAvail(), getZimStat()).then(procDiskSpace);
+    //command = "GET-ZIM-STAT";
+    //sendCmdSrvCmd(command, procZimStat, "ZIM-STATUS-REFRESH");
+    $.when(sendCmdSrvCmd("GET-STORAGE-INFO", procSysStorageDat),sendCmdSrvCmd("GET-ZIM-STAT", procZimStat)).then(procDiskSpace);
     return true;
-  }
-
-  function getZimStat(){
-    return sendCmdSrvCmd("GET-ZIM-STAT", procZimStatInit);
   }
 
   function procKiwixCatalog() {
     $.when(
-      getZimStat(),
+      sendCmdSrvCmd("GET-ZIM-STAT", procZimStatInit),
       readKiwixCatalog()
     )
     .done(function() {
       procZimCatalog();
       sumCheckedZimDiskSpace();
-      setZimDiskSpace();
     })
     .always(function() {
       alert ("Kiwix Catalog has been downloaded.");
@@ -1284,46 +1291,46 @@ function procSysMem(data)
 }
 
 function refreshDiskSpace(){
-
-  //$.when(sendCmdSrvCmd("GET-STORAGE-INFO", procSysStorageDat),sendCmdSrvCmd("GET-ZIM-STAT", procZimStatInit)).then(procDiskSpace);
-  $.when(getSpaceAvail(), getZimStat()).then(displaySpaceAvail);
+  $.when(sendCmdSrvCmd("GET-STORAGE-INFO", procSysStorageDat),sendCmdSrvCmd("GET-ZIM-STAT", procZimStatInit)).then(procDiskSpace);
 }
 
 function procDiskSpace(){
   //procZimGroups(); - don't call because resets check boxes
+  procSysStorage();
   sumCheckedZimDiskSpace();
-  displaySpaceAvail();
+  setDnldDiskSpace();
+  // setZimDiskSpace(); called by previous
 }
 
 function getSysStorage()
 {
   var command = "GET-STORAGE-INFO"
-  sendCmdSrvCmd(command, procSysStorageLite);
+  sendCmdSrvCmd(command, procSysStorageAll);
   return true;
 }
 
-function procSysStorageLite(data)
+function procSysStorageAll(data)
 {
-  //alert ("in procSysStorage");
-
+  //alert ("in procSysStorageDat");
   consoleLog(data);
-  var sysStorageRpt = data['system_fs'];
-  var html = "";
-  for (var i in sysStorageRpt)
-    html += sysStorageRpt[i] + "<BR>"
-
-  $( "#sysStorage" ).html(html);
-  //consoleLog(jqXHR);
-  return true;
+  sysStorage.raw = data;
+  procSysStorage();
+  setZimDiskSpace();
 }
 
-// need to rewrite the function below for lvm, etc.
+function procSysStorageDat(data)
+{
+  //alert ("in procSysStorageDat");
+  consoleLog(data);
+  sysStorage.raw = data;
+}
+
 function procSysStorage()
 {
   //alert ("in procSysStorage");
-
-  consoleLog(data);
-  sysStorage.raw = data;
+  sysStorage.root = {};
+  sysStorage.library = {};
+  sysStorage.library.partition = false; // no separate library partition
 
   var html = "";
   for (var i in sysStorage.raw) {
@@ -1366,25 +1373,6 @@ function procSysStorage()
   return true;
 }
 
-function getSpaceAvail (){
-  return sendCmdSrvCmd("GET-SPACE-AVAIL", procSpaceAvail);
-}
-
-function procSpaceAvail (data){
-  sysStorage.library_on_root = data.library_on_root; // separate library partition (T/F)
-	sysStorage.root = data.root;
-	if (! sysStorage.library_on_root)
-    sysStorage.library = data.library;
-}
-
-function displaySpaceAvail(){
-	// display space available on various panels
-	// assumes all data has been retrieved and is in data structures
-  setZimDiskSpace();
-  setRachelDiskSpace();
-  setDnldDiskSpace();
-}
-
 function setZimDiskSpace(){
   var html = calcLibraryDiskSpace();
 
@@ -1411,17 +1399,17 @@ function setDnldDiskSpace() {
 
 function calcLibraryDiskSpace(){
   var html = "Library Space Available : <b>";
+  var avail_in_megs;
+  var zims_selected_size;
 
-  //var zims_selected_size;
+  if (sysStorage.library.partition == true)
+  avail_in_megs = sysStorage.library.avail_in_megs;
+  else
+    avail_in_megs = sysStorage.root.avail_in_megs;
 
-  // library space is accurate whether separate partition or not
+    html += readableSize(avail_in_megs * 1024) + "</b><BR>";
 
-	if (sysStorage.library_on_root)
-	  html += readableSize(sysStorage.root.avail_in_megs * 1024) + "</b><BR>";
-	else
-    html += readableSize(sysStorage.library.avail_in_megs * 1024) + "</b><BR>";
-
-  return html;
+    return html;
 }
 
 function updateZimDiskSpace(cb){
@@ -1466,6 +1454,7 @@ function sumCheckedZimDiskSpace(){
 
     sysStorage.zims_selected_size += size;
   }
+  setZimDiskSpace();
 }
 
 function getInetSpeed(){
@@ -1521,6 +1510,34 @@ function poweroffServer()
   var command = "POWEROFF"
   sendCmdSrvCmd(command, genericCmdHandler);
   alert ("Shutdown Initiated");
+  return true;
+}
+
+function startVnc()
+{
+  var command = "START-VNC";
+  sendCmdSrvCmd(command, genericCmdHandler);
+  var loc = window.location;
+  var url = "http://" + loc.hostname + ":6080/vnc_auto.html?password=desktop";
+  //var w = 1152;
+  //var h = 864;
+  var w = 800;
+  var h = 600;
+  if (w > screen.width){
+     w = screen.width;
+  }
+  if (h > screen.height){
+     h = screen.height;
+  }
+  var win = window.open(url,"Server","menubar=no,resizeable=yes,scrollbars=yes,width=" + w + ",height=" + h);
+  win.focus();
+  return false;
+}
+
+function stopVnc()
+{
+  var command = "STOP-VNC";
+  sendCmdSrvCmd(command, genericCmdHandler);
   return true;
 }
 
@@ -1786,7 +1803,7 @@ function init ()
     sendCmdSrvCmd("GET-WHLIST", getWhitelist),
     $.when(sendCmdSrvCmd("GET-VARS", getInstallVars), sendCmdSrvCmd("GET-ANS", getAnsibleFacts),sendCmdSrvCmd("GET-CONF", getConfigVars),sendCmdSrvCmd("GET-XSCE-INI", procXsceIni)).done(initConfigVars),
     $.when(getLangCodes(),readKiwixCatalog(),sendCmdSrvCmd("GET-ZIM-STAT", procZimStatInit)).done(procZimCatalog),
-    getSpaceAvail(),
+    sendCmdSrvCmd("GET-STORAGE-INFO", procSysStorageAll),
     waitDeferred(3000))
     .done(initDone)
     .fail(function () {
@@ -1800,7 +1817,6 @@ function initDone ()
 	if (initStat["error"] == false){
 	  consoleLog("Init Finished Successfully");
 	  displayServerCommandStatus('<span style="color:green">Init Finished Successfully</span>');
-	  displaySpaceAvail(); // display on various panels
 	  // now turn on navigation
 	  navButtonsEvents();
 	  //$('#initDataModal').modal('hide');

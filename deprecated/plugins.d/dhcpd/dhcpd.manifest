@@ -1,4 +1,0 @@
-/etc/dhcpd-xs.conf.in
-/etc/sysconfig/dhcpd.in
-/etc/sysconfig/olpc-scripts/domain_config.d/dhcpd
-/etc/systemd/system/dhcpd.service

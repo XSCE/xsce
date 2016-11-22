@@ -3,6 +3,10 @@
         password={{ xsce_admin_passw_hash }}
         update_password=on_create
         
+- name: Create a wheel group
+  group: name=wheel
+         state=present
+
 - name: Add user to wheel group
   user: name={{ xsce_admin_user }} groups=wheel
   
@@ -34,7 +38,7 @@
 
 - name: remove the line which lets wheel sudo without password
   lineinfile: regexp='^%wheel.*NOPASSWD.*' 
-              state=absent 
+              line='%wheel ALL=(ALL:ALL) ALL'
               dest=/etc/sudoers
 
 - name: remove the line which requires tty

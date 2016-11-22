@@ -1,6 +1,6 @@
 - name: Install Couchdb and other necessary packages
-  yum: name={{ item }}
-       state=installed
+  package: name={{ item }}
+           state=present
   with_items:
     - couchdb
     - curl
@@ -12,10 +12,8 @@
     - download
 
 - name: Determine if xovis is already downloaded
-  stat: path={{ downloads_dir }}/xovis/xxx
+  stat: path={{ downloadds_dir }}/xovis/xxx
   register: xovis
-  tags:
-    - download2
 
 - name: download the latest xovis repo
   git: repo={{ xovis_repo_url }}

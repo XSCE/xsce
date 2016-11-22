@@ -1,8 +1,0 @@
-#!/bin/bash 
-# report memory usage
-free -m
-echo
-echo -n "Total free is "
-free -m | gawk '/buffers\/cache/ {free = $4};/^Mem:/{tot=$2};END {print free," out of ",tot," = ",free/tot*100,"%"};'
-echo -n "Adding up all process memory usage in percent: "
-echo `ps aux|gawk '{sum +=$4};END {print sum}'`

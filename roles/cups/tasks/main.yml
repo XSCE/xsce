@@ -1,13 +1,27 @@
 # administer this service by browsing to localhost:631
 - name: get the CUPS package installed
-  yum: name={{ item }}
-       state=installed
+  package: name={{ item }}
+           state=present
   with_items:
     - cups
   when: cups_install
   tags:
     - download
   
+- name: Put our own config file in place, to permit local lan admin
+  template: dest=/etc/cups/cupsd.conf
+            src=cupsd.conf
+
+- name: Put an apache2 config file in place
+  template: dest=/etc/{{ apache_config_dir }}/
+            src=cups.conf
+
+- name: Create the link for sites-enabled
+  file: src=/etc/apache2/sites-available/cups.conf
+        dest=/etc/apache2/sites-enabled/cups.conf
+        state=link
+  when: cups_enabled and is_debian
+
 - name: Enable services for cups
   service: name={{ item }}
            state=started

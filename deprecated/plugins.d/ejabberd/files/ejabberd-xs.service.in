@@ -1,8 +1,0 @@
-# --ejabberd_xs.service  
-# systemd start up file modifications
-.include /usr/lib/systemd/system/ejabberd.service
-[Service]
-EnvironmentFile=/etc/sysconfig/ejabberd-xs
-ExecStart=/usr/libexec/ejabberd-xs start
-ExecStop=/usr/libexec/ejabberd-xs stop
-PIDFile=/var/run/ejabberd/ejbberd.pid

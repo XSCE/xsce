@@ -5,9 +5,12 @@
 # By convention we use True/False to indicate boolean constants.
 
 # Installation Constants
+content_base: "/library"
+www_root: "{{ content_base }}/www_root"
+appdata: "{{ www_root }}/appdata"
+
 xsce_base: /opt/schoolserver
 xsce_dir: "{{ xsce_base }}/xsce"
-content_base: "/library"
 pip_packages_dir: "{{ xsce_base }}/pip-packages"
 yum_packages_dir: "{{ xsce_base }}/yum-packages"
 downloads_dir: "{{ xsce_base }}/downloads"
@@ -29,8 +32,6 @@ xsce_admin_passw_hash: $6$xsce51$D.IrrEeLBYIuJkGDmi27pZUGOwPFp98qpl3hxMwWV4hXigF
 
 # password is 12admin
 dummy: $6$xsce51$JhKBX/nwYLG0DDMTPN6radpgd//P881O/JX0GKFn32XUrR/D0VqnVFdvMdI.XW.eGaQY2VBCraLq6qiH0fbkD0
-
-
 
 # Languages
 default_language: en
@@ -115,6 +116,8 @@ xsce_gateway_enabled: True
 
 # Home page
 # Default to the gui where the selection is made or override in localvars
+xsce_home_url: /home
+
 # you can change xsce_home_url in local_vars in order to get a different home page
 # these could be one of the following (assuming they are enabled):
 
@@ -122,7 +125,6 @@ xsce_gateway_enabled: True
 #xsce_home_url: /xs-portal - the alternate home page
 #xsce_home_url: /wordpress
 #xsce_home_url: /wiki - either dokuwiki or mediawiki
-xsce_home_url: /admin
 
 # 4-SERVER-OPTIONS
 # sshd
@@ -210,7 +212,7 @@ iiab_install: True
 iiab_enabled: False
 
 # Pathagar
-pathagar_install: True
+pathagar_install: False
 pathagar_enabled: False
 
 # Calibre
@@ -222,8 +224,8 @@ calibre_port: 8010
 rachel_install: True
 rachel_enabled: False
 rachel_content_found: False
-rachel_url: /rachel
-rachel_doc_root: /var/www/html{{ rachel_url }}
+#rachel_url: /rachel
+rachel_doc_root: "{{ www_root}}"
 
 # Kiwix-Serve
 kiwix_install: True

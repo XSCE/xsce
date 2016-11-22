@@ -1,6 +1,6 @@
 [Unit]
 Description=XS authentication server
-After=httpd.service local-fs.target
+After={{ apache_service }}.service local-fs.target
 
 [Service]
 EnvironmentFile=-/etc/sysconfig/xs-authserver

@@ -25,12 +25,15 @@
     kiwix_first_pass: True
   when: kiwix_first_pass_test.changed
 
+- debug: var=kiwix_first_pass_test
+- debug: var=kiwix_first_pass
 - name: Copy test.zim file
   copy: src=test.zim
-        dest="{{ kiwix_content_path }}"
+        dest={{ kiwix_content_path }}/test.zim
         mode=0644
         owner=root
         group=root
+        force=no
   when: kiwix_first_pass
 
 # we get a whole web server for intel but only the kiwix execs for arm

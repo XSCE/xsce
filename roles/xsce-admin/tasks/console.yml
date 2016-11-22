@@ -1,3 +1,17 @@
+- name: Install packages for console
+  package: name={{ item }}
+           state=present
+  with_items:
+    - libapache2-mod-authnz-external
+    - pwauth
+  when: is_debian
+  tags:
+    - download
+
+- name: Enable ssl
+  apache2_module: name=ssl
+  when: is_debian
+
 - name: Create admin-console directory tree
   file: path={{ item }}
         mode=0755
@@ -49,21 +63,30 @@
 
 - name: Install admin-console config file
   template: src=console/xs-console.conf.j2
-            dest=/etc/httpd/conf.d/xs-console.conf
+            dest=/etc/{{ apache_config_dir }}/xs-console.conf
             owner=root
             group=root
             mode=0644
-  when: not adm_cons_force_ssl
 
-- name: Install admin-console config file with ssl support
-  template: src=console/xs-console-ssl.conf.j2
-            dest=/etc/httpd/conf.d/xs-console.conf
-            owner=root
-            group=root
-            mode=0644
-  when: adm_cons_force_ssl
+- name: Make the xs-console enabled in apache2
+  file: state=link
+        dest=/etc/apache2/sites-enabled/xs-console.conf
+        src=/etc/apache2/sites-available/xs-console.conf
+  when: is_debian
 
-- name: Install admin-console command service
+- name: add link for admin-console config file with ssl support
+  file: path=/etc/apache2/conf-enabled/xs-console.conf
+        src=/etc/apache2/conf-available/xs-console.conf
+        state=link
+  when: adm_cons_force_ssl and is_debian
+
+- name: remove link for admin-console config file with ssl support
+  file: path=/etc/apache2/conf-enabled/xs-console.conf
+        src=/etc/apache2/conf-available/xs-console.conf
+        state=absent
+  when: not adm_cons_force_ssl and is_debian
+
+- name: Install admin-console service
   template: src=console/cmd-service.php
             dest="{{ admin_console_path }}/cmd-service.php"
             owner=root
@@ -83,10 +106,3 @@
         owner=root
         group=root
         mode=0644
-
-- name: Create symlink from assets to xsce.ini
-  file: src=/etc/xsce/xsce.ini
-        dest=/var/www/html/common/assets/xsce.ini
-        owner=root
-        group=root
-        state=link

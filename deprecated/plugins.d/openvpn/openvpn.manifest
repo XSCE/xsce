@@ -1,5 +1,0 @@
-/etc/openvpn/roadwarrior-client.conf
-/etc/openvpn/keys/client1.crt
-/etc/openvpn/keys/client1.key
-/etc/openvpn/keys/ca.crt
-/usr/bin/xs-vpn

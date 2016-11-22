@@ -4,7 +4,15 @@
             owner=dansguardian
             group=dansguardian
             mode=0640
-  when: ansible_distribution != "CentOS"
+  when: ansible_distribution == "Fedora"
+
+- name: Copy dansguardian config file
+  template: src=squid/dansguardian.conf.debian.j2
+            dest=/etc/dansguardian/dansguardian.conf
+            owner=dansguardian
+            group=dansguardian
+            mode=0640
+  when: ansible_distribution == "Debian"
 
 - name: Copy dansguardian config file for CentOS
   template: src=squid/dansguardian.conf.centos.j2

@@ -1,15 +1,25 @@
 - name: Install postgresql packages
-  yum: name={{ item }}
-       state=present
+  package: name={{ item }}
+           state=present
   with_items:
     - postgresql
-    - postgresql-server
+  tags:
+    - download
+
+- name: Install postgresql for debian
+  package: name=postgresql-client
+  when: is_debian
+  tags:
+    - download
+
+- name: Install postgresql for fedora
+  package: name=postgresql-server
+  when: not is_debian
   tags:
     - download
 
 - name: Create postgresql-xs systemd service
-  template: backup=yes
-            src=postgresql-xs.service
+  template: src=postgresql-xs.service
             dest=/etc/systemd/system/postgresql-xs.service
             owner=root
             group=root
@@ -22,14 +32,24 @@
         mode=0700
         state=directory
 
-- name: Discover if the postgresql database data directory has already been created
-  stat: path="/library/pgsql-xs/base"
-  register: p
-   
+- name: make sure that the en_US locale is enabled
+  lineinfile: dest=/etc/locale.gen
+              line="{{ postgresql_locale }} UTF-8"
+  when: is_debian
+
+- name: generate the selected locales
+  command: /usr/sbin/locale-gen
+  when: is_debian
+
 - name: Initialize the postgres db
-  command:  su - postgres -c "/usr/bin/initdb -E 'UTF-8' --lc-collate='en_US.UTF-8' --lc-ctype='en_US.UTF-8' -D /library/pgsql-xs"
+  command:  su - postgres -c "/usr/lib/postgresql/9.4/bin/initdb -E 'UTF-8' --locale={{ postgresql_locale }}  -D /library/pgsql-xs"
             creates=/library/pgsql-xs/pg_hba.conf
-  when: p.stat.exists is defined and not p.stat.exists
+  when: is_debian
+
+- name: Initialize the postgres db
+  command:  su - postgres -c "/usr/bin/initdb -E 'UTF-8' --lc-collate={{ postgresql_locale }} --lc-ctype={{ postgresql_locale }}  -D /library/pgsql-xs"
+            creates=/library/pgsql-xs/pg_hba.conf
+  when: not is_debian
 
 - name: Configure postgres 
   template: backup=yes

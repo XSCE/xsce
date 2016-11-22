@@ -5,8 +5,14 @@ XSendFilePath /
 
 WSGIScriptAlias /iiab /var/www/html/iiab.wsgi
 
+{% if is_debian %}
+Alias /iiabstatic /usr/local/lib/python2.7/dist-packages/iiab/static
+
+<Directory /usr/local/lib/python2.7/dist-packages/iiab/static>
+{% else %}
 Alias /iiabstatic /usr/lib/python2.7/site-packages/iiab/static
 
 <Directory /usr/lib/python2.7/site-packages/iiab/static>
+{% endif %}
 	require all granted
 </Directory>

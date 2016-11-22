@@ -7,7 +7,7 @@
   when: not installing
 
 - name: Restart httpd
-  service: name=httpd
+  service: name={{ apache_service }}
            state=restarted
   when: not installing
 
@@ -18,6 +18,6 @@
 # If we got here we're done
 - name: Record base gui version
   lineinfile: dest=/etc/xsce/xsce.env
-              regexp='^GUI_VERSION=*'
-              line='GUI_VERSION="{{ new_gui_version }}"'
+              regexp='^BASE_VERSION=*'
+              line='BASE_VERSION="{{ gui_version }}"'
               state=present

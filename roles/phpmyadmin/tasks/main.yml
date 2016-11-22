@@ -17,13 +17,19 @@
       shell: "chown -R apache /opt/phpmyadmin"
 
     - name: Put the alias into Apache config when enabled
-      template: src=phpmyadmin.j2 dest=/etc/httpd/conf.d/phpmyadmin.conf
+      template: src=phpmyadmin.j2 dest=/etc/{{ apache_config_dir }}/phpmyadmin.conf
       when: phpmyadmin_enabled
 
+    - name: Enable phpmyadmin
+      file: path=/etc/apache2/sites-enabled/phpmyadmin.conf
+            src=/etc/apache2/sites-available/phpmyadmin.conf
+            state=link
+      when: phpmyadmin_enabled and is_debian
+
     - name: Remove the alias into Apache config when not enabled
-      file: dest=/etc/httpd/conf.d/phpmyadmin.conf
+      file: path=/etc/apache2/sites-enabled/phpmyadmin.conf
             state=absent
-      when: not phpmyadmin_enabled
+      when: not phpmyadmin_enabled and is_debian
 
     - name: add phpmyadmin to service list
       ini_file: dest='{{ service_filelist }}'

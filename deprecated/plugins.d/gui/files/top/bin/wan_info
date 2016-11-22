@@ -1,2 +1,0 @@
-iwconfig | gawk '!/"no wireless"/ ' 2>/dev/nul
-

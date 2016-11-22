@@ -2,7 +2,7 @@
 
 # copy var files to /etc/xsce for subsequent use
 
-./install-init
+#./install-init
 
 # if not the first run, repo location is here
 

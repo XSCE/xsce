@@ -1,15 +1,13 @@
-- name: Determine if software is already expanded
-  stat: path=/opt/elgg/index.php
-  register: elgg
-  tags:
-    - download2
-
 - name: download current version from our copy
   get_url: url={{ xsce_download_url }}/elgg-{{ elgg_version }}.zip
            dest={{ downloads_dir }}
-  when: not {{ use_cache }} and not {{ no_network }} and elgg.stat.exists is defined and not elgg.stat.exists
+  when: not {{ use_cache }} and not {{ no_network }} 
   tags:
     - download2
+
+- name: Determine if software is already expanded
+  stat: path=/opt/elgg/index.php
+  register: elgg
 
 - name: Expand it to our location
   unarchive: dest=/opt/
@@ -82,14 +80,28 @@
 - name: Substitute our parameters in engine/settings.example.php
   template: src="settings.php.j2"
             dest="/opt/{{ elgg_xx }}/engine/settings.php"
-            owner=apache
+            owner={{ apache_user }}
 
 - name: Install config file for elgg in Apache
-  template: src=elgg.conf dest=/etc/httpd/conf.d/elgg.conf
+  template: src=elgg.conf dest=/etc/{{ apache_config_dir }}/elgg.conf
   when: mysql_enabled and elgg_enabled
 
+- name: enable elgg
+  file: path=/etc/apache2/sites-enabled/elgg.conf
+        src=/etc/apache2/sites-available/elgg.conf
+        state=link
+  when: elgg_enabled and is_debian
+
+- name: disable elgg
+  file: path=/etc/apache2/sites-enabled/elgg.conf
+        state=absent
+  when: not elgg_enabled and is_debian
+
+- name: Change permissions on engine directory so apache can write
+  file: path=/opt/elgg/engine/ owner={{ apache_data }} mode=0755 state=directory
+
 - name: Create an upload directory that Apache can write in or elgg
-  file: path={{ elgg_upload_path }} state=directory owner=apache
+  file: path={{ elgg_upload_path }} state=directory owner={{ apache_data }}
 
 - name: add elgg to service list
   ini_file: dest='{{ service_filelist }}'
@@ -107,5 +119,5 @@
       value: "{{ elgg_enabled }}"
 
 - name: Restart apache, so it picks up the new aliases
-  service: name=httpd state=restarted
+  service: name={{ apache_service }} state=restarted
 

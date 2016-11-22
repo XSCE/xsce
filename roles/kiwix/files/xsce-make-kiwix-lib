@@ -1,7 +1,7 @@
 #!/bin/sh
 
-/usr/bin/systemctl stop kiwix-serve
+{{systemctl_program }} stop kiwix-serve
 /usr/bin/xsce-make-kiwix-lib.py
-/usr/bin/systemctl start kiwix-serve
+{{ systemctl_program }} start kiwix-serve
 
 exit 0

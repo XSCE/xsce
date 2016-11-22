@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 VERSION=$1
 SOURCEDIR=/library/downloads/rachel/$VERSION.zip

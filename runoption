@@ -1,3 +1,0 @@
-#!/bin/bash
-# following runs a tag, and sets an extra-vars
-ansible-playbook -i ansible_hosts xsce.yml --connection=local --tags="""$1""" --extra-vars """$1=1"""

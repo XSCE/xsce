@@ -41,7 +41,7 @@
 - name: Domain name did not change setting xsce_prepped
   set_fact: 
     xsce_prepped: True
-  when: not domainname|changed and xsce_base_ver|int == new_base_ver|int
+  when: not domainname.changed and xsce_base_ver == gui_version
 
 ##### Start static ip address info for first run #####
 #- include: static.yml
@@ -91,9 +91,9 @@
   when: not installing
 
 - include: ifcfg_mods.yml
-  when: not installing
   tags:
     - network
+  when: ansible_distribution != 'Debian' and not installing
 
 - name: Create xs network flags
   template: src=network/{{ item }}.j2

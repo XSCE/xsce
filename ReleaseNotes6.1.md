@@ -4,7 +4,6 @@
 * Calibre -- A tool for managing a library of eBooks, modifyiing their file formats, adding search terms, and making them availabe online.
 * Wordpress -- A content management system which gives students experience with editing wiki pages, blogs, menuing systems, and which is widely used.
 * Dokuwiki -- An alternate wiki system, similar to wordpress, but less popular, which makes transferring wiki materials easy from one school server to another.
-* Schooltool -- An administrative tool for teachers and principals to record student rosters, grade books,  school calendars, and make some or all this information available online, and in printed form.
 * Sugarizer -- Makes some of the sugar activities available to browser clients on laptops, and smart phones/tablets.
 * CUPS -- Common Unix Printing System provides the ability to connect to and share network or USB connected printers.
 
@@ -25,7 +24,7 @@ If you want to enable a service, you must browse to http://schoolserver.lan/admi
 The install instructions have not changed much since release-6.0. Please refer to https://github.com/XSCE/xsce/wiki/XSCE-Installation for the overall process -- Noting the following:
 
 * On FC22, add "yum" to the installs prior to running the ansible playbook i.e.
-  
+```
     yum install -y git yum ansible1.9
     cd /opt
     mkdir /opt/schoolserver
@@ -33,5 +32,5 @@ The install instructions have not changed much since release-6.0. Please refer t
     git clone https://github.com/XSCE/xsce --branch release-6.1 --depth 1
     cd xsce
     ./install-console
-
+```
 

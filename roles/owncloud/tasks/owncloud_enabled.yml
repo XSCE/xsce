@@ -7,13 +7,24 @@
 
 - name: Enable owncloud by copying template to httpd config
   template: src=owncloud.conf.j2
-            dest=/etc/httpd/conf.d/owncloud.conf
+            dest=/etc/{{ apache_config_dir }}/owncloud.conf
             owner=root
             group=root
             mode=0644
 
+- name: Enable owncloud
+  file: path=/etc/apache2/sites-enabled/owncloud.conf
+        src=/etc/apache2/sites-available/owncloud.conf
+        state=link
+  when: owncloud_enabled and is_debian
+
+- name: Disable owncloud
+  file: path=/etc/apache2/sites-enabled/owncloud.conf
+        state=absent
+  when: not owncloud_enabled and is_debian
+
 - name: Restart apache, so it picks up the new aliases
-  service: name=httpd state=restarted
+  service: name={{ apache_service }} state=restarted
 
 - name: Run owncloud initial install wizard
   shell: curl http://{{ xsce_hostname }}{{ owncloud_url }}/index.php

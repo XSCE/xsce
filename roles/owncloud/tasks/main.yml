@@ -1,6 +1,7 @@
 # we need to install the rpm in order to get the dependencies
 - name: Install owncloud package
-  yum: pkg={{ item }} state=installed
+  package: name={{ item }} 
+           state=present
   with_items:
       - owncloud
   tags:
@@ -13,11 +14,10 @@
 # but we use the tar file to get the latest version
 
 - name: Get the owncloud software
-  get_url: 
-    url: "{{ xsce_download_url }}/{{ owncloud_src_file }}"
-    dest: "{{ downloads_dir }}"
-    timeout: 300
+  get_url: url={{ xsce_download_url }}/{{ owncloud_src_file }}  dest={{ downloads_dir }}/{{ owncloud_src_file }}
   when: not {{ use_cache }} and not {{ no_network }}
+  async: 300
+  poll: 5
   tags:
     - download2
 
@@ -40,13 +40,13 @@
 - name: Add autoconfig file
   template: src=autoconfig.php.j2
             dest={{ owncloud_path }}/owncloud/config/autoconfig.php
-            owner=apache
+            owner={{ apache_user }}
             group=apache
             mode=0640
 
 - name: Make apache owner
   file: path={{ owncloud_path }}/owncloud
-        owner=apache
+        owner={{ apache_user }}
         group=apache
         recurse=yes
         state=directory
@@ -54,7 +54,7 @@
 - name: Create data directory library
   file: path={{ item }}
         mode=0750
-        owner=apache
+        owner={{ apache_user }}
         group=apache
         state=directory
   with_items:
@@ -73,13 +73,8 @@
         - localhost
   when: mysql_enabled and owncloud_enabled
 
-- name: Remove httpd conf file if we are disabled
-  file: path=/etc/httpd/conf.d/owncloud.conf
-        state=absent
-  when: not owncloud_enabled
-
 - name: Restart apache, so it picks up the new aliases
-  service: name=httpd state=restarted
+  service: name={{ apache_service }} state=restarted
   when: not owncloud_enabled
 
 # Enable owncloud by copying template to httpd config

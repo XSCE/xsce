@@ -5,8 +5,6 @@
   service: name=kalite-serve
            enabled=yes
            state=started
-  async: 900
-  poll: 5
 
 - name: Disable kalite server
   service: name=kalite-serve

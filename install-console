@@ -2,7 +2,7 @@
 
 # copy var files to /etc/xsce for subsequent use
 
-./install-init
+#./install-init
 
 # if not the first run, repo location is here
 
@@ -10,6 +10,8 @@ if [ -f /etc/xsce/xsce.env ]
 then
   . /etc/xsce/xsce.env
   cd $XSCE_DIR
+else
+  XSCE_DIR=/opt/schoolserver/xsce
 fi
 
 PLAYBOOK="xsce-base.yml"

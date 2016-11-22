@@ -1,9 +1,10 @@
 - name: Remove if exist pathagar rpm version
-  yum: name=pathagar state=absent
+  package: name=pathagar 
+           state=absent
 
 - name: Install pathagar pre requisites
-  yum: name={{ item }}
-       state=installed
+  package: name={{ item }}
+           state=present
   with_items:
     - python-virtualenv
     - python-pip
@@ -24,15 +25,13 @@
 - name: Create books destination folder
   file: path={{ pathagar_media }}
         state=directory
-        owner=apache
-        group=apache
+        owner={{ apache_user }}
+        group={{ apache_user }}
         mode=0755
 
 - name: Determine if pathagar has already been downloaded from git
   stat: path="{{ pathagar_src }}/settings.py"
   register: pathagar
-  tags:
-    - download2
 
 - name: Clone pathagar repo
   git: repo=https://github.com/PathagarBooks/pathagar.git
@@ -80,8 +79,8 @@
                    password={{ pathagar_db_password }}
                    role_attr_flags=NOSUPERUSER,NOCREATEROLE,NOCREATEDB
                    state=present
-  sudo: yes
-  sudo_user: postgres
+  become: yes
+  become_user: postgres
 
 - name: Stop postgresql
   service: name=postgresql
@@ -113,8 +112,8 @@
                  owner={{ pathagar_db_user }}
                  state=present
                  template=template0
-  sudo: yes
-  sudo_user: postgres
+  become: yes
+  become_user: postgres
 
 - name: Install XS custom settings for patahgar
   template: src=prod_settings.py
@@ -159,11 +158,22 @@
 - name: Install httpd conf for pathagar
   template: src=pathagar.conf
             backup=yes
-            dest=/etc/httpd/conf.d/pathagar.conf
+            dest=/etc/{{ apache_config_dir }}/pathagar.conf
             mode=0644
 
+- name: Enable pathagar
+  file: path=/etc/apache2/sites-enabled/pathagar.conf
+        src=/etc/apache2/sites-available/pathagar.conf
+        state=link
+  when: pathagar_enabled and is_debian
+
+- name: Disable pathagar
+  file: path=/etc/apache2/sites-enabled/pathagar.conf
+        state=absent
+  when: not pathagar_enabled and is_debian
+
 - name: Restart http
-  service: name=httpd
+  service: name={{ apache_service }}
            state=reloaded
 
 - name: add pathagar to service list

@@ -1,15 +1,15 @@
 ---
 - hosts: all
-  sudo: yes
+  become: yes
 
 # The var files read or included here are not needed, but might be in the future
 
   vars_files:
   - vars/default_vars.yml
+  - vars/{{ ansible_distribution }}.yml
   - vars/local_vars.yml
 
   roles:
-      - { role: 0-once, tags: ['once'] }
       - { role: 1-prep, tags: ['prep'] }
       - { role: network, tags: ['network'] }
 

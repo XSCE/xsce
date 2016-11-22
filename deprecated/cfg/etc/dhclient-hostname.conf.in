@@ -1,2 +1,0 @@
-send host-name "@@BASEDNSNAME3@@";
-request subnet-mask, broadcast-address, time-offset, routers, domain-search, domain-name, domain-name-servers;

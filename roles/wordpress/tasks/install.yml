@@ -14,8 +14,8 @@
 - name: Make apache owner and group
   file: path={{ wp_abs_path }}
         recurse=yes
-        owner=apache
-        group=apache
+        owner=root
+        group={{ apache_user }}
         mode=0640
         state=directory
 
@@ -26,7 +26,7 @@
   copy: src=wp-keys.php.BAK
         dest={{ wp_abs_path }}/wp-keys.php.BAK
         owner=root
-        group=apache
+        group={{ apache_user }}
         mode=0640
 
 # Fetch random salts for WordPress config into wp-keys.php file by generating script and running
@@ -63,20 +63,27 @@
   template: src=wp-config.php.j2
             dest={{ wp_abs_path }}/wp-config.php
             owner=root
-            group=apache
+            group={{ apache_user }}
             mode=0640
 
 - name: Copy WordPress httpd conf file
   template: src=wordpress.conf.j2
-            dest=/etc/httpd/conf.d/wordpress.conf
+            dest=/etc/{{ apache_config_dir }}/wordpress.conf
+
+- name: Enable httpd conf file if we are disabled
+  file: path=/etc/apache2/sites-enabled/wordpress.conf
+        src=/etc/apache2/sites-available/wordpress.conf
+        state=link
+  when: wordpress_enabled and is_debian
+
 
 - name: Remove httpd conf file if we are disabled
-  file: path=/etc/httpd/conf.d/wordpress.conf
+  file: path=/etc/apache2/sites-enabled/wordpress.conf
         state=absent
-  when: not wordpress_enabled
+  when: not wordpress_enabled and is_debian
 
 - name: Restart apache, so it picks up the new aliases
-  service: name=httpd state=restarted
+  service: name={{ apache_service }} state=restarted
 
 - name: Add wordpress to service list
   ini_file: dest='{{ service_filelist }}'

@@ -1,6 +1,6 @@
 - name: Install python-pip package
-  yum: name=python-pip
-       state=installed
+  package: name=python-pip
+           state=present
   tags: 
     - download
 
@@ -16,8 +16,8 @@
        extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
 
 - name: Install required libraries
-  yum: name={{ item }}
-       state=installed
+  package: name={{ item }}
+           state=present
   with_items:
     - rrdtool-python
     - python-sqlalchemy
@@ -41,8 +41,8 @@
 
 - name: Create postgres user
   postgresql_user: user=statsconso password=statsconso
-  sudo: yes
-  sudo_user: postgres
+  become: yes
+  become_user: postgres
 
 - name: Create postgres database
   postgresql_db: db=statsconso owner=statsconso

@@ -4,8 +4,7 @@
 - name: Stop postgresql service
   service: name=postgresql-xs
            state=stopped
-           enabled=no
-  when: not postgresql_enabled and postgresql_install
+  when: postgresql_install
 
 - name: Start postgresql service
   service: name=postgresql-xs
@@ -22,3 +21,5 @@
   service: name=xs-authserver
            state=restarted
   when: authserver_enabled
+
+

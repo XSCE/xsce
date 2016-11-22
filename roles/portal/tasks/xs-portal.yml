@@ -54,13 +54,22 @@
 
 - name: Install xs-portal config files
   template: src={{ item }}
-            dest=/etc/httpd/conf.d/
+            dest=/etc/{{ apache_config_dir }}
             owner=root
             group=root
             mode=0644
   with_items:
             - xs-portal.conf
             - xs-portal-lang.inc            
+
+- name: enable the pages
+  file: path=/etc/apache2/sites-enabled/{{ item }}
+        src=/etc/apache2/sites-available/{{ item }} 
+        state=link
+  with_items:
+            - xs-portal.conf
+            - xs-portal-lang.inc            
+  when: is_debian
 
 - name: Install xs-portal service discovery
   template: src=service_list.php

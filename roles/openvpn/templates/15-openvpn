@@ -13,7 +13,7 @@ if [ "$2" = "up" ]; then
     sleep 2
     /sbin/ip route list dev "$1" | grep -q '^default' &&
     # restart the services
-    systemctl -q is-enabled openvpn@xscenet.service && systemctl start openvpn@xscenet.service
+    systemctl -q is-enabled openvpn@xscenet.service && systemctl restart openvpn@xscenet.service
 fi
 
 if [ "$2" = "down" ]; then

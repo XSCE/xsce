@@ -29,17 +29,13 @@
    - { src: 'named/school.local.zone.db' , dest: '/var/named-xs/' , mode: '0755' }
    - { src: 'named/school.internal.zone.db' , dest: '/var/named-xs/' , mode: '0755' }
 
-- name: Enable iptables service
-  service: name=iptables
-           enabled=yes
-
 - name: Enable named service
-  service: name=named
+  service: name={{ dns_service }}
            enabled=yes
   when: named_enabled
 
 - name: Disable named service
-  service: name=named
+  service: name={{ dns_service }}
            enabled=no
   when: not named_enabled
 
@@ -59,7 +55,7 @@
   when: squid_enabled
 
 - name: Enable squid service
-  service: name=squid
+  service: name={{ proxy }}
            enabled=yes
   when: squid_enabled
 
@@ -71,14 +67,20 @@
             mode={{ item.mode }}
   with_items:
     - src: 'squid/squid-xs.conf.j2'
-      dest: '/etc/squid/squid-xs.conf'
+      dest: '/etc/{{ proxy }}/squid-xs.conf'
       owner: 'squid'
       group: 'squid'
       mode: '0644'
   when: squid_enabled
 
+- name: point to Squid config file from startup file
+  lineinfile: regexp='^CONFIG'
+              line='CONFIG=/etc/{{ proxy }}/squid-xs.conf'
+              dest=/etc/init.d/{{ proxy }}
+  when: squid_enabled and is_debian
+
 - name: Disable squid service
-  service: name=squid
+  service: name={{ proxy }}
            enabled=no
   when: not squid_enabled
 
@@ -107,6 +109,9 @@
   with_items:
    - { 0: 'gateway/xs-gen-iptables', 1: '/usr/bin/xs-gen-iptables' }
    - { 0: 'gateway/check-LAN', 1: '/usr/bin/check-LAN' }
+
+- name: Execute the script that sets up userspace firewall
+  shell: xs-gen-iptables
 
 - name: Add squid to service list
   ini_file: dest='{{ service_filelist }}'

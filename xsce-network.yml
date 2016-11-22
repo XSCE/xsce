@@ -1,9 +1,10 @@
 ---
 - hosts: all
-  sudo: yes
+  become: yes
 
   vars_files:
   - vars/default_vars.yml
+  - vars/{{ ansible_distribution }}.yml
   - vars/local_vars.yml
   - /etc/xsce/config_vars.yml
 

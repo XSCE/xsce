@@ -9,7 +9,7 @@
 #  License: GPLv2
 
 #  This is the name of the service (for stopping and restarting)
-SERVICE_NAME=named
+SERVICE_NAME={{ dns_service }}
 
 #  This is a list of files related to this service which will have
 #  the domain name globally replaced inside them

@@ -1,0 +1,16 @@
+is_debian: true
+dns_service: bind9
+dns_user: bind
+proxy: squid3
+proxy_user: squid
+apache_service: apache2
+apache_user: apache
+apache_config_dir: apache2/sites-available
+apache_data: www-data
+smb_service: smbd
+nmb_service: nmbd
+kalite_program: /usr/local/bin/kalite
+systemctl_program: /bin/systemctl
+mysql_service: mysql
+apache_log: /var/log/apache2/access.log
+apache_log_dir: /var/log/apache2

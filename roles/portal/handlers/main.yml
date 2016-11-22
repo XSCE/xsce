@@ -1,4 +1,4 @@
 ---
 - name: restart apache
-  service: name=httpd
+  service: name={{ apache_service }}
            state=restarted

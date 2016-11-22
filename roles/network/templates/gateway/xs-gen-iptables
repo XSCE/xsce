@@ -1,6 +1,11 @@
 #!/bin/bash -x
+{% if is_debian %}
+IPTABLES=/sbin/iptables
+IPTABLES_DATA=/etc/iptables.up.rules
+{% else %}
 IPTABLES=/usr/sbin/iptables
 IPTABLES_DATA=/etc/sysconfig/iptables
+{% endif %}
 LANIF=`cat /etc/sysconfig/xs_lan_device`
 WANIF=`cat /etc/sysconfig/xs_wan_device`
 
@@ -30,16 +35,13 @@ $IPTABLES -A INPUT -p udp --dport 5984 -j DROP
 if [  "x$WANIF" == "x" ]; then
     clear_fw
     # save the rule set
-    $IPTABLES-save > "$IPTABLES_DATA"
+	{% if is_debian %}
+	iptables_persistent save
+	{% else %}
+	iptables-save > $IPTABLES_DATA
+	{% endif %}
     exit 0
 fi
-if [  "x$LANIF" == "x" ]; then
-    clear_fw
-    # save the rule set
-    $IPTABLES-save > "$IPTABLES_DATA"
-    exit 0
-fi
-
 lan=$LANIF
 wan=$WANIF
 
@@ -107,5 +109,9 @@ fi
 # Enable routing.
 echo 1 > /proc/sys/net/ipv4/ip_forward
 # save the whole rule set now
-$IPTABLES-save > "$IPTABLES_DATA"
+{% if is_debian %}
+iptables_persistent save
+{% else %}
+iptables-save > $IPTABLES_DATA
+{% endif %}
 exit 0

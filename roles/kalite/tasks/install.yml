@@ -1,8 +1,8 @@
 # This is for an OS other than Fedora 18
 
 - name: Install missing packages required for kalite startup
-  yum: name={{ item }}
-       state=installed
+  package: name={{ item }}
+           state=present
   with_items:
     - lsb
   tags:
@@ -26,31 +26,27 @@
 # python-dateutil==2.4.2
 # django-dbbackup==2.3.2   ## no rpm
 
-- name: Download kalite with pip
-  pip: name={{ item }}       
+- name: Downoad kalite with pip
+  pip: name=ka-lite version={{ kalite_version }}       
        extra_args="--download {{ pip_packages_dir }}"
-  with_items:
-    - ka-lite>=0.16,<0.17
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
 
 - name: Download khan assessments
   get_url: url={{ khan_assessment_url }} dest={{ downloads_dir }}/khan_assessment.zip
-  async: 4000
+  async: 2000
   tags:
     - download2
 
 - name: wait until the file becomes available
   wait_for: path={{ downloads_dir }}/khan_assessment.zip
             state=present
-            timeout=4000
+            timeout=2000
 
 - name: Install kalite with pip
-  pip: name={{ item }}
+  pip: name=ka-lite version=0.16
        extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
-  with_items:
-    - ka-lite>=0.16,<0.17
   
 - name: Default is to have cronserve started with kalite
   set_fact:
