@@ -12,6 +12,8 @@ then
   cd $XSCE_DIR
 else
   XSCE_DIR=/opt/schoolserver/xsce
+  mkdir -p /etc/xsce
+  touch /etc/xsce/config_vars.yml
 fi
 
 PLAYBOOK="xsce-base.yml"

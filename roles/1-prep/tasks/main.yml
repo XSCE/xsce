@@ -32,6 +32,7 @@
   command: setenforce Permissive
   when: selinux_disabled is defined and selinux_disabled.changed
 
+- include: prep.yml
 
 - include: computed_vars.yml
 
@@ -73,7 +74,6 @@
            state=restarted
   when: udev_needs_patch and not installing
 
-- include: prep.yml
 
 # Put conditional actions for hardware platforms here
 ##  DISCOVER PLATFORMS ######
