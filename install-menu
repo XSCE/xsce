@@ -1,15 +1,15 @@
 #!/bin/bash
-BASE_VERSION="0"
+MENU_VERSION="0"
 NEW_VERSION="1"
-PLAYBOOK="install-init.yml"
+PLAYBOOK="install-menu.yml"
 
 if [ -f /etc/xsce/xsce.env ]
 then
  . /etc/xsce/xsce.env
- NEW_VERSION=`cat $XSCE_DIR/roles/0-once/defaults/main.yml | grep new_base_ver | awk -F ": " '{print $2}'`
+ NEW_VERSION=`cat $XSCE_DIR/roles/1-prep/defaults/main.yml | grep new_menu_version | awk -F ": " '{print $2}'`
 fi
 
-if [ -f /etc/xsce/config_vars.yml ] && [ "$BASE_VERSION" == "$NEW_VERSION" ]
+if [ -f /etc/xsce/config_vars.yml ] && [ "$MENU_VERSION" == "$NEW_VERSION" ]
 then
  exit 0
 fi
@@ -21,9 +21,6 @@ then
  echo "Exiting."
  exit 1
 fi
-
-# Mark local_vars as do not track to preserve local changes
-git update-index --assume-unchanged vars/local_vars.yml
 
 INVENTORY="ansible_hosts"
 
