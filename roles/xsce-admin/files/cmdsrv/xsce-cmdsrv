@@ -914,12 +914,7 @@ def get_storage_info_df(part_dev):
     part_prop = {}
     outp = subprocess.check_output([df_program, part_dev, "-m"])
     str_array = outp.split('\n')
-    params = str_array[1]
-    parm_arr = params.split(' ')
-    parm_arr = [a for a in parm_arr if a not in ['']]
-    part_prop['size_in_megs'] = parm_arr[1]
-    part_prop['avail_in_megs'] = parm_arr[3]
-    part_prop['mount_point'] = parm_arr[5]
+    part_prop = parse_df_str(str_array[1])
     #print part_prop
     return (part_prop)
 
