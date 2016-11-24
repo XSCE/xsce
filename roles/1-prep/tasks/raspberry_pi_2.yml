@@ -38,9 +38,8 @@
               dest=/etc/dphys-swapfile
   when: is_debian
 
-- restart the swqp service
-  service: name=dphys-swapfile
-           state=restarted
+- name: restart the swqp service
+  command: /etc/init.d/dphys-swapfile restart
   when: is_debian
 
 - name: Add rpi rootfs resizing service
