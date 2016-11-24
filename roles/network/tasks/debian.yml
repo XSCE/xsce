@@ -1,0 +1,33 @@
+# debian.yml
+# Start out making simplifying assumptions 
+#   1. we are dealing with a rpi3
+#   2. Gui inputs define the config -- auto config is more difficult
+#      a. gui_desired_network_role
+#      b. hostapd_enabled
+#      c. gui_static_wan_ip 
+#   3. In appliance mode: wan (and wlan0) is either static or dhcp under br0, and hostapd off
+#   4. In lan_controller: wan is off, eth0 and wlan0 under br0
+#   5. In gateway: eth0 is wan, and wlan0 is under br0 (only one adapter under br0)
+#   6. As a slight concess to auto config, if eth1 exists, make it wan, and force gateway
+ 
+- debug: var=discovered_lan_iface
+- debug: var=discovered_wan_iface
+- debug: var=gui_desired_network_role
+- debug: var=gui_static_wan_ip
+- debug: var=hostapd_enabled
+- debug: var=discovered_wireless_iface
+- debug: var=gui_static_wan
+
+- name: default to lan controller
+  set_fact:
+      gui_desired_network_role: "lan_controller"
+  when: not gui_desired_network_role is defined
+
+- name: Copy the bridge script 
+  template: dest=/etc/network/interfaces.d/br0
+            src=network/br0.j2
+
+#create lan br0 if lan_controller or gateway
+#create wan br0 if appliance
+#allocate wlan0 under br0 in all cases
+#allocate eth0 under br0 if appliance, alone if gateway

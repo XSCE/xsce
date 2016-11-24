@@ -95,6 +95,11 @@
     - network
   when: ansible_distribution != 'Debian' and not installing
 
+- include: debian.yml
+  tags:
+    - network
+  when: ansible_distribution == 'Debian' and not installing
+
 - name: Create xs network flags
   template: src=network/{{ item }}.j2
             dest=/etc/sysconfig/{{ item }}
