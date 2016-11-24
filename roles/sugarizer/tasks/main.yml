@@ -3,20 +3,7 @@
            dest={{ downloads_dir }}/{{ sugarizer_version }}.tar.gz
   
 - name: Untar it to target location
-  unarchive: src={{ downloads_dir }}/{{ sugarizer_version }}.tar.gz
-             dest={{ sugarizer_location }}
- 
-# repeated memory errors using ansible unarchive -- swapfile size fixes
-- name: increase swap (could go in common)
-  lineinfile: dest=etc/dphys_swapfile
-              regexp=^CONF_SWAPSIZE
-              line=CONF_SWAPSIZE=512
-  when: is_debian and rtc_id != "none"
-
-- name: resrtart the swap daemon
-  service: name=dphys_swapfile
-           state=restarted
-  when: is_debian and rtc_id != "none"
+  command: tar xzf {{ downloads_dir }}/{{ sugarizer_version }}.tar.gz -C {{ sugarizer_location }}
 
 - name: Create a symbolic link from generic url to version specific location
   file: dest={{ sugarizer_location }}/sugarizer
