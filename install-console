@@ -16,6 +16,9 @@ else
   touch /etc/xsce/config_vars.yml
 fi
 
+# don't track vars/local_vars.yml
+git update-index --assume-unchanged vars/local_vars.yml
+
 PLAYBOOK="xsce-base.yml"
 INVENTORY="ansible_hosts"
 SELINUX_BEFORE=""

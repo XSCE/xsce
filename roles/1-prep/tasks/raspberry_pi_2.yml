@@ -17,6 +17,7 @@
   register: rpiconfig
   when: rtc_id != "none"
 
+
 - name: Add a udev rule to transfer hwclock to system clock at dev creation
   template: src=92-rtc-i2c.rules
             dest=/etc/udev/rules.d/92-rtc-i2c.rules
@@ -30,6 +31,17 @@
            state=latest
   with_items:
     - ntp
+
+- name: increase the swap file size (kalite pip download fails)
+  lineinfile: regexp="^CONF_SWAPSIZE"
+              line=CONF_SWAPSIZE=500
+              dest=/etc/dphys-swapfile
+  when: is_debian
+
+- restart the swqp service
+  service: name=dphys-swapfile
+           state=restarted
+  when: is_debian
 
 - name: Add rpi rootfs resizing service
   template: src={{ item.src }}
