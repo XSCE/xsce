@@ -31,7 +31,7 @@
 
 - include: install.yml
 # debugging in debian
-#  when: not kalite_installed.stat.exists and not is_F18
+  when: not kalite_installed.stat.exists and not is_F18
 
 - name: ask systemd to reread the unit files
   shell: systemctl daemon-reload
@@ -39,7 +39,7 @@
 
 - include: setup-f18.yml
   when: not kalite_installed.stat.exists and is_F18
- 
+
 - include: setup.yml
   when: not kalite_installed.stat.exists and not is_F18
 
@@ -47,7 +47,7 @@
   when: not is_F18
 
 - include: enable.yml
-   
+
 - name: Add kalite to service list
   ini_file: dest='{{ service_filelist }}'
             section=kalite
