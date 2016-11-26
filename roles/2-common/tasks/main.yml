@@ -28,8 +28,6 @@
   shell: ln -sf /usr/share/zoneinfo/{{ xsce_TZ }} /etc/localtime
   when: xsce_TZ is defined and xsce_TZ != ""
 
-- include: html.yml
-
 - name: Install custom profile file
   template: dest=/etc/profile.d/zzz_xsce.sh
             src=zzz_xsce.sh
