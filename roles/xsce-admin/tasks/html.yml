@@ -1,6 +1,6 @@
 - name: Copy css files
   copy: src={{ item }}
-        dest=/var/www/html/common/css
+        dest={{ doc_root }}/common/css
         mode=0644
         owner=root
         group=root
@@ -9,7 +9,7 @@
 
 - name: Copy js files
   copy: src={{ item }}
-        dest=/var/www/html/common/js
+        dest={{ doc_root }}/common/js
         mode=0644
         owner=root
         group=root
@@ -18,7 +18,7 @@
 
 - name: Copy fonts files
   copy: src={{ item }}
-        dest=/var/www/html/common/fonts
+        dest={{ doc_root }}/common/fonts
         mode=0644
         owner=root
         group=root
@@ -27,7 +27,7 @@
 
 - name: Copy html files
   copy: src={{ item }}
-        dest=/var/www/html/common/html
+        dest={{ doc_root }}/common/html
         mode=0644
         owner=root
         group=root
@@ -36,7 +36,7 @@
 
 - name: Copy images files
   copy: src={{ item }}
-        dest=/var/www/html/common/images
+        dest={{ doc_root }/common/images
         mode=0644
         owner=root
         group=root
@@ -45,7 +45,7 @@
 
 - name: Copy assets files
   copy: src={{ item }}
-        dest=/var/www/html/common/assets
+        dest={{ doc_root }}/common/assets
         mode=0644
         owner=root
         group=root
@@ -54,7 +54,7 @@
 
 - name: Copy menu-def files
   copy: src={{ item }}
-        dest=/var/www/html/common/menu-defs
+        dest={{ doc_root }}/common/menu-defs
         mode=0644
         owner=root
         group=root
@@ -63,7 +63,7 @@
 
 - name: Create symlink from assets to xsce.ini
   file: src=/etc/xsce/xsce.ini
-        dest=/var/www/html/common/assets/xsce.ini
+        dest={{ doc_root }}/common/assets/xsce.ini
         owner=root
         group=root
         state=link
