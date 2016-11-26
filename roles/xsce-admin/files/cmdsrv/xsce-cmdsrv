@@ -563,7 +563,7 @@ def cmd_handler(cmd_msg):
         "SET-CONF": set_config_vars,
         "GET-MEM-INFO": get_mem_info,
         "GET-SPACE-AVAIL": get_space_avail,
-        "GET-STORAGE-INFO": get_storage_info,
+        "GET-STORAGE-INFO": get_storage_info_lite,
         "RUN-ANSIBLE": run_ansible,
         "RESET-NETWORK": run_ansible,
         "GET-JOB-STAT": get_last_jobs_stat,
