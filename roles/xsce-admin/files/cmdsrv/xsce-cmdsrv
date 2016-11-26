@@ -54,7 +54,6 @@ xsce_cmdsrv_ready_file = "/var/run/xsce-cmdsrv-ready"
 xsce_cmdsrv_dbpath = xsce_cmdsrv_path + "/" + xsce_cmdsrv_dbname
 
 # Constants - ToDo add to xsce_cmdsrv_config_file
-squid_whitelist = "/etc/" + squid_service + "/sites.whitelist.txt"
 # for kiwix zims
 kiwix_catalog_file = "/etc/xsce/kiwix_catalog.json"
 zim_downloads_dir = "/library/downloads/zims/"
@@ -1888,6 +1887,7 @@ def read_xsce_cmdsrv_conf_file():
     global rachel_downloads_dir
     global rachel_working_dir
     global rachel_version
+    global squid_whitelist
 
 
     stream = open (xsce_cmdsrv_config_file,"r")
