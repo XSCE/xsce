@@ -1887,6 +1887,11 @@ def read_xsce_cmdsrv_conf_file():
     global rachel_downloads_dir
     global rachel_working_dir
     global rachel_version
+    global ansible_playbook_program
+    global ansible_program
+    global apache_data
+    global squid_service
+    global df_program
     global squid_whitelist
 
 
@@ -1904,6 +1909,12 @@ def read_xsce_cmdsrv_conf_file():
     zim_download_prefix = conf['zim_download_prefix']
     rachel_downloads_dir = conf['rachel_downloads_dir']
     rachel_working_dir = conf['rachel_working_dir']
+    squid_service = conf['squid_service']
+    squid_whitelist = "/etc/%s/sites.whitelist.txt" % squid_service
+    ansible_playbook_program = conf['ansible_playbook_program']
+    ansible_program = conf['ansible_program']
+    apache_data = conf['apache_data']
+    df_program = conf['df_program']
 
 # These two were taken from the OLPC idmgr application
 
