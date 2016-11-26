@@ -58,7 +58,7 @@ start() {
         RETVAL=$?
         return $RETVAL
 {% else %}
-       echo -n "Starting 4prog: "
+       echo -n "Starting $prog: "
        daemon --pidfile=${PID_FILE} $SERVER $OPTS
 {% endif %}
 }
