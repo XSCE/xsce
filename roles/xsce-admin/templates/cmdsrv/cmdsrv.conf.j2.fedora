@@ -11,6 +11,11 @@
         "zim_download_prefix" : "kiwix-0.9+",
         "rachel_downloads_dir" : "/library/downloads/rachel/",
         "rachel_working_dir" : "/library/working/rachel/",
-        "xsce_cmdsrv_dbname" : "{{ xsce_cmdsrv_dbname }}"
+        "xsce_cmdsrv_dbname" : "{{ xsce_cmdsrv_dbname }}",
+        "ansible_playbook_program" : "/usr/bin/ansible-playbook",
+        "ansible_program" : "/usr/bin/ansible",
+        "apache_data" : "apache",
+        "squid_service" : "squid",
+        "df_program" : "/usr/bin/df"
         }
 }

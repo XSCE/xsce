@@ -131,11 +131,21 @@
 
 - name: Create cmdsrv.conf file
   template: backup=yes
-            src=cmdsrv/cmdsrv.conf.j2
+            src=cmdsrv/cmdsrv.conf.j2.debian
             dest=/etc/xsce/cmdsrv.conf
             owner=root
             group=root
             mode=0644
+  when: is_debian
+
+- name: Create cmdsrv.conf file
+  template: backup=yes
+            src=cmdsrv/cmdsrv.conf.j2.fedora
+            dest=/etc/xsce/cmdsrv.conf
+            owner=root
+            group=root
+            mode=0644
+  when: not is_debian
 
 - name: Create a folder for xsce-cmdsrv executable not on path
   file: path=/usr/lib/xsce

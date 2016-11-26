@@ -31,7 +31,6 @@ import string
 import crypt
 import spwd
 import cracklib
-import platform
 
 # Config Files
 xsce_config_file = "/etc/xsce/xsce.env"
@@ -47,20 +46,6 @@ xsce_cmdsrv_dbname = "xsce_cmdsrv.0.2.db"
 cmdsrv_no_workers = 5
 cmdsrv_job_poll_sleep_interval = 1
 cmdsrv_max_concurrent_jobs = 7
-
-# variables that have different paths, fedora vs debian
-if platform.linux_distribution()[0] == 'debian':
-   ansible_playbook_program = '/usr/local/bin/ansible-playbook'
-   ansible_program = '/usr/local/bin/ansible'
-   apache_data = 'www-data'
-   squid_service = 'squid3'
-   df_program = '/bin/df'
-else:
-   ansible_playbook_program = '/usr/bin/ansible-playbook'
-   ansible_program = '/usr/bin/ansible'
-   apache_data = 'apache'
-   squid_service = 'squid'
-   df_program = '/usr/bin/df'
 
 # Derived Variables
 xsce_cmdsrv_path = xsce_base_path + "/xsce_cmdsrv"
