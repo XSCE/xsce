@@ -187,7 +187,4 @@
 - name: Enable xsce-cmdsrv service
   service: name=xsce-cmdsrv
            enabled=yes
-  when: not is_debian
-
-#  when: xsce-cmdsrv_enabled - always enabled
-
+           state=started
