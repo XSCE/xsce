@@ -34,15 +34,6 @@
   with_fileglob:
         - html/html/*
 
-- name: Copy images files
-  copy: src={{ item }}
-        dest={{ doc_root }/common/images
-        mode=0644
-        owner=root
-        group=root
-  with_fileglob:
-        - html/images/*
-
 - name: Copy assets files
   copy: src={{ item }}
         dest={{ doc_root }}/common/assets
