@@ -158,7 +158,7 @@ UseCanonicalName Off
 # DocumentRoot: This is the default, but we keep the directive
 # so it doesn't move in some future version.
 #
-DocumentRoot "/var/www/html"
+DocumentRoot "{{ doc_root }}"
 
 #
 # Each directory to which Apache has access can be configured with respect
@@ -173,7 +173,7 @@ DocumentRoot "/var/www/html"
     AllowOverride None
 </Directory>
 
-<Directory "/var/www/html">
+<Directory "{{ doc_root }}">
     Options Indexes FollowSymLinks
     AllowOverride None
     Require all granted
@@ -295,13 +295,13 @@ Alias /icons/ "/usr/share/httpd/icons/"
 # The same rules about trailing "/" apply to ScriptAlias directives as to
 # Alias.
 #
-ScriptAlias /cgi-bin/ "/var/www/cgi-bin/"
+ScriptAlias /cgi-bin/ "{{ doc_base }}/cgi-bin/"
 
 #
 # "/var/www/cgi-bin" should be changed to whatever your ScriptAliased
 # CGI directory exists, if you have that configured.
 #
-<Directory "/var/www/cgi-bin">
+<Directory "{{ doc_base }}/cgi-bin">
     AllowOverride None
     Options None
     Require all granted
@@ -485,11 +485,11 @@ AddHandler type-map var
 # copying them to /your/include/path/, even on a per-VirtualHost basis.
 #
 
-Alias /error/ "/var/www/error/"
+Alias /error/ "{{ doc_base }}/error/"
 
 <IfModule mod_negotiation.c>
 <IfModule mod_include.c>
-    <Directory "/var/www/error">
+    <Directory "{{ doc_base }}/error">
         AllowOverride None
         Options IncludesNoExec
         AddOutputFilter Includes html

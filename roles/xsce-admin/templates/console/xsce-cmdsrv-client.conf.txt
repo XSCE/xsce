@@ -1,1 +1,1 @@
-WSGIScriptAlias /cmdsrv /var/www/html/test/client.wsgi
+WSGIScriptAlias /cmdsrv {{ doc_root }}/test/client.wsgi

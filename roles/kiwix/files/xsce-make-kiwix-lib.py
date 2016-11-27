@@ -29,7 +29,7 @@ kiwix_library_xml = "/library/zims/library.xml"
 
 xsce_base_path = "/opt/schoolserver"
 kiwix_manage = xsce_base_path + "/kiwix/bin/kiwix-manage"
-zim_version_idx = "/var/www/html/common/assets/zim_version_idx.json"
+zim_version_idx = "{{ doc_root }}/common/assets/zim_version_idx.json"
 zim_versions = {}
 
 def main():

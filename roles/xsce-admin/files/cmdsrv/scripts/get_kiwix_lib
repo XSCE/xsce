@@ -30,7 +30,7 @@ problemUrlMap = {"http://download.kiwix.org/zim/0.9/wikipedia_en_ray_charles_03_
     "http://download.kiwix.org/zim/wikispecies/wikispecies_en_all_nopic_2015-03.zim.meta4":"http://download.kiwix.org/portable/wikispecies/kiwix-+wikispecies_en_all_nopic_2015-03.zip", \
     "http://download.kiwix.org/zim/wikispecies/wikispecies_en_all_2015-03.zim.meta4":"http://download.kiwix.org/portable/wikispecies/kiwix-+wikispecies_en_all_2015-03.zip"}
 
-consolePath = "/var/www/html/devel/"
+consolePath = "{{ doc_root }}/devel/"
 assetsPath = consolePath + "assets/"
 imgPath = consolePath + "images/"
 jsonPath = "/etc/xsce/"

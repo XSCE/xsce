@@ -3,7 +3,7 @@
 XSendFile on
 XSendFilePath /
 
-WSGIScriptAlias /iiab /var/www/html/iiab.wsgi
+WSGIScriptAlias /iiab {{ doc_root }}/iiab.wsgi
 
 {% if is_debian %}
 Alias /iiabstatic /usr/local/lib/python2.7/dist-packages/iiab/static

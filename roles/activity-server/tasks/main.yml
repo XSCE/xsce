@@ -104,7 +104,7 @@
 #       and figure out what to do with olpc_activities.service 
 
 # short term addition of link for upload-activity server
-# ln -sf /usr/share/xs-config/cfg/html/top/en/cntr_upl_activity.php /var/www/html/upload_activity.php
+# ln -sf /usr/share/xs-config/cfg/html/top/en/cntr_upl_activity.php {{ doc_root }}/upload_activity.php
 
 
 - name: Restart httpd
