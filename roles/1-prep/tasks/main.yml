@@ -32,10 +32,10 @@
   command: setenforce Permissive
   when: selinux_disabled is defined and selinux_disabled.changed
 
+- include: prep.yml
+
 # we need to inialize the ini file
 - include: xsce_ini.yml
-
-- include: prep.yml
 
 - include: computed_vars.yml
 
