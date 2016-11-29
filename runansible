@@ -1,8 +1,10 @@
 #!/bin/bash
 
 # copy var files to /etc/xsce for subsequent use
-
-./install-init
+mkdir -p /etc/xsce
+if [ ! -f /etc/xsce/config_vars.yml ]; then
+  echo "{}" > /etc/xsce/config_vars.yml
+fi
 
 # if not the first run, repo location is here
 

@@ -110,7 +110,7 @@ fi
 echo 1 > /proc/sys/net/ipv4/ip_forward
 # save the whole rule set now
 {% if is_debian %}
-iptables_persistent save
+netfilter-persistent save
 {% else %}
 iptables-save > $IPTABLES_DATA
 {% endif %}

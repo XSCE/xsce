@@ -37,6 +37,10 @@
     - download
   when: not is_debian
 
+- name: check the config_vars.yml file
+  stat: path=/etc/xsce/config_vars.yml
+  register: config_vars
+
 - name: Ensure config_vars.yml is not empty
   shell: "cat /etc/xsce/config_vars.yml"
   register: config_vars_check
