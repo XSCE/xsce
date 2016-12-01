@@ -68,8 +68,8 @@
   with_items:
     - src: 'squid/squid-xs.conf.j2'
       dest: '/etc/{{ proxy }}/squid-xs.conf'
-      owner: 'squid'
-      group: 'squid'
+      owner: '{{ proxy_user }}'
+      group: '{{ proxy_user }}`
       mode: '0644'
   when: squid_enabled
 
