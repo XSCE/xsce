@@ -26,6 +26,27 @@
 - name: Copy the bridge script 
   template: dest=/etc/network/interfaces.d/br0
             src=network/br0.j2
+  register: interface
+
+- name: If this was a change, things need to shift
+  service: name=hostapd state=stopped
+  when: interface.changed
+
+- name: dhcpd may be affected
+  service: name=bind9 state=stopped
+  when: interface.changed
+
+- name: restart the networking service
+  service: name=networking state=restarted
+  when: interface.changed
+  
+- name: start up hostapd again
+  service: name=hostapd state=started
+  when: interface.changed
+
+- name: dhcpd may be affected
+  service: name=bind9 state=started
+  when: interface.changed
 
 #create lan br0 if lan_controller or gateway
 #create wan br0 if appliance
