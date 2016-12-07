@@ -62,6 +62,7 @@
     - { src: 'named/school.local.zone.db', dest: '/var/named-xs/school.local.zone.db' , owner: "root" , mode: '0644'}
     - { src: 'named/school.internal.zone.in-addr.db.j2', dest: '/var/named-xs/school.internal.zone.in-addr.db' , owner: "{{ dns_user }}" , mode: '0644'}
     - { src: 'named/dummy', dest: '/var/named-xs/data/dummy' , owner: "{{ dns_user }}" , mode: '0644'}
+    - { src: 'named/named.blackhole', dest: '/var/named-xs/named.blackhole' , owner: "{{ dns_user }}" , mode: '0644'}
 
 - name: substitute our unit file which uses $OPTIONS from sysconfig
   template: src=named/{{ dns_service }}.service

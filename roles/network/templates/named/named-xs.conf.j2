@@ -52,7 +52,11 @@ view "localhost_resolver"
 {
 	match-clients 		{ localhost; };
 	match-destinations	{ localhost; };
+{% if dns_jail_enabled %}
+	recursion no;
+{% else %}
 	recursion yes;
+{% endif %}
 	# all views must contain the root hints zone:
 	include "/var/named-xs/named.root.hints";
 
@@ -76,7 +80,11 @@ view "internal"
    that are on the school network
  */
 	match-clients		{ school-subnets; };
+{% if dns_jail_enabled %}
+	recursion no;
+{% else %}
 	recursion yes;
+{% endif %}
 
 	// all views must contain the root hints zone:
 	include "/var/named-xs/named.root.hints";
@@ -109,13 +117,23 @@ view "internal"
 		file "school.internal.zone.48.in-addr.db";
 		allow-update {127.0.0.1; };
 	};
+        {% if dns_jail_enabled %}
+        zone "." {
+                type master;
+	        file "named.blackhole";
+        }; 
+        {% endif %}
 };
 view "external"
 {
 /* This view will contain zones you want to serve only to the wide world
  */
         match-clients           { any; };   // implicit
-        recursion yes;
+{% if dns_jail_enabled %}
+	recursion no;
+{% else %}
+	recursion yes;
+{% endif %}
         // all views must contain the root hints zone:
         include "/var/named-xs/named.root.hints";
 
