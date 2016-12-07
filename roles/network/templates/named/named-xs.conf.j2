@@ -109,6 +109,12 @@ view "internal"
 		file "school.internal.zone.48.in-addr.db";
 		allow-update {127.0.0.1; };
 	};
+        {% if dns_jail_enabled %}
+        zone "." {
+                type master;
+	        file "named.blackhole";
+        }; 
+        {% endif %}
 };
 view "external"
 {
