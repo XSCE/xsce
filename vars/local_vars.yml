@@ -22,5 +22,5 @@ ajenti_install: False
 monit_install: False
 xovis_install: False
 teamviewer_install: False
-
+dns_jail_enabled: True
 
