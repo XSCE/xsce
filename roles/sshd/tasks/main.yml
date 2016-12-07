@@ -6,17 +6,13 @@
 #TODO: use handler to reload ssh
 
 - name: Enable sshd
-  service: name={{ item }}
+  service: name={{ sshd_service }}
            enabled=yes
            state=started
-  with_items:
-    - sshd
   when: sshd_enabled
 
 - name: Disable sshd
-  service: name={{ item }}
+  service: name={{ sshd_service }}
            enabled=no
            state=stopped
-  with_items:
-    - sshd
   when: not sshd_enabled
