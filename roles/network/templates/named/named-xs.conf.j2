@@ -52,7 +52,7 @@ view "localhost_resolver"
 {
 	match-clients 		{ localhost; };
 	match-destinations	{ localhost; };
-{% if dns_jail_enable %}
+{% if dns_jail_enabled %}
 	recursion no;
 {% else %}
 	recursion yes;
@@ -80,7 +80,7 @@ view "internal"
    that are on the school network
  */
 	match-clients		{ school-subnets; };
-{% if dns_jail_enable %}
+{% if dns_jail_enabled %}
 	recursion no;
 {% else %}
 	recursion yes;
@@ -129,7 +129,7 @@ view "external"
 /* This view will contain zones you want to serve only to the wide world
  */
         match-clients           { any; };   // implicit
-{% if dns_jail_enable %}
+{% if dns_jail_enabled %}
 	recursion no;
 {% else %}
 	recursion yes;
