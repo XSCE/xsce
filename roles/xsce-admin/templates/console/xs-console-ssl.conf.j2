@@ -2,7 +2,7 @@ RewriteEngine On
 RewriteCond %{HTTPS} off
 RewriteRule ^/admin(.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
-Alias /admin "/opt/schoolserver/admin_console"
+Alias /admin "{{ admin_console_path }}"
 <VirtualHost *:443>
   ServerName "schoolserver.lan"
   AddExternalAuth pwauth /usr/sbin/pwauth
@@ -17,7 +17,7 @@ Alias /admin "/opt/schoolserver/admin_console"
 		downgrade-1.0 force-response-1.0
   # MSIE 7 and newer should be able to use keepalive
   BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
-  <Directory "/opt/schoolserver/admin_console">
+  <Directory "{{ admin_console_path }}">
     AuthType Basic
     AuthName "Admin Console"
     AuthBasicProvider external
