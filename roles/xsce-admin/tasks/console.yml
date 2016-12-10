@@ -68,23 +68,38 @@
             group=root
             mode=0644
 
+- name: Install admin-console ssl config file
+  template: src=console/xs-console-ssl.conf.j2
+            dest=/etc/{{ apache_config_dir }}/xs-console-ssl.conf
+            owner=root
+            group=root
+            mode=0644
+
+# without ssl
 - name: Make the xs-console enabled in apache2
   file: state=link
         dest=/etc/apache2/sites-enabled/xs-console.conf
-        src=/etc/apache2/sites-available/xs-console.conf
-  when: is_debian
+        src=/etc/{{ apache_config_dir }}/xs-console.conf
+  when: is_debian and not adm_cons_force_ssl
 
+- name: Make the xs-console enabled in apache2
+  file: state=absent
+        dest=/etc/apache2/sites-enabled/xs-console-ssl.conf
+        src=/etc/{{ apache_config_dir }}/xs-console-ssl.conf
+  when: is_debian and not adm_cons_force_ssl
+
+# with ssl
 - name: add link for admin-console config file with ssl support
-  file: path=/etc/apache2/conf-enabled/xs-console.conf
-        src=/etc/apache2/conf-available/xs-console.conf
+  file: path=/etc/apache2/sites-enabled/xs-console-ssl.conf
+        src=/etc/{{ apache_config_dir }}/xs-console-ssl.conf
         state=link
   when: adm_cons_force_ssl and is_debian
 
 - name: remove link for admin-console config file with ssl support
-  file: path=/etc/apache2/conf-enabled/xs-console.conf
-        src=/etc/apache2/conf-available/xs-console.conf
+  file: path=/etc/apache2/sites-enabled/xs-console.conf
+        src=/etc/{{ apache_config_dir }}/xs-console.conf
         state=absent
-  when: not adm_cons_force_ssl and is_debian
+  when: adm_cons_force_ssl and is_debian
 
 - name: Install admin-console service
   template: src=console/cmd-service.php
