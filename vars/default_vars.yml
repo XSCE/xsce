@@ -6,8 +6,9 @@
 
 # Installation Constants
 content_base: "/library"
-doc_root: "/var/www/html"
-doc_base: "/var/www"
+#doc_base: "/var"
+doc_base: "{{ content_base }}/www"
+doc_root: "{{ doc_base }}/html"
 
 xsce_base: /opt/schoolserver
 xsce_dir: "{{ xsce_base }}/xsce"

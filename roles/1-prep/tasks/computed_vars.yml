@@ -72,7 +72,9 @@
   set_fact:
     mysql_install: True
     mysql_enabled: True
-  when: elgg_enabled or rachel_enabled or owncloud_enabled or phpmyadmin_enabled or wordpress_enabled or iiab_menu_install
+
+# we decided to enable mysql unconditionally
+#  when: elgg_enabled or rachel_enabled or owncloud_enabled or phpmyadmin_enabled or wordpress_enabled or iiab_menu_install
 
 - name: Turn on mongodb if sugarizer enabled
   set_fact:
