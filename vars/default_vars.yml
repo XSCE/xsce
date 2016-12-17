@@ -222,11 +222,11 @@ calibre_enabled: False
 calibre_port: 8010
 
 # RACHEL
-rachel_install: True
+rachel_install: False
 rachel_enabled: False
 rachel_content_found: False
 #rachel_url: /rachel
-rachel_doc_root: "{{ www_root}}"
+rachel_doc_root: "{{ doc_root}}/modules"
 
 # Kiwix-Serve
 kiwix_install: True

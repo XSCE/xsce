@@ -39,6 +39,7 @@
     - /library/working/rachel
     - "{{ xsce_zim_path }}/content"
     - "{{ xsce_zim_path }}/index"
+    - "{{ rachel_doc_root }}"
 
 - name: Create directory for common packages
   file: path={{ item }}
