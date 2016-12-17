@@ -13,3 +13,4 @@ host_country_code: US
 driver_name: nl80211
 network_config_dir: /etc/network/interfaces.d
 xsce_network_mode: "Gateway"
+dns_jail_enabled: False
