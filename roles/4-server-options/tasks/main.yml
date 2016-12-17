@@ -2,7 +2,7 @@
   command: echo Server Options Installed
 
 - name: Stop postgresql service
-  command: "/etc/init.d/postgresql stop""
+  command: "/etc/init.d/postgresql stop"
   ignore_errors: True
   when: postgresql_install and is_debian
 
