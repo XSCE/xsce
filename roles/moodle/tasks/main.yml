@@ -42,12 +42,14 @@
         group={{ apache_data }}
         mode=0775
         state=directory
+        recurse=yes
 
 - name: Give apache permission to write moodle data directory
   file: path={{ content_base }}/dbdata/moodle
         owner={{ apache_data }}
         mode=0775
         state=directory
+        recurse=yes
 
 - name: Create a moodle data dir with apache permission to write 
   file: path={{ moodle_data }}
@@ -78,10 +80,6 @@
   file: path=/etc/apache2/sites-enabled/022-moodle.conf
         state=absent
   when: not moodle_enabled and is_debian
-
-- name: Stop postgresql
-  service: name=postgresql
-           state=stopped
 
 - name: Start postgresql-xs
   service: name=postgresql-xs
