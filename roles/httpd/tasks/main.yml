@@ -18,6 +18,12 @@
     - download
   when: not is_debian
 
+- name: remove the default apache2 config file
+  file: path=/etc/apache2/sites-enabled/000-default.conf
+        src=/etc/apache2/sites-available/000-default.conf
+        state=absent
+  when: is_debian
+
 - name: Create httpd config files
   template: backup=yes
             src={{ item.src }}
