@@ -94,7 +94,7 @@
         createhome=no
 
 - name: Create httpd log dir
-  file: path=/var/log/{{ apache_user }}
+  file: path=/var/log/{{ apache_service }}
         mode=0755
         owner={{ apache_data }}
         group={{ apache_data }}

@@ -5,6 +5,16 @@
    - ejabberd-2.1.11
   tags:
     - download
+  when: not is_debian
+
+- name: Install ejabberd packages
+  package: name={{ item }}
+           state=present
+  with_items:
+   - ejabberd
+  tags:
+    - download
+  when: is_debian
 
 - name: Configure ejabberd
   template: backup=yes
@@ -17,8 +27,6 @@
     - { src: 'ejabberd-xs.cfg.j2', dest: '/etc/ejabberd/ejabberd-xs.cfg' , mode: '0644' }
     - { src: 'ejabberdctl.cfg.j2', dest: '/etc/ejabberd/ejabberdctl.cfg', mode: '0644' }
     - { src: 'ejabberd-xs', dest: '/etc/sysconfig/ejabberd-xs', mode: '0755' }
-    - { src: 'ejabberd-xs.init', dest: '/etc/init.d/ejabberd-xs', mode: '0755' }
-    - { src: 'ejabberd-xs.init', dest: '/usr/libexec/ejabberd-xs', mode: '0755' }
 #    - { src: 'ejabberd-domain-config', dest: '/etc/sysconfig/olpc-scripts/domain_config.d/ejabberd', mode: '0755'}
 #    - { src: 'ejabberd', dest: '/etc/sysconfig/olpc-scripts/domain_config.d/ejabberd' , mode: '0755' }
     - { src: 'ejabberd-xs.service.j2', dest: '/etc/systemd/system/ejabberd-xs.service', mode: '0755' }
@@ -26,6 +34,16 @@
     - { src: '10-ejabberdmoodle', dest: '/etc/sudoers.d/10-ejabberdmoodle', mode: '0440' }
     - { src: 'ejabberd.tmpfiles', dest: '/etc/tmpfiles.d/ejabberd.conf', mode: '0640' }
   register: ejabberd_config
+
+- name: Put the startup script in place - debian
+  template: src='ejabberd-xs.init' 
+            dest='/etc/init.d/ejabberd-xs'
+  when: is_debian
+
+- name: Put the startup script in place - non debian
+  template: src='ejabberd-xs.init'
+            dest='/usr/libexec/ejabberd-xs'
+  when: not is_debian
 
 - name: Remove ejabberd_domain if domain changes
   file: path=/etc/sysconfig/ejabberd_domain_name

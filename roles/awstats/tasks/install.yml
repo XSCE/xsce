@@ -32,6 +32,7 @@
   with_items:
     - "{{ awstats_data_dir }}"
     - "{{ apache_log_dir }}"
+
 - name: Install the Apache config for Advanced Web Statistics 
   template: src=apache.conf
             dest=/etc/{{ apache_config_dir }}/awstats.conf
@@ -47,6 +48,11 @@
             group=root
             mode=0644
   when: awstats_enabled and not is_debian
+
+- name: make sure logrotate does not make logs unreadable
+  template: src=logrotate.d.apache
+            dest=/etc/logrotate.d/apache
+  when: is_debian
 
 - name: See if awstats package installed a config file
   stat: path=/etc/awstats/awstats.conf

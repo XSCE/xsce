@@ -4,6 +4,13 @@
   tags:
     - download
 
+- name: Install chkconfig package
+  package: name=chkconfig
+           state=present
+  when: is_debian
+  tags:
+    - download
+
 - name: Update main config file 
   template: backup=yes
             src=monitrc

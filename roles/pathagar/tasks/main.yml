@@ -2,16 +2,35 @@
   package: name=pathagar 
            state=absent
 
-- name: Install pathagar pre requisites
+- name: Install pathagar pre requisites (both fedora and debian)
   package: name={{ item }}
            state=present
   with_items:
     - python-virtualenv
     - python-pip
     - python-psycopg2
+  tags:
+    - download
+
+- name: Install pathagar pre requisites for debian
+  package: name={{ item }}
+           state=present
+  with_items:
+    - libapache2-mod-wsgi
+    - libxml2-dev
+    - libxslt-dev
+  when: is_debian
+  tags:
+    - download
+
+- name: Install pathagar pre requisites not debian
+  package: name={{ item }}
+           state=present
+  with_items:
     - mod_wsgi
     - libxml2-devel
     - libxslt-devel
+  when: not is_debian
   tags:
     - download
 
@@ -81,10 +100,6 @@
                    state=present
   become: yes
   become_user: postgres
-
-- name: Stop postgresql
-  service: name=postgresql
-           state=stopped
 
 - name: Start postgresql-xs
   service: name=postgresql-xs

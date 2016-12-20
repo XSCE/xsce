@@ -16,5 +16,5 @@ apache_log: /var/log/apache2/access.log
 apache_log_dir: /var/log/apache2
 # cups lp module not available in raspbian, causes systemd-modueles-load to fail
 # which in turn cause netfilter-persistent to fail, which is essential
-cups_install: False
+cups_install: True
 sshd_service: ssh
