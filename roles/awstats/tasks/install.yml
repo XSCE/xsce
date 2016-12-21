@@ -50,8 +50,8 @@
   when: awstats_enabled and not is_debian
 
 - name: make sure logrotate does not make logs unreadable
-  template: src=logrotate.d.apache
-            dest=/etc/logrotate.d/apache
+  template: src=logrotate.d.apache2
+            dest=/etc/logrotate.d/apache2
   when: is_debian
 
 - name: See if awstats package installed a config file

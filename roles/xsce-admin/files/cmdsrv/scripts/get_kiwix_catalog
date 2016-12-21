@@ -9,6 +9,10 @@ import os.path
 import sys
 import urllib2
 import time
+XSCE_PATH='/etc/xsce'
+if not XSCE_PATH in sys.path:
+   sys.path.append(XSCE_PATH)
+from xsce_env import get_xsce_env
 
 zimCat = {}
 zims = {}
@@ -22,7 +26,10 @@ problemUrlMap = {"http://download.kiwix.org/zim/0.9/wikipedia_en_ray_charles_03_
     "http://download.kiwix.org/zim/wikispecies/wikispecies_en_all_nopic_2015-03.zim.meta4":"http://download.kiwix.org/portable/wikispecies/kiwix-+wikispecies_en_all_nopic_2015-03.zip", \
     "http://download.kiwix.org/zim/wikispecies/wikispecies_en_all_2015-03.zim.meta4":"http://download.kiwix.org/portable/wikispecies/kiwix-+wikispecies_en_all_2015-03.zip"}
 
-consolePath = "{{ doc_root }}/devel/"
+# get the document root
+WWWROOT=get_xsce_env('WWWROOT')
+consolePath = WWWROOT + "/devel/"
+
 assetsPath = consolePath + "assets/"
 imgPath = consolePath + "images/"
 jsonPath = "/etc/xsce/"
@@ -36,7 +43,6 @@ zimKiwixPrefix = "kiwix-0.9+"
 # output files
 
 kiwix_catalog = jsonPath + "kiwix_catalog.json"
-
 
 try:
     xmlsrc = urllib2.urlopen(kiwixLibUrl)
@@ -95,3 +101,5 @@ with open(kiwix_catalog, 'w') as fp:
 sys.stdout.write("SUCCESS")
 sys.stdout.flush()
 sys.exit(0)
+
+
