@@ -10,17 +10,19 @@ varible: value
 authserver_install: False
 authserver_enabled: False
 # 5-xoservices
-xo_services_install: False
-ejabberd_install: False
+xo_services_install: True
+ejabberd_install: True
+ejabberd_enabled: True
 idmgr_install: False
 # 6-generic-aps
 # 7-edu-aps
-pathagar_install: False
+pathagar_install: True
 # 8-mgmat-tools
 sugar_stats_install: False
 ajenti_install: False
-monit_install: False
+monit_install: True
 xovis_install: False
 teamviewer_install: False
+activity_server_enabled: True
 
 
