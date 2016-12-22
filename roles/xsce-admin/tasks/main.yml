@@ -7,10 +7,6 @@
   tags:
     - base
 
-- include: html.yml
-  tags:
-    - base
-
 - include: cmdsrv.yml
   tags:
     - base

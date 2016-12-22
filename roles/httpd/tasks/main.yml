@@ -108,3 +108,7 @@
   service: name={{ apache_service }}
            enabled=yes
 
+- include: html.yml
+  tags:
+    - base
+
