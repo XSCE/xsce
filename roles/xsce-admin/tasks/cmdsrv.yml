@@ -52,6 +52,10 @@
             mode=0644
   when: config_vars.stat.exists == false or config_vars_check.stdout == ""
 
+- name: put a python interface to xsce.env
+  template: src=cmdsrv/xsce_env.py
+            dest=/etc/xsce
+
 - name: Install packages for fedora 23+
   package: name=redhat-rpm-config
            state=installed

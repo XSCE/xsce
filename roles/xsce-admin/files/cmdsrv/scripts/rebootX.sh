@@ -2,7 +2,7 @@
 
 . /etc/xsce/xsce.env
 
-if [ "$OS" = "debian" ] || [ "$OS" = "raspbian" ]; then
+if [ "$OS" = "Debian" ] || [ "$OS" = "raspbian" ]; then
 	/bin/sleep 3
 	/sbin/reboot
 else
