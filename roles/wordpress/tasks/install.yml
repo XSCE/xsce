@@ -15,7 +15,7 @@
   file: path={{ wp_abs_path }}
         recurse=yes
         owner=root
-        group={{ apache_user }}
+        group={{ apache_data}}
         mode=0640
         state=directory
 

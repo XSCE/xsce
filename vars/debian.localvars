@@ -12,7 +12,7 @@ authserver_enabled: False
 # 5-xoservices
 xo_services_install: True
 ejabberd_install: True
-ejabberd_enabled: True
+ejabberd_enabled: False
 idmgr_install: False
 # 6-generic-aps
 # 7-edu-aps
