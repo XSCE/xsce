@@ -52,6 +52,14 @@
         mode=0755
         state=directory
 
+- name: enable the mods which permit apache to proxy
+  apache2_module: name={{ item }}
+  with_items:
+    - proxy
+    - proxy_html
+    - rewrite
+  when: is_debian
+
 - name: Unarchive it to permanent location - bin only
   unarchive: src="{{ downloads_dir }}/{{ kiwix_src_file }}"
              dest="{{ xsce_base }}/kiwix/bin"
