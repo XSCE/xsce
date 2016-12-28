@@ -18,6 +18,10 @@ import re
 import subprocess
 import shlex
 import ConfigParser
+XSCE_PATH='/etc/xsce'
+if not XSCE_PATH in sys.path:
+   sys.path.append(XSCE_PATH)
+from xsce_env import get_xsce_env
 
 # Config Files
 xsce_config_file = "/etc/xsce/xsce.ini"
@@ -29,7 +33,8 @@ kiwix_library_xml = "/library/zims/library.xml"
 
 xsce_base_path = "/opt/schoolserver"
 kiwix_manage = xsce_base_path + "/kiwix/bin/kiwix-manage"
-zim_version_idx = "{{ doc_root }}/common/assets/zim_version_idx.json"
+doc_root = get_xsce_env('WWWROOT')
+zim_version_idx = doc_root + "/common/assets/zim_version_idx.json"
 zim_versions = {}
 
 def main():
