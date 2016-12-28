@@ -111,6 +111,7 @@
   with_items:
     - { src: 'xsce-make-kiwix-lib', dest: '/usr/bin/xsce-make-kiwix-lib'}
     - { src: 'xsce-make-kiwix-lib.py', dest: '/usr/bin/xsce-make-kiwix-lib.py'}
+    - { src: 'xsce-make-apache-config.py', dest: '/usr/bin/xsce-make-apache-config.py'}
 
 - name: Enable kiwix-serve service
   service: name=kiwix-serve
