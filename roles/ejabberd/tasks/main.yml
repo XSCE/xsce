@@ -61,14 +61,14 @@
   service: name=ejabberd-xs
            state=restarted
            enabled=yes
-  when: ejabberd_config.changed
+  when: ejabberd_config.changed and ejabberd_enabled
 
 - name: Wait for ejabberd service start
   wait_for: port=5280
             delay=15
             state=started
             timeout=300
-  when: ejabberd_config.changed
+  when: ejabberd_config.changed and ejabberd_enabled
 
 - name: Create online group
   shell: ejabberdctl srg_create Online "schoolserver" Online "Online_Users" Online
