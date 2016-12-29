@@ -84,6 +84,10 @@
     - { src: 'kiwix-serve.service.j2', dest: '/etc/systemd/system/kiwix-serve.service', mode: '0655'}
 
 #    - { src: 'kiwix-serve-init.j2', dest: '/usr/libexec/kiwix-serve-init', mode: '0755'}
+    - { src: 'xsce-make-kiwix-lib', dest: '/usr/bin/xsce-make-kiwix-lib', mode: '0755'}
+    - { src: 'xsce-make-kiwix-lib.py', dest: '/usr/bin/xsce-make-kiwix-lib.py', mode: '0755'}
+    - { src: 'xsce-make-apache-config.py', dest: '/usr/bin/xsce-make-apache-config.py', mode: '0755'}
+
 
 - name: add kiwix to service list
   ini_file: dest='{{ service_filelist }}'
@@ -109,17 +113,6 @@
       value: "{{ kiwix_content_path }}"
     - option: enabled
       value: "{{ kiwix_serve_enabled }}"
-
-- name: Copy xsce-make-kiwix-lib to /usr/bin
-  copy: src={{ item.src }}
-        dest={{ item.dest }}
-        mode=0755
-        owner=root
-        group=root
-  with_items:
-    - { src: 'xsce-make-kiwix-lib', dest: '/usr/bin/xsce-make-kiwix-lib'}
-    - { src: 'xsce-make-kiwix-lib.py', dest: '/usr/bin/xsce-make-kiwix-lib.py'}
-    - { src: 'xsce-make-apache-config.py', dest: '/usr/bin/xsce-make-apache-config.py'}
 
 - name: Enable kiwix-serve service
   service: name=kiwix-serve
