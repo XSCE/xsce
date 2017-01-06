@@ -7,15 +7,15 @@ Alias /admin "{{ admin_console_path }}"
   ServerName "schoolserver.lan"
   AddExternalAuth pwauth /usr/sbin/pwauth
   SetExternalAuthMethod pwauth pipe
-  ErrorLog ${APACHE_LOG_DIR}/error.log
-  CustomLog ${APACHE_LOG_DIR}/access.log combined
   SSLEngine on
 {% if is_debian %}
+  ErrorLog ${APACHE_LOG_DIR}/error.log
+  CustomLog ${APACHE_LOG_DIR}/access.log combined
   SSLCertificateFile	/etc/ssl/certs/ssl-cert-snakeoil.pem
   SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
 {% else %}
-  SSLCertificateFile /etc/pki/tls/certs/ca.crt
-  SSLCertificateKeyFile /etc/pki/tls/private/ca.key
+  SSLCertificateFile /etc/pki/tls/certs/localhost.crt
+  SSLCertificateKeyFile /etc/pki/tls/private/localhost.key
 {% endif %}
   BrowserMatch "MSIE [2-6]" \
 		nokeepalive ssl-unclean-shutdown \
