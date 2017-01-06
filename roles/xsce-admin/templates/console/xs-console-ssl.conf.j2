@@ -10,8 +10,13 @@ Alias /admin "{{ admin_console_path }}"
   ErrorLog ${APACHE_LOG_DIR}/error.log
   CustomLog ${APACHE_LOG_DIR}/access.log combined
   SSLEngine on
+{% if is_debian %}
   SSLCertificateFile	/etc/ssl/certs/ssl-cert-snakeoil.pem
   SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+{% else %}
+  SSLCertificateFile /etc/pki/tls/certs/ca.crt
+  SSLCertificateKeyFile /etc/pki/tls/private/ca.key
+{% endif %}
   BrowserMatch "MSIE [2-6]" \
 		nokeepalive ssl-unclean-shutdown \
 		downgrade-1.0 force-response-1.0
