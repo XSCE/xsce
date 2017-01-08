@@ -52,4 +52,5 @@
 
 - name: Install debian config
   template: src=gateway/iptables dest=/etc/network/if-pre-up.d/iptables
+            mode=0755
   when: is_debian
