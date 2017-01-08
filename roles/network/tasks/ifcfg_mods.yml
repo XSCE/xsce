@@ -57,9 +57,6 @@
   with_items:
       - "{{ lan_list_result.stdout_lines }}"
 
-- debug: var=xsce_wireless_lan_iface
-- pause:
-
 - name: WiFi enslaving {{ xsce_wireless_lan_iface }} to Bridge
   template: src=network/wifi-slave.j2
             dest=/etc/sysconfig/network-scripts/ifcfg-{{ xsce_wireless_lan_iface }}
