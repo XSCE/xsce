@@ -8,6 +8,7 @@ if [ ! -f /etc/xsce/uuid ]; then
 fi
 UUID=`cat /etc/xsce/uuid`
 
+source /etc/xsce/xsce.env
 cd $XSCE_DIR
 
 # get current version
