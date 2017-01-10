@@ -159,6 +159,8 @@ UseCanonicalName Off
 # so it doesn't move in some future version.
 #
 DocumentRoot "{{ doc_root }}"
+ErrorLog {{ apache_log_dir }}/error.log
+CustomLog {{ apache_log_dir }}}/access.log combined
 
 #
 # Each directory to which Apache has access can be configured with respect

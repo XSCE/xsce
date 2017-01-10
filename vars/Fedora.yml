@@ -8,6 +8,7 @@ apache_service: httpd
 apache_user: apache
 apache_config_dir: httpd/conf.d
 apache_data: apache
+apache_log_dir: /var/log/httpd
 smb_service: smb
 nmb_service: nmb
 kalite_program: /usr/bin/kalite
