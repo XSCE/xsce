@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 parted -m <<EOF
 print all free

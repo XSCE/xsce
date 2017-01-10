@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 WORKINGDIR=/library/working/zims/$1
 SRCDIR=$WORKINGDIR/data
