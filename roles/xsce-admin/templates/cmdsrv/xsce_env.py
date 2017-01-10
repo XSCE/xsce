@@ -7,6 +7,7 @@ def get_xsce_env(name):
       fd = open("/etc/xsce/xsce.env","r")
       for line in fd:
          line = line.lstrip()
+         line = line.rstrip('\n')
          if len(line) == 0:
             continue
          if line[0] == "#":

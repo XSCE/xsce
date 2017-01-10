@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 scripts/poweroffX.sh > /dev/null 2>&1 &
 
