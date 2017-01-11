@@ -126,3 +126,18 @@
         owner=root
         group=root
         mode=0644
+
+- name: Install admin home page into apache2
+  template: src=console/xsce-home-page.conf
+             dest=/etc/{{ apache_config_dir }}/xsce-home-page.conf
+
+- name: Enable the home page
+  file: src=/etc/{{ apache_config_dir }}/xsce-home-page.conf
+        dest=/etc/apache2/sites-enabled/xsce-home-page.conf
+        state=link
+  when: is_debian
+
+- name: Create the home directory
+  file: dest={{ doc_root }}/home
+        state=directory
+
