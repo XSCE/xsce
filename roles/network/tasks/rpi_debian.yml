@@ -1,4 +1,4 @@
-# debian.yml
+# rpi_debian.yml
 # Start out making simplifying assumptions 
 #   1. we are dealing with a rpi3
 #   2. Gui inputs define the config -- auto config is more difficult
@@ -10,19 +10,16 @@
 #   5. In gateway: eth0 is wan, and wlan0 is under br0 (only one adapter under br0)
 #   6. As a slight concess to auto config, if eth1 exists, make it wan, and force gateway
  
-- debug: var=discovered_lan_iface
-- debug: var=discovered_wan_iface
-- debug: var=gui_desired_network_role
-- debug: var=gui_static_wan_ip
-- debug: var=hostapd_enabled
-- debug: var=discovered_wireless_iface
-- debug: var=gui_static_wan
-
 - name: default to lan controller
   set_fact:
-      gui_desired_network_role: "lan_controller"
+      gui_desired_network_role: "LanController"
   when: not gui_desired_network_role is defined
 
+- name: set the interface variables based upon gui_desired_role
+  set_fact: 
+       discovered_wireless_iface: wlan0
+       discovered_wan_iface: eth0
+       
 - name: Copy the bridge script 
   template: dest=/etc/network/interfaces.d/br0
             src=network/br0.j2
@@ -34,6 +31,21 @@
 
 - name: dhcpd may be affected
   service: name=bind9 state=stopped
+  when: interface.changed
+
+- name: Tear down any bridge and start fresh
+  command: ip link set br0 down
+  ignore_errors: True
+  when: interface.changed
+
+- name: and remove the device 
+  command: brctl delbr br0
+  ignore_errors: True
+  when: interface.changed
+
+- name: reset the eth0 interface 
+  command: ifdown etho
+  ignore_errors: True
   when: interface.changed
 
 - name: restart the networking service
@@ -52,6 +64,14 @@
 #create wan br0 if appliance
 #allocate wlan0 under br0 in all cases
 #allocate eth0 under br0 if appliance, alone if gateway
+
+- debug: var=discovered_lan_iface
+- debug: var=discovered_wan_iface
+- debug: var=gui_desired_network_role
+- debug: var=gui_static_wan_ip
+- debug: var=hostapd_enabled
+- debug: var=discovered_wireless_iface
+- debug: var=gui_static_wan
 
 - name: Add location section to config file
   ini_file: dest='{{ xsce_config_file }}'
