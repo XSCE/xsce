@@ -47,7 +47,7 @@
 
 - name: Make apache owner
   file: path={{ owncloud_path }}/owncloud
-        owner={{ apache_user }}
+        owner={{ apache_data }}
         group=apache
         recurse=yes
         state=directory
@@ -55,7 +55,7 @@
 - name: Create data directory library
   file: path={{ item }}
         mode=0750
-        owner={{ apache_user }}
+        owner={{ apache_data}}
         group=apache
         state=directory
   with_items:
