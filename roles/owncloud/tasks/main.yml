@@ -2,7 +2,7 @@
 # but we only need to do this the first time
 
 - name: See if the owncloud startup page exists
-  stat: path={{ owncloud_path }}/index.php
+  stat: path={{ owncloud_prefix }}/owncloud/index.php
   register: owncloud_page
 
 - name: Install owncloud package
@@ -13,12 +13,12 @@
       - owncloud
   tags:
       - download
-  when owncloud_page.stat exists and not owncloud_page.stat.exists
+  when: owncloud_page.stat.exists is defined and not owncloud_page.stat.exists
 
 - name: Remove owncloud package
   package: name=owncloud
            state=absent
-  when owncloud_page.stat exists and not owncloud_page.stat.exists
+  when: owncloud_page.stat.exists is defined and not owncloud_page.stat.exists
 
 - name: remove config files for package
   file: src=/etc/apache2/conf-available/owncloud.conf
@@ -29,7 +29,7 @@
   file: path=/etc/apache2/conf-available/owncloud.conf
         state=absent
 
-#- name: Remove /etc/owncloud to avoid confusion as we use the config in {{ owncloud_path }}/config/
+#- name: Remove /etc/owncloud to avoid confusion as we use the config in {{ owncloud_prefix }}/config/
 #  file: path=/etc/owncloud
 #        state=absent
 
@@ -45,14 +45,14 @@
 
 - name: Copy it to permanent location /opt
   unarchive: src={{ downloads_dir }}/{{ owncloud_src_file }}  
-             dest={{ owncloud_path }}
-             creates={{ owncloud_path }}/owncloud/version.php
+             dest={{ owncloud_prefix }}
+             creates={{ owncloud_prefix }}/owncloud/version.php
   when: not is_F18
 
 # ansible 1.4.1 does not have "creates"
 - name: Copy it to permanent location /opt
   unarchive: src={{ downloads_dir }}/{{ owncloud_src_file }}  
-             dest={{ owncloud_path }}
+             dest={{ owncloud_prefix }}
   when: is_F18
 
 - name: in Centos, the following config dir is symlink to /etc/owncloud
@@ -61,13 +61,13 @@
 
 - name: Add autoconfig file
   template: src=autoconfig.php.j2
-            dest={{ owncloud_path }}/owncloud/config/autoconfig.php
+            dest={{ owncloud_prefix }}/owncloud/config/autoconfig.php
             owner={{ apache_user }}
             group=apache
             mode=0640
 
 - name: Make apache owner
-  file: path={{ owncloud_path }}/owncloud
+  file: path={{ owncloud_prefix }}/owncloud
         owner={{ apache_data }}
         group=apache
         recurse=yes
@@ -115,7 +115,7 @@
     - option: description
       value: '"OwnCloud is a local server-based facility for sharing files, photos, contacts, calendars, etc."'
     - option: path
-      value: "{{ owncloud_path }}/owncloud"
+      value: "{{ owncloud_prefix }}/owncloud"
     - option: source
       value: "{{ owncloud_src_file }}"
     - option: enabled

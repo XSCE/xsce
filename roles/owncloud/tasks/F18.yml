@@ -1,4 +1,4 @@
-- name: Remove /etc/owncloud to avoid confusion as we use the config in {{ owncloud_path }}/config/
+- name: Remove /etc/owncloud to avoid confusion as we use the config in {{ owncloud_prefix }}/owncloud/config/
   file: path=/etc/owncloud
         state=absent
 

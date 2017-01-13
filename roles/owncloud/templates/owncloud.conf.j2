@@ -1,6 +1,6 @@
-Alias {{ owncloud_url }} {{ owncloud_path }}/owncloud
+Alias {{ owncloud_url }} {{ owncloud_prefix}}/owncloud
 
-<Directory {{ owncloud_path }}/>
+<Directory {{ owncloud_prefix }}/owncloud/>
     Options -Indexes
 
     <IfModule mod_authz_core.c>

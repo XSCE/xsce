@@ -32,19 +32,19 @@
 - name: Remove Rewrite URL
   lineinfile: regexp='overwrite.cli.url'
               state=absent
-              dest="{{ owncloud_path }}/config/config.php"
+              dest="{{ owncloud_prefix }}/owncloud/config/config.php"
 
 # This is very version dependent
 
 - name: Remove Trusted Domains - comment before
-  lineinfile: dest="{{ owncloud_path }}/config/config.php"
+  lineinfile: dest="{{ owncloud_prefix }}/owncloud/config/config.php"
               insertbefore='trusted_domains'
               line='/*'
               state=present
   ignore_errors: true
 
 - name: Remove Trusted Domains - comment after
-  lineinfile: dest="{{ owncloud_path }}/config/config.php"
+  lineinfile: dest="{{ owncloud_prefix}}/owncloud/config/config.php"
               insertafter='\),'
               line='*/'
               state=present
