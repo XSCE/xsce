@@ -104,7 +104,6 @@
   set_fact:
     user_lan_iface: "auto"
     user_wan_iface: "{{ xsce_wan_iface }}"
-    xsce_gateway_enabled: "True"
   when: gui_desired_network_role is defined and gui_desired_network_role == "Gateway" and xsce_wan_iface != "none"
 
 # make it so number 2 vars should use user_wan_iface but we can cover a single
