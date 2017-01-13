@@ -1,4 +1,4 @@
-- name: Set flag for fedora 18
+- name: Set flag for fedora 18 
   set_fact:
     is_F18: True
   when: ansible_distribution_release == "based on Fedora 18" or ansible_distribution_version == "18"
@@ -32,6 +32,14 @@
   command: setenforce Permissive
   when: selinux_disabled is defined and selinux_disabled.changed
 
+##  DISCOVER PLATFORMS ######
+- name: Discover if this is a rpi -- if so it has a bcm2709 processor
+  set_fact: 
+     rpi_model: "rpi"
+     is_rpi: "True"
+  when:  ansible_cmdline["bcm2709.serial"]  is defined
+  ignore_errors: true
+
 - include: prep.yml
 
 # we need to inialize the ini file
@@ -40,7 +48,7 @@
 - include: computed_vars.yml
 
 - include: detected_network.yml
-  when: not installing
+  when: not installing 
 
 # Patch Fedora 21+ so usbmount works
 # Set flag to True that was initialized to False in role defaults
@@ -79,13 +87,6 @@
 
 
 # Put conditional actions for hardware platforms here
-##  DISCOVER PLATFORMS ######
-- name: Discover if this is a rpi2 -- if so it has a bcm2709 processor
-  set_fact: 
-     rpi_model: "rpi2"
-  when:  ansible_cmdline["bcm2709.serial"]  is defined
-  ignore_errors: true
-
 - include: raspberry_pi_2.yml
   when: rpi_model != "none"
 
