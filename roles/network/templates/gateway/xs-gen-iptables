@@ -51,6 +51,9 @@ ssh_port={{ ssh_port }}
 gui_wan={{ gui_wan }}
 gui_port={{ gui_port }}
 xsce_gateway_enabled={{ xsce_gateway_enabled }}
+services_externally_visible={{ services_externally_visible }}
+kiwix_port={{ kiwix_port }}
+kalite_server_port={{ kalite_server_port }}
 block_DNS={{ block_DNS }}
 
 echo "Lan is $lan and WAN is $wan"
@@ -76,6 +79,11 @@ $IPTABLES -A INPUT -p tcp --dport $ssh_port -m state --state NEW -i $wan -j ACCE
 
 if [ "$gui_wan" == "True" ]; then
     $IPTABLES -A INPUT -p tcp --dport $gui_port -m state --state NEW -i $wan -j ACCEPT
+fi
+
+if [ "$services_externally_visible" == "True" ]; then
+    $IPTABLES -A INPUT -p tcp --dport $kiwix_port -m state --state NEW -i $wan -j ACCEPT
+    $IPTABLES -A INPUT -p tcp --dport $kalite_server_port -m state --state NEW -i $wan -j ACCEPT
 fi
 
 
