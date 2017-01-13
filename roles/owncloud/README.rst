@@ -11,7 +11,7 @@ The following are set as defaults in var/main.yml:
 
 * owncloud_install: True
 * owncloud_enabled: False
-* owncloud_path: "/opt/owncloud"
+* owncloud_prefix: "/opt"
 * owncloud_data_dir: /library/owncloud/data
 * owncloud_src_file: owncloud-7.0.12.tar.bz2
 

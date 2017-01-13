@@ -1,10 +1,11 @@
-Alias {{ owncloud_url }} {{ owncloud_path }}/owncloud
+Alias {{ owncloud_url }} {{ owncloud_prefix}}/owncloud
 
-<Directory {{ owncloud_path }}/>
+<Directory {{ owncloud_prefix }}/owncloud/>
     Options -Indexes
 
     <IfModule mod_authz_core.c>
     # Apache 2.4
+    Require host localhost
     Require ip 127.0.0.1 {{lan_ip}}/{{lan_netmask}} {{ owncloud_required_ip }}
     </IfModule>
     <IfModule !mod_authz_core.c>
