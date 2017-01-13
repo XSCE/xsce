@@ -47,7 +47,6 @@
 
 - include: computed_vars.yml
 
-# addition for rpi -- do not detect -- just declare in network based upon chosen role
 - include: detected_network.yml
   when: not installing 
 
