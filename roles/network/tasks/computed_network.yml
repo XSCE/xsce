@@ -180,5 +180,5 @@
     value: '{{ host_ssid }}'
   - option: 'host_wifi_mode'
     value: '{{ host_wifi_mode }}'
-  - option: 'host_channel0
+  - option: 'host_channel'
     value: '{{ host_channel }}'

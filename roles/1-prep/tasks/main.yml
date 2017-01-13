@@ -49,7 +49,7 @@
 
 # addition for rpi -- do not detect -- just declare in network based upon chosen role
 - include: detected_network.yml
-  when: not installing and not rpi_model == "rpi"
+  when: not installing 
 
 # Patch Fedora 21+ so usbmount works
 # Set flag to True that was initialized to False in role defaults
