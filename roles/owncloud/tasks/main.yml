@@ -1,4 +1,10 @@
 # we need to install the rpm in order to get the dependencies
+# but we only need to do this the first time
+
+- name: See if the owncloud startup page exists
+  stat: path={{ owncloud_path }}/index.php
+  register: owncloud_page
+
 - name: Install owncloud package
   package: name={{ item }} 
            state=present
@@ -7,10 +13,25 @@
       - owncloud
   tags:
       - download
+  when owncloud_page.stat exists and not owncloud_page.stat.exists
 
-- name: Remove /etc/owncloud to avoid confusion as we use the config in {{ owncloud_path }}/config/
-  file: path=/etc/owncloud
+- name: Remove owncloud package
+  package: name=owncloud
+           state=absent
+  when owncloud_page.stat exists and not owncloud_page.stat.exists
+
+- name: remove config files for package
+  file: src=/etc/apache2/conf-available/owncloud.conf
+        dest=/etc/apache2/conf-enabled/owncloud.conf
         state=absent
+
+- name: remove config files for package
+  file: path=/etc/apache2/conf-available/owncloud.conf
+        state=absent
+
+#- name: Remove /etc/owncloud to avoid confusion as we use the config in {{ owncloud_path }}/config/
+#  file: path=/etc/owncloud
+#        state=absent
 
 # but we use the tar file to get the latest version
 
