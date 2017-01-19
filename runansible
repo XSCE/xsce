@@ -6,7 +6,16 @@ if [ ! -f /etc/xsce/config_vars.yml ]; then
   echo "{}" > /etc/xsce/config_vars.yml
 fi
 
-# if not the first run, repo location is here
+# if vars/local_vars.yml is missing, put a default one in place
+if [ ! -f ./vars/local_vars.yml ]; then
+	OS=`grep ^ID= /etc/*release|cut -d= -f2`
+	OS=${OS//\"/}
+    if [ "$OS" = "Debian" ] || [ "$OS" = "raspbian" ]; then
+		cp ./vars/debian.localvars ./vars/local_vars.yml
+    else
+		cp ./vars/centos.localvars ./vars/local_vars.yml
+    fi
+fi
 
 if [ -f /etc/xsce/xsce.env ]
 then
