@@ -11,9 +11,10 @@ authserver_install: False
 authserver_enabled: False
 # 5-xoservices
 xo_services_install: True
-ejabberd_install: True
+ejabberd_install: False
 ejabberd_enabled: False
 idmgr_install: False
+debian_schooltool_install: False
 # 6-generic-aps
 # 7-edu-aps
 pathagar_install: True
