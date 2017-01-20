@@ -34,7 +34,7 @@
     - download2
 
 - name: Download khan assessments
-  get_url: url={{ khan_assessment_url }} dest={{ downloads_dir }}/khan_assessment.zip
+  shell: wget {{ khan_assessment_url }} -c -P{{ downloads_dir }}
   async: 2000
   tags:
     - download2
