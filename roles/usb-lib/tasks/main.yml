@@ -1,17 +1,21 @@
+- name: Make sure there is a content directory for links to be located
+  file: dest={{ doc_root }}/content
+        state=directory
+
 - name: Copy mount file to usbmount when enabled
-  copy: src=mount.d/70-usb-library
-        dest=/etc/usbmount/mount.d
-        owner=root
-        group=root
-        mode=0751
+  template: src=mount.d/70-usb-library
+            dest=/etc/usbmount/mount.d/
+            owner=root
+            group=root
+            mode=0751
   when: usb_lib_enabled
 
 - name: Copy umount file to usbmount when enabled
-  copy: src=umount.d/70-usb-library
-        dest=/etc/usbmount/umount.d
-        owner=root
-        group=root
-        mode=0751
+  template: src=umount.d/70-usb-library
+            dest=/etc/usbmount/umount.d
+            owner=root
+            group=root
+            mode=0751
   when: usb_lib_enabled
 
 - name: Remove mount file to usbmount when not enabled

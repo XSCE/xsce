@@ -10,7 +10,7 @@
 # by Tim Moody tim@timmoody.com
 
 CONTENT_LINK_USB=`basename $UM_MOUNTPOINT | awk '{print toupper($0)}'`
-CONTENT_LINK="/library/content/$CONTENT_LINK_USB"
+CONTENT_LINK="{{ doc_root }}/content/$CONTENT_LINK_USB"
 
 logger -p user.notice -t "70-usb-library" -- "Attempting to remove link $CONTENT_LINK."
 

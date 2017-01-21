@@ -1,5 +1,5 @@
 #!/bin/bash
-# Create symlink in /library/content to autmounted usb drive
+# Create symlink in DocumentRoot/content to autmounted usb drive
 #
 # based on a similar script in the xs-rsync package
 # by Martin Langhoff <martin@laptop.org>
@@ -26,11 +26,16 @@ if [ -d $UM_MOUNTPOINT/Piratebox/Share ]; then
   SHARE_DIR="$UM_MOUNTPOINT/Piratebox/Share"
 fi
 
-logger -p user.notice -t "70-usb-library" -- "Found Share Directory $SHARE_DIR."
+if [ ! -z "$SHARE_DIR" ]; then
+  logger -p user.notice -t "70-usb-library" -- "Found Share Directory $SHARE_DIR."
+else
+  logger -p user.notice -t "70-usb-library" -- "did not find /share, /Share, or /Piratebox/Share on USB"
+fi
+  
 
 if [ "$SHARE_DIR" != "" ];then
   CONTENT_LINK_USB=`basename $UM_MOUNTPOINT | awk '{print toupper($0)}'`
-  CONTENT_LINK="/library/content/$CONTENT_LINK_USB"
+  CONTENT_LINK="{{ doc_root }}/content/$CONTENT_LINK_USB"
   logger -p user.notice -t "70-usb-library" -- "Creating link to $CONTENT_LINK."
   ln -s $SHARE_DIR $CONTENT_LINK
 fi
