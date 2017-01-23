@@ -1,6 +1,5 @@
 - name: download current version from our copy
-  get_url: url={{ xsce_download_url }}/elgg-{{ elgg_version }}.zip
-           dest={{ downloads_dir }}
+  shell: wget {{ xsce_download_url }}/elgg-{{ elgg_version }}.zip -c -P {{ downloads_dir }}
   when: not {{ use_cache }} and not {{ no_network }} 
   tags:
     - download2
