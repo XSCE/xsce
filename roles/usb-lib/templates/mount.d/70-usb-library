@@ -25,6 +25,12 @@ fi
 if [ -d $UM_MOUNTPOINT/Piratebox/Share ]; then
   SHARE_DIR="$UM_MOUNTPOINT/Piratebox/Share"
 fi
+if [ -d $UM_MOUNTPOINT/usb ]; then
+  SHARE_DIR="$UM_MOUNTPOINT/usb"
+fi
+if [ -d $UM_MOUNTPOINT/USB ]; then
+  SHARE_DIR="$UM_MOUNTPOINT/USB"
+fi
 
 if [ ! -z "$SHARE_DIR" ]; then
   logger -p user.notice -t "70-usb-library" -- "Found Share Directory $SHARE_DIR."
