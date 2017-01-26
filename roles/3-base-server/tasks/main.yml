@@ -11,10 +11,6 @@
            state=restarted
   when: not installing
 
-- name: Create hidden xsce-prepped file
-  file: dest=/.xsce-prepped
-        state=touch
-
 # If we got here we're done
 - name: Record base gui version
   lineinfile: dest=/etc/xsce/xsce.env

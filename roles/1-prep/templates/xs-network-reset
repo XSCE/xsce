@@ -80,10 +80,6 @@ else
   touch /tmp/$basket/no_xsce-network.log
 fi
 
-if [ -e /.xsce-prepped ]; then
-  touch /tmp/$basket/root_directory.xsce-prepped
-fi
-
 if [ -f /etc/sysconfig/xs_domain_name ];then
   cp -p /etc/sysconfig/xs_domain_name /tmp/$basket
 else 
@@ -124,7 +120,6 @@ else
 fi
 
 # clear out all the memory variables and let auto-configure start from scratch
-rm -rf /.xsce-prepped
 rm -rf /etc/sysconfig/xs_domain_name
 rm -rf /etc/sysconfig/xs_lan_device
 rm -rf /etc/sysconfig/xs_wan_device
