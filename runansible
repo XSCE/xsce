@@ -10,7 +10,7 @@ fi
 if [ ! -f ./vars/local_vars.yml ]; then
 	OS=`grep ^ID= /etc/*release|cut -d= -f2`
 	OS=${OS//\"/}
-    if [ "$OS" = "Debian" ] || [ "$OS" = "raspbian" ]; then
+    if [ "$OS" = "debian" ] || [ "$OS" = "raspbian" ]; then
 		cp ./vars/debian.localvars ./vars/local_vars.yml
     else
 		cp ./vars/centos.localvars ./vars/local_vars.yml

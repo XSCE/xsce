@@ -1,7 +1,6 @@
 - name: download current version from our copy
-  get_url: url={{ xsce_download_url }}/elgg-{{ elgg_version }}.zip
-           dest={{ downloads_dir }}
-  when: not {{ use_cache }} and not {{ no_network }} 
+  shell: wget {{ xsce_download_url }}/elgg-{{ elgg_version }}.zip -c -P {{ downloads_dir }}
+  when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
 
@@ -9,9 +8,12 @@
   stat: path=/opt/elgg/index.php
   register: elgg
 
+# use unzip and shell until unarchive works again
+# unarchive: dest=/opt/
+#            src={{ downloads_dir }}/elgg-{{ elgg_version }}.zip
+
 - name: Expand it to our location
-  unarchive: dest=/opt/
-             src={{ downloads_dir }}/elgg-{{ elgg_version }}.zip
+  shell: "/usr/bin/unzip -o {{ downloads_dir }}/elgg-{{ elgg_version }}.zip -d /opt"
   when: elgg.stat.exists is defined and not elgg.stat.exists
 
 - name: change ownership

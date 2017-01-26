@@ -51,7 +51,7 @@
             creates=/library/pgsql-xs/pg_hba.conf
   when: not is_debian
 
-- name: Configure postgres 
+- name: Configure postgres
   template: backup=yes
             src=postgresql.conf.j2
             dest=/library/pgsql-xs/postgresql.conf
@@ -59,13 +59,15 @@
             group=postgres
             mode=0640
 
-- name: Disable stock postgresql service
+- name: Stop and disable stock postgresql service
   service: name=postgresql
+           state=stopped
            enabled=no
   when: postgresql_enabled
 
-- name: Enable postgresql service
+- name: Start and enable postgresql-xs service
   service: name=postgresql-xs
+           state=started
            enabled=yes
   when: postgresql_enabled
 
