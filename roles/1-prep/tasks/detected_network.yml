@@ -97,6 +97,7 @@
 - name: Setting has ifcfg gw based on device if found
   set_fact:
     has_ifcfg_gw: "{{ item|trim }}"
+  ignore_errors: True
   when: ifcfg_gw_device.stdout_lines is defined and item|trim != "" and item|trim != "/etc/sysconfig/network-scripts/ifcfg-LAN"
   with_items:
       - "{{ ifcfg_gw_device.stdout_lines }}"
