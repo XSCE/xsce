@@ -10,6 +10,8 @@ time		IN	A	172.18.96.1
 presence	IN	A	172.18.96.1
 xs		IN	A	172.18.96.1
 library		IN	A	172.18.96.1
+box		IN	A	172.18.96.1
+
 
 conference.schoolserver	IN	A	172.18.96.1
 
