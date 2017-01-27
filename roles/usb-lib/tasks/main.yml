@@ -30,23 +30,23 @@
 
 - name: Add apache config for content directory
   template: src=content_dir.conf
-            dest={{ apache_config_dir }}
+            dest=/etc/{{ apache_config_dir }}
   when: usb_lib_enabled 
 
 - name: create the link to enable for debian
-  file: src={{ apache_config_dir }}/content_dir.conf
-        dest=/etc/apache2/sites-enabled/
+  file: src=/etc/{{ apache_config_dir }}/content_dir.conf
+        dest=/etc/apache2/sites-enabled/content_dir.conf
         state=link
   when: is_debian
  
 - name: remove the link that enables in debian
-  file: src={{ apache_config_dir }}/content_dir.conf
-        dest=/etc/apache2/sites-enabled/
+  file: src=/etc/{{ apache_config_dir }}/content_dir.conf
+        dest=/etc/apache2/sites-enabled/content_dir.conf
         state=absent
   when: is_debian and not usb_lib_enabled
  
 - name: remove apache config for content directory
-  file: name={{ apache_config_dir }}/content_dir.conf
+  file: name=/etc/{{ apache_config_dir }}/content_dir.conf
         state=absent
   when: not usb_lib_enabled 
 
