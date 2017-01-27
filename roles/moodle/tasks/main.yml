@@ -23,7 +23,7 @@
   stat: path={{ moodle_base }}/config-dist.php
   register: moodle
 
-- debug: var=config_file
+- debug: var=moodle
 - debug: var=no_network
 
 - name: Download the latest moodle repo
@@ -39,21 +39,19 @@
 
 - name: Give apache permission to write moodle directory (config file)
   file: path={{ moodle_base }}
-        group={{ apache_data }}
-        mode=0775
+        owner={{ apache_data }}
         state=directory
         recurse=yes
 
 - name: Give apache permission to write moodle data directory
   file: path={{ content_base }}/dbdata/moodle
         owner={{ apache_data }}
-        mode=0775
+        mode=0640
         state=directory
-        recurse=yes
 
 - name: Create a moodle data dir with apache permission to write 
   file: path={{ moodle_data }}
-        owner={{ apache_user }}
+        owner={{ apache_data }}
         group={{ apache_data }}
         mode=0770
         state=directory
@@ -83,7 +81,7 @@
 
 - name: Start postgresql-xs
   service: name=postgresql-xs
-           state=started
+           state=restarted
 
 - name: Create db user
   postgresql_user: name=Admin
