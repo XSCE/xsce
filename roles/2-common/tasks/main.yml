@@ -41,19 +41,3 @@
 
 - include: net_mods.yml
   when: not is_debian and not is_F18
-
-- name: Turn off deprecation warnings
-  lineinfile: regexp=".*deprecation_warnings.*"
-              line="deprecation_warnings = False"
-              dest=/etc/ansible/ansible.cfg
-
-- name: Turn off command warnings
-  lineinfile: regexp=".*command_warnings.*"
-              line="command_warnings = False"
-              dest=/etc/ansible/ansible.cfg
-
-- name: Turn off system warnings
-  lineinfile: regexp=".*system_warnings.*"
-              line="system_warnings = False"
-              dest=/etc/ansible/ansible.cfg
-
