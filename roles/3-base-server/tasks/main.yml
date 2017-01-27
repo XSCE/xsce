@@ -12,7 +12,7 @@
   when: is_rpi and is_debian
 
 - name: put a autostart line to check for default password in LXDE
-  lineinfile: @/home/pi/.config/lxsession/LXDE-pi/lxde_ssh_warn.sh
+  lineinfile: line=@/home/pi/.config/lxsession/LXDE-pi/lxde_ssh_warn.sh
               dest=/home/pi/.config/lxsession/LXDE-pi/autostart
   when: is_rpi and is_debian
 
