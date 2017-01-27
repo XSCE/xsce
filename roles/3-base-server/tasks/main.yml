@@ -1,3 +1,7 @@
+- name: Make sure there is a content directory 
+  file: dest={{ doc_root }}/content
+        state=directory
+
 - name: Base Server Installed
   command: echo Base Server Installed
 

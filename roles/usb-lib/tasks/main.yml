@@ -1,5 +1,5 @@
-- name: Make sure there is a content directory for links to be located
-  file: dest={{ doc_root }}/content
+- name: Add a  content directory for links to be located
+  file: dest={{ doc_root }}/usb
         state=directory
 
 - name: Copy mount file to usbmount when enabled
