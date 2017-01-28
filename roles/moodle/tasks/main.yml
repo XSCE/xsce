@@ -46,7 +46,7 @@
 - name: Give apache permission to write moodle data directory
   file: path={{ content_base }}/dbdata/moodle
         owner={{ apache_data }}
-        mode=0640
+        mode=0755
         state=directory
 
 - name: Create a moodle data dir with apache permission to write 
