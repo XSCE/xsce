@@ -1,6 +1,9 @@
 - name: Add a  content directory for links to be located
-  file: dest={{ doc_root }}/usb
+  file: dest={{ doc_root }}/content
         state=directory
+        owner={{ apache_data }}
+        group={{ xsce_admin_user }}
+        mode=0775
 
 - name: Copy mount file to usbmount when enabled
   template: src=mount.d/70-usb-library

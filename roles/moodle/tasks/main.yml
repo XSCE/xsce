@@ -38,11 +38,7 @@
     - download2
 
 - name: Give apache permission to write moodle directory (config file)
-  file: path={{ moodle_base }}
-        owner={{ apache_data }}
-        state=directory
-        recurse=yes
-  when: True
+  command: chown -R {{ apache_data }} {{ moodle_base }}
 
 - name: Give apache permission to write moodle data directory
   file: path={{ content_base }}/dbdata/moodle
