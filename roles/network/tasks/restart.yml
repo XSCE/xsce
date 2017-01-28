@@ -15,10 +15,10 @@
   ignore_errors: True
   when: named_enabled
 
-- name: put resolv.conf in place now that nameserver is in place
-  template: src=network/resolv.conf.j2
-            dest=/etc/resolv.conf
-  when: named_enabled
+3- name: put resolv.conf in place now that nameserver is in place
+#  template: src=network/resolv.conf.j2
+#            dest=/etc/resolv.conf
+#  when: named_enabled
 
 - name: Stop dansguardian
   service: name=dansguardian
