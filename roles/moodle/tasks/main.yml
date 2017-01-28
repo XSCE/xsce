@@ -42,6 +42,7 @@
         owner={{ apache_data }}
         state=directory
         recurse=yes
+  when: True
 
 - name: Give apache permission to write moodle data directory
   file: path={{ content_base }}/dbdata/moodle
