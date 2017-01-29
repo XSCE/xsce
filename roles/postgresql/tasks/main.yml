@@ -63,7 +63,6 @@
   service: name=postgresql
            state=stopped
            enabled=no
-  when: postgresql_enabled
 
 - name: Start and enable postgresql-xs service
   service: name=postgresql-xs
