@@ -1,5 +1,5 @@
 - name: Add a  content directory for links to be located
-  file: dest={{ doc_root }}/content
+  file: dest={{ doc_root }}/local_content
         state=directory
         owner={{ apache_data }}
         group={{ xsce_admin_user }}

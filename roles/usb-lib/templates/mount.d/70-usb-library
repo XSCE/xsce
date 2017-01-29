@@ -41,7 +41,7 @@ fi
 
 if [ "$SHARE_DIR" != "" ];then
   CONTENT_LINK_USB=`basename $UM_MOUNTPOINT | awk '{print toupper($0)}'`
-  CONTENT_LINK="{{ doc_root }}/content/$CONTENT_LINK_USB"
+  CONTENT_LINK="{{ doc_root }}/local_content/$CONTENT_LINK_USB"
   logger -p user.notice -t "70-usb-library" -- "Creating link to $CONTENT_LINK."
   ln -s $SHARE_DIR $CONTENT_LINK
 fi
