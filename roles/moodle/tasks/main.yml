@@ -37,9 +37,6 @@
   tags:
     - download2
 
-- name: Give apache permission to write moodle directory (config file)
-  command: chown -R {{ apache_data }} {{ moodle_base }}
-
 - name: Give apache permission to write moodle data directory
   file: path={{ content_base }}/dbdata/moodle
         owner={{ apache_data }}
@@ -120,7 +117,7 @@
   
 - name: Give apache permission to read config file
   file: path={{ moodle_base }}/config.php
-        group={{ apache_data }}
+        owner={{ apache_data }}
         mode=0640
         state=file
   when: moodle_enabled
