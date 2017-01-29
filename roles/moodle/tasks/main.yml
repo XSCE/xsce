@@ -37,6 +37,12 @@
   tags:
     - download2
 
+- name: Prepare the downloaded directory so apache can install config file
+  file: path={{ moodle_base }}
+        owner={{ apache_data }}
+        recurse=yes
+        state=directory
+
 - name: Give apache permission to write moodle data directory
   file: path={{ content_base }}/dbdata/moodle
         owner={{ apache_data }}
