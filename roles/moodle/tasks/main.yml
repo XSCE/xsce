@@ -119,14 +119,13 @@
 
 - name: Execute moodle startup script
   shell: '{{ moodle_base }}/moodle_installer'
-  when: moodle_enabled and config.stat.exists is defined and not config.stat.exists
+  when: config.stat.exists is defined and not config.stat.exists
   
 - name: Give apache permission to read config file
-  file: path={{ moodle_base }}/config.php
+  file: path={{ moodle_base }}
         owner={{ apache_data }}
-        mode=0640
-        state=file
-  when: moodle_enabled
+        state=directory
+        resurse=yes
 
 - name: add moodle to service list
   ini_file: dest='{{ service_filelist }}'
