@@ -125,7 +125,7 @@
   file: path={{ moodle_base }}
         owner={{ apache_data }}
         state=directory
-        resurse=yes
+        recurse=yes
 
 - name: add moodle to service list
   ini_file: dest='{{ service_filelist }}'
