@@ -36,7 +36,7 @@ if [  "x$WANIF" == "x" ]; then
     clear_fw
     # save the rule set
 	{% if is_debian %}
-	iptables_persistent save
+	netfilter-persistent save
 	{% else %}
 	iptables-save > $IPTABLES_DATA
 	{% endif %}
