@@ -37,6 +37,7 @@ ExecReload=/usr/lib/postgresql/9.4/bin/pg_ctl reload -D ${PGDATA} -s
 TimeoutSec=300
 
 [Install]
+WantedBy=multi-user.target
 {% else %}
 # --postgres_xs.service
 .include /usr/lib/systemd/system/postgresql.service
