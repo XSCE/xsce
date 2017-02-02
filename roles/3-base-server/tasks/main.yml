@@ -1,5 +1,5 @@
 - name: Make sure there is a content directory 
-  file: dest={{ doc_root }}/content
+  file: dest={{ doc_root }}/local_content
         state=directory
 
 - name: Set up to issue warning if xsce-admin password is still default
