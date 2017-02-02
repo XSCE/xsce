@@ -124,7 +124,9 @@
   when: config.stat.exists is defined and not config.stat.exists
   
 - name: Give apache permission to read config file
-  command: chown -R {{ apache_data }} {{ moodle_base }}
+#  command: chown -R {{ apache_data }} {{ moodle_base }}
+  file: path={{ moodle_base }}/config.php
+        mode=0644
 
 - name: add moodle to service list
   ini_file: dest='{{ service_filelist }}'
