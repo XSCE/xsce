@@ -16,3 +16,16 @@ country_code={{ host_country_code }}
 # limit emissions to what is legal in country
 ieee80211d=1
 hw_mode={{ host_wifi_mode }}
+
+{%if hostapd_secure %}
+# Use WPA authentication
+auth_algs=1
+# Use WPA2
+wpa=2
+# Use a pre-shared key
+wpa_key_mgmt=WPA-PSK
+# The network passphrase
+wpa_passphrase={{ hostapd_password }}
+# Use AES, instead of TKIP
+rsn_pairwise=CCMP
+{% endif %}
