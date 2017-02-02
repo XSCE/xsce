@@ -108,6 +108,8 @@
 - name: Restart postgresql-xs
   service: name=postgresql-xs
            state=restarted
+           enabled=yes
+  when: moodle_enabled
 
 - name: Restart apache
   service: name={{ apache_service }}
