@@ -15,10 +15,21 @@
   ignore_errors: True
   when: named_enabled
 
-#- name: put resolv.conf in place now that nameserver is in place
-#  template: src=network/resolv.conf.j2
-#            dest=/etc/resolv.conf
-#  when: named_enabled
+- name: put resolvconf.conf in place now that nameserver is in place
+  lineinfile: line="name_servers=127.0.0.1"
+              regexp="^#name_servers.*"
+              dest=/etc/resolvconf.conf
+  when: named_enabled and is_debian
+
+- name: configure the resolvconf to use our domain
+  lineinfile: line="search_domains={{ xsce_domain }}"
+              dest=/etc/resolvconf.conf
+              insertafter="^name_servers.*"
+  when: named_enabled and is_debian
+
+- name: Now tell resolvconf to regenerate the resolv.conf file
+  command: /sbin/resolvconf -u
+  when: named_enabled and is_debian
 
 - name: Stop dansguardian
   service: name=dansguardian
