@@ -14,11 +14,12 @@
            state=started
   ignore_errors: True
   when: named_enabled
+  register: dns_started
 
-#- name: put resolv.conf in place now that nameserver is in place
-#  template: src=network/resolv.conf.j2
-#            dest=/etc/resolv.conf
-#  when: named_enabled
+- name: add a reference to name server in resolv.conf
+  lineinfile: line="Added by XSCE\nnameserver 127.0.0.1\nsearch {{xsce_domain}}"
+              dest=/etc/resolvconf/resolv.conf.d/head
+  when: named_enabled and is_debian and dns_started.changed
 
 - name: Stop dansguardian
   service: name=dansguardian

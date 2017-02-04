@@ -18,6 +18,10 @@
 - debug: var=discovered_wireless_iface
 - debug: var=gui_static_wan
 
+- name: Get the stock resolv.conf manager
+  package: name=resolvconf
+           state=present
+
 - name: default to lan controller
   set_fact:
       gui_desired_network_role: "lan_controller"
