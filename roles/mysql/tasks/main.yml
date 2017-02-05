@@ -43,7 +43,7 @@
         - download
 
     - include: fedora.yml
-      when: ansible_distribution == "Fedora"
+      when: ansible_distribution == "Fedora" or ansible_distribution == "OLPC"
       tags:
         - download
 

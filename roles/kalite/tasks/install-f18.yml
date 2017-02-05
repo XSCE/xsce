@@ -31,8 +31,8 @@
        dest={{ downloads_dir }}/ka-lite
        depth=1
        version="0.13.x"
-  ignore_errors: yes
-  when: not {{ use_cache }} and not {{ no_network }} and kalite.stat.exists is defined an not kalite.stat.exists
+#  ignore_errors: yes
+  when: not {{ use_cache }} and not {{ no_network }} and kalite.stat.exists is defined and not kalite.stat.exists
   tags:
     - download2
 

@@ -44,11 +44,13 @@
   copy: src='/usr/share/doc/{{ avahi_ver.stdout }}/ssh.service'
         dest='/etc/avahi/services/'
   when: avahi_ver.stdout != "" and not is_debian
+  ignore_errors: True
 
 - name: Grab a clean copy of ssh.service
   copy: src='/usr/share/doc/avahi-daemon/examples/ssh.service'
         dest='/etc/avahi/services/'
   when: is_debian
+  ignore_errors: True
 
 - name: set ssh port for avahi
   lineinfile: dest=/etc/avahi/services/ssh.service
@@ -56,6 +58,7 @@
               line='    <port>{{ssh_port}}</port>'
               state=present
               backrefs=yes
+  ignore_errors: True
 
 - name: Enable avahi service
   service: name=avahi-daemon
