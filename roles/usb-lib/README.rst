@@ -6,11 +6,12 @@ This role implements Library Box type functionality to mount and link content on
 
 Automount is handled by usbmount and scripts in this role look in the root of the mounted drive for
 
+* /usb
 * /share
 * /Share
 * /PirateShare
 
-and if found create a symlink of the form /library/content/USBn points to /media/usbn.
+and if found create a symlink of the form /library/www/html/local_content/USBn points to /media/usbn (the mount point for the external usb drive).
 
 There is also a patch for problems with automount on Fedora 21+
 
