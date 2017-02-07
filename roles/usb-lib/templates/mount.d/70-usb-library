@@ -9,7 +9,7 @@
 #
 # by Tim Moody tim@timmoody.com
 
-logger -p user.notice -t "70-usb-library" -- "Looking for /share or /Share or /Piratebox/Share on $UM_MOUNTPOINT."
+logger -p user.notice -t "70-usb-library" -- "Looking for /share, /Share, /Piratebox/Share, /USB, or /usb on $UM_MOUNTPOINT."
 
 VERBOSE=yes
 
@@ -25,17 +25,17 @@ fi
 if [ -d $UM_MOUNTPOINT/Piratebox/Share ]; then
   SHARE_DIR="$UM_MOUNTPOINT/Piratebox/Share"
 fi
-if [ -d $UM_MOUNTPOINT/usb ]; then
-  SHARE_DIR="$UM_MOUNTPOINT/usb"
-fi
 if [ -d $UM_MOUNTPOINT/USB ]; then
   SHARE_DIR="$UM_MOUNTPOINT/USB"
+fi
+if [ -d $UM_MOUNTPOINT/usb ]; then
+  SHARE_DIR="$UM_MOUNTPOINT/usb"
 fi
 
 if [ ! -z "$SHARE_DIR" ]; then
   logger -p user.notice -t "70-usb-library" -- "Found Share Directory $SHARE_DIR."
 else
-  logger -p user.notice -t "70-usb-library" -- "did not find /share, /Share, or /Piratebox/Share on USB"
+  logger -p user.notice -t "70-usb-library" -- "did not find /share, /Share, /Piratebox/Share, /USB, or /usb on USB"
 fi
   
 
