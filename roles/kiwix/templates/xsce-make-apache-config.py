@@ -24,7 +24,7 @@ def main ():
           if zimpos != -1:
 	     filename = filename[:zimpos]
           fp.write("ProxyPass /%s/ http://localhost:3000/%s/\n" % (filename,filename))
-          fp.write("ProxyPassReverse/%s/ http://localhost:3000/%s/\n" % (filename,filename))
+          fp.write("ProxyPassReverse /%s/ http://localhost:3000/%s/\n" % (filename,filename))
 
 
 
