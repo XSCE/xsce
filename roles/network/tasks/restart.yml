@@ -21,11 +21,6 @@
               dest=/etc/resolvconf/resolv.conf.d/head
   when: named_enabled and is_debian and dns_started.changed
 
-- name: add a reference search in resolv.conf
-  lineinfile: line="search {{ xsce_domain }}"
-              dest=/etc/resolvconf/resolv.conf.d/head
-  when: named_enabled and is_debian and dns_started.changed
-
 - name: Stop dansguardian
   service: name=dansguardian
            state=stopped
