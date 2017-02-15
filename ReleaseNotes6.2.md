@@ -1,4 +1,4 @@
-Release Notes for Release 6.2
+# Release Notes for Release 6.2
 **What's New?**
 * On the rpi2 and rpi3, XSCE now runs on the Raspbian operating system that has mainstream support from the Raspberry Pi Foundation. 
 * This release adds support for the Debian Operating system, often preferred in commercial hosting environments, for its stability, and long term support.
