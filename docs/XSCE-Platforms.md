@@ -3,12 +3,14 @@
 ## Operating Systems
 
 * CentOS 7 64 bit version
-* Fedora 22 and 23 (experimental) both 64 bit and 32 bit versions
+* Fedora 22 64 bit
 * Fedora 18 32 bit on XO laptops
+
+You should start with a **minimal** install of your chosen OS and read the partition scheme below.
 
 ## Hardware Platforms
 
-Theoretically the XSCE School Server should run on any machine that can run Centos 7 or Fedora 22 and 23.
+Theoretically the XSCE School Server should run on any machine that can run Centos 7 or Fedora 22.
 
 In practice, XSCE has been tested on the following platforms and configurations.
 
@@ -16,7 +18,7 @@ In practice, XSCE has been tested on the following platforms and configurations.
 
 Typically configured with 4 to 8 Gigabytes of RAM and 500G to 1TB of internal hard disk. Most models have a minimum of four USB ports and some have an internal wifi adapter.
 
-- Tested with Centos 7.1 and Fedora 22 and 23.
+- Tested with Centos 7.2 and Fedora 22.
 
 #### OLPC XO-1.5, XO-1.75, XO-4
 
@@ -37,6 +39,20 @@ Virtual machines with varying configurations, especially Centos 7 and Fedora, of
 #### Other Recent Intel Computers
 
 A number of users have successfully deployed XSCE on late model desktop and laptop computers.
+
+## Disk Partitioning
+
+For large disks we recommend the following partitions:
+
+* Use standard partitioning, not LVM.
+* /boot - 500M
+* swap - 2G
+* / - 50G
+* /library - the remainder
+
+For smaller disks and sd cards we recommend not creating a separate /library partition and reducing or eliminating swap.
+
+Please note that installers for Fedora often put the remaining disk space into /home.  You will need to remove this partition and create /library.  This can be done through the graphical installer that comes with Fedora.
 
 ## Network Adapters
 

@@ -3,6 +3,7 @@
 ## Quick Links
 
 * [Overview](#overview)
+* [Expert Mode](#expert-mode)
 * [Installing the Software](#installing-the-software)
     * [Do Everything from Scratch](#do-everything-from-scratch)
     * [Take a Short Cut](#take-a-short-cut)
@@ -28,12 +29,16 @@ Setting up a working XSCE School Server requires activities that may be grouped 
 * Configuring the Server - Enabling Services and Setting Parameters
 * Adding Content
 
+## Expert Mode
+
+This is for people who already know how to do everything in these instructions and enjoy doing them multiple times by missing the nuances that make this install different from things they have done before. If you are an expert, at least read about [PARTITIONING](https://github.com/XSCE/xsce/wiki/XSCE-Platforms#disk-partitioning) as many miss this part.  Reading about [networking](https://github.com/XSCE/xsce/wiki/XSCE-Networking-Overview) will probably come in handy as well.
+
 ## Installing the Software
 
 There are basically two ways to install the XSCE software:
 
-   1. Do everything from scratch.
-   2. Take a short cut by getting files from someone else who did everything from scratch or at least some of the steps.
+   1. Do everything from scratch. (Note that XSCE install on [raspbian]() is a combination of #1 and #2).
+   2. Take a short cut by getting files from someone else who did everything from scratch or at least some of the steps. 
 
       There are also tools to help you create short cut files for yourself or others.
 
@@ -48,25 +53,53 @@ be files available for every platform and every configuration and the files may 
 Here is the complete list of the steps required. Some may already be done.
 
    1. Assemble your hardware with your chosen amount of RAM, storage, and network devices.
-      See [XSCE Platforms](https://github.com/XSCE/xsce/wiki/XSCE-Platforms) and [XSCE Networking Overview](https://github.com/XSCE/xsce/wiki/XSCE-Networking-Overview).
-   1. Install Fedora or Centos on that hardware. We currently support Centos 7 and Fedora 22, along with Fedora 18 on XOs.
+      See [XSCE Platforms](https://github.com/XSCE/xsce/wiki/XSCE-Platforms#disk-partitioning) for the **partitioning scheme** and [XSCE Networking Overview](https://github.com/XSCE/xsce/wiki/XSCE-Networking-Overview).
+      
+      **Please note that the LVM will not work. You need to use the Standard partitioning scheme.** (See the reference above for partition details.)
+
+   1. Install Debian on that hardware using a **minimal** install. We currently support rpi2 and Debian 8.6, along with Fedora 18 on XOs.
    1. Log into the machine locally or via ssh.
    1. Verify your internet connection by typing:
 
        ping yahoo.com
-   1. Prepare for installation by typing the following commands:
+   
+   1. On Debian, everything from scratch involves a few simple steps:
 
-       yum -y update<BR>
-       yum -y install wget git ansible<BR>
-       cd /opt<BR>
-       mkdir -p schoolserver<BR>
-       cd schoolserver<BR>
-       git clone https://github.com/XSCE/xsce --branch stable --depth 1<BR>
-       cd xsce
+         apt-get -y update
+         apt-get -y upgrade
+         apt-get install -y git
+         mkdir -p /opt/schoolserver
+         cd /opt/schoolserver
+         git clone https://github.com/xsce/xsce --branch release-6.2 --depth 1
+         cd /opt/schoolserver/xsce
+         # install ansible
+         ./scripts/ansible
+         ./runansible
 
-   1. Run the installation by typing:
+      Or this can be automated via the following:
+   
+           apt-get install -y curl
+           curl http://xsce.org/downloads/xsce-release-6.2/nuc/debian-load.txt | sudo bash
+      
+   1. And on the Raspberry Pi, the "from scratch" process starts from an image provided by the Raspberrypi Foundation (see https://www.raspberrypi.org/downloads/raspbian/). Curl and git are both already in the image.
 
-      ./install-console
+        curl http://xsce.org/downloads/xsce-release-6.2/rpi/rpi-load.txt | sudo bash
+        
+
+       NOTE: After each of the above "curl <url>" commands, a reboot seems to be necessary before XSCE becomes functional. Browse to the above urls to inspect the automated steps of the installation process.
+
+       **Please note that if you need to reinstall and it has been some time since you cloned XSCE you should do the following:**
+
+          cd /opt/schoolser/xsce
+          git pull
+
+      Apt-get upgrade (on Debian or Raspbian) is also recommended<BR>
+
+      **Please note that if selinux was enabled it will be disabled and the server will reboot at the end of the install.  In that case the server may get a new ip address, usually one higher than the previous one. The server may also disconnect during the install in which case you will need to reconnect in order to continue.**
+
+      You can see the log of the last install by typing:
+
+      cat /opt/schoolserver/xsce/xsce-install.log
 
    1. Proceed to [Configuring the Server](#configuring-the-server).
 
@@ -78,6 +111,8 @@ In general the process of using one of these files is to download it to a separa
 
 You will need tools to decompress these files and write them to storage.  On Linux and MacOS these tools will already likely be there. On Windows you will need to download them.
 
+Each set of images linked below has its own ReadMe file.
+
 #### Tools
 
 * Linux or MacOS - dd, unzip, xz
@@ -85,95 +120,71 @@ You will need tools to decompress these files and write them to storage.  On Lin
 * Windows - download
     * Win32 Disk Imager from https://sourceforge.net/projects/win32diskimager/
     * 7Zip from http://www.7-zip.org/
+    * Optionally Filezilla from https://filezilla-project.org/
 
 Naturally, while the everything-from-scratch steps are generic and apply to any platform, short cuts are for a specific platform.
 
-Detailed instructions for specific platforms follow.
+Instructions for specific platforms follow.  Please also see the readme files accompanying each download.
 
 #### Raspberry Pi 2
 
-Images in various sizes and flavors can be downloaded from [link]
+The most recent image can be downloaded from http://xsce.org/downloads/xsce-release-6.2/rpi/.
 
-The original image, which was used as a basis for the XSCE install came from:
+There is also a README with instructions.
 
-   https://drive.google.com/folderview?id=0B_SJ4cta4MaYQjA0bjQ0RkF4ZG8&usp&tid=0B_SJ4cta4MaYflA3cVdHeUZjeFZyTHFBWmVlRWtvSHhpZGpod1dlU2phTzgwbzdDY2U3amc
-
-There is information for how to copy a downloaded image onto a SD card at::
+You can also have a look at
 
    https://www.raspberrypi.org/documentation/installation/installing-images/
 
 Please ignore everything down to **WRITING AN IMAGE TO THE SD CARD**
 
-#### OLPC XO 1.5, XO-1.75, or XO-4 laptop
+#### Intel-based NUC and Gigabyte Brix
 
-Images in various sizes and flavors can be downloaded from [link]
+Note that the most recent intel NUC has a soldered in wifi chip that only supports 12 clients. On the other hand the Gigabyte Brix has a wifi socket (factory loaded with an intel chip with the same limitations). But Atheros wifi cards, available for less than $10, are tested and are not similarly constrained.
 
-The instructions for writing the image to an sd card are the same a for a Raspberry Pi.
+1. A pre-built image that installs via clonezilla when booted on the target machine, downloadable at  http://xsce.org/downloads/xsce-release-6.2/nuc. 
 
-#### Intel-based NUC
+Note that these images will write two partitions to a USB stick.  The first partition contains the clonezilla tool, which uses the data from the second partition to initialize your hard disk
 
-Centos 7 and Fedora 22 images can be downloaded from [link].
-
-1. There are two types of images, a livecd type image that walks through install of Linux and also install the XSCE Server software.
-1. A prebuilt image that installs automatically when booted on the target machine.
-
-In both cases the image should be written to a USB thumb drive using the same software as for Raspberry Pi and OLPC XOs.
+The image should be written to a USB thumb drive using the same software as for Raspberry Pi and OLPC XOs.
 
 While these images have been developed on the Intel NUC (Next Unit of Computing), they may well work on other Intel machines.
 
-### Create Your Own Short Cut
+#### Installation on OLPC XO's is not currently supported on release-6.2, due to lack of time to test the following general strategy:
 
-#### Intel-based Machines
-
-You can create an iso file that will contain all the required rpms and other packages and will allow you to do a livecd type installation of XSCE.
-It will contain all of the steps in Do Everything from Scratch and be ready for Configuring the Server.
-
-The steps for doing this are detailed at https://github.com/XSCE/xsce/blob/master/installer/livecd.
-
-#### How To Install XSCE on an XO to Create Your Own Image
-
-* Flash the XO laptop with a stable image, currently 13.2.6.
-
+* Flash the XO laptop with a stable image, currently 13.2.8.
 * In ``My Settings->Power`` turn off Automatic Power Management
-
 * Connect all the network interfaces and reboot
-
 * Install git and ansible (for dependencies)::
 
-    su -
-    yum install -y wget git ansible
+         su -
+         git clone https://github.com/ansible/ansible --branch stable-2.2 --recursive
+         cd ansible
+         python setup.py install
 
-  **Note**: ansible version 1.4.1 or higher is required. Verify the version number with::
+  **Note**: ansible version 2.2 is required. Verify the version number with::
 
-    ansible --version
-
-  If the ansible version installed via yum is older than 1.4.1, install 1.4.1 from source::
-
-    cd ~/
-    git clone https://github.com/ansible/ansible.git
-    cd ansible
-    git checkout release1.4.1
-    python setup.py install
-
+         ansible --version
+ 
 * Clone the XSCE git repo and cd into it::
 
-    cd /opt
-    mkdir -p schoolserver
-    cd schoolserver
-    git clone --branch stable --depth 1 https://github.com/XSCE/xsce
-    cd xsce
+         cd /opt
+         mkdir -p schoolserver
+         cd schoolserver
+         git clone --branch release-6.2 --depth 1 https://github.com/XSCE/xsce
+         cd xsce
 
 * Verify all the network interfaces are visible and have the correct interface label::
 
-    ifconfig
+         ifconfig
 
 * Optionally, verify that all network interfaces are properly autodetected::
 
-    sh roles/common/library/xsce_facts
+         bash roles/common/library/xsce_facts
 
 * From the xsce directory, run initial setup.  The XO will automatically reboot upon completion::
 
-    ./install-console
+        ./runansible
 
 ## Configuring the Server
 
@@ -195,8 +206,9 @@ Once the password has been set you should start with the Configure menu item.  T
 
 1. Select each sub-menu item and enter any desired parameters.  **Help** is available for each screen and parameter.
 1. Click **Save Configuration**
-1. Click **Install Configured Options**
+1. Click **Install Configured Options** 
 1. Monitor the progress of the Configuration job in Utilities->Display Job Status.
+1. ***Note*** that after Display Job Status shows "Success", in may be necessary to reboot, to enable all the selected changes.
 
 This job can take a substantial amount of time depending on the capacity of the platform involved and how much of the software was included in the initial image.
 
@@ -206,9 +218,9 @@ At this point you are ready to proceed to [Adding Content](#adding-content)
 
 A user can select one of three server roles:
 
-   * Lan-Controller (Local Area Network) - In this mode, the server configures clients with ip addresses (dhcpd - dynamic host configuration protocol), name resolution (defines schoolserver for all clients)
-   * Gateway -- does dhcpd (ip addresses),name lookup (dns), firewall, local web page cache for faster retrieval the second time, content filtering to block porn(dansguardian), site "whitelists" if wanted
-   * Appliance -- no firewall, no dhpcd, no dns, just a contributor to an already existing network
+   * **Lan-Controller** (Local Area Network) - In this mode, the server configures clients with ip addresses (dhcpd - dynamic host configuration protocol), name resolution (defines schoolserver for all clients)
+   * **Gateway** -- does dhcpd (ip addresses),name lookup (dns), firewall, local web page cache for faster retrieval the second time, content filtering to block porn(dansguardian), site "whitelists" if wanted
+   * **Appliance** -- no firewall, no dhpcd, no dns, just a contributor to an already existing network
 
 Based upon selection of the above mode in the Administrative Console, XSCE software will attempt to set up network connections. If appliance mode is wanted, the network adapter will be set up. If Gateway is selected, and one of the adapters discovers that it is connected to a source of ip addresses, that adapter will be the internet, and the other the wifi connector. If LanController is selected, any adapter found will be act as server to any clients that might ask to connect.
 
@@ -268,12 +280,13 @@ The openstreetmap directory is structured by zoom levels from level 0 to 15.  Yo
 
 #### Other Content
 
-Content such as pdfs, doc files, videos, images, and html can be copied to /library/content and it will appear under the web server link /other where the user can browse to any content that is there.
+Content such as pdfs, doc files, videos, images, and html can be copied to /library/www/html/local_content and it will appear under the web server link /usb where the user can browse to any content that is there.
 
 Similarly, any such content put onto a USB stick in a directory
 
+* /usb
 * /share
 * /Share
-* /PirateShare
+* /Pirateshare/Share
 
-will appear under the /content URL when it is plugged into a USB port on the server.  See https://github.com/XSCE/xsce/tree/master/roles/usb-lib for more details.
+will appear under the /usb URL when it is plugged into a USB port on the server.  See the [schoolserver FAQ -- Can teachers display their own content?](http://wiki.laptop.org/go/XS_Community_Edition/FAQ#Can_teachers_display_their_own_content.3F) for additional information. 
