@@ -1,4 +1,5 @@
 is_debian: false
+is_debuntu: false
 is_centos: false
 dns_service: named
 dns_user: named

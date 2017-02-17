@@ -108,6 +108,22 @@
   service: name={{ apache_service }}
            enabled=yes
 
+- name: Create iiab-info directory
+  file: path={{ doc_root }}/iiab-info
+        mode=0755
+        owner={{ apache_data }}
+        group={{ apache_data }}
+        state=directory
+
+- name: create a config file for iiab-info
+  template: src=iiab-info.conf.j2
+            dest=/etc/{{ apache_config_dir }}/
+
+- name: enable it in debian
+  file: src=/etc/{{ apache_config_dir }}/iiab-info.conf
+        dest=/etc/apache2/sites-enabled/iiab-info.conf
+  when: is_debuntu
+
 - include: html.yml
   tags:
     - base

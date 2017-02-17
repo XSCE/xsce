@@ -52,6 +52,15 @@
   with_fileglob:
         - html/menu-defs/*
 
+- name: Copy iiab wiki pages into documentroot
+  copy: src={{ item }}
+        dest={{ doc_root }}/iiab-info
+        mode=0644
+        owner=root
+        group=root
+  with_fileglob:
+        - "{{ xsce_dir }}/roles/docs/html/*"
+
 - name: Create symlink from assets to xsce.ini
   file: src=/etc/xsce/xsce.ini
         dest={{ doc_root }}/common/assets/xsce.ini
