@@ -50,5 +50,4 @@ Utilities
 * Display System Memory
 * Display System Storage
 * Perform Internet Speed Test
-* Run Ansible by Tag
-* Troubleshoot Networking
+
