@@ -33,5 +33,5 @@ for f in `ls $SCRIPTDIR/../docs`; do
     FTRIMMED=${f%.md}
     pandoc -s $SCRIPTDIR/../docs/$f -o $SCRIPTDIR/../docs/html/$FTRIMMED.html
     # make links refer to local directory
-    sed -i -e "s|$REPO/$REPONAME/wiki/\(.*\)>|./\1.html)|" $SCRIPTDIR/../docs/html/$FTRIMMED.html
+    sed -i -e "s|$REPO/$REPONAME/wiki/\(.*\)\">|./\1.html\">)|" $SCRIPTDIR/../docs/html/$FTRIMMED.html
 done
