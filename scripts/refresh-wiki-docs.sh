@@ -22,7 +22,7 @@ rsync -v /tmp/$WIKI/* $SCRIPTDIR/../docs
 # convert the markdown docs to html
 which pandoc
 if [ $? -ne 0 ]; then
-   if [ "$OS" = "centos" ] || [ "$OS" = "fedora" ]; then
+   if [ "$OS" = "CentOS" ] || [ "$OS" = "Fedora" ]; then
       yum install -y pandoc
    else
       apt-get install -y pandoc

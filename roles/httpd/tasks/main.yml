@@ -117,7 +117,7 @@
 
 - name: create a config file for iiab-info
   template: src=iiab-info.conf.j2
-            dest=/etc/{{ apache_config_dir }}/
+            dest=/etc/{{ apache_config_dir }}/iiab-info.conf
 
 - name: enable it in debian
   file: src=/etc/{{ apache_config_dir }}/iiab-info.conf
