@@ -43,15 +43,6 @@
   with_fileglob:
         - html/assets/*
 
-- name: Copy menu-def files
-  copy: src={{ item }}
-        dest={{ doc_root }}/common/menu-defs
-        mode=0644
-        owner=root
-        group=root
-  with_fileglob:
-        - html/menu-defs/*
-
 - name: Create symlink from assets to xsce.ini
   file: src=/etc/xsce/xsce.ini
         dest={{ doc_root }}/common/assets/xsce.ini

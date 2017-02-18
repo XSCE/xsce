@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h1 id="xsce-school-server-platforms">XSCE School Server Platforms</h1>
+<h2 id="operating-systems">Operating Systems</h2>
+<ul>
+<li>CentOS 7 64 bit version</li>
+<li>Fedora 22 64 bit</li>
+<li>Fedora 18 32 bit on XO laptops</li>
+</ul>
+<p>You should start with a <strong>minimal</strong> install of your chosen OS and read the partition scheme below.</p>
+<h2 id="hardware-platforms">Hardware Platforms</h2>
+<p>Theoretically the XSCE School Server should run on any machine that can run Centos 7 or Fedora 22.</p>
+<p>In practice, XSCE has been tested on the following platforms and configurations.</p>
+<h4 id="nuc---intels-next-unit-of-computing">NUC - Intel's Next Unit of Computing</h4>
+<p>Typically configured with 4 to 8 Gigabytes of RAM and 500G to 1TB of internal hard disk. Most models have a minimum of four USB ports and some have an internal wifi adapter.</p>
+<ul>
+<li>Tested with Centos 7.2 and Fedora 22.</li>
+</ul>
+<h4 id="olpc-xo-1.5-xo-1.75-xo-4">OLPC XO-1.5, XO-1.75, XO-4</h4>
+<p>OLPC laptop with an external SD card of 32, 64, or 128 Gigabyte capacity and a subset of the content found on machines with more storage or with an external hard drive.</p>
+<ul>
+<li>Only Fedora 18 available.</li>
+</ul>
+<h4 id="raspberry-pi-2">Raspberry Pi 2</h4>
+<p>1 Gigabyte of RAM with an external micro SD card of 32, 64, or 128 Gigabyte capacity. Four USB ports allow the addition of ethernet dongles, a wifi adapter, and possibly additional storage.</p>
+<ul>
+<li>Tested with Fedora 22.</li>
+</ul>
+<h4 id="vbox-vm">VBox VM</h4>
+<p>Virtual machines with varying configurations, especially Centos 7 and Fedora, often used for testing or proof of concept.</p>
+<h4 id="other-recent-intel-computers">Other Recent Intel Computers</h4>
+<p>A number of users have successfully deployed XSCE on late model desktop and laptop computers.</p>
+<h2 id="disk-partitioning">Disk Partitioning</h2>
+<p>For large disks we recommend the following partitions:</p>
+<ul>
+<li>Use standard partitioning, not LVM.</li>
+<li>/boot - 500M</li>
+<li>swap - 2G</li>
+<li>/ - 50G</li>
+<li>/library - the remainder</li>
+</ul>
+<p>For smaller disks and sd cards we recommend not creating a separate /library partition and reducing or eliminating swap.</p>
+<p>Please note that installers for Fedora often put the remaining disk space into /home. You will need to remove this partition and create /library. This can be done through the graphical installer that comes with Fedora.</p>
+<h2 id="network-adapters">Network Adapters</h2>
+<p>Each of the above devices may have one or more network adapters. These may be internal ethernet, internal or external wifi, or ethernet dongles. The role the server is able to play in the network will depend on what adapters and connections it has.</p>
+<h4 id="sample-gateway-configurations">Sample Gateway Configurations</h4>
+<ul>
+<li>WAN on internal WiFi and LAN on internal Ethernet</li>
+<li>WAN on internal Ethernet and LAN on internal or external WiFi as Access Point</li>
+<li>WAN on Ethernet dongle and LAN on internal Ethernet with optional bridged internal/external WiFi as Access Point</li>
+</ul>
+<h4 id="sample-appliance-configurations">Sample Appliance Configurations</h4>
+<ul>
+<li>Internal WiFi connected to an existing LAN</li>
+<li>Internal Ethernet connected to an existing LAN</li>
+<li>Ethernet dongle connected to an existing LAN</li>
+</ul>
+</body>
+</html>

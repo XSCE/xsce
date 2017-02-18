@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h1 id="installing-the-xsce-school-server">Installing the XSCE School Server</h1>
+<h2 id="quick-links">Quick Links</h2>
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#expert-mode">Expert Mode</a></li>
+<li><a href="#installing-the-software">Installing the Software</a>
+<ul>
+<li><a href="#do-everything-from-scratch">Do Everything from Scratch</a></li>
+<li><a href="#take-a-short-cut">Take a Short Cut</a></li>
+</ul></li>
+<li><a href="#configuring-the-server">Configuring the Server</a>
+<ul>
+<li><a href="#server-security">Server Security</a></li>
+<li><a href="#configure-menu">Configure Menu</a></li>
+<li><a href="#supported-network-modes">Supported Network Modes</a></li>
+<li><a href="#enable-services">Enable Services</a></li>
+</ul></li>
+<li><a href="#adding-content">Adding Content</a>
+<ul>
+<li><a href="#zim-files">ZIM Files</a></li>
+<li><a href="#rachel">RACHEL</a></li>
+<li><a href="#khan-academy-lite">Khan Academy Lite</a></li>
+<li><a href="#copy-ka-lite-videos">Copy KA Lite Videos Manually</a></li>
+<li><a href="#openstreetmap">OpenStreetMap</a></li>
+<li><a href="#local-content">Local Content</a></li>
+<li><a href="#external-usbdrive-content">External USB/Drive Content</a></li>
+</ul></li>
+</ul>
+<h2 id="overview">Overview</h2>
+<p>Setting up a working XSCE School Server requires activities that may be grouped roughly into three areas:</p>
+<ul>
+<li>Installing the Software</li>
+<li>Configuring the Server - Enabling Services and Setting Parameters</li>
+<li>Adding Content</li>
+</ul>
+<h2 id="expert-mode">Expert Mode</h2>
+<p>This is for people who already know how to do everything in these instructions and enjoy doing them multiple times by missing the nuances that make this install different from things they have done before. <u>If you are an expert, at least read about <a href="./XSCE-Platforms#disk-partitioning">PARTITIONING</a> as many miss this part.</u> Reading about <a href="https://github.com/XSCE/xsce/wiki/XSCE-Networking-Overview.html">networking</a> will probably come in handy as well.</p>
+<h2 id="installing-the-software">Installing the Software</h2>
+<p>There are basically two ways to install the XSCE software:</p>
+<ol style="list-style-type: decimal">
+<li>Do everything from scratch. (Note that XSCE install on <a href="https://www.raspberrypi.org/downloads/raspbian/">Raspbian</a> is a combination of #1 and #2)</li>
+<li><p>Take a short cut by getting files from someone else who did everything from scratch or at least some of the steps.</p>
+<p>There are also tools to help you create short cut files for yourself or others.</p></li>
+</ol>
+<p>The <strong>advantage</strong> of doing everything from scratch is that you will get exactly what you want and you will get the latest version of the software. The <strong>disadvantage</strong> is that it is more work.</p>
+<p>The <strong>advantage</strong> of a short cut is that it will usually take less time and effort. The <strong>disadvantage</strong> is that there may not be files available for every platform and every configuration and the files may be out of date.</p>
+<h3 id="do-everything-from-scratch">Do Everything from Scratch</h3>
+<p>Here is the complete list of the steps required. Some may already be done.</p>
+<ol style="list-style-type: decimal">
+<li><p>Assemble your hardware with your chosen amount of RAM, storage, and network devices. See <a href="./XSCE-Platforms#disk-partitioning">XSCE Platforms</a> for the <strong>partitioning scheme</strong> and <a href="https://github.com/XSCE/xsce/wiki/XSCE-Networking-Overview.html">XSCE Networking Overview</a>.</p>
+<p><strong>Please note that the LVM will not work. You need to use the Standard partitioning scheme.</strong> (See the reference above for partition details.)</p></li>
+<li>Install Debian on that hardware using a <strong>minimal</strong> install. We currently support Raspbian Pixel (on RPi3) and Debian Jessie (8.6+ and 8.7.1+) along with Fedora 18 on XO laptops.</li>
+<li>Log into the machine locally or via ssh.</li>
+<li><p>Verify your internet connection by typing:</p>
+<p>ping yahoo.com</p></li>
+<li><p>On Debian, everything from scratch involves a few simple steps:</p>
+<pre><code> apt-get -y update
+ apt-get -y upgrade
+ apt-get install -y git
+ mkdir -p /opt/schoolserver
+ cd /opt/schoolserver
+ git clone https://github.com/xsce/xsce --branch release-6.2 --depth 1
+ cd /opt/schoolserver/xsce
+ # install ansible
+ ./scripts/ansible
+ ./runansible</code></pre>
+<p>Or this can be automated via the following:</p>
+<pre><code>   apt-get install -y curl
+   curl http://xsce.org/downloads/xsce-release-6.2/nuc/debian-load.txt | sudo bash</code></pre></li>
+<li><p>And on the Raspberry Pi, the &quot;from scratch&quot; process starts from an image provided by the Raspberry Pi Foundation (see https://www.raspberrypi.org/downloads/raspbian/). Curl and git are both already in the image.</p>
+<pre><code>curl http://xsce.org/downloads/xsce-release-6.2/rpi/rpi-load.txt | sudo bash</code></pre>
+<p>NOTE: After each of the above &quot;curl <url>&quot; commands, a reboot seems to be necessary before XSCE becomes functional. Browse to the above urls to inspect the automated steps of the installation process.</p>
+<p><strong>Please note that if you need to reinstall and it has been some time since you cloned XSCE you should do the following:</strong></p>
+<pre><code>  cd /opt/schoolserver/xsce
+  git pull</code></pre>
+<p><code>apt-get update</code> followed by <code>apt-get upgrade</code> (on Debian or Raspbian) is also recommended.<BR></p>
+<p><strong>Please note that if SELinux was enabled it will be disabled and the server will reboot at the end of the install. In that case the server may get a new IP address, usually one higher than the previous one. The server may also disconnect during the install in which case you will need to reconnect in order to continue.</strong></p>
+<p>You can see the log of the last install by typing:</p>
+<p>cat /opt/schoolserver/xsce/xsce-install.log</p></li>
+<li><p>Proceed to <a href="#configuring-the-server">Configuring the Server</a>.</p></li>
+</ol>
+<h3 id="take-a-short-cut">Take a Short Cut</h3>
+<p>There is a growing list of downloadable files that have everything from the steps listed above to a particular configuration and even content.</p>
+<p>In general the process of using one of these files is to download it to a separate computer and then write it to storage media for the target machine. What happens next depends on the specific file downloaded.</p>
+<p>You will need tools to decompress these files and write them to storage. On Linux and MacOS these tools will already likely be there. On Windows you will need to download them.</p>
+<p>Each set of images linked below has its own README file.</p>
+<h4 id="tools">Tools</h4>
+<ul>
+<li><p>Linux or MacOS - dd, unzip, xz</p></li>
+<li>Windows - download
+<ul>
+<li>Win32 Disk Imager from https://sourceforge.net/projects/win32diskimager/</li>
+<li>7Zip from http://www.7-zip.org/</li>
+<li>Optionally Filezilla from https://filezilla-project.org/</li>
+</ul></li>
+</ul>
+<p>Naturally, while the everything-from-scratch steps are generic and apply to any platform, short cuts are for a specific platform.</p>
+<p>Instructions for specific platforms follow. Please also see the README files accompanying each download.</p>
+<h4 id="raspberry-pi-3">Raspberry Pi 3</h4>
+<p>Raspberry Pi 2 should also work, but is slower, and lacks internal Wi-Fi.</p>
+<p>The most recent images (based on Raspian Pixel Lite, or the full Raspbian Pixel including X Windows and desktop apps) can be downloaded from http://xsce.org/downloads/xsce-release-6.2/rpi/.</p>
+<p>There is also a README with instructions.</p>
+<p>You can also have a look at:</p>
+<p>https://www.raspberrypi.org/documentation/installation/installing-images/</p>
+<p>Please ignore everything down to <strong>WRITING AN IMAGE TO THE SD CARD</strong> (we support Raspbian but not NOOBS!)</p>
+<h4 id="intel-based-nuc-and-gigabyte-brix">Intel-based NUC and Gigabyte BRIX</h4>
+<p>Note that most Intel Mini PC's shipping since since 2015, including the 5th and 6th generation Intel NUC's (Next Unit of Computing) have a soldered-in Wi-Fi chip limited to 12 clients maximum. Its competitor the Gigabyte BRIX suffers from the same limitation out of the box (factory units arrive with an Intel Wi-Fi module) but thankfully this Wi-Fi module is removable. Specifically, the Gigabyte BRIX's Wi-Fi socket has been tested to accept less-constrained Wi-Fi cards, such as Atheros modules available for less than $10.</p>
+<p>Consider a pre-built image that installs via Clonezilla when booted on the target machine, downloadable from <a href="http://xsce.org/downloads/xsce-release-6.2/nuc">http://xsce.org/downloads/xsce-release-6.2/nuc</a>.</p>
+<p>The image (ending in .img) should be written to a USB stick using the same software as for Raspberry Pi and OLPC XO laptops.</p>
+<p>Note that these images will write two partitions to a USB stick (thumb drive). The first partition contains the Clonezilla tool, which uses the data from the second partition to initialize your hard disk.</p>
+<p>Finally, while these images have been developed on the Intel NUC, they may well work on other Intel machines too (do let us know!)</p>
+<h4 id="installation-on-olpc-xo-laptops-is-not-currently-supported-on-release-6.2-due-to-lack-of-time-to-test-the-following-general-strategy">Installation on OLPC XO laptops is not currently supported on release-6.2, due to lack of time to test the following general strategy:</h4>
+<ul>
+<li>Install <a href="http://wiki.laptop.org/go/Release_notes/13.2.8">OLPC OS 13.2.8</a> or similar onto the XO laptop</li>
+<li>In <code>My Settings-&gt;Power</code> turn off Automatic Power Management</li>
+<li>Connect all the network interfaces and reboot</li>
+<li><p>Install git and Ansible: (for dependencies)</p>
+<pre><code> su -
+ git clone https://github.com/ansible/ansible --branch stable-2.2 --recursive
+ cd ansible
+ python setup.py install</code></pre></li>
+</ul>
+<p><strong>Note</strong>: Ansible version 2.2 is required, but avoid version 2.2.1.0 which has issues. Version 2.2.0.0 is known to work! Verify the version number with:</p>
+<pre><code>     ansible --version</code></pre>
+<ul>
+<li><p>Clone the XSCE git repo and cd into it:</p>
+<pre><code> cd /opt
+ mkdir -p schoolserver
+ cd schoolserver
+ git clone --branch release-6.2 --depth 1 https://github.com/XSCE/xsce
+ cd xsce</code></pre></li>
+<li><p>Verify all the network interfaces are visible and have the correct interface label:</p>
+<pre><code> ip addr                (similar to legacy command &quot;ifconfig&quot;)</code></pre></li>
+<li><p>Optionally, verify that all network interfaces are properly autodetected:</p>
+<pre><code> bash roles/common/library/xsce_facts</code></pre></li>
+<li><p>From the xsce directory, run initial setup. The XO will automatically reboot early in the install and must be restarted ./runansible to complete the install process (increases size of /tmp so installs will complete successfully):</p>
+<pre><code>./runansible</code></pre></li>
+</ul>
+<h2 id="configuring-the-server">Configuring the Server</h2>
+<p>At this point should should be able to connect to <a href="http://box">http://box</a> from a browser. In certain cases http://box.lan, http://schoolserver.lan or http://172.18.96.1 are instead necessary.</p>
+<p>To begin configuring the server connect to its Admin Console at http://box/admin (username: xsce-admin password: g0adm1n -- note the numbers 0,1).</p>
+<p>This permits selection of options, services, languages, etc to permit additional services, and educational resources to be enabled and selected for download.</p>
+<p>Please click on the <strong>Help</strong> link to get detailed information on configuration options.</p>
+<h3 id="server-security">Server Security</h3>
+<p>The first time you sign into the Admin Console would be the best time to change the password. Select the Utilities menu option and the first item, change password. Fill in the form and click Change Password.</p>
+<h3 id="configure-menu">Configure Menu</h3>
+<p>Once the password has been set you should start with the Configure menu item. The overall process is:</p>
+<ol style="list-style-type: decimal">
+<li>Select each sub-menu item and enter any desired parameters. <strong>Help</strong> is available for each screen and parameter.</li>
+<li>Click <strong>Save Configuration</strong></li>
+<li>Click <strong>Install Configured Options</strong></li>
+<li>Monitor the progress of the Configuration job in Utilities-&gt;Display Job Status.</li>
+<li><strong><em>Note</em></strong> that after Display Job Status shows &quot;Success&quot;, it may be necessary to reboot, to enable all the selected changes.</li>
+</ol>
+<p>This job can take a substantial amount of time depending on the capacity of the platform involved and how much of the software was included in the initial image.</p>
+<p>At this point you are ready to proceed to <a href="#adding-content">Adding Content</a>.</p>
+<h3 id="supported-network-modes">Supported Network Modes</h3>
+<p>A user can select one of three server roles:</p>
+<ul>
+<li><strong>Lan-Controller</strong> (Local Area Network) - In this mode, the server configures clients with ip addresses (dhcpd - dynamic host configuration protocol), name resolution (defines &quot;box&quot; and &quot;schoolserver&quot; for all clients)</li>
+<li><strong>Gateway</strong> -- does dhcpd (ip addresses),name lookup (dns), firewall, local web page cache for faster retrieval the second time, content filtering to reduce porn(dansguardian), site &quot;whitelists&quot; if wanted</li>
+<li><strong>Appliance</strong> -- no firewall, no dhpcd, no dns, just a contributor to an already existing network</li>
+</ul>
+<p>Based upon selection of the above mode in the Administrative Console, XSCE software will attempt to set up network connections. If appliance mode is wanted, the network adapter will be set up. If Gateway is selected, and one of the adapters discovers that it is connected to a source of IP addresses, that adapter will be the internet, and the other the Wi-Fi connector. If LanController is selected, any adapter found will be act as server to any clients that might ask to connect.</p>
+<p>The XSCE installation attempts to determine the network topology based on the number and types of connections it discovers. In general, it looks to see if there is a connection to a gateway and whether other wireless or wired connections are present.</p>
+<h3 id="enable-services">Enable Services</h3>
+<p>Services on the XSCE School Server can be enable by checking a box in the Configure-&gt;Enable Services menu item.</p>
+<h2 id="adding-content">Adding Content</h2>
+<p>As of release 6.0 some, but not all, content can be added through the Admin Console (http://box.lan/admin). <strong>Warning:</strong> some of this content is quite large and you should pay attention to the space available and space required displayed on each screen. You should also note that these space calculations may not reflect multiple types downloads happening simultaneously.</p>
+<p>The following can be added using the Admin Console:</p>
+<h3 id="add-with-admin-console">Add with Admin Console</h3>
+<p>Login to http://box/admin and take the Install Content menu item and view relevant <strong>Help</strong>.</p>
+<h4 id="zim-files">ZIM Files</h4>
+<p>ZIM's are compressed and indexed files prepared by http://kiwix.org. They include Wikipedia, Wiktionary, TED Talks, and other reference and educational materials in multiple languages.</p>
+<p>Take the Install Content-&gt;Get Zim Files from Kiwix menu option and select content by language. Click <strong>Install Selected Zims</strong> to download, unzip, and move to the proper directory on the server.</p>
+<p>Monitor the progress of the download in Utilities-&gt;Display Job Status.</p>
+<p>When you have finished installing ZIM's, click Install Content-&gt;<strong>Restart Kiwix Server</strong> so that it picks up the new ZIM's.</p>
+<h4 id="rachel">RACHEL</h4>
+<p>As of release 6.0 a single set of <a href="http://dev.worldpossible.org/cgi/rachelmods.pl">RACHEL modules</a> can be downloaded, unzipped, and moved to the proper directory by taking the Install Content-&gt;Get RACHEL menu option.</p>
+<p>You can monitor the progress with Utilities-&gt;Display Job Status.</p>
+<h4 id="khan-academy-lite">Khan Academy Lite</h4>
+<p>Take Install Content-&gt;Download Khan Academy Videos to launch KA Lite which has an administrative user interface to help with getting videos in various languages. Username/password defaults to Admin/changeme on installation at <a href="http://box:8008">http://box:8008</a> or <a href="http://box.lan:8008">http://box.lan:8008</a></p>
+<h3 id="add-content-manually">Add Content Manually</h3>
+<h4 id="copy-ka-lite-videos">Copy KA Lite Videos</h4>
+<p>If KA Lite videos have been obtained from another install or on some storage medium they can be copied directly to KA Lite without going through the admin interface.</p>
+<ol style="list-style-type: decimal">
+<li>Copy to /library/ka-lite/content/</li>
+<li>Issue the command <code>systemctl restart kalite-serve</code> to restart the server</li>
+</ol>
+<h4 id="openstreetmap">OpenStreetMap</h4>
+<p>OSM is part of the Internet in a Box set of content. To include it copy the following directories:</p>
+<ul>
+<li>geonames_index to /library/knowledge/modules/geonames_index</li>
+<li>openstreetmap to /library/knowledge/modules/openstreetmap</li>
+</ul>
+<p>The openstreetmap directory is structured by zoom levels from level 0 to 15. You can reduce the space requirements by only copying up to level 10 or some other level less than 15.</p>
+<h4 id="local-content">Local Content</h4>
+<p>Schools/Clinics often have custom learning materials they want &quot;permanently&quot; shared with everyone on site. Such PDF's, DOC files, videos, images, audio recordings and HTML (etc!) can be copied to <code>/library/www/html/local_content</code> so that users can browse it, with a URL like <a href="http://box/usb">http://box/usb</a> or <a href="http://box.lan/usb">http://box.lan/usb</a></p>
+<h4 id="external-usbdrive-content">External USB/Drive Content</h4>
+<p>For spontaneous (ad hoc) access to materials, teacher content (handouts, lessons, etc) can also be placed on a USB stick or drive, within a folder named:</p>
+<ul>
+<li>usb</li>
+</ul>
+<p>...which will appear under a URL like <a href="http://box/usb">http://box/usb</a> or <a href="http://box.lan/usb">http://box.lan/usb</a> when teachers' sticks/drives are plugged into the server's USB ports.</p>
+<p>Bonus: after the lesson, teachers should feel free to remove their USB sticks/drives without warning, as the system tries to unmount USB sticks/drives automagically.</p>
+<p>For legacy support of the LibraryBox and PirateBox communities, teachers may also place content in these folder names on their USB sticks/drives:</p>
+<ul>
+<li>share</li>
+<li>Share</li>
+<li>Pirateshare/Share</li>
+</ul>
+<p>See &quot;<a href="http://wiki.laptop.org/go/XS_Community_Edition/FAQ#Can_teachers_display_their_own_content.3F">Can teachers display their own content?</a>&quot; within the <a href="http://schoolserver.org/FAQ">Schoolserver FAQ</a> for more information.</p>
+</body>
+</html>
