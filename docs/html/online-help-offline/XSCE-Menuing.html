@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h2 id="overview">Overview</h2>
+<p>XSCE has several different approaches to the home page or portal:</p>
+<ul>
+<li><p>/xs-portal is intended to support multiple languages via a top menu and uses php to determine which content is available. It was the first portal developed and has not had changes for some time.</p></li>
+<li><p>/home/index.html is new with Release 6.1 and dynamically generates a menu based on an array of menu items (see below) using javascript.</p></li>
+<li><p>/wordpress - if installed and enabled WordPress can be used as the home page.</p></li>
+<li><p>/wiki - if installed and enabled a wiki, currently Dokuwiki, can be used as the home page.</p></li>
+</ul>
+<p>Any one of these can be selected using the Admin Console option Configure-&gt;Server Portal.</p>
+<h2 id="homeindex.html">/home/index.html</h2>
+<p>The menu is determined by an array at the top of index.html, which is expected to be /home/index.html, but can be anywhere and can be named anything (e.g. /test/medlib.html).</p>
+<p>Any html files in the git repo in xsce-home will be copied to /home as samples and index-dynamic.html will be copied to /home/index.html if it doesn't exist.</p>
+<h2 id="menu-definitions">Menu Definitions</h2>
+<p>A menu item definition consists of a json and an optional html fragment file, which more or less follow the RACHEL conventions on naming modules:</p>
+<p>&lt;2 char lang code of menu item (may be different from content)&gt;-&lt;generic zim or module name which may have inherent language embedded in it; must separate parts with underscores&gt;.json</p>
+<p>e.g. kn-wikipedia_kn_medicine.json is a menu item for the Kannada medical wiki where the title and description are (theoretically) in Kannada, whereas en-wikipedia_kn_medicine.json would be an English menu item for the Kannada medical wiki. In the future we may have a cms that allows these to be selected visually and edited, but for now the easiest method is to browse index-dynamic.html and get the name from the generated html. <strong>More or less all names are in index-dynamic.html .</strong></p>
+<p>There is also a menu-def json file named _menudef-template.json which has the various fields with comments.</p>
+<p>These files are in <strong>/var/www/html/common/menu-defs</strong></p>
+<p>Editing these definitions is problematic in that a git pull will currently wipe out changes (this is not an easy problem as we have no idea how to merge possible changes from developers with possible changes from users). So the best course for an end user is to copy the menu def you want and put a unique prefix on the name, e.g. my-kn-wikipedia_kn_medicine.json or create an entirely new name not already taken, my-cool-mod.json and then edit it.</p>
+<h2 id="html-fragments">Html Fragments</h2>
+<p>The html fragments are mostly extracted from RACHEL and are all &lt;ul&gt;&lt;/ul&gt; structures, but they can be created manually as long as they don't break ajax. The php href code was replaced with ##HREF-BASE## when the file was extracted from rachel-index.php and is dynamically rewritten with the appropriate href at run time.</p>
+<h2 id="menu-definition-template">Menu Definition Template</h2>
+<p>Here is the template as of this writing:</p>
+<pre><code>{
+&quot;intended_use&quot;:&quot;&quot;, //must be one of zim, html, osm, kalite
+&quot;lang&quot; : &quot;en&quot;, // 2 or 3 char code of language of content; may be different from menu item
+&quot;logo_url&quot; : &quot;&quot;, // assumed to be relative to /common/images
+&quot;menu_item_name&quot; : &quot;&quot;, // must be the name of this file (without .json); is the unique, logical name of this menu item, e.g. en-wikipedia_ar_all, ar-osm, en-hesperian
+&quot;moddir&quot; : &quot;&quot;, // for html modules is the directory under /modules
+&quot;start_url&quot; : &quot;&quot; // optional suffix to base href without leading slash
+&quot;zim_name&quot; : &quot;&quot;, // generic zim name with out YYYY-MM version suffix
+&quot;title&quot; : &quot;&quot;, // localized title for link
+&quot;description&quot;:&quot;&quot;, // expanded text for link
+&quot;extra_html&quot;:&quot;&lt;menu_item_name&gt;.html&quot;, // optional free form html for submenu or other use
+                                 // be careful of embedded quotes, brackets or other characters that will break json
+&quot;apk_file&quot;:&quot;&lt;apk file without full path&gt;&quot; // optional
+}</code></pre>
+</body>
+</html>

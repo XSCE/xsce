@@ -1,0 +1,585 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Style-Type" content="text/css" />
+		<meta name="generator" content="MediaWiki 1.15.2" />
+		<meta name="keywords" content="XS Community Edition/FAQ,XS Community Edition,13.2.7,School Server,XS Community Edition/0.4/Testing,XS Community Edition/6.0,XS Community Edition/6.0/Tony&#039;s install recipe,XS Community Edition/6.2,XS Community Edition/7.0/Sprint,XS Community Edition/Features,XS Community Edition/Features/Startup sound" />
+		<link rel="shortcut icon" href="/xo-favicon.png" />
+		<link rel="search" type="application/opensearchdescription+xml" href="/opensearch_desc.php" title="OLPC (en)" />
+		<link rel="copyright" href="http://wiki.laptop.org/go/OLPC:License" />
+		<link rel="alternate" type="application/rss+xml" title="OLPC RSS Feed" href="/index.php?title=Special:RecentChanges&amp;feed=rss" />
+		<link rel="alternate" type="application/atom+xml" title="OLPC Atom Feed" href="/index.php?title=Special:RecentChanges&amp;feed=atom" />
+		<title>XS Community Edition/FAQ - OLPC</title>
+		<style type="text/css" media="screen,projection">/*<![CDATA[*/ @import "/skins/shikiwiki/main.css?9"; /*]]>*/</style>
+		<link rel="stylesheet" type="text/css" media="print" href="/skins/common/commonPrint.css" />
+		<!--[if lt IE 5.5000]><style type="text/css">@import "/skins/shikiwiki/IE50Fixes.css";</style><![endif]-->
+		<!--[if IE 5.5000]><style type="text/css">@import "/skins/shikiwiki/IE55Fixes.css";</style><![endif]-->
+		<!--[if IE 6]><style type="text/css">@import "/skins/shikiwiki/IE60Fixes.css";</style><![endif]-->
+		<!--[if IE 7]><style type="text/css">@import "/skins/shikiwiki/IE70Fixes.css?1";</style><![endif]-->
+		<!--[if lt IE 7]><script type="text/javascript" src="/skins/common/IEFixes.js"></script>
+		<meta http-equiv="imagetoolbar" content="no" /><![endif]-->
+		<script type= "text/javascript">/*<![CDATA[*/
+		var skin = "shikiwiki";
+		var stylepath = "/skins";
+		var wgArticlePath = "/go/$1";
+		var wgScriptPath = "";
+		var wgScript = "/index.php";
+		var wgVariantArticlePath = false;
+		var wgActionPaths = {};
+		var wgServer = "http://wiki.laptop.org";
+		var wgCanonicalNamespace = "";
+		var wgCanonicalSpecialPageName = false;
+		var wgNamespaceNumber = 0;
+		var wgPageName = "XS_Community_Edition/FAQ";
+		var wgTitle = "XS Community Edition/FAQ";
+		var wgAction = "view";
+		var wgArticleId = "55591";
+		var wgIsArticle = true;
+		var wgUserName = null;
+		var wgUserGroups = null;
+		var wgUserLanguage = "en";
+		var wgContentLanguage = "en";
+		var wgBreakFrames = false;
+		var wgCurRevisionId = 299175;
+		var wgVersion = "1.15.2";
+		var wgEnableAPI = true;
+		var wgEnableWriteAPI = true;
+		var wgSeparatorTransformTable = ["", ""];
+		var wgDigitTransformTable = ["", ""];
+		var wgRestrictionEdit = [];
+		var wgRestrictionMove = [];
+		/*]]>*/</script>
+		<script type="text/javascript" src="/skins/common/wikibits.js?1"><!-- wikibits js --></script>
+		<script type="text/javascript" src="/index.php?title=-&amp;action=raw&amp;gen=js&amp;useskin=shikiwiki"><!-- site js --></script>
+		<!-- Head Scripts -->
+				<script type="text/javascript">
+		addOnloadHook(function() { 
+			var i = 1;
+			while ( true ) {
+				var btn = document.getElementById("languageselector-commit-"+i);
+				var sel = document.getElementById("languageselector-select-"+i);
+				var idx = i;
+
+				if (!btn) break;
+
+				btn.style.display = "none";
+				sel.onchange = function() { this.parentNode.submit(); };
+
+				i++;
+			}
+		});
+	</script>		<script type="text/javascript" src="/skins/common/ajax.js?207"></script>
+		<link rel="alternate" type="application/rdf+xml" title="XS Community Edition/FAQ" href="/index.php?title=Special:ExportRDF/XS_Community_Edition/FAQ&amp;xmlmime=rdf" />
+	</head>
+<body  class=" ltr">
+	<div id="globalWrapper">
+
+<!------ start of main column  ------>
+<div id="column-content">
+	<div id="content">
+		<a name="top" id="top"></a>
+		<div id="siteNotice"><div style="border:1px solid #fcfcfc; padding:4px 0px 4px 0px; margin:1px;"><a href="http://one.laptop.org/action/donate" class="external text" title="http://one.laptop.org/action/donate" rel="nofollow"><span style="font-size:100%; color:#959;">help support olpc</span></a></div>
+</div>		<h1 class="firstHeading">XS Community Edition/FAQ</h1>
+		<div id="bodyContent">
+			<h3 id="siteSub">From OLPC</h3>
+			<div id="contentSub"><span class="subpages">&lt; <a href="/go/XS_Community_Edition" title="XS Community Edition">XS Community Edition</a></span></div>
+									<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>			<!-- start content -->
+			<div style="border-top:1px solid #888888; border-bottom:1px solid #888888; margin:0px; background-color:#d0e6f9; color:grey; text-align:left;">
+<p>The XS Community Edition content hereunder does not necessarily reflect the opinion of OLPC.
+These pages were created by members of the volunteer community supporting OLPC and deployments.
+</p>
+</div>
+<table id="toc" class="toc" summary="Contents"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1"><a href="#How_does_XS_Community_Edition_.28XSCE.29_help.3F"><span class="tocnumber">1</span> <span class="toctext">How does XS Community Edition (XSCE) help?</span></a></li>
+<li class="toclevel-1"><a href="#Where_is_XSCE.2FIIAB_used.3F"><span class="tocnumber">2</span> <span class="toctext">Where is XSCE/IIAB used?</span></a></li>
+<li class="toclevel-1"><a href="#What_can_I_do_with_E-books_and_Internet-in-a-Box_.3F"><span class="tocnumber">3</span> <span class="toctext">What can I do with E-books and Internet-in-a-Box&nbsp;?</span></a></li>
+<li class="toclevel-1"><a href="#Can_teachers_display_their_own_content.3F"><span class="tocnumber">4</span> <span class="toctext">Can teachers display their own content?</span></a></li>
+<li class="toclevel-1"><a href="#What_hardware_should_I_use.3F"><span class="tocnumber">5</span> <span class="toctext">What hardware should I use?</span></a></li>
+<li class="toclevel-1"><a href="#What_OS_should_I_use.3F"><span class="tocnumber">6</span> <span class="toctext">What OS should I use?</span></a></li>
+<li class="toclevel-1"><a href="#Is_a_quick_installation_possible.3F"><span class="tocnumber">7</span> <span class="toctext">Is a quick installation possible?</span></a></li>
+<li class="toclevel-1"><a href="#How_do_I_provide_Solar_Power_to_my_school.2C_library_or_orphanage.3F"><span class="tocnumber">8</span> <span class="toctext">How do I provide Solar Power to my school, library or orphanage?</span></a></li>
+<li class="toclevel-1"><a href="#How_do_I_provide_Wi-Fi_.28wireless.29_to_all_my_kids.3F"><span class="tocnumber">9</span> <span class="toctext">How do I provide Wi-Fi (wireless) to all my kids?</span></a></li>
+<li class="toclevel-1"><a href="#How_do_I_change_the_wireless_network_name.3F"><span class="tocnumber">10</span> <span class="toctext">How do I change the wireless network name?</span></a></li>
+<li class="toclevel-1"><a href="#Can_I_name_my_server_something_other_than_http:.2F.2FBOX.LAN_.3F"><span class="tocnumber">11</span> <span class="toctext">Can I name my server something other than http://BOX.LAN&nbsp;?</span></a></li>
+<li class="toclevel-1"><a href="#Any_other_networking_tips.3F"><span class="tocnumber">12</span> <span class="toctext">Any other networking tips?</span></a></li>
+<li class="toclevel-1"><a href="#Where_security_tips_exist.3F"><span class="tocnumber">13</span> <span class="toctext">Where security tips exist?</span></a></li>
+<li class="toclevel-1"><a href="#How_do_I_customize_my_school_server.27s_start_page.3F"><span class="tocnumber">14</span> <span class="toctext">How do I customize my school server's start page?</span></a></li>
+<li class="toclevel-1"><a href="#Can_my_XO-based_server_boot_with_a_unique_startup_sound.3F"><span class="tocnumber">15</span> <span class="toctext">Can my XO-based server boot with a unique startup sound?</span></a></li>
+<li class="toclevel-1"><a href="#How_do_I_get_Internet-in-a-Box_updates_every_few_months_or_semester.3F"><span class="tocnumber">16</span> <span class="toctext">How do I get Internet-in-a-Box updates every few months or semester?</span></a></li>
+<li class="toclevel-1"><a href="#How_do_I_know_what_version_of_XSCE_I.27m_running.3F"><span class="tocnumber">17</span> <span class="toctext">How do I know what version of XSCE I'm running?</span></a></li>
+<li class="toclevel-1"><a href="#What_technical_documentation_exists.3F"><span class="tocnumber">18</span> <span class="toctext">What technical documentation exists?</span></a></li>
+<li class="toclevel-1"><a href="#How_can_I_help.3F"><span class="tocnumber">19</span> <span class="toctext">How can I help?</span></a></li>
+<li class="toclevel-1"><a href="#Where_can_older_versions_of_XSCE_be_found.3F"><span class="tocnumber">20</span> <span class="toctext">Where can older versions of XSCE be found?</span></a></li>
+<li class="toclevel-1"><a href="#How_did_XSCE.27s_design_evolve.3F"><span class="tocnumber">21</span> <span class="toctext">How did XSCE's design evolve?</span></a></li>
+</ul>
+</td></tr></table><script type="text/javascript"> if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
+<a name="How_does_XS_Community_Edition_.28XSCE.29_help.3F" id="How_does_XS_Community_Edition_.28XSCE.29_help.3F"></a><h2> <span class="mw-headline"> How does XS Community Edition (XSCE) help? </span></h2>
+<p>Bring the power of a free Digital Library of Alexandria into the hands of any school worldwide!  Read about <a href="http://internet-in-a-box.org" class="external text" title="http://internet-in-a-box.org" rel="nofollow">Internet-in-a-Box</a> (rich open content often included with <a href="http://xsce.org" class="external text" title="http://xsce.org" rel="nofollow">XSCE/IIAB</a>) and build up your school's very own E-book library <a href="#What_can_I_do_with_E-books_and_Internet-in-a-Box_.3F" title="">below.</a>
+</p><p>A School Server brings your classroom/school laptops together, <a href="/go/XS_Community_Edition#Our_Product" title="XS Community Edition">communicating &amp; coordinating learning</a> in ways that deeply empower <a href="http://planet.laptop.org" class="external text" title="http://planet.laptop.org" rel="nofollow">kids, teachers and community</a>.
+</p><p>XSCE/IIAB is built by professional volunteers, inspired by <a href="http://olpcMAP.net" class="external text" title="http://olpcMAP.net" rel="nofollow">One Laptop per Child's</a> famous laptops and their innovative <a href="http://sugarlabs.org" class="external text" title="http://sugarlabs.org" rel="nofollow">Sugar Learning Platform</a> -- but serving all!
+</p><p>To get a taste of longer-term possible <a href="/go/XS_Community_Edition/Features" title="XS Community Edition/Features">roadmaps</a>, please see Tony Anderson's suggested <a href="/go/XS_Community_Edition/Use_Cases" title="XS Community Edition/Use Cases">use cases</a>, and one possible larger <a href="/go/XS_Community_Edition/Vision" title="XS Community Edition/Vision">XSCE Vision</a>.
+</p>
+<a name="Where_is_XSCE.2FIIAB_used.3F" id="Where_is_XSCE.2FIIAB_used.3F"></a><h2> <span class="mw-headline"> Where is XSCE/IIAB used? </span></h2>
+<p>Since 2014/2015, XSCE/IIAB is used in more than 10 countries, from smaller communities to large-scale deployments.
+</p><p>Examples include several <a href="http://schoolserver.wordpress.com/2013/03/29/my-first-school-server-deployment/" class="external text" title="http://schoolserver.wordpress.com/2013/03/29/my-first-school-server-deployment/" rel="nofollow">orphanages</a> and schools in  <a href="http://olpcMAP.net" class="external text" title="http://olpcMAP.net" rel="nofollow">Haiti</a> to a youth community in <a href="http://olpcbasecamp.blogspot.com/" class="external text" title="http://olpcbasecamp.blogspot.com/" rel="nofollow">Malaysia</a>, to villages in <a href="http://bhagmalpur.wordpress.com" class="external text" title="http://bhagmalpur.wordpress.com" rel="nofollow">Northern India</a>, to a girls science school in <a href="http://www.rwandagirlsinitiative.org/ggast/" class="external text" title="http://www.rwandagirlsinitiative.org/ggast/" rel="nofollow">Rwanda</a>, to rural communities and libraries across southwest <a href="http://ghanatogether.blogspot.com/" class="external text" title="http://ghanatogether.blogspot.com/" rel="nofollow">Ghana</a> -- and more broad <a href="https://github.com/germanrs/xsce" class="external text" title="https://github.com/germanrs/xsce" rel="nofollow">Central American deployments</a> like <a href="http://fundacionzt.org/" class="external text" title="http://fundacionzt.org/" rel="nofollow">Nicaragua</a>, Costa Rica and 6 schools in the Dominican Republic beginning late 2015.
+</p><p>Libraries and rural medical clinics are also avid users of XSCE/IIAB.
+</p><p>Of course, many <a href="https://groups.google.com/group/unleashkids" class="external text" title="https://groups.google.com/group/unleashkids" rel="nofollow">contributors</a> are using XSCE/IIAB for other personal/community purposes as well, helping refine our community product for diverse/larger impact.
+</p>
+<a name="What_can_I_do_with_E-books_and_Internet-in-a-Box_.3F" id="What_can_I_do_with_E-books_and_Internet-in-a-Box_.3F"></a><h2> <span class="mw-headline"> What can I do with E-books and Internet-in-a-Box&nbsp;? </span></h2>
+<p>Purchase a packed hard-drive full of the incredible <i>Wikipedia + Maps + Literature + Khan Academy</i> resources of <a href="http://internet-in-a-box.org" class="external free" title="http://internet-in-a-box.org" rel="nofollow">http://internet-in-a-box.org</a>.
+</p><p>This permits entirely new opportunities for semi-connected schools and offline libraries worldwide, for the 1st time ever starting in 2013.
+</p><p>We'd like educators' suggestions especially -- how should kids best take advantage of these crown jewels of learning?  Perhaps starting with OLPC/Sugar's laptop browser in places like:
+</p>
+<pre>
+http://box.lan/maps
+http://box.lan/books
+http://box.lan/library
+http://box.lan/owncloud
+http://box.lan/khanacademy
+</pre>
+<p>Coming Soon: In the near future (XSCE 6.x) we hope the <a href="https://github.com/PathagarBooks" class="external text" title="https://github.com/PathagarBooks" rel="nofollow">Pathagar</a> <a href="http://www.olpcsf.org/node/126" class="external text" title="http://www.olpcsf.org/node/126" rel="nofollow">"E-book library"</a> will begin to work much better with XSCE!
+</p>
+<a name="Can_teachers_display_their_own_content.3F" id="Can_teachers_display_their_own_content.3F"></a><h2> <span class="mw-headline"> Can teachers display their own content? </span></h2>
+<p>Yes, teachers can spontaneously insert (and remove!) their own USB memory stick(s)/drive(s) anytime, using the school server hardware's USB port.  Somewhat like an informal projector, the teacher's contents will then appear to students almost instantly, off of <a href="http://box.lan/usb" class="external free" title="http://box.lan/usb" rel="nofollow">http://box.lan/usb</a>
+</p><p>A priori, the teacher should create a folder called "usb" on their USB memory stick, placing audio/video materials, handouts, challenges or presentation(s) inside that folder.
+</p><p>The USB stick(s)/drive(s) content will then appear live to students, in places like:
+</p>
+<pre>
+http://box.lan/usb/USB0
+http://box.lan/usb/USB1
+</pre>
+<p>More details in the <a href="https://github.com/XSCE/xsce/wiki/XSCE-Installation#external-usbdrive-content" class="external text" title="https://github.com/XSCE/xsce/wiki/XSCE-Installation#external-usbdrive-content" rel="nofollow">Install Doc</a>.  Finally, if you have a screen attached to your server, and occasionally see an old error as follows, it is safe to ignore it:
+</p>
+<pre>
+Unable to mount 2.0 GB Volume
+Device /dev/sdb1 us already mounted at '/media/usb0'.
+</pre>
+<a name="What_hardware_should_I_use.3F" id="What_hardware_should_I_use.3F"></a><h2> <span class="mw-headline"> What hardware should I use? </span></h2>
+<p>XSCE/IIAB (Internet-in-a-Box) is free software that runs on many different hardware platforms.  Some of the most popular examples include:
+</p>
+<ul><li> Deployment Managers: a paticularly tough, well-rounded, lower-power unit (great for developing world) is the Intel NUC many of us had had great luck with starting in 2014.  We typically insist on NUC models that accept SATA (2.5 inch hard drives) and work with DC voltages up to 19V (low-end NUC models only work right near 12V).  This is not a fan-less device, however it's proved extremely reliable to date.
+</li></ul>
+<ul><li> The NUC's competitor (Gigabyte BRIX) allows internal Wi-Fi to scale beyond the NUC's limit of 12 connections maximum.  In order to make this happen, insert an appropriate Atheros Wi-Fi module (typically &lt; $10).  Such mods are generally not possible with Intel NUC's since 2015 (5th generation) as the Wi-Fi module is soldered in.
+</li></ul>
+<ul><li> Some are very hopeful that ARM CPUs like <a href="http://trimslice.com" class="external text" title="http://trimslice.com" rel="nofollow">TrimSlice / Utilite</a> and <a href="http://solid-run.com" class="external text" title="http://solid-run.com" rel="nofollow">Cubox by SolidRun</a> will catch up with Intel NUC in overall stability/reliability.  Check back as many more global deployments' experiences accumulate, and rugged low-end hardware hopefully emerges eventually, or ask a question at <a href="http://iiab.io" class="external free" title="http://iiab.io" rel="nofollow">http://iiab.io</a>&nbsp;!
+</li></ul>
+<ul><li> DIY Implementers: roll your own on XO-1.5, XO-1.75 (ARM), XO-4 (ARM), x86 and x64 -- with support emerging rapidly in 2016/2017 for the surprisingly powerful $35 Raspberry Pi 3 and similar!  For an earlier discussion of possible external USB hard disks and their risks, see: <a href="http://lists.laptop.org/pipermail/server-devel/2013-June/thread.html#6490" class="external free" title="http://lists.laptop.org/pipermail/server-devel/2013-June/thread.html#6490" rel="nofollow">http://lists.laptop.org/pipermail/server-devel/2013-June/thread.html#6490</a>
+</li></ul>
+<a name="What_OS_should_I_use.3F" id="What_OS_should_I_use.3F"></a><h2> <span class="mw-headline"> What OS should I use? </span></h2>
+<p>Smaller deployments often prefer the cutting-edge features provided by a recent version of the <a href="http://en.wikipedia.org/wiki/Fedora_%28operating_system%29" class="external text" title="http://en.wikipedia.org/wiki/Fedora_%28operating_system%29" rel="nofollow">Fedora Operating System</a>, similar to <a href="/go/13.2.7" title="13.2.7">OLPC OS 13.2.7</a>.  We generally recommend <a href="https://fedoramagazine.org/fedora-22-released/" class="external text" title="https://fedoramagazine.org/fedora-22-released/" rel="nofollow">Fedora 22</a> or higher.
+</p><p>Larger deployments to step back from the bleeding edge, prefering the decade-long support provided by <a href="http://seven.centos.org/" class="external text" title="http://seven.centos.org/" rel="nofollow">CentOS 7</a> (<a href="http://en.wikipedia.org/wiki/CentOS#End-of-support_schedule" class="external text" title="http://en.wikipedia.org/wiki/CentOS#End-of-support_schedule" rel="nofollow">security updates until 30 June 2024</a>) to avoid the rapid annual turnover of Fedora.
+</p><p>Both above are free and open software systems supported by enterprise Linux corp <a href="http://en.wikipedia.org/wiki/Red_Hat" class="external text" title="http://en.wikipedia.org/wiki/Red_Hat" rel="nofollow">Red Hat, Inc</a> founded in 1993.  Read a bit more about XSCE 6.0's <a href="/go/XS_Community_Edition/6.0#Supported_OS.27s" title="XS Community Edition/6.0">out-of-the-box OS choices here</a>.
+</p><p><i>Other OS/distribution support for this global community project would be <a href="http://lists.laptop.org/listinfo/server-devel" class="external text" title="http://lists.laptop.org/listinfo/server-devel" rel="nofollow">most welcome</a> in future!</i>
+</p>
+<a name="Is_a_quick_installation_possible.3F" id="Is_a_quick_installation_possible.3F"></a><h2> <span class="mw-headline"> Is a quick installation possible? </span></h2>
+<p>Yes, a number of XSCE/IIAB 6.x <b>Pre-installed Images</b> are available and more are in the works.
+</p><p>Please see the new <b><a href="https://github.com/XSCE/xsce/wiki/XSCE-Installation" class="external text" title="https://github.com/XSCE/xsce/wiki/XSCE-Installation" rel="nofollow">Install Instructions</a></b>, especially the <b>"short cuts"</b> section, for a list of what is available, where to get it, and general instructions on installing.  Visual shortcuts to some of the more common images can also be found at the top-right of <a href="http://schoolserver.org" class="external free" title="http://schoolserver.org" rel="nofollow">http://schoolserver.org</a>
+</p><p>Images for each platform are accompanied by a <b>README page</b> with additional instructions.     
+</p><p>Advanced/legacy users may also find useful tips in Tom Gilliard's <a href="http://wiki.sugarlabs.org/go/XSCE" class="external text" title="http://wiki.sugarlabs.org/go/XSCE" rel="nofollow">6.0 Installation Notes &amp; Screenshots</a> and <a href="/go/XS_Community_Edition/6.0/Tony%27s_install_recipe" title="XS Community Edition/6.0/Tony&#39;s install recipe">Tony Anderson's XSCE 6.0 Install Recipe</a>.  Be sure to turn off <a href="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface" class="external text" title="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface" rel="nofollow">UEFI</a> in your PC/server's BIOS if possible!  <a href="https://ca.linkedin.com/pub/jerry-vonau/5b/905/627" class="external text" title="https://ca.linkedin.com/pub/jerry-vonau/5b/905/627" rel="nofollow">Jerry Vonau</a> is working on a routine that may allow UEFI support out-of-the-box in future.  Legacy/complete XSCE 5.1 installation instructions <a href="https://docs.google.com/document/d/1Ez1H2LYrkqeXR_r5T93CMdmx9CeTJp_vC-IDBGam1Bc/edit#heading=h.raunf6lwahje" class="external text" title="https://docs.google.com/document/d/1Ez1H2LYrkqeXR_r5T93CMdmx9CeTJp_vC-IDBGam1Bc/edit#heading=h.raunf6lwahje" rel="nofollow">are here</a>.  
+</p><p>Finally, to get down to real business (education!) there are a variety of ways to add content to your XSCE/IIAB Internet-in-a-Box server.  Please see <a href="https://github.com/XSCE/xsce/wiki/XSCE-Installation#adding-content" class="external text" title="https://github.com/XSCE/xsce/wiki/XSCE-Installation#adding-content" rel="nofollow"><b>Adding Content</b></a>.
+</p><p>After installation, please explore learning materials within your own server's <a href="http://box.lan" class="external free" title="http://box.lan" rel="nofollow">http://box.lan</a> -- and also get to know the Admin Console at <a href="http://box.lan/admin" class="external free" title="http://box.lan/admin" rel="nofollow">http://box.lan/admin</a> which permits you to (1) configure your school server and (2) download new content.  Example screenshots: (very stale from 2015, but that's the idea!)
+</p>
+<ul><li> <a href="http://ibin.co/2BDiyiJ9rAxS" class="external text" title="http://ibin.co/2BDiyiJ9rAxS" rel="nofollow">Main Menu</a>
+</li><li> <a href="http://ibin.co/2BDjTw3m4xB1" class="external text" title="http://ibin.co/2BDjTw3m4xB1" rel="nofollow">Install Kiwix ZIM Files</a>
+</li><li> <a href="http://ibin.co/2BDjfne5Yx0h" class="external text" title="http://ibin.co/2BDjfne5Yx0h" rel="nofollow">Select Languages</a>
+</li><li> <a href="http://ibin.co/2BDjumo44V31" class="external text" title="http://ibin.co/2BDjumo44V31" rel="nofollow">Select All Languages</a>
+</li><li> <a href="http://ibin.co/2BDkGKTWvR0K" class="external text" title="http://ibin.co/2BDkGKTWvR0K" rel="nofollow">Job Status</a>
+</li></ul>
+<p>We're hopeful that more offline installers will appear for many of the most common hardware platforms, like Raspberry Pi 3, in the near-future.  <a href="https://schoolserver.wordpress.com/author/georgejhunt/" class="external text" title="https://schoolserver.wordpress.com/author/georgejhunt/" rel="nofollow">George Hunt</a> and others have worked extremely hard on these, and greatly appreciate all your <a href="http://iiab.io" class="external text" title="http://iiab.io" rel="nofollow">"fieldback"</a>&nbsp;!
+</p>
+<a name="How_do_I_provide_Solar_Power_to_my_school.2C_library_or_orphanage.3F" id="How_do_I_provide_Solar_Power_to_my_school.2C_library_or_orphanage.3F"></a><h2> <span class="mw-headline"> How do I provide Solar Power to my school, library or orphanage? </span></h2>
+<p>This is a very hard question depending on the growth path of your electrical needs, maintenance options within the country in question, price, theft, etc.  Some <a href="http://www.unleashkids.org/2014/02/21/off-the-grid-suitcase-solar-solutions-for-power-in-haiti/" class="external text" title="http://www.unleashkids.org/2014/02/21/off-the-grid-suitcase-solar-solutions-for-power-in-haiti/" rel="nofollow">experienced deployment voices</a> provide concrete examples, typically involving a standard 12-volt <a href="http://en.wikipedia.org/wiki/Deep_cycle_battery" class="external text" title="http://en.wikipedia.org/wiki/Deep_cycle_battery" rel="nofollow">deep-cycle battery</a>.  Please don't wait to get your feet wet today however!  That means investing in the hard work of research, getting this right for your own community:
+</p><p><a href="http://wiki.laptop.org/go/XO_Solar" class="external free" title="http://wiki.laptop.org/go/XO_Solar" rel="nofollow">http://wiki.laptop.org/go/XO_Solar</a><br />
+<a href="http://lists.laptop.org/listinfo/power" class="external free" title="http://lists.laptop.org/listinfo/power" rel="nofollow">http://lists.laptop.org/listinfo/power</a><br />
+<a href="http://wiki.laptop.org/go/Battery_and_power" class="external free" title="http://wiki.laptop.org/go/Battery_and_power" rel="nofollow">http://wiki.laptop.org/go/Battery_and_power</a><br />
+<a href="http://schoolserver.wordpress.com/training/power-when-its-not-always-available/" class="external free" title="http://schoolserver.wordpress.com/training/power-when-its-not-always-available/" rel="nofollow">http://schoolserver.wordpress.com/training/power-when-its-not-always-available/</a>
+</p><p>Thanks for taking solar engineering seriously, as we do wherever possible!  Engineers definitely subscribe to Richard Smith's <a href="http://lists.laptop.org/listinfo/power" class="external text" title="http://lists.laptop.org/listinfo/power" rel="nofollow">"power" discussion list</a> if you can.
+</p>
+<a name="How_do_I_provide_Wi-Fi_.28wireless.29_to_all_my_kids.3F" id="How_do_I_provide_Wi-Fi_.28wireless.29_to_all_my_kids.3F"></a><h2> <span class="mw-headline"> How do I provide Wi-Fi (wireless) to all my kids? </span></h2>
+<p>If you want a self-contained (single-unit) knowledge hotspot, consider Wi-Fi capability physically inside your server (despite its limited radio power?)  If so, run "iw list" to determine if it is capable of Access Point (AP) mode, enabled by <a href="https://en.wikipedia.org/wiki/Hostapd" class="external text" title="https://en.wikipedia.org/wiki/Hostapd" rel="nofollow">hostapd</a>.  Of course you may need to run "yum install iw" first, so the iw command is available on your server.
+</p><p>If you want higher-powered Wi-Fi equipment and antenna(e) fully external to the server itself, consider approaches from <a href="http://villagetelco.org" class="external free" title="http://villagetelco.org" rel="nofollow">http://villagetelco.org</a> where possible, detailed below.  More experimentally, <a href="https://github.com/m-anish" class="external text" title="https://github.com/m-anish" rel="nofollow">Anish Mangal</a> has experimented successfully with <a href="https://en.wikipedia.org/wiki/Cantenna" class="external text" title="https://en.wikipedia.org/wiki/Cantenna" rel="nofollow">cantenna(e)</a> in India, between classrooms and schools.
+</p><p>Within classrooms, many deployments use the $20 <a href="http://www.tp-link.com/en/products/details/cat-9_TL-WR841N.html" class="external text" title="http://www.tp-link.com/en/products/details/cat-9_TL-WR841N.html" rel="nofollow">TP-LINK TL-WR841N</a> as these Wi-Fi Routers have proved generally reliable over the years.
+</p><p>We recommend deployments <i>double the classroom capacity of these WR841 routers (to almost 40 simultaneous connections)</i> by trying Terry Gillett's SECN-XSCE firmware here: (based on <a href="https://openwrt.org/" class="external text" title="https://openwrt.org/" rel="nofollow">OpenWrt</a>, but far simpler)
+</p>
+<pre>  <a href="http://download.villagetelco.org/firmware/secn/unstable/tp-link/SECN-4/XSCE/" class="external free" title="http://download.villagetelco.org/firmware/secn/unstable/tp-link/SECN-4/XSCE/" rel="nofollow">http://download.villagetelco.org/firmware/secn/unstable/tp-link/SECN-4/XSCE/</a>
+</pre>
+<p>April 2016's RC3 firmware release is increasingly stable: strongly consider it or more recent.  It should be followed shortly by a stable/official release we hope.  There is firmware for all recent versions of WR841 hardware (v8, v9, v10 and v11) so be sure to select the correct one.
+</p><p>When flashing a TP-LINK with original factory firmware, install using a firmware file labelled "factory" from the RC1 or RC2 folders.  Otherwise, use a firmware file labelled "sysupgrade" to upgrade from one OpenWrt-based version to another.
+</p><p>There is also a wiki page outlining how to use PoE (Power over Ethernet) and how to daisy-chain multiple such routers together:
+</p>
+<pre>  <a href="http://wiki.villagetelco.org/Power_over_Ethernet_for_MP02_and_TP-Link_Routers" class="external free" title="http://wiki.villagetelco.org/Power_over_Ethernet_for_MP02_and_TP-Link_Routers" rel="nofollow">http://wiki.villagetelco.org/Power_over_Ethernet_for_MP02_and_TP-Link_Routers</a>
+</pre>
+<p>Most important: take advantage of community support, where volunteers are eager to help on the <a href="http://lists.laptop.org/listinfo/server-devel" class="external text" title="http://lists.laptop.org/listinfo/server-devel" rel="nofollow">server-devel@lists.laptop.org</a> and <a href="https://groups.google.com/group/xsce-devel" class="external text" title="https://groups.google.com/group/xsce-devel" rel="nofollow">xsce-devel@googlegroups.com</a> mailing lists.  There's always <b>tons</b> to learn from the latest Wi-Fi fieldwork success stories.
+</p><p>Also consider IRC channel #schoolserver on <a href="http://webchat.freednode.net" class="external free" title="http://webchat.freednode.net" rel="nofollow">http://webchat.freednode.net</a> for live chat, and <a href="https://groups.google.com/group/unleashkids" class="external text" title="https://groups.google.com/group/unleashkids" rel="nofollow">unleashkids@googlegroups.com</a>, which is a great place to ask educators about various schools' filtering recommendations, across different age groups and cultures, whether your school is online or off!
+</p><p>Finally, don't hesitate to blog or write up your own specific recommendations, no matter how large or small your school.  This vital engineering shop-talk upholds more schools, libraries and orphanages than we can count (building our community repertoire of Wi-Fi wisdom, often far from the Internet, creating "knowledge hotspots" in every sense) in turn allowing kids to take advantage of amazing free Digital Libraries like <a href="http://internet-in-a-box.org" class="external free" title="http://internet-in-a-box.org" rel="nofollow">http://internet-in-a-box.org</a> and Pathagar e-books.
+</p>
+<a name="How_do_I_change_the_wireless_network_name.3F" id="How_do_I_change_the_wireless_network_name.3F"></a><h2> <span class="mw-headline"> How do I change the wireless network name? </span></h2>
+<p>The wireless network name is how people connect to your school server when they are using a Wi-Fi device.  This name is also known as an SSID.
+</p><p>How to change it depends on whether your wireless access point is fully-external (such as a wireless router) or rather under direct OS control (e.g. internal, or a tiny USB-connected wireless adapter)&nbsp;:
+</p>
+<ul><li> If it's fully-external, change its SSID (wireless name) using the documentation that came with the router.
+</li></ul>
+<ul><li> If it's under direct OS control, then the school server is the wireless access point.  George Hunt's command "xs-hotspot-on &lt;SSID&gt;" solves this on XO-1.5 and similar.  Conversely "xs-hotspot-off" to turn the internal hotspot off entirely.  You might also open your server's Admin Console <a href="http://box.lan/admin" class="external free" title="http://box.lan/admin" rel="nofollow">http://box.lan/admin</a> by logging in as xsce-admin per usual, then change the SSID (wireless name) there, under Configure -&gt; Internal WiFi AP -&gt; Internal Wifi Access Point Name.  This setting will not take effect until you click on Configure menu -&gt; Install Configured Options (red button), and wait many minutes for all new settings to take effect (monitor status under Utilities menu -&gt; Display Job Status).
+</li></ul>
+<p>WARNING: do not edit /etc/hostapd/hostapd.conf directly, unless you want these custom settings trashed upon updating XSCE! If you still insist on editing this file despite the danger, consider "systemctl restart hostapd.service" to avoid rebooting.   
+</p>
+<a name="Can_I_name_my_server_something_other_than_http:.2F.2FBOX.LAN_.3F" id="Can_I_name_my_server_something_other_than_http:.2F.2FBOX.LAN_.3F"></a><h2> <span class="mw-headline"> Can I name my server something other than <a href="http://BOX.LAN" class="external free" title="http://BOX.LAN" rel="nofollow">http://BOX.LAN</a>&nbsp;? </span></h2>
+<p><a href="http://box.lan" class="external free" title="http://box.lan" rel="nofollow">http://box.lan</a> will work in 99% of all cases, and <a href="http://box" class="external free" title="http://box" rel="nofollow">http://box</a> should work in 90% of cases; there is no need to change these.
+</p><p>If however a custom name is desired, this can be implemented within each school/library/clinic using <a href="http://box.lan/admin" class="external free" title="http://box.lan/admin" rel="nofollow">http://box.lan/admin</a> -&gt; Configure -&gt; Network Parameters -&gt; Host Name, if you click "Save Configuration" then "Install Configured Options" (waiting patiently for that to complete under <a href="http://box.lan/admin" class="external free" title="http://box.lan/admin" rel="nofollow">http://box.lan/admin</a> -&gt; Utilities -&gt; Display Job Status; which often takes ~25min on a Raspberry Pi 3!)
+</p><p>Many different names have been used in the past, such as <a href="http://schoolserver.lan" class="external free" title="http://schoolserver.lan" rel="nofollow">http://schoolserver.lan</a> and <a href="http://school.lan" class="external free" title="http://school.lan" rel="nofollow">http://school.lan</a> -- anything that resolves locally to <a href="http://172.18.96.1" class="external free" title="http://172.18.96.1" rel="nofollow">http://172.18.96.1</a> should be sufficient with standard networking.  For the record, some of these older names are listed within the following links:
+</p><p><a href="https://github.com/XSCE/xsce/blob/8649c1ae73631ce9d9d10ab358eb5571c9e48742/roles/network/templates/named/school.external.zone.db" class="external free" title="https://github.com/XSCE/xsce/blob/8649c1ae73631ce9d9d10ab358eb5571c9e48742/roles/network/templates/named/school.external.zone.db" rel="nofollow">https://github.com/XSCE/xsce/blob/8649c1ae73631ce9d9d10ab358eb5571c9e48742/roles/network/templates/named/school.external.zone.db</a><br />
+<a href="https://github.com/XSCE/xsce/blob/8649c1ae73631ce9d9d10ab358eb5571c9e48742/roles/network/templates/named/school.internal.zone.db" class="external free" title="https://github.com/XSCE/xsce/blob/8649c1ae73631ce9d9d10ab358eb5571c9e48742/roles/network/templates/named/school.internal.zone.db" rel="nofollow">https://github.com/XSCE/xsce/blob/8649c1ae73631ce9d9d10ab358eb5571c9e48742/roles/network/templates/named/school.internal.zone.db</a><br />
+<a href="https://github.com/XSCE/xsce/blob/8649c1ae73631ce9d9d10ab358eb5571c9e48742/roles/network/templates/named/school.local.zone.db" class="external free" title="https://github.com/XSCE/xsce/blob/8649c1ae73631ce9d9d10ab358eb5571c9e48742/roles/network/templates/named/school.local.zone.db" rel="nofollow">https://github.com/XSCE/xsce/blob/8649c1ae73631ce9d9d10ab358eb5571c9e48742/roles/network/templates/named/school.local.zone.db</a>
+</p><p>Advanced implementers may want to change these 4 zone files too, all within the very same /var/named-xs directory:
+</p><p>school.internal.zone.16.in-addr.db<br />
+school.internal.zone.32.in-addr.db<br />
+school.internal.zone.48.in-addr.db<br />
+school.internal.zone.in-addr.db
+</p>
+<a name="Any_other_networking_tips.3F" id="Any_other_networking_tips.3F"></a><h2> <span class="mw-headline"> Any other networking tips? </span></h2>
+<p><i>If you use a USB-to-Ethernet dongle (for upstream Internet, generally) use a permanent marker on the server's correct USB port, so that it's not accidentally moved to another USB port!</i>
+</p><p>Also, do not swap the dongle for another, as each dongle has a fixed/unique MAC address.  Worst case if your dongle is lost or broken, you will later (after the new dongle is inserted) need to rerun "./runansible" from directory /opt/schoolserver/xsce when your Internet connection is live.
+</p><p>A high-level networking summary is here: <a href="https://github.com/XSCE/xsce/wiki/XSCE-Networking-Overview" class="external free" title="https://github.com/XSCE/xsce/wiki/XSCE-Networking-Overview" rel="nofollow">https://github.com/XSCE/xsce/wiki/XSCE-Networking-Overview</a>
+</p><p>More advanced networking insights will follow from the <a href="https://docs.google.com/document/d/1Ez1H2LYrkqeXR_r5T93CMdmx9CeTJp_vC-IDBGam1Bc/edit#heading=h.rt7rcwigph2r" class="external text" title="https://docs.google.com/document/d/1Ez1H2LYrkqeXR_r5T93CMdmx9CeTJp_vC-IDBGam1Bc/edit#heading=h.rt7rcwigph2r" rel="nofollow">stock instructions for setting up upstream and downsteam routers</a> attached to Intel NUC hardware, just as an example.
+</p><p>NOTE: Some prefer Gigabyte BRIX (a drop-in replacement Mini PC, instead of the Intel NUC) as an Atheros internal Wi-Fi module can be inserted, to scale beyond Intel's soldered-in limit of 12 Wi-Fi connections maximum.
+</p><p>Classrooms within 100 meters of your school server can easily be connected using standard Ethernet wiring, or using Wi-Fi repeaters.  Outdoor wiring is possible (preferably fiber optic cables below ground) but check with experts to avoid problems with lightning.  Beyond 100 meters, a more deliberate tree and branch solution may be needed.
+</p><p>Please ask questions about your specific school's networking/wiring challenges at <a href="http://IIAB.io" class="external free" title="http://IIAB.io" rel="nofollow">http://IIAB.io</a> and on mailing list <a href="http://lists.laptop.org/listinfo/server-devel" class="external text" title="http://lists.laptop.org/listinfo/server-devel" rel="nofollow">server-devel@lists.laptop.org</a>&nbsp;!
+</p>
+<a name="Where_security_tips_exist.3F" id="Where_security_tips_exist.3F"></a><h2> <span class="mw-headline"> Where security tips exist? </span></h2>
+<p>Whether running your school server online or offline, please see <a href="/go/XS_Community_Edition/Security" title="XS Community Edition/Security">XS Community Edition/Security</a> and help us contribute to this evolving knowledge of 21st century hygiene, thanks to professional volunteers from many backgrounds.
+</p>
+<a name="How_do_I_customize_my_school_server.27s_start_page.3F" id="How_do_I_customize_my_school_server.27s_start_page.3F"></a><h2> <span class="mw-headline"> How do I customize my school server's start page? </span></h2>
+<p>If you want to showcase your school or community logo/colors on the portal/start page (what people see at <a href="http://box.lan" class="external free" title="http://box.lan" rel="nofollow">http://box.lan</a>), you can customize /library/www/html/home/index.html, where most standard HTML tags should work.  Please create a backup copy of your ongoing index.html beautifications regularly!
+</p><p>Coming soon in 2017, <i>Dynamic Menuing</i> will be an alternative approach for those wanting far less hand-coding, that (as a bonus) auto-adjusts all <a href="http://SERVERNAMES:PORTS" class="external free" title="http://SERVERNAMES:PORTS" rel="nofollow">http://SERVERNAMES:PORTS</a> live using browser-side Javascript, for maximum deployment flexibility.  To enable this on your server, please read about <i>Menu Definitions</i> and <i>HTML Fragments</i> within this page: <a href="https://github.com/xsce/xsce/wiki/XSCE-Menuing" class="external free" title="https://github.com/xsce/xsce/wiki/XSCE-Menuing" rel="nofollow">https://github.com/xsce/xsce/wiki/XSCE-Menuing</a>
+</p><p>Likewise as many educators want quick customizations of their portal/menuing beyond the logo, some may consider experimental WYSIWYG tools like DokuWiki, WordPress, or Moodle.  For example you might lay out your content in an indigenous language, linking to content gems truly relevant to locals.  To try these approaches, visit your server's Admin Console at <a href="http://box.lan/admin" class="external free" title="http://box.lan/admin" rel="nofollow">http://box.lan/admin</a> -&gt; Configure tab -&gt; Server Portal -&gt; Select Server Home Page.  As of XSCE 6.2, your 4 choices here are:
+</p>
+<ul><li> /home
+</li><li> /xs-portal
+</li><li> /wordpress
+</li><li> /wiki
+</li></ul>
+<p>Of course enable WordPress or DokuWiki correspondingly, at the top of that page.  Then click "Save Configuration", click "Install Configured Options" then monitor the result (takes about 25min on a Raspberry Pi 3) under "Utilities" tab -&gt; "Display Job Status".
+</p><p>Finally, technical tips are contained in our older <a href="https://github.com/xsce/xsce/blob/master/roles/portal/README.rst" class="external text" title="https://github.com/xsce/xsce/blob/master/roles/portal/README.rst" rel="nofollow">Portal README</a>.  But if you need further customization suggestions and tips, don't even hesitate to post to our <a href="http://iiab.io" class="external free" title="http://iiab.io" rel="nofollow">http://iiab.io</a> forums and/or write to: <a href="https://groups.google.com/group/unleashkids" class="external free" title="https://groups.google.com/group/unleashkids" rel="nofollow">https://groups.google.com/group/unleashkids</a>&nbsp;!
+</p>
+<a name="Can_my_XO-based_server_boot_with_a_unique_startup_sound.3F" id="Can_my_XO-based_server_boot_with_a_unique_startup_sound.3F"></a><h2> <span class="mw-headline"> Can my XO-based server boot with a unique startup sound? </span></h2>
+<p>Yes, when using an XO as a server, it is easy to mistake it for a child's laptop, when it has been detached from storage and networking components.
+</p><p>Here are <a href="/go/XS_Community_Edition/Features/Startup_sound" title="XS Community Edition/Features/Startup sound">instructions</a> for adding a unique startup sound.
+</p>
+<a name="How_do_I_get_Internet-in-a-Box_updates_every_few_months_or_semester.3F" id="How_do_I_get_Internet-in-a-Box_updates_every_few_months_or_semester.3F"></a><h2> <span class="mw-headline"> How do I get Internet-in-a-Box updates every few months or semester? </span></h2>
+<p>Great question: the magicians behind <a href="http://internet-in-a-box.org" class="external free" title="http://internet-in-a-box.org" rel="nofollow">http://internet-in-a-box.org</a> anticipated this will be critical.  In the same vein, Internet-in-a-Box improved its Wikipedia full-text-search in 2014/2015, which remains compatible with XSCE 0.4, 5.x and 6.0.
+</p><p>And yet an honest calculation of terabyte download costs and frustrations explains why drop-shipped hard drives "content catalogs" are more economic and efficient that overweight monolithic download torrents.
+</p><p>On the high end, XSCE/IIAB's Admin Console supports piecewise incremental content updates for those schools with extremely high/affordable bandwidth.
+</p><p>More typically, schools receive USB 3.0 hard drives and 128GB every semester or so, containing new maps/encyclopedia/books/video lessons flown/driven in from a partner.
+</p><p>Keep in touch as new options evolve!  Make contact with <a href="http://unleashkids.org" class="external free" title="http://unleashkids.org" rel="nofollow">http://unleashkids.org</a> if you want to order a copy of the <a href="https://docs.google.com/document/d/1RXzapvzvGRxPoJk0v9Wsdn0Wv02M-iokY6jZ8BQDh9U" class="external text" title="https://docs.google.com/document/d/1RXzapvzvGRxPoJk0v9Wsdn0Wv02M-iokY6jZ8BQDh9U" rel="nofollow">latest Internet-in-a-Box content</a> from these volunteers' community effort.
+</p>
+<a name="How_do_I_know_what_version_of_XSCE_I.27m_running.3F" id="How_do_I_know_what_version_of_XSCE_I.27m_running.3F"></a><h2> <span class="mw-headline"> How do I know what version of XSCE I'm running? </span></h2>
+<p>Log into your school server's Admin Console (typically <a href="http://box.lan/admin" class="external free" title="http://box.lan/admin" rel="nofollow">http://box.lan/admin</a>) and click "About" in the top menu.
+</p><p>Compare the 40-character string "Commit ID" to "Latest commit" at <a href="https://github.com/XSCE/xsce/tree/release-6.2" class="external free" title="https://github.com/XSCE/xsce/tree/release-6.2" rel="nofollow">https://github.com/XSCE/xsce/tree/release-6.2</a> to confirm you have <a href="/go/XS_Community_Edition/6.2" title="XS Community Edition/6.2">XSCE 6.2</a> (should begin with <b>929ed54</b> if you're running 6.2 <b>RC2</b> from early February 2017).  In General: if the "Commit ID" matches "Latest commit" you have the latest, for that version ("release-6.2" in this case).
+</p><p>Note the letter 'g' sometime appears in front of the githash, for example <b>g929ed54</b> which is normal!
+</p><p>Experts: check the "Version" field on your About screen, which should show "release-6.2" if you're running a pre-release from <a href="https://github.com/xsce/xsce/commits/master" class="external free" title="https://github.com/xsce/xsce/commits/master" rel="nofollow">https://github.com/xsce/xsce/commits/master</a>.  Feel free also to monitor the latest commites at <a href="https://github.com/xsce/xsce/commits/release-6.2" class="external free" title="https://github.com/xsce/xsce/commits/release-6.2" rel="nofollow">https://github.com/xsce/xsce/commits/release-6.2</a>.
+</p>
+<a name="What_technical_documentation_exists.3F" id="What_technical_documentation_exists.3F"></a><h2> <span class="mw-headline"> What technical documentation exists? </span></h2>
+<p><a href="/go/XS_Community_Edition/6.2#Documentation" title="XS Community Edition/6.2">XSCE/IIAB 6.2 Docs</a> are currently being migrated to <a href="https://github.com/xsce/xsce/wiki" class="external free" title="https://github.com/xsce/xsce/wiki" rel="nofollow">https://github.com/xsce/xsce/wiki</a>.
+</p><p>Start with February 2017's new <b><a href="https://github.com/XSCE/xsce/wiki/XSCE-Installation" class="external text" title="https://github.com/XSCE/xsce/wiki/XSCE-Installation" rel="nofollow">Install Doc</a></b>, focusing on the <b>"short cuts"</b> section!
+</p><p>Living Docs are ever-evolving for great reasons, as technical progress is rapid, so you may want to bookmark our <a href="http://IIAB.io" class="external free" title="http://IIAB.io" rel="nofollow">http://IIAB.io</a> community forums.
+</p><p>The earlier <a href="https://docs.google.com/document/d/1Ez1H2LYrkqeXR_r5T93CMdmx9CeTJp_vC-IDBGam1Bc" class="external text" title="https://docs.google.com/document/d/1Ez1H2LYrkqeXR_r5T93CMdmx9CeTJp_vC-IDBGam1Bc" rel="nofollow">XSCE 5.1 + Internet-in-a-Box Install Doc for Intel NUC</a> from 2015 can sometimes be very useful for hardware implementers.
+</p><p>Also see George Hunt's foundational collection of XSCE (School Server Community Edition) docs from 2012-2015 at <a href="http://schoolserver.wordpress.com" class="external free" title="http://schoolserver.wordpress.com" rel="nofollow">http://schoolserver.wordpress.com</a>
+</p><p>Finally, <a href="https://twitter.com/m_anish" class="external text" title="https://twitter.com/m_anish" rel="nofollow">Anish Mangal</a> hopes to formally write up his <a href="https://drive.google.com/drive/folders/0B2qGKOFYikSuT0dGRWZNWlVLUmM" class="external text" title="https://drive.google.com/drive/folders/0B2qGKOFYikSuT0dGRWZNWlVLUmM" rel="nofollow">deployment recommendations / 8-part training materials</a> based on his experience setting up XSCE in <a href="http://bhagmalpur.wordpress.com/" class="external text" title="http://bhagmalpur.wordpress.com/" rel="nofollow">Northern India</a>, while <a href="http://unleashkids.org" class="external free" title="http://unleashkids.org" rel="nofollow">http://unleashkids.org</a> with <a href="http://kidsoncomputers.org" class="external free" title="http://kidsoncomputers.org" rel="nofollow">http://kidsoncomputers.org</a> document the human experience around Haiti/Mexico deployments and beyond.
+</p><p>Please suggest improvements to this FAQ where you can, and check back to reread at a later date, Thank You!
+</p>
+<a name="How_can_I_help.3F" id="How_can_I_help.3F"></a><h2> <span class="mw-headline"> How can I help? </span></h2>
+<p>Great you asked!  Take a look at our quasiweekly <b><a href="https://docs.google.com/document/d/1o6QtzLb6e58YKWqMf_junux2XyBRLFm31un8YLcYslg/edit" class="external text" title="https://docs.google.com/document/d/1o6QtzLb6e58YKWqMf_junux2XyBRLFm31un8YLcYslg/edit" rel="nofollow">Agenda/Minutes</a></b> to see what others are working on, after getting to know <a href="http://iiab.io" class="external free" title="http://iiab.io" rel="nofollow">http://iiab.io</a>, and see if you can knock off a few <b><a href="/go/XS_Community_Edition/Microtasks" title="XS Community Edition/Microtasks">volunteer microtasks</a></b>.
+</p><p>Take seriously the <a href="/go/XS_Community_Edition/Features#Features_Planned" title="XS Community Edition/Features">"Features Planned"</a> section of our <a href="/go/XS_Community_Edition/Features" title="XS Community Edition/Features">Features</a> page helping schools globally getting their highest priorities implemented.
+</p><p>Schools greatly benefit from <a href="/go/XS_Community_Edition/0.4/Testing" title="XS Community Edition/0.4/Testing">testing on diverse hardware</a> if you can help!  Online contribution are strongly welcome, with in-person human interaction at our <a href="/go/XS_Community_Edition/7.0/Sprint" title="XS Community Edition/7.0/Sprint" class="mw-redirect">quasi-quarterly face-to-face meetups</a> advancing our education efforts faster yet.
+</p><p>Finally, organizing everyone's <a href="/go/XS_Community_Edition/Vision" title="XS Community Edition/Vision">many ideas</a>, <a href="/go/XS_Community_Edition/Use_Cases" title="XS Community Edition/Use Cases">use cases</a> and <a href="#What_technical_documentation_exists.3F" title="">docs</a> is real work, and as such we very strongly welcome savvy communicators!
+</p><p>Please also suggest <i>your own ideas</i> on mailing list <a href="http://lists.laptop.org/listinfo/server-devel" class="external text" title="http://lists.laptop.org/listinfo/server-devel" rel="nofollow">server-devel@lists.laptop.org</a>, or contact <a href="http://wiki.laptop.org/go/User:Holt" class="external text" title="http://wiki.laptop.org/go/User:Holt" rel="nofollow">Adam Holt</a> (holt @ laptop.org), thanks!
+</p>
+<a name="Where_can_older_versions_of_XSCE_be_found.3F" id="Where_can_older_versions_of_XSCE_be_found.3F"></a><h2> <span class="mw-headline"> Where can older versions of XSCE be found? </span></h2>
+<p>Older RPM builds from 2013, at your own risk, may be available from: <a href="http://xsce.activitycentral.com/repos/xsce/devel/RPMS/noarch/?C=M;O=D" class="external text" title="http://xsce.activitycentral.com/repos/xsce/devel/RPMS/noarch/?C=M;O=D" rel="nofollow">http://xsce.activitycentral.com/repos/xsce/devel</a>.
+</p><p>Or consider main repo definition: <a href="http://xsce.activitycentral.com/repos/xsce-devel.repo" class="external free" title="http://xsce.activitycentral.com/repos/xsce-devel.repo" rel="nofollow">http://xsce.activitycentral.com/repos/xsce-devel.repo</a>
+</p>
+<a name="How_did_XSCE.27s_design_evolve.3F" id="How_did_XSCE.27s_design_evolve.3F"></a><h2> <span class="mw-headline"> How did XSCE's design evolve? </span></h2>
+<p>Here's our brief-but-growing participatory design archive / lineage:
+</p>
+<ul><li> <a href="https://docs.google.com/document/pub?id=1dnhU2F6EntepVXTgN8QpkME8fZVUuPjcCoMUfAVKbcc" class="external text" title="https://docs.google.com/document/pub?id=1dnhU2F6EntepVXTgN8QpkME8fZVUuPjcCoMUfAVKbcc" rel="nofollow">Design Document</a> (September 2012, by Sridhar Dhanapalan)
+</li><li> <a href="/go/XS_Community_Edition/Use_Cases" title="XS Community Edition/Use Cases"> Use Cases</a> (October 2012, by Tony Anderson)
+</li></ul>
+<p>Original OLPC XS design and implementation is available <a href="/go/School_Server" title="School Server" class="mw-redirect">here</a>.
+</p><p><a href="/go/XS_Community_Edition#Our_History_.26_Inspiration" title="XS Community Edition">Community history</a> is vital to all seeking to avoid reinventing mistakes of the past, thanks to Everyone's thoughtful input past &amp; present!
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 34/1000000
+Post-expand include size: 339/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:55591-0!1!0!!en!2!edit=0 and timestamp 20170217151936 -->
+<div class="printfooter">
+Retrieved from "<a href="http://wiki.laptop.org/go/XS_Community_Edition/FAQ">http://wiki.laptop.org/go/XS_Community_Edition/FAQ</a>"</div>
+						<!-- end content -->
+			<div class="visualClear"></div>
+		</div>
+	</div>
+</div>
+<!------  end of main column  ------>
+
+<!------  start of sidebar column  ------>
+		<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/go/XS_Community_Edition/FAQ">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="/index.php?title=Talk:XS_Community_Edition/FAQ&amp;action=edit&amp;redlink=1">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="/index.php?title=XS_Community_Edition/FAQ&amp;action=edit">View source</a></li>
+				 <li id="ca-history"><a href="/index.php?title=XS_Community_Edition/FAQ&amp;action=history">History</a></li>
+		</ul>
+	</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			<li id="pt-search" class="active"> 
+ <script> function clearText(f){ if (f.defaultValue==f.value) f.value = "" } </script>
+			<div id="top-forms" style="float:left; padding: 0px 0px 0px 11.3em;">
+                <table cellpadding=0 cellspacing=0 style="background-color:transparent;"><tr><td style="float:left; background-color:#ffe;" valign="top"><form 
+action="http://www.google.com/translate" method="POST" name="translate"><select name="langpair" style="border:0; font-size: 11px; font-style:normal; width:6.8em; background:#ffffee" onchange="document.translate.submit();"><option value="" style="text-align:center; font-style:normal; font-weight:bold;"> translate</option><option 
+value="en|es">English to Spanish</option><option
+value="en|pt">English to Portuguese</option><option 
+value="en|ko">English to Korean</option><option 
+value="en|ar">English to Arabic</option><option 
+value="en|fr">English to French</option><option 
+value="en|ru">English to Russian</option><option 
+value="en|zh-CN">English to Chinese (Simplified)</option><option 
+value="en|zh-TW">English to Chinese (Traditional)</option><option 
+value="en|de">English to German</option><option 
+value="en|it">English to Italian</option><option 
+value="en|ja">English to Japanese</option><option 
+value="es|en">Spanish to English</option><option
+value="pt|en">Portuguese to English</option><option
+value="ko|en">Korean to English</option><option
+value="fr|en">French to English</option>
+</select>
+		<input type="hidden" name="u" id="url" 
+value="http://wiki.laptop.org/go//index.php?title=XS_Community_Edition/FAQ&amp;oldid=299175" 
+dir="ltr" />
+<!-- value="http://wiki.laptop.org/go/" -->
+		<input type="hidden" name="hl" value="en">
+		<input type="hidden" name="ie" value="UTF8">
+		</form></td>
+<!--  hypothesis: most new wiki users never edit; really want to subscribe.  
+      (find a way to show only once per anon session) 
+                <td style="padding:0px 0px 0px 10px; background-color:transparent;" valign="top"><form 
+action="http://visitor.constantcontact.com/d.jsp" id="subscribewiki" method="post" name="ccoptin" 
+target="_blank" style="border:0; padding:0px 2px 0px 2px; margin-bottom:16px;"><input 
+type="text" size="80px" id="email" name="ea2" onfocus="clearText(this)" value="enter your email" style="border:0; margin-bottom:10px; padding:1px 2px 0px 2px; font-size: 11px; font-style:normal; width:100px; height:18px; background:#ffffee; color:#999;" /><button 
+type="submit" id="subscribeSubmit" name="go" style="border:1px solid #ccc; padding:0px 0px 8px 0px; height:18px; font-size:10px; color:#666;" value="Join">subscribe</button>
+                <input type="hidden" name="m" value="1102296509992" />
+                <input type="hidden" name="p" value="oi" />
+            </form></td> 
+-->
+			</tr></table>
+			</div>
+			</li>
+				<li id="pt-login"><a href="/index.php?title=Special:UserLogin&amp;returnto=XS_Community_Edition/FAQ">Log in</a></li>
+				<li id="pt-openidlogin"><a href="/index.php?title=Special:OpenIDLogin&amp;returnto=XS_Community_Edition/FAQ">Login with OpenID</a></li>
+			</ul>
+
+		</div>
+	</div>
+	<div id="p-logo" class="portlet" >
+		<a style="padding:5px 20px 0 0; background-image: url(/skins/common/images/OLPC_wiki_logo.png);" href="/go/The_OLPC_Wiki" title="The OLPC Wiki"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div id="p-search" class="portlet">
+		<h5 id="p-search"><label for="searchInput">Search</label></h5>
+<!--
+	 	<form action="http://google.com/custom" id="googlesearchform"><div>
+		 <input style="font-style:normal; padding-left:4px; color:blue; background:#ffffcc;" id="searchInput" name="q" type="text" onfocus="clearText(this)" value="Google search" />
+		 <input type="hidden" name="hl" value="en">
+		 <input type="hidden" name="domains" value="wiki.laptop.org">
+		 <input type="hidden" name="sitesearch" value="wiki.laptop.org">
+			</div></form>
+-->
+                <div id="searchBody-G" class="pBody">
+                        <div id="cse-search-form" style="width: 115%; padding-left:7px;">Loading</div>
+                        <script src="http://www.google.com/jsapi" type="text/javascript"></script>
+                        <script type="text/javascript"> 
+                          google.load('search', '1', {language : 'en'});
+                            google.setOnLoadCallback(function() {
+                                    var customSearchControl = new google.search.CustomSearchControl('011382939614944835298:qbypfcvcgvi');
+                                        customSearchControl.setResultSetSize(google.search.Search.FILTERED_CSE_RESULTSET);
+                                        var options = new google.search.DrawOptions();
+                                            options.enableSearchboxOnly("http://www.google.com/cse?cx=011382939614944835298:qbypfcvcgvi");    
+                                            customSearchControl.draw('cse-search-form', options);
+                                              }, true);
+                        </script>
+                    <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
+                    <style type="text/css">
+                      input.gsc-input {
+                        border-color: #BCCDF0;
+                      }
+                      input.gsc-search-button {
+                        border-color: #ffffff;
+                        background-color: #ffffff;
+                        color: #ffffff;
+                        font-size: 0px;
+                        border: 0px;
+                      }
+                      input.gsc-clear-button {
+                        color: #ffffff;
+                        width: 0px;
+                      }
+                     </style>
+	        </div>
+		<div id="searchBody" class="pBody">
+			<form action="/go/Special:Search" id="searchform"><div>
+			 <input id="searchInput" name="search" type="text" style="padding-left:4px; color:blue;" onfocus="clearText(this)" value="Wiki search" accesskey="f" value="" />
+			 <input type="hidden" name="fulltext" value="y" />
+			</div></form>
+                </div>
+        </div> <!-- close p-search -->
+		<div class='portlet' id='p-About OLPC'>
+		<h5>About OLPC</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-The-OLPC-Wiki"><a href="/go/The_OLPC_Wiki">The OLPC Wiki</a></li>
+				<li id="n-Contact-us"><a href="/go/OLPC:Contact_us">Contact us</a></li>
+				<li id="n-Blog"><a href="http://blog.laptop.org">Blog</a></li>
+				<li id="n-Communicate"><a href="/go/Communication_channels">Communicate</a></li>
+				<li id="n-Participate"><a href="/go/Participate">Participate</a></li>
+				<li id="n-laptop.org"><a href="http://laptop.org">laptop.org</a></li>
+			</ul>
+		</div>
+	</div>
+		<div class='portlet' id='p-About the laptop'>
+		<h5>About the laptop</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Specifications"><a href="/go/Hardware">Specifications</a></li>
+				<li id="n-Buying"><a href="/go/Buying_XOs">Buying</a></li>
+				<li id="n-Help-using"><a href="/go/Getting_started">Help using</a></li>
+				<li id="n-Support-for"><a href="/go/Support">Support for</a></li>
+				<li id="n-Upgrading"><a href="/go/Releases">Upgrading</a></li>
+				<li id="n-Repairing"><a href="/go/Repair">Repairing</a></li>
+				<li id="n-Disassembly"><a href="/go/Disassembly">Disassembly</a></li>
+			</ul>
+		</div>
+	</div>
+		<div class='portlet' id='p-About the tablet'>
+		<h5>About the tablet</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Specifications"><a href="http://one.laptop.org/about/xo-tablet">Specifications</a></li>
+				<li id="n-Buying"><a href="http://www.walmart.com/ip/24511209">Buying</a></li>
+				<li id="n-Help-using"><a href="http://one.laptop.org/about/xo-tablet-faq">Help using</a></li>
+				<li id="n-Support-for"><a href="http://www.xotablet.com/support/">Support for</a></li>
+			</ul>
+		</div>
+	</div>
+		<div class='portlet' id='p-Projects'>
+		<h5>Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-for-Educators"><a href="/go/Educators">for Educators</a></li>
+				<li id="n-for-Developers"><a href="/go/Developers">for Developers</a></li>
+				<li id="n-Software"><a href="/go/Software_components">Software</a></li>
+				<li id="n-Hardware"><a href="/go/Hardware">Hardware</a></li>
+				<li id="n-Activities"><a href="http://activities.sugarlabs.org">Activities</a></li>
+				<li id="n-Deployment-Guide"><a href="/go/Deployment_Guide">Deployment Guide</a></li>
+				<li id="n-School-Server-(XS)"><a href="/go/School_server">School Server (XS)</a></li>
+				<li id="n-School-Server-(XSCE)"><a href="/go/XS_Community_Edition">School Server (XSCE)</a></li>
+			</ul>
+		</div>
+	</div>
+		<div class='portlet' id='p-OLPC wiki'>
+		<h5>OLPC wiki</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-changes"><a href="/go/Special:RecentChanges">Recent changes</a></li>
+				<li id="n-Glossary"><a href="/go/Glossary">Glossary</a></li>
+				<li id="n-Random-page"><a href="/go/Special:Random">Random page</a></li>
+				<li id="n-Help-using-the-wiki"><a href="/go/Help:Contents">Help using the wiki</a></li>
+			</ul>
+		</div>
+	</div>
+		<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/go/Special:WhatLinksHere/XS_Community_Edition/FAQ">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/go/Special:RecentChangesLinked/XS_Community_Edition/FAQ">Related changes</a></li>
+<li id="t-specialpages"><a href="/go/Special:SpecialPages">Special pages</a></li>
+				<li id="t-print"><a href="/index.php?title=XS_Community_Edition/FAQ&amp;printable=yes">Printable version</a></li>				<li id="t-permalink"><a href="/index.php?title=XS_Community_Edition/FAQ&amp;oldid=299175">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+<!--	<div id="googleads" class="portlet">
+	  <h5></h5>
+	<div class="pBody">
+  <script type="text/javascript">
+google_ad_client = "pub-4880598326964493";
+google_ad_width = 120;
+google_ad_height = 300;
+google_ad_format = "120x300_as";
+google_ad_language = "english";
+google_ad_type = "text_image";
+google_ad_channel = "5528187734";
+</script>
+<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>	</div>
+ 	</div> 
+-->
+	<div id="p-lang" class="portlet">
+		<h5>In other languages</h5>
+		<div class="pBody">
+			<ul>
+				<li class="interwiki-en"><a href="http://wiki.laptop.org/go/XS_Community_Edition/">English</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<!------ end of the left (by default at least) column ------>
+
+
+
+	<div class="visualClear"></div> 
+<!------  start of footer  ------>
+<div id="footer">
+				<div id="f-poweredbyico"><a href="http://www.mediawiki.org/"><img src="/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" /></a><!--
+				<div id="f-poweredbyico"><a href="http://laptop.org/xo"><img src="http://wiki.laptop.org/images/4/40/G1G1thin_badge.gif" alt="Give One, Get One" /></a>
+				<div id="f-poweredbyico"><a href="http://laptop.org/xo"><img src="http://wiki.laptop.org/images/2/24/G1G1Logo-crop_badge.gif" alt="Give One, Get One" /></a> 
+-->
+</div>
+				<div id="f-copyrightico"><a href="http://wiki.laptop.org/go/OLPC:License"><img src="http://i.creativecommons.org/l/by/2.5/88x31.png" alt='Creative Commons Attribution 2.5' /></a></div>
+			<ul id="f-list">
+				<li id="lastmod"> Last edited on 03:58, 17 February 2017.</li>
+				<li id="viewcount">&gt;7,877 views of this page.  &nbsp; <i>One Laptop per Child</i> and the OLPC logos are trademarks of OLPC.</li>
+				<li id="numberofwatchingusers">[1&nbsp;watching&nbsp;users]</li>
+				<li id="copyright">Content is licensed under <a href="http://wiki.laptop.org/go/OLPC:License" class="external " title="http://wiki.laptop.org/go/OLPC:License">Creative Commons Attribution 2.5</a></li>
+				<li id="privacy"><a href="/go/OLPC:Privacy_policy" title="OLPC:Privacy policy">Privacy</a></li>
+				<li id="about"><a href="/go/OLPC:About" title="OLPC:About">About OLPC</a></li>
+				<li id="disclaimer"><a href="/go/OLPC:General_disclaimer" title="OLPC:General disclaimer">Disclaimers</a></li>
+<br/>
+<li style="color:#444">One Laptop per Child</li>
+<li style="color:#444"> &nbsp; &nbsp; </li>
+<li style="color:#444"> Hosted by <a href="http://www.gossamer-threads.com/about/">Gossamer Threads</a> </li>
+<li style="color:#444"> &nbsp; &nbsp; </li>
+<li style="color:#444">Contact us: <b>help@laptop.org</b> </li>
+			</ul>
+</div>  
+
+<script type="text/javascript"> if (window.runOnloadHook) runOnloadHook();</script>
+</div>
+<!-- Served in 0.075 secs. --><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-4975748-1";
+urchinTracker();
+</script>
+</body></html>

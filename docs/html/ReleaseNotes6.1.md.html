@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h1 id="release-notes-for-release-6.1">Release Notes for Release 6.1</h1>
+<p><strong>What's New?</strong></p>
+<ul>
+<li>Calibre -- A tool for managing a library of eBooks, modifyiing their file formats, adding search terms, and making them availabe online.</li>
+<li>Wordpress -- A content management system which gives students experience with editing wiki pages, blogs, menuing systems, and which is widely used.</li>
+<li>Dokuwiki -- An alternate wiki system, similar to wordpress, but less popular, which makes transferring wiki materials easy from one school server to another.</li>
+<li>Sugarizer -- Makes some of the sugar activities available to browser clients on laptops, and smart phones/tablets.</li>
+<li>CUPS -- Common Unix Printing System provides the ability to connect to and share network or USB connected printers.</li>
+</ul>
+<p><strong>What's Upgraded?</strong></p>
+<ul>
+<li>Moodle is now upgraded to version 3.1, the most recent (long term support) version that will be supported until May 2019.</li>
+<li>Elgg -- A social networking application is upgraded to 2.1.</li>
+<li>Owncloud -- Permits sharing of all kinds of content between clients of a local server that is not internet connected (version 9).</li>
+</ul>
+<p><strong>Do all these new Services Slow my Server down?</strong></p>
+<p>A service that is installed on your hard disk, but not enabled in the administrative console, will have no impact on computer speed (will not use cpu cycles, or occupy scarce memory resources). The XSCE default is to install everything, and only enable the few things which are essential for a server to operate.</p>
+<p>If you want to enable a service, you must browse to http://schoolserver.lan/admin, and click on configure, services enabled, and the appropriate checkbox. In addition, many services require additional content to be downloaded, which can also be accomplished by selecting the &quot;Install Content&quot; header button.</p>
+<p><strong>How Do I Install 6.1?</strong></p>
+<p>The install instructions have not changed much since release-6.0. Please refer to https://github.com/XSCE/xsce/wiki/XSCE-Installation for the overall process -- Noting the following:</p>
+<ul>
+<li><p>On FC22, add &quot;yum&quot; to the installs prior to running the ansible playbook i.e.</p>
+<pre><code>    yum install -y git yum ansible1.9
+    cd /opt
+    mkdir /opt/schoolserver
+    cd schoolserver
+    git clone https://github.com/XSCE/xsce --branch release-6.1 --depth 1
+    cd xsce
+    ./install-console</code></pre></li>
+</ul>
+</body>
+</html>

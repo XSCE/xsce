@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h1 id="xsce-networking-overview">XSCE Networking Overview</h1>
+<p>The schoolserver community edition has three modes of operation:</p>
+<ul>
+<li>Appliance</li>
+<li>Gateway</li>
+<li>LanController</li>
+</ul>
+<p>First one allows an schoolserver to behave like any other computer in the network, exposing the configured services. Can have a single network interface.</p>
+<p>Gateway mode allows for creating a local area network, including dhcpd, content filtering using squid and dansguardian and traffic shaping. Requires two or more network interface.</p>
+<p>LanController mode allows for creating a local area network, excluding dhcpd, content filtering using squid and dansguardian and traffic shaping. Can have a single network interface.</p>
+<p>The install by default finds the WAN device, defaulting to the &quot;Appliance&quot; mode. The install will try to find other devices for use with the LAN and if found defaults to &quot;Gateway&quot; mode. You need to make some adjustments to be able to use LanController as it will use all available network interfaces.</p>
+<h3 id="list-of-open-ports-services">List of open ports / services</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Protocol</th>
+<th align="center">Port</th>
+<th align="left">Service</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">TCP</td>
+<td align="center">22</td>
+<td align="left">sshd</td>
+</tr>
+<tr class="even">
+<td align="center">TCP</td>
+<td align="center">80</td>
+<td align="left">httpd-xs</td>
+</tr>
+<tr class="odd">
+<td align="center">TCP</td>
+<td align="center">631</td>
+<td align="left">cups</td>
+</tr>
+<tr class="even">
+<td align="center">TCP</td>
+<td align="center">873</td>
+<td align="left">xs-rsync (xinetd)</td>
+</tr>
+<tr class="odd">
+<td align="center">TCP</td>
+<td align="center">3000</td>
+<td align="left">kiwix-serve</td>
+</tr>
+<tr class="even">
+<td align="center">TCP</td>
+<td align="center">3128</td>
+<td align="left">squid / dansguardian</td>
+</tr>
+<tr class="odd">
+<td align="center">TCP</td>
+<td align="center">3130</td>
+<td align="left">squid</td>
+</tr>
+<tr class="even">
+<td align="center">TCP</td>
+<td align="center">5000</td>
+<td align="left">xs-authserver</td>
+</tr>
+<tr class="odd">
+<td align="center">TCP</td>
+<td align="center">4369,47893,5280,5222,5223</td>
+<td align="left">ejabberd-xs</td>
+</tr>
+<tr class="even">
+<td align="center">TCP</td>
+<td align="center">8000</td>
+<td align="left">sugar-stats-server</td>
+</tr>
+<tr class="odd">
+<td align="center">TCP</td>
+<td align="center">8008</td>
+<td align="left">kalite-serve</td>
+</tr>
+<tr class="even">
+<td align="center">TCP</td>
+<td align="center">8080</td>
+<td align="left">idmgr</td>
+</tr>
+<tr class="odd">
+<td align="center">TCP</td>
+<td align="center">8089</td>
+<td align="left">sugarizer</td>
+</tr>
+<tr class="even">
+<td align="center">TCP</td>
+<td align="center">27018</td>
+<td align="left">mongodb</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>
