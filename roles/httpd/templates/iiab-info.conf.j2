@@ -1,5 +1,10 @@
-Alias /iiab-info/ {{ xsce_dir }}/docs/html/
+Alias /iiab-info/ /opt/schoolserver/xsce/docs/html/
 
-<directory {{ xsce_dir }}/docs/html>
+<directory /opt/schoolserver/xsce/docs/html>
+   Options +Indexes
+   IndexOptions FancyIndexing
+   IndexOptions HTMLTable
+   IndexOptions SuppressColumnsorting
+   IndexOptions Charset=UTF-8
    Require all granted
 </directory>
