@@ -8,4 +8,7 @@
   tags:
     - download2
 
+- name: copy the menu date the the active doc-root
+  command: "{{ iiab_menu_dir }}/cp-menus"
+  when: iiab_menu_install
 
