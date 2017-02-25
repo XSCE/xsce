@@ -39,8 +39,10 @@ for f in `ls ../docs`; do
     sed -i -e "s|$REPO/$REPONAME/blob/release-.*/\(.*\)\">|../\1.html\">|" ../docs/html/online-help-offline/$FTRIMMED.html
 done
 
-# copy the faq 
+# copy the faq and other things
 wget -c http://wiki.laptop.org/go/XS_Community_Edition/FAQ -P ../docs/html
+wget -c http://wiki.laptop.org/go/XS_Community_Edition/Security -P ../docs/html
+wget -c http://wiki.laptop.org/go/XS_Community_Edition/local_vars.yml -P ../docs/html
 
 # fetch the embedded help pages from the admin console
 #for f in `ls ../roles/xsce-admin/files/console/help`; do
