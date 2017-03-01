@@ -1,3 +1,5 @@
+# Assessment logic removed 3/1/2017 TFM
+
 # Assume all XOs are F18 and nothing else is
 
 - name: Calc kalite db file name F18
@@ -41,15 +43,12 @@
 
 - include: setup-f18.yml
   when: not kalite_installed.stat.exists and is_F18
- 
+
 - include: setup.yml
   when: not kalite_installed.stat.exists and not is_F18
 
-- include: assessment.yml
-  when: not is_F18
-
 - include: enable.yml
-   
+
 - name: Add kalite to service list
   ini_file: dest='{{ service_filelist }}'
             section=kalite
