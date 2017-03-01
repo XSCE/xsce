@@ -18,8 +18,3 @@
      KALITE_HOME: "{{ kalite_root }}"
   async: 900
   poll: 10
-
-- name: Kluge to get kalite docs in 0.16.x
-  command: pip install -U --force-reinstall ka-lite
-           creates=/usr/share/kalite/docs/_build/html/installguide/install_all.html
-  

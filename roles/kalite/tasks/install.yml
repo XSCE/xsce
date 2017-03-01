@@ -9,15 +9,15 @@
     - download
   when: not {{ use_cache }} and not {{ no_network }} and ansible_distribution == "CentOS"
 
-# Version 0.16.x
-# pip show kalite 
-# Requires: docopt, South, django-js-reverse, ply, slimit, six, django-appconf, 
+# Version 0.17.x
+# pip show kalite
+# Requires: docopt, South, django-js-reverse, ply, slimit, six, django-appconf,
 # peewee, python-dateutil, django-dbbackup
 
 # from /usr/lib/python2.7/site-packages/ka_lite-0.16.0-py2.7.egg-info/requires.txt
 # docopt>=0.6,<0.7
 # South==0.8.4
-# django-js-reverse==0.5.0 ## no rpm 
+# django-js-reverse==0.5.0 ## no rpm
 # ply==3.4
 # slimit==0.8.1
 # six==1.9.0
@@ -27,27 +27,16 @@
 # django-dbbackup==2.3.2   ## no rpm
 
 - name: Downoad kalite with pip
-  pip: name=ka-lite version={{ kalite_version }}       
+  pip: name=ka-lite version={{ kalite_version }}
        extra_args="--download {{ pip_packages_dir }}"
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
 
-- name: Download khan assessments
-  shell: wget {{ khan_assessment_url }} -c -P{{ downloads_dir }}
-  async: 2000
-  tags:
-    - download2
-
-- name: wait until the file becomes available
-  wait_for: path={{ downloads_dir }}/khan_assessment.zip
-            state=present
-            timeout=2000
-
 - name: Install kalite with pip
-  pip: name=ka-lite version=0.16
+  pip: name=ka-lite version={{ kalite_version }}
        extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
-  
+
 - name: Default is to have cronserve started with kalite
   set_fact:
      job_scheduler_stanza: ""
