@@ -32,7 +32,10 @@ iface br0 inet static
     dns-search {{ xsce_domain }}
 auto {{ discovered_wan_iface }}
 {% if gui_static_wan == false %}
-iface {{ discovered_wan_iface }} inet dhcp
+allow-hotplug {{ discovered_wan_iface }}
+iface {{ discovered_wan_iface }} inet manual
+   pre-up   ifconfig $IFACE up
+   pre-down ifconfig $IFACE down
 {% else %} # gui_static_wan_ip is set 
 iface {{ discovered_wan_iface }} inet static
     address {{ gui_static_wan_ip }}
