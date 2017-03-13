@@ -53,7 +53,9 @@ if (file_exists("/var/run/xsce-cmdsrv.pid")) {
 $time_end = microtime(true);
 $time = $time_end - $time_start;
 
-$reply = $reply . ',"Resp_time": "' . $time . '"}';
+if( strpos( $reply, "Error" ) == false ) {
+  $reply = $reply . ',"Resp_time": "' . $time . '"}';
+}
 
 // $time = microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"]; php 5.4 up
 
