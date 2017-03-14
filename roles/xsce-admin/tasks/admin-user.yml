@@ -7,8 +7,13 @@
   group: name=wheel
          state=present
 
+- name: Create a sudo group
+  group: name=sudo
+         state=present
+  when: is_redhat
+
 - name: Add user to wheel group
-  user: name={{ xsce_admin_user }} groups=wheel
+  user: name={{ xsce_admin_user }} groups=wheel,sudo
   
 - name: Create root .ssh
   file: path=/root/.ssh
