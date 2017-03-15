@@ -15,7 +15,7 @@ iface {{ discovered_wan_iface }} inet dhcp
     pre-up ip link set br0 down && brctl delbr br0
 {% else %} # gui_static_wan_ip is set 
 iface {{ discovered_wan_iface }} inet static
-    pre-up ip link set br0 down && brctl delbr br0
+#    pre-up ip link set br0 down && brctl delbr br0
     address {{ gui_static_wan_ip }}
     netmask {{ gui_static_wan_netmask }}
     gateway {{ gui_static_wan_gateway }}
