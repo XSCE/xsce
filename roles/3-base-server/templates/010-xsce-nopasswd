@@ -1,1 +1,1 @@
-xsce-admin ALL=(ALL) NOPASSWD: ALL
+xsce-admin ALL= NOPASSWD: ALL
