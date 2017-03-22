@@ -41,9 +41,8 @@
               state=present
               dest=/etc/sudoers
 
-- name: remove the line which lets wheel sudo without password
-  lineinfile: regexp='^%wheel.*NOPASSWD.*' 
-              line='%wheel ALL=(ALL:ALL) ALL'
+- name: lets wheel sudo without password
+  lineinfile: line='%wheel ALL=(ALL:ALL) NOPASSWD ALL'
               dest=/etc/sudoers
 
 - name: remove the line which requires tty
