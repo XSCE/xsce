@@ -1,18 +1,20 @@
-## Welcome to the xsce wiki!
+## Welcome to the Internet-in-a-Box (IIAB/XSCE) Wiki!
 
-The best place to start is [XSCE Installation](https://github.com/XSCE/xsce/wiki/XSCE-Installation) which has detailed information on installing the server by several different means.
+The best place to start is [IIAB Installation](https://github.com/XSCE/xsce/wiki/IIAB-Installation) which has detailed information on installing the server in several different ways.
 
-After installation, the next step is [XSCE Configuration.](https://github.com/XSCE/xsce/wiki/XSCE-Config)
+You can also read about [IIAB Architecture](https://github.com/XSCE/xsce/wiki/IIAB-Architecture).
 
-The Administrative Console provides tools for selecting and downloading content. After that is done, the user will probably want to provide a [menu or portal](https://github.com/XSCE/xsce/wiki/XSCE-Menuing) page for direct access to the selected content.
+See [IIAB Platforms](https://github.com/XSCE/xsce/wiki/IIAB-Platforms) for platform specific information on the operating system and **partitioning scheme**.
 
-See [XSCE Platforms](https://github.com/XSCE/xsce/wiki/XSCE-Platforms) for platform specific information on the operating system and **partitioning scheme**.
+After installation, the Admin Console provides tools for selecting and downloading content. After that is done, the user will probably want to provide a [menu or portal](https://github.com/XSCE/xsce/wiki/IIAB-Menuing) page for direct access to the selected content.
 
-[XSCE Networking Overview](https://github.com/XSCE/xsce/wiki/XSCE-Networking-Overview) provides the specifics of network setup including ports open.
+[IIAB Networking](https://github.com/XSCE/xsce/wiki/IIAB-Networking) overviews common network setups/topologies and TCP/UDP ports.
 
-There is a collection of Frequently Asked Questions at [schoolserver.org/faq](http:schoolserver.org/faq)
+N.B.: Internet-in-a-Box was formerly known as the OLPC [School Server Community Edition](http://schoolserver.org) (XSCE).
+
+See our [FAQ (Frequently Asked Questions)](http://schoolserver.org/faq) for more answers arising from our http://IIAB.io forums, towards building your very own powerful digital library!
 
 ## Our Evolution
- * [Release Notes 6.2](https://github.com/XSCE/xsce/blob/release-6.2/ReleaseNotes6.2.md)
+ * [Release Notes 6.2](https://github.com/XSCE/xsce/wiki/IIAB-6.2-Release-Notes)
  * [Release Notes 6.1](https://github.com/XSCE/xsce/blob/release-6.2/ReleaseNotes6.1.md)
  * [Release Notes 6.0](https://github.com/XSCE/xsce/blob/release-6.2/ReleaseNotes6.0.md)

@@ -583,3 +583,353 @@ _uacct = "UA-4975748-1";
 urchinTracker();
 </script>
 </body></html>
+ideos!) being made available at <a href="http://box/info" class="external free" title="http://box/info" rel="nofollow">http://box/info</a></b>
+</p><p>The earlier <a href="https://docs.google.com/document/d/1Ez1H2LYrkqeXR_r5T93CMdmx9CeTJp_vC-IDBGam1Bc" class="external text" title="https://docs.google.com/document/d/1Ez1H2LYrkqeXR_r5T93CMdmx9CeTJp_vC-IDBGam1Bc" rel="nofollow">XSCE 5.1 + Internet-in-a-Box Install Doc for Intel NUC</a> from 2015 can sometimes be very useful for hardware implementers.
+</p><p>Also see George Hunt's foundational collection of XSCE (School Server Community Edition) docs from 2012-2015 at <a href="http://schoolserver.wordpress.com" class="external free" title="http://schoolserver.wordpress.com" rel="nofollow">http://schoolserver.wordpress.com</a>
+</p><p>Finally, <a href="https://twitter.com/m_anish" class="external text" title="https://twitter.com/m_anish" rel="nofollow">Anish Mangal</a> hopes to formally write up his <a href="https://drive.google.com/drive/folders/0B2qGKOFYikSuT0dGRWZNWlVLUmM" class="external text" title="https://drive.google.com/drive/folders/0B2qGKOFYikSuT0dGRWZNWlVLUmM" rel="nofollow">deployment recommendations / 8-part training materials</a> based on his experiences setting up IIAB/XSCE in <a href="http://bhagmalpur.wordpress.com/" class="external text" title="http://bhagmalpur.wordpress.com/" rel="nofollow">Northern India</a>, while <a href="http://unleashkids.org" class="external free" title="http://unleashkids.org" rel="nofollow">http://unleashkids.org</a> with <a href="http://kidsoncomputers.org" class="external free" title="http://kidsoncomputers.org" rel="nofollow">http://kidsoncomputers.org</a> document the human experience around Haiti/Mexico deployments and beyond.
+</p><p>Please suggest improvements to this FAQ where you can, and check back to reread at a later date, Thank You!
+</p>
+<a name="How_can_I_remotely_manage_my_Internet-in-a-Box.3F" id="How_can_I_remotely_manage_my_Internet-in-a-Box.3F"></a><h2> <span class="mw-headline"> How can I remotely manage my Internet-in-a-Box? </span></h2>
+<p>Large-scale implementers should consider rolling their own <a href="https://en.wikipedia.org/wiki/OpenVPN" class="external text" title="https://en.wikipedia.org/wiki/OpenVPN" rel="nofollow">OpenVPN</a> for all remote administration needs, or paying a management service like <a href="https://www.remot3.it/" class="external text" title="https://www.remot3.it/" rel="nofollow">remot3.it</a> (formerly known as <a href="https://www.weaved.com/raspberry-pi-remote-connection/" class="external text" title="https://www.weaved.com/raspberry-pi-remote-connection/" rel="nofollow">Weaved</a>).
+</p><p>Small-scale implementers may consider XSCENET, which is a minimal remote management solution (with a much more basic remote console, enabling ssh and http among a trusted group).  Contact holt @ laptop.org for details.  If you are using XSCENET, the "xs-remote-on" command is generally equivalent to "systemctl enable openvpn@xscenet; systemctl start openvpn@xscenet" and the "xs-remote-off" command is generally equivalent to "systemctl disable openvpn@xscenet; systemctl stop openvpn@xscenet".  If you do not yet have these commands, you can implement them as aliases within /root/.bashrc
+</p><p>NOTE: Developers' ssh keys come included with <a href="http://tinyurl.com/iiabimages" class="external text" title="http://tinyurl.com/iiabimages" rel="nofollow">several install images</a>, to enable remote support during Beta programs and similar.  Read "<a href="#What_security_tips_exist.3F" title="">What security tips exist?</a>" if you want instructions to remove these keys.
+</p><p>Those with a graphical environment (X Windows) on their Internet-in-a-Box often take advantage of <a href="https://en.wikipedia.org/wiki/TeamViewer" class="external text" title="https://en.wikipedia.org/wiki/TeamViewer" rel="nofollow">TeamViewer</a> for full visual/remote control.  This can be priceless when mentoring/learning at a distance, thanks to TeamViewer's screen-sharing, keyboard-sharing and mouse-sharing.  Simply <a href="https://www.teamviewer.com/en/download/linux/" class="external text" title="https://www.teamviewer.com/en/download/linux/" rel="nofollow">install TeamViewer</a>, which by default randomizes TeamViewer's password (needed for remote access) every time TeamViewer is launched, preserving local operator control.
+</p><p>Or enable TeamViewer's fully "unattended access" setting a "permanent" password for remote access within: Connection menu -&gt; Setup unattended access.  This is also available under: Extras menu -&gt; Options &gt; Security -&gt; Password.
+</p><p><b>Raspberry Pi:</b> If you have the full Raspbian Pixel (OS with full graphical environment) strongly consider downloading then installing the minimal <a href="https://pages.teamviewer.com/published/raspberrypi/" class="external text" title="https://pages.teamviewer.com/published/raspberrypi/" rel="nofollow">TeamViewer 11 Beta</a> as follows:
+</p>
+<pre>   sudo su -
+   cd /home/xsce-admin/Downloads   (or wherever you saved it)
+</pre>
+<p>"apt install &lt;file&gt;" as recommended for Debian (at teamviewer.com) does NOT work; instead use the following from <a href="https://www.raspberrypi.org/forums/viewtopic.php?f=63&amp;t=156991" class="external free" title="https://www.raspberrypi.org/forums/viewtopic.php?f=63&amp;t=156991" rel="nofollow">https://www.raspberrypi.org/forums/viewtopic.php?f=63&amp;t=156991</a>&nbsp;:
+</p>
+<pre>   dpkg -i teamviewer-host_11.0.63329_armhf.deb
+   apt-get -f install   (then "Y" to install the 7 missing packages; Teamviewer app/license popup will launch automatically)
+</pre>
+<p>TeamViewer's "unattended access" can then be enabled under Options (top-right of screen) or via TeamViewer's "gear" icon (in either case, Security -&gt; Password).  WARNING: while TeamViewer's unattended access is reliable on larger systems, currently it has a glitch on Raspberry Pi, whereby it "falls asleep" sometime after boot.  PARTIAL WORKAROUND: local operator (if there is one!) can re-awaken TeamViewer by clicking on its icon in the top-right of the screen, until it's fully restored to the foreground (sometimes takes a few tries, until remote connections are accepted).  Or reboot&nbsp;:)
+</p><p>See: <a href="#What_are_the_default_passwords.3F" title="">What are the default passwords?</a><br />
+See: <a href="#What_security_tips_exist.3F" title="">What security tips exist?</a>
+</p>
+<a name="What_are_the_best_places_for_community_support.3F" id="What_are_the_best_places_for_community_support.3F"></a><h2> <span class="mw-headline"> What are the best places for community support? </span></h2>
+<p>Start with <a href="http://IIAB.io" class="external free" title="http://IIAB.io" rel="nofollow">http://IIAB.io</a> forums, <a href="https://webchat.freenode.net/?channels=#schoolserver" class="external text" title="https://webchat.freenode.net/?channels=#schoolserver" rel="nofollow">live chat on irc</a>, or post to one of these 2 mailing lists:
+</p>
+<ul><li> <a href="https://groups.google.com/group/unleashkids" class="external free" title="https://groups.google.com/group/unleashkids" rel="nofollow">https://groups.google.com/group/unleashkids</a> &nbsp; FOCUS: teachers/content/learning/libraries.
+</li><li> <a href="http://lists.laptop.org/pipermail/server-devel/" class="external free" title="http://lists.laptop.org/pipermail/server-devel/" rel="nofollow">http://lists.laptop.org/pipermail/server-devel/</a> &nbsp; FOCUS: technology/networking/upgrading.
+</li></ul>
+<p>Describe your issue in full (with context) so that others may help &mdash; including screenshots if possible, Thanks!
+</p><p>If you need live (irc) chat support from global volunteers, but have intermittent Internet, consider an intermediary computer (<a href="https://en.wikipedia.org/wiki/BNC_(software)#IRC" class="external text" title="https://en.wikipedia.org/wiki/BNC_(software)#IRC" rel="nofollow">irc bouncer</a>).  An irc bouncer accumulates irc responses when you're offline.  This enables you to follow the flow of conversations that are ongoing 24x7, when you return online.  Finally, if you're a regular contributor to Internet-in-a-Box, we can help arrange an irc bouncer for you.  If so please get in touch, and please see <a href="https://docs.google.com/document/d/1LofncyUS90gO8DFgDJZKLf2DPnEUlJe0MVoa5-i7L8A/edit" class="external text" title="https://docs.google.com/document/d/1LofncyUS90gO8DFgDJZKLf2DPnEUlJe0MVoa5-i7L8A/edit" rel="nofollow">Reno McKenzie's irc instructions</a>.
+</p><p>CONTACT: if need to get in touch regarding strategic alliances or partnerships with Internet-in-a-Box, please email Adam Holt (holt @ laptop.org).
+</p><p>See: <a href="#What_are_the_default_passwords.3F" title="">What are the default passwords?</a>
+</p>
+<a name="How_can_I_help.3F" id="How_can_I_help.3F"></a><h2> <span class="mw-headline"> How can I help? </span></h2>
+<p>Great you asked, this is the question!
+</p><p>Take a look at our quasiweekly <b><a href="http://tinyurl.com/iiabminutes" class="external text" title="http://tinyurl.com/iiabminutes" rel="nofollow">Agenda/Minutes</a></b> to see what others are working on, after getting to know <a href="http://iiab.io" class="external free" title="http://iiab.io" rel="nofollow">http://iiab.io</a> forums, as we prepare to refresh out list of <a href="/go/XS_Community_Edition/Microtasks" title="XS Community Edition/Microtasks">volunteer microtasks</a> in 2017!
+</p><p>Serious digital librarians are invited us to join us during our <a href="http://iiab.io/t/offliners-anonymous-crushing-it-content-yet/48" class="external text" title="http://iiab.io/t/offliners-anonymous-crushing-it-content-yet/48" rel="nofollow">content engineering calls,</a> typically on the 1st and 3rd Saturday of each month.
+</p><p><u><i>Note this section below will be overhauled starting March/April 2017, as our work accelerates into important new areas.</i></u>
+</p><p>Take seriously the <a href="/go/XS_Community_Edition/Features#Features_Planned" title="XS Community Edition/Features">"Features Planned"</a> section of our <a href="/go/XS_Community_Edition/Features" title="XS Community Edition/Features">Features</a> page helping schools globally getting their highest priorities implemented.
+</p><p>Schools greatly benefit from <a href="/go/XS_Community_Edition/0.4/Testing" title="XS Community Edition/0.4/Testing">testing on diverse hardware</a> if you can help!  Online contribution are strongly welcome, with in-person human interaction at our <a href="/go/XS_Community_Edition/7.0/Sprint" title="XS Community Edition/7.0/Sprint" class="mw-redirect">quasi-quarterly face-to-face meetups</a> advancing our education efforts faster yet.
+</p><p>Finally, organizing everyone's <a href="/go/XS_Community_Edition/Vision" title="XS Community Edition/Vision">many ideas</a>, <a href="/go/XS_Community_Edition/Use_Cases" title="XS Community Edition/Use Cases">use cases</a> and <a href="#What_technical_documentation_exists.3F" title="">docs</a> is real work, and as such we very strongly welcome savvy communicators!
+</p><p>Please also suggest <i>your own ideas</i> on mailing list <a href="http://lists.laptop.org/listinfo/server-devel" class="external text" title="http://lists.laptop.org/listinfo/server-devel" rel="nofollow">server-devel@lists.laptop.org</a>, or contact <a href="http://wiki.laptop.org/go/User:Holt" class="external text" title="http://wiki.laptop.org/go/User:Holt" rel="nofollow">Adam Holt</a> (holt @ laptop.org), thanks!
+</p>
+<a name="Where_can_older_versions_of_IIAB.2FXSCE_be_found.3F" id="Where_can_older_versions_of_IIAB.2FXSCE_be_found.3F"></a><h2> <span class="mw-headline"> Where can older versions of IIAB/XSCE be found? </span></h2>
+<p>Starting around late March 2017, IIAB code will be available off of: <a href="http://github.com/iiab/iiab" class="external free" title="http://github.com/iiab/iiab" rel="nofollow">http://github.com/iiab/iiab</a>
+</p><p>Prior to around late March 2017, XSCE code was available off of: <a href="http://github.com/xsce/xsce" class="external free" title="http://github.com/xsce/xsce" rel="nofollow">http://github.com/xsce/xsce</a>
+</p><p>Release History:
+</p>
+<ul><li> <a href="/go/XS_Community_Edition/6.2" title="XS Community Edition/6.2">IIAB/XSCE 6.2</a> expected in March 2017.
+</li><li> <a href="/go/XS_Community_Edition/6.1" title="XS Community Edition/6.1">XSCE 6.1</a> was released <a href="http://lists.laptop.org/pipermail/server-devel/2016-September/007961.html" class="external text" title="http://lists.laptop.org/pipermail/server-devel/2016-September/007961.html" rel="nofollow">September 22, 2016</a>.
+</li><li> <a href="/go/XS_Community_Edition/6.0" title="XS Community Edition/6.0">XSCE 6.0</a> was released <a href="http://lists.laptop.org/pipermail/server-devel/2016-March/007854.html" class="external text" title="http://lists.laptop.org/pipermail/server-devel/2016-March/007854.html" rel="nofollow">March 27, 2016</a>, following our <a href="/go/XS_Community_Edition/6.0/Sprint" title="XS Community Edition/6.0/Sprint"> Toronto Summit</a>, including <a href="/go/XS_Community_Edition/Features" title="XS Community Edition/Features">many new features</a> for educators and administrators.  For example <a href="http://en.wikipedia.org/wiki/Elgg_%28software%29" class="external text" title="http://en.wikipedia.org/wiki/Elgg_%28software%29" rel="nofollow">Elgg</a> for students and <a href="http://en.wikipedia.org/wiki/OwnCloud" class="external text" title="http://en.wikipedia.org/wiki/OwnCloud" rel="nofollow">ownCloud</a> for teachers, were tested in Malaysia starting March 2015.
+</li><li> <a href="/go/XS_Community_Edition/5.1" title="XS Community Edition/5.1">XSCE 5.1</a> was released <a href="http://lists.laptop.org/pipermail/server-devel/2014-July/007464.html" class="external text" title="http://lists.laptop.org/pipermail/server-devel/2014-July/007464.html" rel="nofollow">July 27, 2014</a>.  Official <a href="https://github.com/XSCE/xsce/blob/master/ReleaseNotes5.1.rst" class="external text" title="https://github.com/XSCE/xsce/blob/master/ReleaseNotes5.1.rst" rel="nofollow">release notes</a> outlined significant steps forward: Samba filesharing, XOVis visualization of student work patterns, vnStat traffic-monitoring console, better Internet-in-a-Box searchability, customizable web-filtering requested by many schools, OpenVPN remote access, and a new module for automated field-testing.
+</li><li> <a href="/go/XS_Community_Edition/5.0" title="XS Community Edition/5.0">XSCE 5.0</a> was released <a href="/go/XS_Community_Edition/5.0/Road_Map" title="XS Community Edition/5.0/Road Map">Jan 22, 2014</a> introducing <a href="/go/XS_Community_Edition/5.0/Ansible_Progress" title="XS Community Edition/5.0/Ansible Progress">Ansible progress</a> for developers especially (<a href="http://lists.laptop.org/pipermail/server-devel/2014-January/007148.html" class="external text" title="http://lists.laptop.org/pipermail/server-devel/2014-January/007148.html" rel="nofollow">announcement</a>).  Compare XSCE 5.0 RC 1 which was released <a href="http://lists.laptop.org/pipermail/server-devel/2013-December/007031.html" class="external text" title="http://lists.laptop.org/pipermail/server-devel/2013-December/007031.html" rel="nofollow">Dec 17, 2013</a>, formerly known as 0.5 RC 1.
+</li><li> <a href="/go/XS_Community_Edition/0.4" title="XS Community Edition/0.4">XSCE 0.4</a> was released <a href="/go/XS_Community_Edition/0.4/Road_Map" title="XS Community Edition/0.4/Road Map">Oct 3, 2013</a>.
+</li><li> <a href="/go/XS_Community_Edition/0.3" title="XS Community Edition/0.3">XSCE 0.3</a> was released <a href="/go/XS_Community_Edition/0.3/Road_Map" title="XS Community Edition/0.3/Road Map">June 6, 2013</a>.
+</li></ul>
+<p>Such older RPM builds from 2013 might be available from <a href="http://archive.org" class="external free" title="http://archive.org" rel="nofollow">http://archive.org</a> and similar, at your own risk, using their original URLs: <a href="http://xsce.activitycentral.com/repos/xsce/devel/RPMS/noarch/?C=M;O=D" class="external text" title="http://xsce.activitycentral.com/repos/xsce/devel/RPMS/noarch/?C=M;O=D" rel="nofollow">http://xsce.activitycentral.com/repos/xsce/devel</a>.
+</p><p>Or consider main repo definition: <a href="http://xsce.activitycentral.com/repos/xsce-devel.repo" class="external free" title="http://xsce.activitycentral.com/repos/xsce-devel.repo" rel="nofollow">http://xsce.activitycentral.com/repos/xsce-devel.repo</a>
+</p>
+<a name="How_did_IIAB.2FXSCE.27s_design_evolve.3F" id="How_did_IIAB.2FXSCE.27s_design_evolve.3F"></a><h2> <span class="mw-headline"> How did IIAB/XSCE's design evolve? </span></h2>
+<p>Here's our brief-but-growing participatory design archive / lineage:
+</p>
+<ul><li> Our earliest work is based on <a href="/go/School_Server" title="School Server" class="mw-redirect">One Laptop Per Child's original XS design and implementation</a> which arose in <a href="http://wiki.laptop.org/index.php?title=School_server&amp;oldid=23045" class="external text" title="http://wiki.laptop.org/index.php?title=School_server&amp;oldid=23045" rel="nofollow">January 2007</a> to be used in <a href="http://olpcMAP.net" class="external text" title="http://olpcMAP.net" rel="nofollow">many countries</a>, thanks to John Watlington and Daniel Drake.
+</li><li> Jerry Vonau greatly cleaned up XS(CE) networking, from approximately 2010 onwards, so that vital new hardware and networking topologies became possible.
+</li><li> After the XS Community Edition grassroots team came together during the middle of 2012, using the XSCE name selected by George Hunt, Sridhar Dhanapalan wrote the <a href="https://docs.google.com/document/pub?id=1dnhU2F6EntepVXTgN8QpkME8fZVUuPjcCoMUfAVKbcc" class="external text" title="https://docs.google.com/document/pub?id=1dnhU2F6EntepVXTgN8QpkME8fZVUuPjcCoMUfAVKbcc" rel="nofollow">Design Document</a> in September 2012.
+</li><li> Field implementer Tony Anderson expanded on these ideas laying out some <a href="/go/XS_Community_Edition/Use_Cases" title="XS Community Edition/Use Cases">Use Cases</a> in October 2012, while many others contributed to a broadening roadmap of <a href="/go/XS_Community_Edition/Features" title="XS Community Edition/Features">features</a>.
+</li><li> <a href="https://github.com/iiab/internet-in-a-box" class="external text" title="https://github.com/iiab/internet-in-a-box" rel="nofollow">Internet-in-a-Box</a> (also built by volunteer professional, including CalTech and JPL software engineers) was founded separately by Braddock Gaskill in this same <a href="https://github.com/iiab/internet-in-a-box/commit/9c3a5ab5a7a19e9eb084cc0ddeac942d66dbaa69" class="external text" title="https://github.com/iiab/internet-in-a-box/commit/9c3a5ab5a7a19e9eb084cc0ddeac942d66dbaa69" rel="nofollow">mid-2012</a> timeframe, in Southern California.
+</li><li> David Farning's Activity Central team supported several developers to work on XSCE during the 2013 and 2014 timeframe, including Anish Mangal, Anna Schoolfield and others!
+</li><li> German Ruiz at Fundación Zamora Terán expanded support for XSCE in Nicaragua, Columbia, Dominican Republic and Honduras (etc), as the natural successor to OLPC's original XS.
+</li><li> The XSCE project embraced the Internet-in-a-Box name and IIAB's underlying OpenStreetMap work increasingly from 2013 onwards, until formally adopting the Internet-in-a-Box name (IIAB) in early 2017.
+</li><li> Beginning in 2014, the XSCE project greatly increased its content collaboration with Kiwix.org and RACHEL (Remote Area Hotspot for Educational and Learning), thanks to Tim Moody.
+</li></ul>
+<p><a href="/go/XS_Community_Edition#Our_History_.26_Inspiration" title="XS Community Edition">Community history</a> is vital to all seeking to avoid reinventing mistakes of the past, thanks to Everyone's thoughtful input past &amp; present!
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 35/1000000
+Post-expand include size: 339/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:55591-0!1!0!!en!2!edit=0 and timestamp 20170322035650 -->
+<div class="printfooter">
+Retrieved from "<a href="http://wiki.laptop.org/go/XS_Community_Edition/FAQ">http://wiki.laptop.org/go/XS_Community_Edition/FAQ</a>"</div>
+						<!-- end content -->
+			<div class="visualClear"></div>
+		</div>
+	</div>
+</div>
+<!------  end of main column  ------>
+
+<!------  start of sidebar column  ------>
+		<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/go/XS_Community_Edition/FAQ">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="/index.php?title=Talk:XS_Community_Edition/FAQ&amp;action=edit&amp;redlink=1">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="/index.php?title=XS_Community_Edition/FAQ&amp;action=edit">View source</a></li>
+				 <li id="ca-history"><a href="/index.php?title=XS_Community_Edition/FAQ&amp;action=history">History</a></li>
+		</ul>
+	</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			<li id="pt-search" class="active"> 
+ <script> function clearText(f){ if (f.defaultValue==f.value) f.value = "" } </script>
+			<div id="top-forms" style="float:left; padding: 0px 0px 0px 11.3em;">
+                <table cellpadding=0 cellspacing=0 style="background-color:transparent;"><tr><td style="float:left; background-color:#ffe;" valign="top"><form 
+action="http://www.google.com/translate" method="POST" name="translate"><select name="langpair" style="border:0; font-size: 11px; font-style:normal; width:6.8em; background:#ffffee" onchange="document.translate.submit();"><option value="" style="text-align:center; font-style:normal; font-weight:bold;"> translate</option><option 
+value="en|es">English to Spanish</option><option
+value="en|pt">English to Portuguese</option><option 
+value="en|ko">English to Korean</option><option 
+value="en|ar">English to Arabic</option><option 
+value="en|fr">English to French</option><option 
+value="en|ru">English to Russian</option><option 
+value="en|zh-CN">English to Chinese (Simplified)</option><option 
+value="en|zh-TW">English to Chinese (Traditional)</option><option 
+value="en|de">English to German</option><option 
+value="en|it">English to Italian</option><option 
+value="en|ja">English to Japanese</option><option 
+value="es|en">Spanish to English</option><option
+value="pt|en">Portuguese to English</option><option
+value="ko|en">Korean to English</option><option
+value="fr|en">French to English</option>
+</select>
+		<input type="hidden" name="u" id="url" 
+value="http://wiki.laptop.org/go//index.php?title=XS_Community_Edition/FAQ&amp;oldid=299524" 
+dir="ltr" />
+<!-- value="http://wiki.laptop.org/go/" -->
+		<input type="hidden" name="hl" value="en">
+		<input type="hidden" name="ie" value="UTF8">
+		</form></td>
+<!--  hypothesis: most new wiki users never edit; really want to subscribe.  
+      (find a way to show only once per anon session) 
+                <td style="padding:0px 0px 0px 10px; background-color:transparent;" valign="top"><form 
+action="http://visitor.constantcontact.com/d.jsp" id="subscribewiki" method="post" name="ccoptin" 
+target="_blank" style="border:0; padding:0px 2px 0px 2px; margin-bottom:16px;"><input 
+type="text" size="80px" id="email" name="ea2" onfocus="clearText(this)" value="enter your email" style="border:0; margin-bottom:10px; padding:1px 2px 0px 2px; font-size: 11px; font-style:normal; width:100px; height:18px; background:#ffffee; color:#999;" /><button 
+type="submit" id="subscribeSubmit" name="go" style="border:1px solid #ccc; padding:0px 0px 8px 0px; height:18px; font-size:10px; color:#666;" value="Join">subscribe</button>
+                <input type="hidden" name="m" value="1102296509992" />
+                <input type="hidden" name="p" value="oi" />
+            </form></td> 
+-->
+			</tr></table>
+			</div>
+			</li>
+				<li id="pt-login"><a href="/index.php?title=Special:UserLogin&amp;returnto=XS_Community_Edition/FAQ">Log in</a></li>
+				<li id="pt-openidlogin"><a href="/index.php?title=Special:OpenIDLogin&amp;returnto=XS_Community_Edition/FAQ">Login with OpenID</a></li>
+			</ul>
+
+		</div>
+	</div>
+	<div id="p-logo" class="portlet" >
+		<a style="padding:5px 20px 0 0; background-image: url(/skins/common/images/OLPC_wiki_logo.png);" href="/go/The_OLPC_Wiki" title="The OLPC Wiki"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div id="p-search" class="portlet">
+		<h5 id="p-search"><label for="searchInput">Search</label></h5>
+<!--
+	 	<form action="http://google.com/custom" id="googlesearchform"><div>
+		 <input style="font-style:normal; padding-left:4px; color:blue; background:#ffffcc;" id="searchInput" name="q" type="text" onfocus="clearText(this)" value="Google search" />
+		 <input type="hidden" name="hl" value="en">
+		 <input type="hidden" name="domains" value="wiki.laptop.org">
+		 <input type="hidden" name="sitesearch" value="wiki.laptop.org">
+			</div></form>
+-->
+                <div id="searchBody-G" class="pBody">
+                        <div id="cse-search-form" style="width: 115%; padding-left:7px;">Loading</div>
+                        <script src="http://www.google.com/jsapi" type="text/javascript"></script>
+                        <script type="text/javascript"> 
+                          google.load('search', '1', {language : 'en'});
+                            google.setOnLoadCallback(function() {
+                                    var customSearchControl = new google.search.CustomSearchControl('011382939614944835298:qbypfcvcgvi');
+                                        customSearchControl.setResultSetSize(google.search.Search.FILTERED_CSE_RESULTSET);
+                                        var options = new google.search.DrawOptions();
+                                            options.enableSearchboxOnly("http://www.google.com/cse?cx=011382939614944835298:qbypfcvcgvi");    
+                                            customSearchControl.draw('cse-search-form', options);
+                                              }, true);
+                        </script>
+                    <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
+                    <style type="text/css">
+                      input.gsc-input {
+                        border-color: #BCCDF0;
+                      }
+                      input.gsc-search-button {
+                        border-color: #ffffff;
+                        background-color: #ffffff;
+                        color: #ffffff;
+                        font-size: 0px;
+                        border: 0px;
+                      }
+                      input.gsc-clear-button {
+                        color: #ffffff;
+                        width: 0px;
+                      }
+                     </style>
+	        </div>
+		<div id="searchBody" class="pBody">
+			<form action="/go/Special:Search" id="searchform"><div>
+			 <input id="searchInput" name="search" type="text" style="padding-left:4px; color:blue;" onfocus="clearText(this)" value="Wiki search" accesskey="f" value="" />
+			 <input type="hidden" name="fulltext" value="y" />
+			</div></form>
+                </div>
+        </div> <!-- close p-search -->
+		<div class='portlet' id='p-About OLPC'>
+		<h5>About OLPC</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-The-OLPC-Wiki"><a href="/go/The_OLPC_Wiki">The OLPC Wiki</a></li>
+				<li id="n-Contact-us"><a href="/go/OLPC:Contact_us">Contact us</a></li>
+				<li id="n-Blog"><a href="http://blog.laptop.org">Blog</a></li>
+				<li id="n-Communicate"><a href="/go/Communication_channels">Communicate</a></li>
+				<li id="n-Participate"><a href="/go/Participate">Participate</a></li>
+				<li id="n-laptop.org"><a href="http://laptop.org">laptop.org</a></li>
+			</ul>
+		</div>
+	</div>
+		<div class='portlet' id='p-About the laptop'>
+		<h5>About the laptop</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Specifications"><a href="/go/Hardware">Specifications</a></li>
+				<li id="n-Buying"><a href="/go/Buying_XOs">Buying</a></li>
+				<li id="n-Help-using"><a href="/go/Getting_started">Help using</a></li>
+				<li id="n-Support-for"><a href="/go/Support">Support for</a></li>
+				<li id="n-Upgrading"><a href="/go/Releases">Upgrading</a></li>
+				<li id="n-Repairing"><a href="/go/Repair">Repairing</a></li>
+				<li id="n-Disassembly"><a href="/go/Disassembly">Disassembly</a></li>
+			</ul>
+		</div>
+	</div>
+		<div class='portlet' id='p-About the tablet'>
+		<h5>About the tablet</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Specifications"><a href="http://one.laptop.org/about/xo-tablet">Specifications</a></li>
+				<li id="n-Buying"><a href="http://www.walmart.com/ip/24511209">Buying</a></li>
+				<li id="n-Help-using"><a href="http://one.laptop.org/about/xo-tablet-faq">Help using</a></li>
+				<li id="n-Support-for"><a href="http://www.xotablet.com/support/">Support for</a></li>
+			</ul>
+		</div>
+	</div>
+		<div class='portlet' id='p-Projects'>
+		<h5>Projects</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-for-Educators"><a href="/go/Educators">for Educators</a></li>
+				<li id="n-for-Developers"><a href="/go/Developers">for Developers</a></li>
+				<li id="n-Software"><a href="/go/Software_components">Software</a></li>
+				<li id="n-Hardware"><a href="/go/Hardware">Hardware</a></li>
+				<li id="n-Activities"><a href="http://activities.sugarlabs.org">Activities</a></li>
+				<li id="n-Deployment-Guide"><a href="/go/Deployment_Guide">Deployment Guide</a></li>
+				<li id="n-School-Server-(XS)"><a href="/go/School_server">School Server (XS)</a></li>
+				<li id="n-School-Server-(XSCE)"><a href="/go/XS_Community_Edition">School Server (XSCE)</a></li>
+			</ul>
+		</div>
+	</div>
+		<div class='portlet' id='p-OLPC wiki'>
+		<h5>OLPC wiki</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-Recent-changes"><a href="/go/Special:RecentChanges">Recent changes</a></li>
+				<li id="n-Glossary"><a href="/go/Glossary">Glossary</a></li>
+				<li id="n-Random-page"><a href="/go/Special:Random">Random page</a></li>
+				<li id="n-Help-using-the-wiki"><a href="/go/Help:Contents">Help using the wiki</a></li>
+			</ul>
+		</div>
+	</div>
+		<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/go/Special:WhatLinksHere/XS_Community_Edition/FAQ">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/go/Special:RecentChangesLinked/XS_Community_Edition/FAQ">Related changes</a></li>
+<li id="t-specialpages"><a href="/go/Special:SpecialPages">Special pages</a></li>
+				<li id="t-print"><a href="/index.php?title=XS_Community_Edition/FAQ&amp;printable=yes">Printable version</a></li>				<li id="t-permalink"><a href="/index.php?title=XS_Community_Edition/FAQ&amp;oldid=299524">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+<!--	<div id="googleads" class="portlet">
+	  <h5></h5>
+	<div class="pBody">
+  <script type="text/javascript">
+google_ad_client = "pub-4880598326964493";
+google_ad_width = 120;
+google_ad_height = 300;
+google_ad_format = "120x300_as";
+google_ad_language = "english";
+google_ad_type = "text_image";
+google_ad_channel = "5528187734";
+</script>
+<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>	</div>
+ 	</div> 
+-->
+	<div id="p-lang" class="portlet">
+		<h5>In other languages</h5>
+		<div class="pBody">
+			<ul>
+				<li class="interwiki-en"><a href="http://wiki.laptop.org/go/XS_Community_Edition/">English</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<!------ end of the left (by default at least) column ------>
+
+
+
+	<div class="visualClear"></div> 
+<!------  start of footer  ------>
+<div id="footer">
+				<div id="f-poweredbyico"><a href="http://www.mediawiki.org/"><img src="/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" /></a><!--
+				<div id="f-poweredbyico"><a href="http://laptop.org/xo"><img src="http://wiki.laptop.org/images/4/40/G1G1thin_badge.gif" alt="Give One, Get One" /></a>
+				<div id="f-poweredbyico"><a href="http://laptop.org/xo"><img src="http://wiki.laptop.org/images/2/24/G1G1Logo-crop_badge.gif" alt="Give One, Get One" /></a> 
+-->
+</div>
+				<div id="f-copyrightico"><a href="http://wiki.laptop.org/go/OLPC:License"><img src="http://i.creativecommons.org/l/by/2.5/88x31.png" alt='Creative Commons Attribution 2.5' /></a></div>
+			<ul id="f-list">
+				<li id="lastmod"> Last edited on 03:42, 22 March 2017.</li>
+				<li id="viewcount">&gt;8,882 views of this page.  &nbsp; <i>One Laptop per Child</i> and the OLPC logos are trademarks of OLPC.</li>
+				<li id="numberofwatchingusers">[2&nbsp;watching&nbsp;users]</li>
+				<li id="copyright">Content is licensed under <a href="http://wiki.laptop.org/go/OLPC:License" class="external " title="http://wiki.laptop.org/go/OLPC:License">Creative Commons Attribution 2.5</a></li>
+				<li id="privacy"><a href="/go/OLPC:Privacy_policy" title="OLPC:Privacy policy">Privacy</a></li>
+				<li id="about"><a href="/go/OLPC:About" title="OLPC:About">About OLPC</a></li>
+				<li id="disclaimer"><a href="/go/OLPC:General_disclaimer" title="OLPC:General disclaimer">Disclaimers</a></li>
+<br/>
+<li style="color:#444">One Laptop per Child</li>
+<li style="color:#444"> &nbsp; &nbsp; </li>
+<li style="color:#444"> Hosted by <a href="http://www.gossamer-threads.com/about/">Gossamer Threads</a> </li>
+<li style="color:#444"> &nbsp; &nbsp; </li>
+<li style="color:#444">Contact us: <b>help@laptop.org</b> </li>
+			</ul>
+</div>  
+
+<script type="text/javascript"> if (window.runOnloadHook) runOnloadHook();</script>
+</div>
+<!-- Served in 0.077 secs. --><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-4975748-1";
+urchinTracker();
+</script>
+</body></html>
