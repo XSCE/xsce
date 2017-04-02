@@ -35,14 +35,14 @@ for f in `ls ../docs`; do
     pandoc -s ../docs/$f -o ../docs/html/online-help-offline/$FTRIMMED.html
     # make links refer to local directory
     sed -i -e "s|$REPO/$REPONAME/wiki/\(.*\)\">|./\1.html\">|" ../docs/html/online-help-offline/$FTRIMMED.html
-    sed -i -e "s|schoolserver.org/faq|../FAQ|" ../docs/html/online-help-offline/$FTRIMMED.html
+    sed -i -e "s|http://schoolserver.org/faq|/info/FAQ|" ../docs/html/online-help-offline/$FTRIMMED.html
     sed -i -e "s|$REPO/$REPONAME/blob/release-.*/\(.*\)\">|../\1.html\">|" ../docs/html/online-help-offline/$FTRIMMED.html
 done
 
 # copy the faq and other things
-wget -c http://wiki.laptop.org/go/XS_Community_Edition/FAQ -P ../docs/html
-wget -c http://wiki.laptop.org/go/XS_Community_Edition/Security -P ../docs/html
-wget -c http://wiki.laptop.org/go/XS_Community_Edition/local_vars.yml -P ../docs/html
+lynx -reload -source http://wiki.laptop.org/go/XS_Community_Edition/FAQ > ../docs/html/FAQ
+lynx -reload -source http://wiki.laptop.org/go/XS_Community_Edition/Security > ../docs/html/Security
+lynx -reload -source http://wiki.laptop.org/go/XS_Community_Edition/local_vars.yml > ../docs/html/local_vars.yml
 
 # fetch the embedded help pages from the admin console
 #for f in `ls ../roles/xsce-admin/files/console/help`; do
