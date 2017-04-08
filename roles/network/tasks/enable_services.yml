@@ -100,7 +100,7 @@
   when: not wondershaper_enabled
 
 # check-LAN should be iptables.yml remove later 
-- name: Grap clean copy of xs-gen-iptables
+- name: Grab clean copy of xs-gen-iptables
   template: src={{ item.0 }}
             dest={{ item.1 }}
             owner='root'
