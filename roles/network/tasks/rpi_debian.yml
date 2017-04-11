@@ -29,7 +29,7 @@
        discovered_wan_iface: eth0
        
 - name: Copy the bridge script 
-  template: dest=/etc/network/interfaces/br0
+  template: dest=/etc/network/interfaces.d/br0
             src=network/br0.j2
   register: interface
 
