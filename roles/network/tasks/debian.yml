@@ -29,7 +29,7 @@
 
 - name: Copy the bridge script 
   template: dest=/etc/network/interfaces
-            src=interfaces.j2
+            src=network/interfaces.j2
   register: interface
 
 - name: If this was a change, things need to shift
