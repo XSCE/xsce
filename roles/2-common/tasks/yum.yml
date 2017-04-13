@@ -76,6 +76,7 @@
    - wget
    - openssl   #FC 18 does not supply, but pear requires
    - gawk
+   - sqlite3
   tags:
     - download
 

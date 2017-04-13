@@ -4,6 +4,8 @@
   with_items:
     - apache2
     - php5
+    - php5-curl
+    - php5-sqlite
   tags:
     - download
   when: is_debian
@@ -14,6 +16,8 @@
   with_items:
     - httpd
     - php
+    - php-curl
+    - php-sqlite
   tags:
     - download
   when: not is_debian
