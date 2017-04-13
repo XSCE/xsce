@@ -250,12 +250,12 @@
 - name: for debian, always use bridging
   set_fact:
      xsce_lan_iface: br0
-  when: 'discovered_lan_iface != "none" and num_lan_interfaces >= "1"' and is_debian
+  when: 'discovered_lan_iface != "none" and num_lan_interfaces >= "1" and is_debian'
 
 - name: 2 or more devices on the LAN - use bridging
   set_fact:
      xsce_lan_iface: br0
-  when: 'discovered_lan_iface != "none" and num_lan_interfaces >= "2"' and not is_debian
+  when: 'discovered_lan_iface != "none" and num_lan_interfaces >= "2" and not is_debian"'
 
 - name: WiFi is on the LAN - use bridging
   set_fact:
