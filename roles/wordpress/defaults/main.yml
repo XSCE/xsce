@@ -1,4 +1,4 @@
-wordpress_src: wordpress_4.7.3.tar.gz
+wordpress_src: wordpress-4.7.3.tar.gz
 wp_db_name: xsce_wp
 wp_db_user: xsce_wp
 wp_db_user_password: changeme
