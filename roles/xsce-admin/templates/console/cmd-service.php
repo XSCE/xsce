@@ -53,7 +53,7 @@ if (file_exists("/var/run/xsce-cmdsrv.pid")) {
 $time_end = microtime(true);
 $time = $time_end - $time_start;
 
-if( strpos( $reply, "Error" ) == false ) {
+if (strpos($reply, '"Error":') === false) {
   $reply = $reply . ',"Resp_time": "' . $time . '"}';
 }
 
