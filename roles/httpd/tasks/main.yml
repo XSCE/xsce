@@ -90,7 +90,7 @@
 - name: create admin group
   group: name=admin
          state=present
-         
+
 - name: Add apache user to admin group
   user: name={{ apache_user }}
         groups=admin
@@ -113,21 +113,11 @@
            enabled=yes
 
 - name: Create iiab-info directory
-  file: path={{ doc_root }}/iiab-info
+  file: path={{ doc_root }}/info
         mode=0755
         owner={{ apache_data }}
         group={{ apache_data }}
         state=directory
-
-- name: create a config file for iiab-info
-  template: src=iiab-info.conf.j2
-            dest=/etc/{{ apache_config_dir }}/iiab-info.conf
-
-- name: enable it in debian
-  file: src=/etc/{{ apache_config_dir }}/iiab-info.conf
-        dest=/etc/apache2/sites-enabled/iiab-info.conf
-        state=link
-  when: is_debuntu
 
 - include: html.yml
   tags:
