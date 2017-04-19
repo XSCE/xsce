@@ -119,11 +119,11 @@
         group={{ apache_data }}
         state=directory
 
-- name: enable it in debian
+- name: Remove iiab-info.conf
   file: dest=/etc/{{ apache_config_dir }}/iiab-info.conf
         state=absent
 
-- name: enable it in debian
+- name: Remove iiab-info.conf symlink
   file: dest=/etc/apache2/sites-enabled/iiab-info.conf
         state=absent
   when: is_debuntu
