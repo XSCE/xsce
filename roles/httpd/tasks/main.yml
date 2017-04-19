@@ -119,6 +119,15 @@
         group={{ apache_data }}
         state=directory
 
+- name: enable it in debian
+  file: dest=/etc/{{ apache_config_dir }}/iiab-info.conf
+        state=absent
+
+- name: enable it in debian
+  file: dest=/etc/apache2/sites-enabled/iiab-info.conf
+        state=absent
+  when: is_debuntu
+
 - include: html.yml
   tags:
     - base
