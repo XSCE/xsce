@@ -21,10 +21,8 @@ iface {{discovered_wireless_iface }} inet manual
 auto {{ discovered_wan_iface }}
 {% if gui_static_wan == false %}
 iface {{ discovered_wan_iface }} inet dhcp
-    pre-up ip link set br0 down && brctl delbr br0
 {% else %} # gui_static_wan_ip is set 
 iface {{ discovered_wan_iface }} inet static
-    pre-up ip link set br0 down && brctl delbr br0
     address {{ gui_static_wan_ip }}
     netmask {{ gui_static_wan_netmask }}
     gateway {{ gui_static_wan_gateway }}
@@ -37,12 +35,12 @@ auto br0
 iface br0 inet static
     bridge_ports {% if discovered_wireless_iface != "none" %} {{ discovered_wireless_iface }} {% endif %} {% if discovered_lan_iface != "none" %} {{ discovered_lan_iface }} {% endif %}
 
+    bridge_maxwait 0
     address {{ lan_ip }}
     netmask {{ lan_netmask }}
     dns-nameservers {{ lan_ip }}
-auto {{ discovered_wan_iface }}
 {% if gui_static_wan == false %}
-iface {{ discovered_wan_iface }} inet dhcp
+iface {{ discovered_wan_iface }} inet manual
 {% else %} # gui_static_wan_ip is set 
 iface {{ discovered_wan_iface }} inet static
     address {{ gui_static_wan_ip }}
@@ -58,6 +56,8 @@ iface {{ discovered_wan_iface }} inet static
 auto br0
 iface br0 inet static
     bridge_ports {% if discovered_wireless_iface != "none" %} {{ discovered_wireless_iface }} {% endif %} {% if discovered_wan_iface != "none" %} {{ discovered_wan_iface }} {% endif %}
+
+    bridge_maxwait 0
     address {{ lan_ip }}
     netmask {{ lan_netmask }}
     gateway {{ lan_ip }}
