@@ -38,8 +38,6 @@
       value: '{{ ansible_local["local_facts"]["xsce_branch"] }}'
     - option: 'runtime_commit'
       value: '{{ ansible_local["local_facts"]["xsce_commit"] }}'
-    - option: 'xsce_uuid'
-      value: '{{ ansible_local["local_facts"]["xsce_uuid"] }}'
     - option: 'runtime_date'
       value: '{{ ansible_date_time["iso8601"] }}'
     - option: 'runtime_php'
