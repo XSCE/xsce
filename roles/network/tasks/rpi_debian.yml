@@ -18,6 +18,15 @@
   package: name=resolvconf
            state=present
 
+- name: recent raspbian uses dhcpcd rather than resolvconf
+  service: name=resolvconf
+           enabled=False
+           state=stopped
+
+- name: on upgrade from earlier xsce versions, remove /etc/network/interfaces.d/br0
+  file: path=/etc/network/interfaces.d/br0
+        state=absent
+
 - name: default to lan controller
   set_fact:
       gui_desired_network_role: "LanController"
@@ -28,9 +37,9 @@
        discovered_wireless_iface: wlan0
        discovered_wan_iface: eth0
        
-- name: Copy the bridge script 
-  template: dest=/etc/network/interfaces.d/br0
-            src=network/br0.j2
+- name: Copy the network config script -- previously in /etc/network/interfaces.d/br0 
+  template: dest=/etc/network/interfaces
+            src=network/interfaces.j2
   register: interface
 
 - name: If this was a change, things need to shift
