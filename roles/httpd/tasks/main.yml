@@ -17,7 +17,7 @@
     - httpd
     - php
     - php-curl
-    - php-sqlite
+#    - php-sqlite
   tags:
     - download
   when: not is_debian
