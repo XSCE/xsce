@@ -31,6 +31,7 @@ import string
 import crypt
 import spwd
 import cracklib
+import cgi
 
 # Config Files
 xsce_config_file = "/etc/xsce/xsce.env"
@@ -447,8 +448,8 @@ def end_job(job_id, job_info, status):
     output_file = jobs_running[job_id]['output_file']
     file = open(output_file, 'r')
     job_output = file.read()
-    # remove non-printing chars
-    job_output = filter(lambda x: x in string.printable, job_output)
+    # make html safe
+    job_output = escape_html(job_output)
     jobs_running[job_id]['job_output'] = job_output
     file.close()
 
@@ -1391,6 +1392,7 @@ def get_last_jobs_stat(cmd_info):
                 output_file = jobs_running[job_id]['output_file']
                 file = open(output_file, 'r')
                 job_output = file.read()
+                job_output = escape_html(job_output)
                 file.close()
                 #print "job output" + job_output
 
@@ -1578,6 +1580,13 @@ def get_job_id():
         lock.release() # release lock, no matter what
 
     return(job_id)
+
+def escape_html(text):
+    """escape strings for display in HTML"""
+    return cgi.escape(text, quote=True).\
+           replace(u'\n', u'<br />').\
+           replace(u'\t', u'&emsp;').\
+           replace(u'  ', u' &nbsp;')
 
 def init():
     global last_command_rowid
