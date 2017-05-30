@@ -63,8 +63,8 @@ def main():
             filename = filename[:zimpos]
             if filename not in files_processed:
                 files_processed[filename] = True
-                #command = kiwix_manage + " " + kiwix_library_xml + " add " + content + filename + ".zim -i " + index + filename + ".zim.idx"
-                command = kiwix_manage + " " + kiwix_library_xml + " add " + content + filename + ".zim"
+                command = kiwix_manage + " " + kiwix_library_xml + " add " + content + filename + ".zim -i " + index + filename + ".zim.idx"
+                #command = kiwix_manage + " " + kiwix_library_xml + " add " + content + filename + ".zim"
                 #print command
                 args = shlex.split(command)
                 try:
