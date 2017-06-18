@@ -17,7 +17,8 @@
     - httpd
     - php
     - php-curl
-    - php-sqlite
+# centos does not have
+#    - php-sqlite
   tags:
     - download
   when: not is_debian
