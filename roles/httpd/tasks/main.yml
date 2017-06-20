@@ -17,6 +17,7 @@
     - httpd
     - php
     - php-curl
+# centos does not have
 #    - php-sqlite
   tags:
     - download
