@@ -23,6 +23,10 @@
         group=root
         mode=0755
 
+- name: Create a folder for xsce executable not on path
+  file: path=/usr/lib/xsce
+        state=directory
+
 - name: Configure openvpn
   template: src={{ item.src }}
             dest={{ item.dest }}
@@ -41,6 +45,7 @@
     - { src: 'xs-vpn', dest: '/usr/bin/xs-vpn', owner: "root" , mode: '0755' }
     - { src: 'xs-handle', dest: '/usr/bin/xs-handle', owner: "root" , mode: '0755' }
     - { src: 'up_wan', dest: '/usr/lib/xsce/up_wan', owner: "root" , mode: '0755' }
+    - { src: 'start.j2', dest: '/usr/lib/xsce/start', owner: "root" , mode: '0755' }
 
 - name: put up_wan in place for debian
   template: src=up_wan dest=/usr/lib/xsce/up_wan
@@ -69,7 +74,7 @@
 
 - name: make openvpn connection automatic
   lineinfile: dest=/etc/crontab
-            line="25 *  *  *  * root (/usr/bin/systemctl restart openvpn@xscenet.service) > /dev/null"
+            line="25 *  *  *  * root (/usr/bin/systemctl start openvpn@xscenet.service) > /dev/null"
   when:
             openvpn_enabled and openvpn_cron_enabled and not stat.exists is defined
 

@@ -74,6 +74,12 @@
             owner=root
             group=root
             mode=0644
+  when: adm_cons_force_ssl and is_fedora
+
+- name: Remove admin-console ssl config file
+  file: path=/etc/{{ apache_config_dir }}/xs-console-ssl.conf
+        state=absent
+  when: not adm_cons_force_ssl and is_fedora
 
 - name: Remove the debian default config which gets in the way
   file: dest=/etc/apache2/sites-enabled/000-default.conf
