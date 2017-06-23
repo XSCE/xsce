@@ -74,12 +74,12 @@
             owner=root
             group=root
             mode=0644
-  when: adm_cons_force_ssl and is_fedora
+  when: adm_cons_force_ssl and is_redhat
 
 - name: Remove admin-console ssl config file
   file: path=/etc/{{ apache_config_dir }}/xs-console-ssl.conf
         state=absent
-  when: not adm_cons_force_ssl and is_fedora
+  when: not adm_cons_force_ssl and is_redhat
 
 - name: Remove the debian default config which gets in the way
   file: dest=/etc/apache2/sites-enabled/000-default.conf
@@ -146,4 +146,3 @@
 - name: Create the home directory
   file: dest={{ doc_root }}/home
         state=directory
-
