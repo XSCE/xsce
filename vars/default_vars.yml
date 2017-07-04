@@ -306,4 +306,13 @@ xovis_root: "/opt/xovis"
 xovis_backup_dir: "/library/users"
 xovis_chart_heading: "My School: Usage Data Visualization"
 
+# Defaults for distros and hardware
+is_rpi: False
+is_debian: False
+is_debuntu: False
+is_ubuntu: False
+is_redhat: False
+is_fedora: False
+is_centos: False
+
 # 9-LOCAL-ADDONS

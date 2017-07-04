@@ -1,5 +1,8 @@
+is_rpi: True
 is_debian: True
 is_debuntu: True
+rtc_id: ds3231
+
 dns_service: bind9
 dns_user: bind
 proxy: squid3
@@ -19,3 +22,5 @@ apache_log: /var/log/apache2/access.log
 # which in turn cause netfilter-persistent to fail, which is essential
 cups_install: True
 sshd_service: ssh
+php_version: 5
+postgresql_version: 9.4
