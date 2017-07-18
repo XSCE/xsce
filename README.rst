@@ -2,7 +2,9 @@
 School Server Community Edition (XSCE)
 ======================================
 
-Welcome to the Git repository of the XSCE project. XSCE is a community-based
+This project has merged into Internet in a Box at https://github.com/iiab/iiab
+
+This repo is for XSCE release 6.2. XSCE is a community-based
 project developed and supported by volunteers from around the world. It
 provides communication, networking, content, and maintenance to schools and
 classrooms. In everyday usage the school server provides services which extend
